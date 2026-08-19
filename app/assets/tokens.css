@@ -1,0 +1,63 @@
+/* Perfact Intranet design tokens. See docs/Design.md */
+
+:root {
+  --bg: #f5f8f4;
+  --card: #ffffff;
+  --ink: #0d2019;
+  --ink-soft: #4c6156;
+  --line: #dee8df;
+  --pine: #0e3a2c;
+  --pine-a: #0a2b21;
+  --pine-b: #155540;
+  --moss: #2e7e5a;
+  --moss-soft: #e2efe7;
+  --amber: #f27b21;
+  --amber-deep: #d8620f;
+  --amber-soft: #fdebdc;
+  --river: #2e7fa3;
+  --danger: #b3372b;
+  --hero-ink: #f1f7f1;
+  --hero-sub: #c4dac8;
+
+  --font-body: "Aptos", "Segoe UI Variable", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "Aptos Mono", "Cascadia Mono", Consolas, monospace;
+
+  --radius-card: 14px;
+  --radius-input: 10px;
+  --space: 8px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0a1411;
+    --card: #101d18;
+    --ink: #e8f2ea;
+    --ink-soft: #9db3a6;
+    --line: #1d2f27;
+    --pine: #6fcd9c;
+    --pine-a: #08110e;
+    --pine-b: #123528;
+    --moss: #54b183;
+    --moss-soft: #14271f;
+    --amber: #ff9142;
+    --amber-deep: #ffa05c;
+    --amber-soft: #2a1c10;
+    --river: #5fb0d2;
+    --danger: #e07a6d;
+    --hero-ink: #edf6ee;
+    --hero-sub: #a9c4ae;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
