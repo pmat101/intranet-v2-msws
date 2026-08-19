@@ -1,7 +1,7 @@
 # Design.md, BD Pipeline Design System
 
-| Control | PG/BD/IT-DSN-001 · v0.2 · 19 July 2026 · Owner: Pranav Mathur · Approver: Kushal Bhargava |
-| ------- | ----------------------------------------------------------------------------------------- |
+| Control | PG/BD/IT-DSN-001 · v0.2 · 19 July 2026 |
+| ------- | -------------------------------------- |
 
 **Change log v0.1 to v0.2:** the Perfact-Intranet visual identity (amber on pine, both themes, the stage ribbon) is retained by the builder's decision; this is an internal working portal, not an outward brand surface. One change is adopted from the corporate Perfact Design Language v3.0: the typeface becomes **Aptos**, which is native on every M365 device we run and therefore costs nothing and needs no self-hosting. The three previous faces (Bricolage Grotesque, Inter, IBM Plex Mono) are retired. A governance split is stated in section 0: the app's own screens use this system; documents the app generates for clients or the Chairman use the corporate design language.
 
@@ -76,5 +76,3 @@ Durations 150 to 200 ms, ease-out; one page-load moment (the ribbon pulse), hove
 ## 8. Accessibility and quality floor
 
 Visible keyboard focus on every interactive element (the amber ring); logical tab order matching visual order; chips never rely on colour alone; icons paired with labels or aria-labels; both themes verified to at least 4.5:1 for body-text contrast; forms completable and submittable by keyboard alone. This floor is checked at every phase exit, not retrofitted. Generated and exported documents follow the corporate design language's own accessibility rules (its section 3.4) since they are produced under that system.
-
-Draft, requires approval by Kushal Bhargava before issue.

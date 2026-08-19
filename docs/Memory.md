@@ -4,6 +4,50 @@ Append-only. Newest entries at the top. Every working session adds: date, what w
 
 ---
 
+## 2026-08-04, BD workflow field map built; document audit and corrections
+
+**Done.** Read all seven live BD forms directly, three from Apps Script (BD01A, BD02, BD03) and six Zoho originals supplied by Pranav (BD01A, BD01B, BD02, BD04, BD05, BD00). Produced BDWorkflow.md and a thirteen-slide field map deck covering the six stage chain with every field per form. Audited all project markdown files and corrected them.
+
+**Findings from the code that changed the design:**
+1. The P-Code is `Entity + FY + Serial` (PE273853). The long composite string the blueprint calls the P-Code is the ProposalID. Both are minted together by `genProposalIDnPCODE` from one shared serial. BackendSchema described the P-Code using the ProposalID's anatomy, which would have corrupted every join.
+2. The quote ladder is four rungs, not two: PBL base cost, PBL2 minimum quote (the floor), PBL3 first quote, PBL10 agreed quote. PBL2 and PBL3 live on BD01B and were entirely absent from the schema. Kushal's floor-to-ceiling pricing gate is therefore already half built.
+3. The live BD02 cost stack is ten fields (overhead, testing, admin, manpower, outsourcing, commissions, outsourced manpower, secondary data, contingency, site visit) and none of them were in the schema, which carried only the blueprint's revenue-side decomposition. Both are needed; they are complementary, not alternatives.
+4. `validateBD02Server` requires nine fields and none of them is cost, margin or duration. Kushal's five per cent margin completion is what the code permits, not a training failure.
+5. The published forms directory lists seven BD forms. Only BD01A, BD02 and BD03 have Apps Script pages and handlers. BD00, BD01B, BD04 and BD05 exist only as Zoho originals, so those directory links may be dead. To verify on the live site.
+6. The live BD03 is the technical handover, not the pipeline tracker the Tier 3 note describes.
+7. BD04 records three invoice counters per entity and no invoice number, date or amount, which is exactly why no receivables position exists.
+8. BD00 re-types roughly twenty BD01A fields before reaching the four that matter. Under the new design Lost becomes a status transition.
+
+**Corrections Pranav made to my reading:** one P-Code per project with the entity inside it, not sibling codes per project; seven delivery pools that work with clients (Fountain, Ocean, Pond, Pool, Reservoir, Spring, Tributary); no Business Head role any more.
+
+**Field coverage audit.** First pass covered 113 of 119 Apps Script fields. Six genuine misses, five of them conditional specify fields hidden behind dropdowns on BD03 (category, baseline season, EAC name, travelling borne by, type of work) plus `project_location_address_line1`, and one on Zoho BD00 (`lost_reason_other_specify`). Also restored `rfq_url` alongside the new upload field, since 1,557 historical leads hold links. Now 119 of 119.
+
+**Document corrections applied:** BackendSchema identity keys rewritten, cost stack and full quote ladder added to ProposalRegister, ExpenseLedger expanded so receivables compute, DeliveryPools corrected, UsersRoles given TeamHead, CSuiteOfficer and EIACoordinator with Business Head retired, FormMapping rebuilt around the live codes, units flagged as an open decision before B2. Architecture given the Functions storage account caveat against the nil-cost claim. ImplementationPlan S3.1 now requires golden tests on both identifiers. Walkthrough S0.1 updated to the completed MCA route. PRD decision table refreshed: two resolved, seven new, fifteen total.
+
+**Housekeeping.** ImplementationPlan2.md and Memory2.md were the current versions; the un-numbered duplicates were stale and have been replaced rather than carried. ReadMe.md is a legacy Apps Script build guide with no document control header, and belongs under a legacy folder rather than in the controlled set.
+
+**Open, carried forward:** the fifteen decisions in PRD section 12, the four possibly dead form links to verify, and the unit decision which blocks B2 provisioning.
+
+---
+
+## 2026-08-01, B0 begun: Azure subscription created, billing governance issue found and recorded
+
+**Executed:** S0.1 and S0.2. Subscription `Perfact-Intranet` created, resource group `rg-bd-pipeline` in Central India, budget ₹500/month armed at 50, 90 and 100 per cent during creation.
+
+**What the investigation found before creating anything.** Perfact has an active Microsoft Customer Agreement billing account, so no card signup was needed and no reseller block applied. Inside it are five billing profiles: four named after distributors (Ingram Micro, Savex, Tech Data, Multiverse Solutions) and one named after me. Only mine has invoice history, and both its invoices carry zero transactions and nil amounts, which means the licence spend is invoiced through the distributor channel and not by Microsoft directly. My billing profile had no company payment instrument on it, only my personal MasterCard as default and Dr. Nipun's Visa.
+
+**Decision taken:** proceed on the personal instrument as an interim measure so the build is not delayed, notified to Kushal in writing rather than done silently. Correction due before live BD data enters the system, backstop 30 September 2026: company instrument attached and made default, personal cards detached, billing profile renamed from an individual's name to the company's.
+
+**Corrections to our own documents:** ImplementationPlan S0.1 rewritten (the "pay-as-you-go with the approved card" route never existed for an MCA tenant) and S0.2 updated with the sequencing improvement found in practice, that the budget can be armed inside the subscription creation wizard. The "₹0 recurring" claim across the documents needs a caveat: Azure Functions on consumption requires an associated storage account, which carries a small monthly charge, expected to be a few tens of rupees. Verify against the first real invoice.
+
+**Concepts covered (teaching):** tenant, subscription, resource group, resource, and how they nest; licence as a seat versus Azure as a meter; permission is not authority; public identifiers (tenant ID, client ID, subscription ID) versus the client secret; a resource group's region holds metadata only; budget alert recipients grant no access while IAM roles send no email.
+
+**Quiz checkpoint 1:** 6/10. Conclusions sound, reasoning thin. Re-taught seat versus meter, permission versus authority, and the tenant as a Microsoft identity boundary rather than an Azure one.
+
+**Open:** Kushal as subscription Owner and as budget alert recipient, both still to do. S0.6 (commit these documents) still outstanding. Then S0.3.
+
+---
+
 ## 2026-07-19 (later), Pile 2 audit resolved; documents finalised for commit
 
 Pranav audited every change I made against the earlier plan. I sorted the changes into three piles: forced by Kushal's documents (no vote), my own judgement calls (nine items), and deliberately unchanged. Only the nine judgement calls were open. His decisions:

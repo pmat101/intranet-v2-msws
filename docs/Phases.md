@@ -1,7 +1,7 @@
 # Phases.md, BD Pipeline Build Plan
 
-| Control | PG/BD/IT-PHS-001 · v0.2 · 19 July 2026 · Owner: Pranav Mathur · Approver: Kushal Bhargava |
-| ------- | ----------------------------------------------------------------------------------------- |
+| Control | PG/BD/IT-PHS-001 · v0.2 · 19 July 2026 |
+| ------- | -------------------------------------- |
 
 **Change log v0.1 → v0.2:** restructured around the IMS Tier 3 specification. The Tier A discipline intent (mandatory computed cost, margin, duration; days-in-stage flag) is embedded in phases B5 and B10 rather than patched onto legacy forms, since the legacy BD forms are being replaced by this app. Phases are prefixed B (BD app) to avoid colliding with the whole-intranet migration work-breakdown numbering, where this project is Phase 8. Durations assume learning pace alongside routine IT work; each phase closes on exit criteria, quiz, and same-day Memory.md notes.
 

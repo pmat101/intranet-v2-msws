@@ -1,7 +1,7 @@
 # TRD.md, Technical Requirements Document
 
-| Control | PG/BD/IT-TRD-001 · v1.0 · 19 July 2026 · Owner: Pranav Mathur · Approver: Kushal Bhargava |
-| ------- | ----------------------------------------------------------------------------------------- |
+| Control | PG/BD/IT-TRD-001 · v1.0 · 19 July 2026 |
+| ------- | -------------------------------------- |
 
 Scope: every technology, API, tool and quota the BD Pipeline App depends on, with the licence or cost basis of each. Companion to Architecture.md (why) and BackendSchema.md (data). Anything uncertain carries [VERIFY BEFORE SUBMISSION].
 

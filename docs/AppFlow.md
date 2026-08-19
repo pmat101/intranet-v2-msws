@@ -1,9 +1,9 @@
 # AppFlow.md, Features and Navigation Logic
 
-| Control | PG/BD/IT-FLW-001 · v1.0 · 19 July 2026 · Owner: Pranav Mathur · Approver: Kushal Bhargava |
-| ------- | ----------------------------------------------------------------------------------------- |
+| Control | PG/BD/IT-FLW-001 · v1.0 · 19 July 2026 |
+| ------- | -------------------------------------- |
 
-How a user moves through the BD Pipeline App, screen by screen, and what each screen does. The SIPOC chain (trigger → format → output) governs every flow; nothing here creates an orphan step.
+How a user moves through the BD Pipeline App, screen by screen and what each screen does. The SIPOC chain (trigger → format → output) governs every flow; nothing here creates an orphan step.
 
 ## 1. Navigation map
 
@@ -74,5 +74,3 @@ Loading: skeleton rows, never spinners in tables; buttons show inline progress t
 | Won / handover                     | Handover mails                                 | Delivery pool, EIA coordinator, Accounts |
 | Bill raised (TF07/TF22)            | Ledger entry + mail                            | Accounts                                 |
 | Completion (TF08)                  | Closure task                                   | Owner, Ops Council on lessons            |
-
-Draft, requires approval by Kushal Bhargava before issue.

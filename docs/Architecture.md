@@ -4,13 +4,12 @@
 | -------- | --------------------------------------------------------------- |
 | Document | PG/BD/IT-ARC-001 (numbering per PG/IMS/BP-002 §2.4, to confirm) |
 | Revision | v0.2, 19 July 2026. Supersedes v0.1                             |
-| Owner    | Pranav Mathur · Approver: Kushal Bhargava                       |
 
 **Change log v0.1 → v0.2:** data layer restructured into the seven Tier 3 document classes; Microsoft Forms deviation stated and routed to the gated tool decision; flow-to-Function call revised to Graph change notifications (the generic HTTP action is a premium connector); TF07/TF22/TF08 delivery-side event bridge added; document control layer added; UI adopts Perfact Design Language v3.0.
 
 ## 1. Architecture in one paragraph
 
-A custom HTML/CSS/JS frontend (no build step) on **Azure Static Web Apps Free**, authenticated with **MSAL.js against a single-tenant Entra ID app registration**, calling **Azure Functions (Node.js, consumption)** for all business logic including ID minting, gate evaluation and document generation. **SharePoint Lists** hold the entire Tier 3 estate: registers, reference masters, trackers (as views) and the activity log, read and written via **Microsoft Graph** under application permissions scoped to the BD sites only. **Power Automate** (standard connectors) owns human workflow: Outlook approvals for qualification reviews and the CSO quote gate, and notification mail from the service mailbox. Functions learn of list changes through **Graph change-notification subscriptions**, never the premium HTTP connector. Everything runs on licences already paid; the recurring-cost target is ₹0 with a ₹500/month tripwire.
+A custom HTML/CSS/JS frontend (no build step) on **Azure Static Web Apps**, authenticated with **MSAL.js against a single-tenant Entra ID app registration**, calling **Azure Functions (Node.js, consumption)** for all business logic including ID minting, gate evaluation and document generation. **SharePoint Lists** hold the entire Tier 3 estate: registers, reference masters, trackers (as views) and the activity log, read and written via **Microsoft Graph** under application permissions scoped to the BD sites only. **Power Automate** (standard connectors) owns human workflow: Outlook approvals for qualification reviews and the CSO quote gate, and notification mail from the service mailbox. Functions learn of list changes through **Graph change-notification subscriptions**, never the premium HTTP connector. Everything runs on licences already paid. The recurring-cost target is effectively nil with a ₹500 per month tripwire, with one honest caveat: Azure Functions on the consumption plan requires an associated storage account, which carries a small charge for capacity and transactions, expected to be a few tens of rupees a month. Verify against the first real invoice rather than trusting the estimate.
 
 ## 2. Tier 3 document classes → implementation
 
@@ -52,5 +51,3 @@ Unchanged: GitHub private repo, SWA GitHub Action deploying `app/` + `api/` from
 ## 8. Known trade-offs and deviations register
 
 SharePoint Lists are not relational (Functions compose joins; PCODE and Stage indexed; volumes give ample headroom under the 5,000-item view threshold). Stages, form codes and SLAs are master data by design so the gated CSO decisions (6 vs 8 stages, numbering) are data edits. Loop is optional garnish, not a store of record. The Microsoft Forms deviation is recorded in §2 and gated. The app UI keeps the Perfact-Intranet design system (amber on pine, both light and dark themes) per Design.md; documents the app emits outward follow the corporate design language. PDF conversion route for the package remains [VERIFY BEFORE SUBMISSION] in the proposal phase.
-
-Draft, requires approval by Kushal Bhargava before issue.

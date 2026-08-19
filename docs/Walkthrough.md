@@ -63,9 +63,9 @@ a) What problem does version control solve, and what is a commit message for?
 b) What does Sites.Selected give our app, and why is that safer than a tenant-wide grant?
 c) Why do we build on a development site instead of the live data?
 
-**S0.1 to S0.4, the Azure subscription, cost alarm, Static Web App and health endpoint.** _(held until the card)_
+**S0.1 to S0.4, the Azure subscription, cost alarm, Static Web App and health endpoint.** _(S0.1 and S0.2 completed 1 August 2026)_
 Concept: a subscription is the billing container; a resource group is the folder we keep our resources in; the cost budget is the smoke alarm that mails us at 50, 90 and 100 per cent of ₹500 so a surprise bill is impossible. The Static Web App is our front door on the internet, wired to the repo so that a push becomes a live deployment automatically; that automatic pipeline is called continuous integration and deployment. A health endpoint is the simplest possible check that the back end is alive: it answers "ok" and nothing more, so that if it stops answering we know at once.
-Do: per ImplementationPlan S0.1 to S0.4, when the card is approved.
+Done for S0.1 and S0.2: the subscription was created inside Perfact's existing Microsoft Customer Agreement billing account, so no card signup was needed, and the ₹500 budget was armed inside the creation wizard. S0.3 and S0.4 follow. Concept added in practice: having permission is not the same as having authority, so the billing position was notified to the CSO in writing before proceeding.
 Verify: the subscription shows under Billing; a test cost alert mail arrives; a push turns the deployment green and the hello page loads; the browser can call `/api/health` and receive ok.
 Note to Memory: the three Azure words (subscription, resource group, resource) and what continuous deployment means.
 
