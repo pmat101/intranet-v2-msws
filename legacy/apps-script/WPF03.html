@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <base target="_top" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WPF03</title>
+    <?!= HtmlService.createHtmlOutputFromFile('shared-styles').getContent(); ?>
+  </head>
+  <body>
+    <div class="form-wrapper">
+      <div class="form-title">WPF03</div>
+      <div class="form-subtitle">Fountain Team</div>
+
+      <div class="form-section">
+        <div class="form-group">
+          <label class="form-label" for="week_start_date"
+            >Week Start Date <span class="required">*</span></label
+          >
+          <input type="date" id="week_start_date" required />
+          <div class="helper-text">dd-MMM-yyyy</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="week_end_date"
+            >Week End Date <span class="required">*</span></label
+          >
+          <input type="date" id="week_end_date" required />
+          <div class="helper-text">dd-MMM-yyyy</div>
+        </div>
+
+        <h4>Analysis</h4>
+        <div
+          class="section-heading"
+          style="font-size: 16px; margin-bottom: 10px"
+        ></div>
+
+        <div class="work-matrix-wrap" style="overflow-x: auto">
+          <table class="matrix-table" style="width: 100%">
+            <thead>
+              <tr>
+                <th style="min-width: 160px">Analysis Item</th>
+                <th style="min-width: 140px">Planned Last Week</th>
+                <th style="min-width: 140px">Achieving this week</th>
+                <th style="min-width: 140px">Plan for next week</th>
+              </tr>
+            </thead>
+            <tbody id="analysis-body"></tbody>
+          </table>
+        </div>
+
+        <div class="form-group" style="margin-top: 18px">
+          <label class="form-label" for="test_reports_issued"
+            >Test Reports Issued</label
+          >
+          <input type="number" id="test_reports_issued" min="0" step="1" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="test_reports_planned"
+            >Test Reports Planned</label
+          >
+          <input type="number" id="test_reports_planned" min="0" step="1" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="monitorings_completed"
+            >Monitorings completed</label
+          >
+          <input type="number" id="monitorings_completed" min="0" step="1" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="monitorings_planned"
+            >Monitorings planned</label
+          >
+          <input type="number" id="monitorings_planned" min="0" step="1" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="data_review_priority"
+            >Data Review Priority</label
+          >
+          <textarea id="data_review_priority"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="highlights">Highlights</label>
+          <textarea id="highlights"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="low_points">Low Points</label>
+          <textarea id="low_points"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="challenges_faced"
+            >Challenges faced</label
+          >
+          <textarea id="challenges_faced"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="projected_targets_next_week"
+            >Projected targets for next week</label
+          >
+          <textarea id="projected_targets_next_week"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="weekly_ppt_link"
+            >Upload Weekly PPT URL</label
+          >
+          <input
+            type="url"
+            id="weekly_ppt_link"
+            placeholder="Paste file link here"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="remarks">Remarks</label>
+          <textarea id="remarks"></textarea>
+        </div>
+      </div>
+
+      <button
+        class="btn-primary"
+        type="button"
+        onclick="submitWPF03()"
+        id="submitBtn"
+      >
+        Submit
+      </button>
+    </div>
+
+    <script>
+      const analysisItems = [
+        "Air",
+        "Water",
+        "Soil",
+        "Traffic and Noise",
+        "R&D",
+      ];
+
+      window.addEventListener("DOMContentLoaded", function () {
+        renderAnalysisRows();
+      });
+
+      function renderAnalysisRows() {
+        const body = document.getElementById("analysis-body");
+        body.innerHTML = "";
+
+        analysisItems.forEach(function (item, index) {
+          const tr = document.createElement("tr");
+          tr.dataset.rowNo = String(index + 1);
+          tr.innerHTML = `
+            <td>${item}</td>
+            <td><input type="number" class="analysis-planned" min="0" step="1" required></td>
+            <td><input type="number" class="analysis-achieving" min="0" step="1" required></td>
+            <td><input type="number" class="analysis-next" min="0" step="1" required></td>
+          `;
+          body.appendChild(tr);
+        });
+      }
+
+      function collectAnalysisRows() {
+        return Array.from(document.querySelectorAll("#analysis-body tr")).map(
+          function (tr) {
+            return {
+              analysis_item: tr.children[0].innerText.trim(),
+              planned_last_week: tr.querySelector(".analysis-planned").value,
+              achieving_this_week: tr.querySelector(".analysis-achieving")
+                .value,
+              plan_for_next_week: tr.querySelector(".analysis-next").value,
+            };
+          },
+        );
+      }
+
+      function validateWPF03(payload) {
+        const missing = [];
+        if (!payload.week_start_date) missing.push("Week Start Date");
+        if (!payload.week_end_date) missing.push("Week End Date");
+
+        payload.analysis_rows.forEach(function (r, idx) {
+          if (r.planned_last_week === "")
+            missing.push(`Analysis row ${idx + 1} planned last week`);
+          if (r.achieving_this_week === "")
+            missing.push(`Analysis row ${idx + 1} achieving this week`);
+          if (r.plan_for_next_week === "")
+            missing.push(`Analysis row ${idx + 1} plan for next week`);
+        });
+
+        if (missing.length) {
+          alert("Please fill:\n\n" + missing.join("\n"));
+          return false;
+        }
+        return true;
+      }
+
+      let isSubmitting = false;
+
+      function submitWPF03() {
+        if (isSubmitting) return; // blocks double-clicks instantly
+        isSubmitting = true;
+        const submitBtn = document.getElementById("submitBtn");
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Submitting...";
+
+        const payload = {
+          week_start_date: document.getElementById("week_start_date").value,
+          week_end_date: document.getElementById("week_end_date").value,
+          team_name: "Fountain",
+          analysis_rows: collectAnalysisRows(),
+          test_reports_issued: document.getElementById("test_reports_issued")
+            .value,
+          test_reports_planned: document.getElementById("test_reports_planned")
+            .value,
+          monitorings_completed: document.getElementById(
+            "monitorings_completed",
+          ).value,
+          monitorings_planned: document.getElementById("monitorings_planned")
+            .value,
+          data_review_priority: document.getElementById("data_review_priority")
+            .value,
+          highlights: document.getElementById("highlights").value,
+          low_points: document.getElementById("low_points").value,
+          challenges_faced: document.getElementById("challenges_faced").value,
+          projected_targets_next_week: document.getElementById(
+            "projected_targets_next_week",
+          ).value,
+          weekly_ppt_link: document.getElementById("weekly_ppt_link").value,
+          remarks: document.getElementById("remarks").value,
+        };
+
+        if (!validateWPF03(payload)) {
+          isSubmitting = false;
+          submitBtn.disabled = false;
+          submitBtn.innerText = "Submit";
+          return;
+        }
+
+        google.script.run
+          .withSuccessHandler(function (res) {
+            console.log("SUCCESS HANDLER RUNNING"); // 👈 debug
+            document.body.innerHTML = res.thankYouHtml;
+          })
+          .withFailureHandler(function (err) {
+            alert("Submission failed: " + err.message);
+            isSubmitting = false;
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Submit";
+          })
+          .submitWPF03(payload);
+      }
+    </script>
+  </body>
+</html>

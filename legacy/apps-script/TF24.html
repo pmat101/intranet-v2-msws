@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <base target="_top" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TF24</title>
+    <?!= HtmlService.createHtmlOutputFromFile('shared-styles').getContent(); ?>
+  </head>
+  <body>
+    <div class="form-wrapper">
+      <div class="form-title">TF24</div>
+      <div class="form-subtitle">EDS raised</div>
+
+      <div class="form-section">
+        <div class="form-group">
+          <label class="form-label">Employee Name</label>
+          <div class="form-row">
+            <div class="form-col">
+              <input
+                type="text"
+                id="employee_first_name"
+                placeholder="First Name"
+              />
+              <div class="helper-text">First Name</div>
+            </div>
+            <div class="form-col">
+              <input
+                type="text"
+                id="employee_last_name"
+                placeholder="Last Name"
+              />
+              <div class="helper-text">Last Name</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="employee_email"
+            >Employee Email ID <span class="required">*</span></label
+          >
+          <input type="email" id="employee_email" required />
+          <div class="helper-text">Email ID of the person filling the form</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="team_name"
+            >Team Name <span class="required">*</span></label
+          >
+          <select id="team_name" required></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="company_name">Company Name</label>
+          <input type="text" id="company_name" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="project_name"
+            >Project Name <span class="required">*</span></label
+          >
+          <input type="text" id="project_name" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="project_code"
+            >Project Code <span class="required">*</span></label
+          >
+          <input type="text" id="project_code" required />
+          <div class="helper-text">
+            Refer the active PCODE list in your project sheet
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="parivesh_proposal_number"
+            >Parivesh proposal number</label
+          >
+          <input type="text" id="parivesh_proposal_number" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="type_of_case">Type of Case</label>
+          <select id="type_of_case"></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="category">Category</label>
+          <select id="category"></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="sector">Sector</label>
+          <select id="sector"></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="eac_seac">EAC/SEAC</label>
+          <select id="eac_seac"></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="eia_coordinator_name"
+            >EIA Coordinator Name <span class="required">*</span></label
+          >
+          <select id="eia_coordinator_name" required></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="query_raised">Query Raised</label>
+          <textarea id="query_raised"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="eds_screenshot_url"
+            >Screenshot of EDS</label
+          >
+          <input
+            type="url"
+            id="eds_screenshot_url"
+            placeholder="Paste screenshot link here"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="remarks">Remarks</label>
+          <textarea id="remarks"></textarea>
+        </div>
+      </div>
+
+      <button
+        class="btn-primary"
+        type="button"
+        id="submitBtn"
+        onclick="submitTF24()"
+      >
+        Submit
+      </button>
+    </div>
+
+    <script>
+      window.addEventListener("DOMContentLoaded", function () {
+        populateDropdowns();
+      });
+
+      function populateDropdowns() {
+        google.script.run
+          .withSuccessHandler(function (data) {
+            data = data || {};
+            fillSelect(
+              document.getElementById("team_name"),
+              data.team || [],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("category"),
+              data.category || [],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("type_of_case"),
+              data.tf24TypeOfCase || [],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("eac_seac"),
+              data.eac || [],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("eia_coordinator_name"),
+              data.eiaCoordinator || [],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("sector"),
+              data.sector || [],
+              "-Select-",
+            );
+          })
+          .getDropdownData();
+      }
+
+      function fillSelect(select, items, placeholder) {
+        if (!select) return;
+        select.innerHTML = "";
+        const first = document.createElement("option");
+        first.value = "";
+        first.textContent = placeholder || "Select";
+        select.appendChild(first);
+
+        (items || []).forEach(function (item) {
+          const option = document.createElement("option");
+          option.value = item;
+          option.textContent = item;
+          select.appendChild(option);
+        });
+      }
+
+      function validateTF24(p) {
+        const missing = [];
+        if (!p.employee_email) missing.push("Employee Email ID");
+        if (!p.team_name) missing.push("Team Name");
+        if (!p.project_name) missing.push("Project Name");
+        if (!p.project_code) missing.push("Project Code");
+        if (!p.eia_coordinator_name) missing.push("EIA Coordinator Name");
+        if (!p.query_raised) missing.push("Query Raised");
+
+        if (missing.length) {
+          alert("Please fill:\n\n" + missing.join("\n"));
+          return false;
+        }
+        return true;
+      }
+
+      let isSubmitting = false;
+
+      function submitTF24() {
+        if (isSubmitting) return; // blocks double-clicks instantly
+        isSubmitting = true;
+        const submitBtn = document.getElementById("submitBtn");
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Submitting...";
+
+        const payload = {
+          employee_first_name: document.getElementById("employee_first_name")
+            .value,
+          employee_last_name:
+            document.getElementById("employee_last_name").value,
+          employee_email: document.getElementById("employee_email").value,
+          team_name: document.getElementById("team_name").value,
+          company_name: document.getElementById("company_name").value,
+          project_name: document.getElementById("project_name").value,
+          project_code: document.getElementById("project_code").value,
+          parivesh_proposal_number: document.getElementById(
+            "parivesh_proposal_number",
+          ).value,
+          type_of_case: document.getElementById("type_of_case").value,
+          category: document.getElementById("category").value,
+          sector: document.getElementById("sector").value,
+          eac_seac: document.getElementById("eac_seac").value,
+          eia_coordinator_name: document.getElementById("eia_coordinator_name")
+            .value,
+          query_raised: document.getElementById("query_raised").value,
+          eds_screenshot_url:
+            document.getElementById("eds_screenshot_url").value,
+          remarks: document.getElementById("remarks").value,
+        };
+
+        if (!validateTF24(payload)) {
+          isSubmitting = false;
+          submitBtn.disabled = false;
+          submitBtn.innerText = "Submit";
+          return;
+        }
+
+        google.script.run
+          .withSuccessHandler(function (res) {
+            console.log("SUCCESS HANDLER RUNNING"); // 👈 debug
+            document.body.innerHTML = res.thankYouHtml;
+          })
+          .withFailureHandler(function (err) {
+            alert("Submission failed: " + err.message);
+            isSubmitting = false;
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Submit";
+          })
+          .submitTF24(payload);
+      }
+    </script>
+  </body>
+</html>

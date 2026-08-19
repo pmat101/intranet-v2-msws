@@ -1,0 +1,577 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <base target="_top" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ACC03</title>
+    <?!= HtmlService.createHtmlOutputFromFile('shared-styles').getContent(); ?>
+    <style>
+      .radio-row {
+        display: flex;
+        gap: 18px;
+        margin-top: 6px;
+        flex-wrap: wrap;
+      }
+      .radio-row label {
+        font-weight: 500;
+        cursor: pointer;
+      }
+      .radio-row input[type="radio"] {
+        margin-right: 6px;
+      }
+      .conditional-block {
+        display: none;
+        margin-top: 12px;
+        padding-top: 12px;
+        border-top: 1px dashed #d1d5db;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="form-wrapper">
+      <div class="form-title">ACC03</div>
+      <div class="form-subtitle">
+        Purchase Request Form — to be filled before any office purchase is
+        initiated
+      </div>
+
+      <div class="form-section">
+        <div class="form-group">
+          <label class="form-label" for="date">Date</label>
+          <input type="date" id="date" />
+          <div class="helper-text">dd-MMM-yyyy</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Name of Requestor</label>
+          <div class="form-row">
+            <div class="form-col">
+              <input
+                type="text"
+                id="requestor_first_name"
+                placeholder="First Name"
+              />
+              <div class="helper-text">First Name</div>
+            </div>
+            <div class="form-col">
+              <input
+                type="text"
+                id="requestor_last_name"
+                placeholder="Last Name"
+              />
+              <div class="helper-text">Last Name</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-col">
+            <div class="form-group">
+              <label class="form-label" for="employee_code"
+                >Employee Code <span class="required">*</span></label
+              >
+              <input type="text" id="employee_code" required />
+            </div>
+          </div>
+          <div class="form-col">
+            <div class="form-group">
+              <label class="form-label" for="requestor_email"
+                >Official Email ID <span class="required">*</span></label
+              >
+              <input type="email" id="requestor_email" required />
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-col">
+            <div class="form-group">
+              <label class="form-label" for="team_name"
+                >Team Name <span class="required">*</span></label
+              >
+              <select id="team_name" required></select>
+            </div>
+          </div>
+          <div class="form-col">
+            <div class="form-group">
+              <label class="form-label" for="pg_company"
+                >Concerned PG Company <span class="required">*</span></label
+              >
+              <select id="pg_company" required></select>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label"
+            >Is this an office expense or project expense?
+            <span class="required">*</span></label
+          >
+          <div class="radio-row">
+            <label
+              ><input
+                type="radio"
+                name="expense_type"
+                value="Office expense"
+              />Office expense</label
+            >
+            <label
+              ><input
+                type="radio"
+                name="expense_type"
+                value="Project expense"
+              />Project expense</label
+            >
+          </div>
+        </div>
+
+        <div id="project_block" class="conditional-block">
+          <div class="form-row">
+            <div class="form-col">
+              <div class="form-group">
+                <label class="form-label" for="project_name"
+                  >Project Name <span class="required">*</span></label
+                >
+                <input type="text" id="project_name" />
+              </div>
+            </div>
+            <div class="form-col">
+              <div class="form-group">
+                <label class="form-label" for="pcode"
+                  >PCODE <span class="required">*</span></label
+                >
+                <input type="text" id="pcode" />
+                <div class="helper-text">
+                  Refer the active PCODE list in your project sheet
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="item_name"
+            >Item Name(s) <span class="required">*</span></label
+          >
+          <textarea
+            id="item_name"
+            rows="3"
+            placeholder="e.g. 5 nos HP LaserJet M1136 toner cartridges; 2 reams A4 paper; 1 no UPS battery"
+            required
+          ></textarea>
+          <div class="helper-text">
+            List each item with quantity and units on a new line. Include
+            make/model where relevant.
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-col">
+            <div class="form-group">
+              <label class="form-label" for="category"
+                >Category of Purchase <span class="required">*</span></label
+              >
+              <select id="category" required>
+                <option value="">Select</option>
+                <option value="Stationery & office supplies">
+                  Stationery &amp; office supplies
+                </option>
+                <option value="IT - Hardware">IT - Hardware</option>
+                <option value="IT - Software & licenses">
+                  IT - Software &amp; licenses
+                </option>
+                <option value="Lab consumables">Lab consumables</option>
+                <option value="Field & monitoring equipment">
+                  Field &amp; monitoring equipment
+                </option>
+                <option value="Office furniture & fittings">
+                  Office furniture &amp; fittings
+                </option>
+                <option value="Books, journals & subscriptions">
+                  Books, journals &amp; subscriptions
+                </option>
+                <option value="Pantry & housekeeping">
+                  Pantry &amp; housekeeping
+                </option>
+                <option value="Travel-related advance purchase">
+                  Travel-related advance purchase
+                </option>
+                <option value="Professional services">
+                  Professional services
+                </option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-col">
+            <div class="form-group">
+              <label class="form-label" for="estimated_amount"
+                >Total Estimated Amount (₹)
+                <span class="required">*</span></label
+              >
+              <input
+                type="number"
+                id="estimated_amount"
+                step="0.01"
+                min="0"
+                required
+              />
+              <div class="helper-text">
+                Total INR inclusive of taxes. Approval routing: ≤ ₹2,000
+                accounts only; ₹2,001 – ₹30,000 Budget WG; &gt; ₹30,000
+                Governance Council.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-col">
+            <div class="form-group">
+              <label class="form-label" for="urgency"
+                >Urgency <span class="required">*</span></label
+              >
+              <select id="urgency" required>
+                <option value="">Select</option>
+                <option value="Normal">
+                  Normal (can wait 5+ working days)
+                </option>
+                <option value="Priority">
+                  Priority (within 2-3 working days)
+                </option>
+                <option value="Urgent">Urgent (within 1 working day)</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-col">
+            <div class="form-group">
+              <label class="form-label" for="required_by_date"
+                >Required By Date</label
+              >
+              <input type="date" id="required_by_date" />
+              <div class="helper-text">When do you need this delivered?</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="reason_for_purchase"
+            >Reason for Purchase <span class="required">*</span></label
+          >
+          <textarea
+            id="reason_for_purchase"
+            rows="3"
+            placeholder="Why is this purchase needed? (Sufficient justification helps faster approval)"
+            required
+          ></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-col">
+            <div class="form-group">
+              <label class="form-label" for="preferred_vendor"
+                >Preferred Vendor</label
+              >
+              <input type="text" id="preferred_vendor" />
+              <div class="helper-text">
+                Leave blank if accounts should source the vendor
+              </div>
+            </div>
+          </div>
+          <div class="form-col">
+            <div class="form-group">
+              <label class="form-label" for="delivery_location"
+                >Delivery Location <span class="required">*</span></label
+              >
+              <select id="delivery_location" required>
+                <option value="">Select</option>
+                <option value="Delhi HQ">Delhi HQ</option>
+                <option value="Lucknow office">Lucknow office</option>
+                <option value="Chennai office">Chennai office</option>
+                <option value="Vadodara office">Vadodara office</option>
+                <option value="Project site">Project site</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="form-group"
+          id="delivery_location_other_wrap"
+          style="display: none"
+        >
+          <label class="form-label" for="delivery_location_other"
+            >Specify delivery location <span class="required">*</span></label
+          >
+          <input type="text" id="delivery_location_other" />
+          <div class="helper-text">
+            Provide site name / address if "Project site" or "Other"
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-col">
+            <div class="form-group">
+              <label class="form-label" for="gst_tds_applicable"
+                >GST / TDS applicable?</label
+              >
+              <select id="gst_tds_applicable">
+                <option value="">Select</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+                <option value="Don't know">Don't know</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-col">
+            <div class="form-group">
+              <label class="form-label" for="mode_of_payment"
+                >Preferred Mode of Payment</label
+              >
+              <select id="mode_of_payment">
+                <option value="">Select</option>
+                <option value="Advance payment">Advance payment</option>
+                <option value="On delivery">On delivery</option>
+                <option value="Post-delivery credit">
+                  Post-delivery credit
+                </option>
+                <option value="Accounts to decide">Accounts to decide</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="quote_or_document_link"
+            >Link to Quote / Combined Bid / Related Document</label
+          >
+          <input
+            type="url"
+            id="quote_or_document_link"
+            placeholder="https://drive.google.com/..."
+          />
+          <div class="helper-text">
+            Google Drive link to quotation, comparison sheet, brochure or any
+            supporting document
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="remarks">Remarks</label>
+          <textarea id="remarks" rows="3"></textarea>
+        </div>
+      </div>
+
+      <button
+        class="btn-primary"
+        type="button"
+        id="submitBtn"
+        onclick="submitACC03()"
+      >
+        Submit
+      </button>
+    </div>
+
+    <script>
+      window.addEventListener("DOMContentLoaded", function () {
+        populateDropdowns();
+        bindExpenseType();
+        bindDeliveryLocation();
+      });
+
+      function populateDropdowns() {
+        google.script.run
+          .withSuccessHandler(function (data) {
+            data = data || {};
+            fillSelect(
+              document.getElementById("team_name"),
+              data.team || [],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("pg_company"),
+              data.pgCompany || [],
+              "Select",
+            );
+          })
+          .getDropdownData();
+      }
+
+      function fillSelect(select, items, placeholder) {
+        if (!select) return;
+        select.innerHTML = "";
+        const first = document.createElement("option");
+        first.value = "";
+        first.textContent = placeholder || "Select";
+        select.appendChild(first);
+
+        (items || []).forEach(function (item) {
+          const option = document.createElement("option");
+          option.value = item;
+          option.textContent = item;
+          select.appendChild(option);
+        });
+      }
+
+      function getExpenseType() {
+        const checked = document.querySelector(
+          'input[name="expense_type"]:checked',
+        );
+        return checked ? checked.value : "";
+      }
+
+      function bindExpenseType() {
+        const block = document.getElementById("project_block");
+        const projectName = document.getElementById("project_name");
+        const pcode = document.getElementById("pcode");
+
+        function sync() {
+          const isProject = getExpenseType() === "Project expense";
+          block.style.display = isProject ? "block" : "none";
+          if (!isProject) {
+            projectName.value = "";
+            pcode.value = "";
+          }
+        }
+
+        document
+          .querySelectorAll('input[name="expense_type"]')
+          .forEach(function (r) {
+            r.addEventListener("change", sync);
+          });
+        sync();
+      }
+
+      function bindDeliveryLocation() {
+        const select = document.getElementById("delivery_location");
+        const wrap = document.getElementById("delivery_location_other_wrap");
+        const input = document.getElementById("delivery_location_other");
+
+        function sync() {
+          const value = String(select.value || "");
+          const show = value === "Other" || value === "Project site";
+          wrap.style.display = show ? "block" : "none";
+          if (!show) input.value = "";
+        }
+
+        select.addEventListener("change", sync);
+        sync();
+      }
+
+      function validateACC03(p) {
+        const missing = [];
+
+        if (!String(p.requestor_first_name || "").trim())
+          missing.push("First Name");
+        if (!String(p.requestor_last_name || "").trim())
+          missing.push("Last Name");
+        if (!String(p.employee_code || "").trim())
+          missing.push("Employee Code");
+        if (!String(p.requestor_email || "").trim())
+          missing.push("Official Email ID");
+        if (!String(p.team_name || "").trim()) missing.push("Team Name");
+        if (!String(p.pg_company || "").trim())
+          missing.push("Concerned PG Company");
+        if (!String(p.expense_type || "").trim())
+          missing.push("Office expense or Project expense");
+
+        if (p.expense_type === "Project expense") {
+          if (!String(p.project_name || "").trim())
+            missing.push("Project Name");
+          if (!String(p.pcode || "").trim()) missing.push("PCODE");
+        }
+
+        if (!String(p.item_name || "").trim()) missing.push("Item Name(s)");
+        if (!String(p.category || "").trim())
+          missing.push("Category of Purchase");
+        if (!String(p.estimated_amount || "").trim())
+          missing.push("Estimated Amount");
+        if (!String(p.urgency || "").trim()) missing.push("Urgency");
+        if (!String(p.reason_for_purchase || "").trim())
+          missing.push("Reason for Purchase");
+        if (!String(p.delivery_location || "").trim())
+          missing.push("Delivery Location");
+
+        if (
+          (p.delivery_location === "Other" ||
+            p.delivery_location === "Project site") &&
+          !String(p.delivery_location_other || "").trim()
+        ) {
+          missing.push("Specify delivery location");
+        }
+
+        if (missing.length) {
+          alert("Please fill:\n\n" + missing.join("\n"));
+          return false;
+        }
+        return true;
+      }
+
+      let isSubmitting = false;
+
+      function submitACC03() {
+        if (isSubmitting) return; // blocks double-clicks instantly
+        isSubmitting = true;
+        const submitBtn = document.getElementById("submitBtn");
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Submitting...";
+
+        const payload = {
+          date: document.getElementById("date").value,
+          requestor_first_name: document.getElementById("requestor_first_name")
+            .value,
+          requestor_last_name: document.getElementById("requestor_last_name")
+            .value,
+          employee_code: document.getElementById("employee_code").value,
+          requestor_email: document.getElementById("requestor_email").value,
+          team_name: document.getElementById("team_name").value,
+          pg_company: document.getElementById("pg_company").value,
+          expense_type: getExpenseType(),
+          project_name: document.getElementById("project_name").value,
+          pcode: document.getElementById("pcode").value,
+          item_name: document.getElementById("item_name").value,
+          category: document.getElementById("category").value,
+          estimated_amount: document.getElementById("estimated_amount").value,
+          required_by_date: document.getElementById("required_by_date").value,
+          urgency: document.getElementById("urgency").value,
+          reason_for_purchase: document.getElementById("reason_for_purchase")
+            .value,
+          preferred_vendor: document.getElementById("preferred_vendor").value,
+          delivery_location: document.getElementById("delivery_location").value,
+          delivery_location_other: document.getElementById(
+            "delivery_location_other",
+          ).value,
+          gst_tds_applicable:
+            document.getElementById("gst_tds_applicable").value,
+          mode_of_payment: document.getElementById("mode_of_payment").value,
+          quote_or_document_link: document.getElementById(
+            "quote_or_document_link",
+          ).value,
+          remarks: document.getElementById("remarks").value,
+        };
+
+        if (!validateACC03(payload)) {
+          isSubmitting = false;
+          submitBtn.disabled = false;
+          submitBtn.innerText = "Submit";
+          return;
+        }
+
+        google.script.run
+          .withSuccessHandler(function (res) {
+            console.log("SUCCESS HANDLER RUNNING"); // 👈 debug
+            document.body.innerHTML = res.thankYouHtml;
+          })
+          .withFailureHandler(function (err) {
+            alert("Submission failed: " + err.message);
+            isSubmitting = false;
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Submit";
+          })
+          .submitACC03(payload);
+      }
+    </script>
+  </body>
+</html>

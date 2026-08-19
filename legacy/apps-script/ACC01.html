@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <base target="_top" />
+    <title>ACC01 - Vendor Registration Form</title>
+    <?!= HtmlService.createHtmlOutputFromFile('sharedStyles').getContent(); ?>
+    <?!= HtmlService.createHtmlOutputFromFile('sharedComponents').getContent(); ?>
+  </head>
+  <body>
+    <div class="form-wrapper">
+      <div class="form-title">ACC01 - Vendor Registration Form</div>
+      <div class="form-subtitle">Register new or existing vendors with details for payment and compliance</div>
+
+      <div id="f_fields"></div>
+
+      <div style="margin-top: 20px">
+        <button class="btn-primary" id="submitBtn">Submit</button>
+        <span id="status" class="text-muted" style="margin-left: 12px"></span>
+      </div>
+    </div>
+
+    <script>
+      const FORM_CODE = "acc01";
+      const c = document.getElementById("f_fields");
+
+      // Vendor Registration Details
+      renderField(c, { label: "Date *", id: "date", type: "date" });
+
+      // Requestor Info
+      renderField(c, { label: "First Name of Requestor", id: "requestor_first" });
+      renderField(c, { label: "Last Name of Requestor", id: "requestor_last" });
+      renderField(c, { label: "Official Email ID of Requestor *", id: "requestor_email", type: "email" });
+      renderField(c, { label: "Team Name", id: "team_name" });
+
+      // Team Head & Business Head
+      renderField(c, { label: "Team Head First Name", id: "team_head_first" });
+      renderField(c, { label: "Team Head Last Name", id: "team_head_last" });
+      renderField(c, { label: "Team Head Email ID *", id: "team_head_email", type: "email" });
+      renderField(c, { label: "Business Head Name", id: "bh_name" });
+      renderField(c, { label: "Business Head Email ID", id: "bh_email", type: "email" });
+
+      // Vendor Type
+      renderField(c, { label: "New Vendor?", id: "new_vendor", type: "select", options: ["Yes","No"] });
+
+      // Vendor Personal Details
+      renderField(c, { label: "Vendor First Name *", id: "vendor_first" });
+      renderField(c, { label: "Vendor Last Name *", id: "vendor_last" });
+      renderField(c, { label: "Company Name *", id: "company_name" });
+      renderField(c, { label: "Vendor Email *", id: "vendor_email", type: "email" });
+      renderField(c, { label: "Vendor Phone Number *", id: "vendor_phone" });
+
+      // Address
+      renderField(c, { label: "Street Address *", id: "street_address" });
+      renderField(c, { label: "Address Line 2", id: "address_line2" });
+      renderField(c, { label: "City *", id: "city" });
+      renderField(c, { label: "State/Region/Province *", id: "state" });
+      renderField(c, { label: "Postal / Zip Code", id: "postal_code" });
+      renderField(c, { label: "Country", id: "country" });
+
+      // Bank Account Details
+      renderField(c, { label: "Account Holder First Name *", id: "account_holder_first" });
+      renderField(c, { label: "Account Holder Last Name *", id: "account_holder_last" });
+      renderField(c, { label: "Bank Name *", id: "bank_name" });
+      renderField(c, { label: "Account Number *", id: "account_number" });
+      renderField(c, { label: "IFSC Code *", id: "ifsc_code" });
+      renderField(c, { label: "Cancelled Cheque", id: "cancelled_cheque", type: "file" });
+
+      // GST & MSME Details
+      renderField(c, { label: "GST Status *", id: "gst_status" });
+      renderField(c, { label: "GST Number *", id: "gst_number" });
+      renderField(c, { label: "GST certificate", id: "gst_certificate", type: "file" });
+      renderField(c, { label: "MSME Status *", id: "msme_status" });
+      renderField(c, { label: "MSME certificate", id: "msme_certificate", type: "file" });
+      renderField(c, { label: "PAN Number *", id: "pan_number" });
+      renderField(c, { label: "Place of Supply *", id: "place_supply" });
+
+      // Opening Balance, Payment Terms, TDS
+      renderField(c, { label: "Opening Balance", id: "opening_balance", type: "number" });
+      renderField(c, { label: "Payment Terms", id: "payment_terms" });
+      renderField(c, { label: "TDS", id: "tds" });
+
+      // Existing Vendor MOU (optional)
+      renderField(c, { label: "Existing Vendor MOU (optional)", id: "existing_mou", type: "file" });
+
+      // Submit
+      document.getElementById("submitBtn").addEventListener("click", function () {
+        const payload = {};
+        Array.from(c.querySelectorAll("input, select, textarea")).forEach(field => {
+          if(field.type === "file") {
+            payload[field.id] = field.files.length ? field.files[0].name : "";
+          } else {
+            payload[field.id] = field.value || "";
+          }
+        });
+
+        google.script.run
+          .withSuccessHandler(res => {
+            document.getElementById("status").innerText = "Submitted: " + (res.submission_id || "OK");
+          })
+          .withFailureHandler(err => {
+            document.getElementById("status").innerText = "Submit failed: " + err.message;
+          })
+          .submitForm(FORM_CODE.toUpperCase(), payload);
+      });
+    </script>
+  </body>
+</html>

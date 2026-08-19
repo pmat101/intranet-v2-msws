@@ -1,0 +1,199 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <base target="_top" />
+  <title>MPF01</title>
+
+  <?!= HtmlService.createHtmlOutputFromFile('sharedStyles').getContent(); ?>
+  <?!= HtmlService.createHtmlOutputFromFile('sharedComponents').getContent(); ?>
+</head>
+
+<body>
+<div class="form-wrapper">
+
+  <div class="form-title">MPF01</div>
+  <div class="form-subtitle">Monthly Performance Form (For RIVER Team)</div>
+
+  <div id="f_fields"></div>
+
+  <div style="margin-top:20px">
+    <button class="btn-primary" id="submitBtn">Submit</button>
+    <span id="status" style="margin-left:12px"></span>
+  </div>
+
+</div>
+
+<script>
+
+const FORM_CODE = "mpf01";
+const c = document.getElementById("f_fields");
+
+/* ================= MONTH ================= */
+
+renderField(c,{
+  label:"Month *Required",
+  id:"month",
+  type:"month"
+});
+
+/* ================= GREYTHR TICKET DETAILS ================= */
+
+renderField(c,{
+  label:"greytHR ticket details *",
+  id:"greythr_details",
+  type:"textarea"
+});
+
+renderField(c,{
+  label:"Tickets Received This Month *Required",
+  id:"tickets_received",
+  type:"number"
+});
+
+renderField(c,{
+  label:"Tickets Closed This Month *Required",
+  id:"tickets_closed",
+  type:"number"
+});
+
+renderField(c,{
+  label:"Tickets Pending This Month *Required",
+  id:"tickets_pending",
+  type:"number"
+});
+
+renderField(c,{
+  label:"Last Month Pendency *Required",
+  id:"last_month_pendency",
+  type:"number"
+});
+
+renderField(c,{
+  label:"Total Pendency *Required",
+  id:"total_pendency",
+  type:"number"
+});
+
+renderField(c,{
+  label:"Number",
+  id:"pendency_number",
+  type:"number"
+});
+
+/* ================= DATES ================= */
+
+renderField(c,{
+  label:"Target date for closure of pending tickets *Required",
+  id:"target_closure_date",
+  type:"date"
+});
+
+renderField(c,{
+  label:"Date planned for ticket closure this month *Required",
+  id:"planned_closure_date",
+  type:"date"
+});
+
+renderField(c,{
+  label:"Actual date of ticket closure *Required",
+  id:"actual_closure_date",
+  type:"date"
+});
+
+/* ================= PERFORMANCE ================= */
+
+renderField(c,{
+  label:"Targets planned this month",
+  id:"targets_planned",
+  type:"textarea"
+});
+
+renderField(c,{
+  label:"Targets achieved this month",
+  id:"targets_achieved",
+  type:"textarea"
+});
+
+renderField(c,{
+  label:"Highlights",
+  id:"highlights",
+  type:"textarea"
+});
+
+renderField(c,{
+  label:"Low Points",
+  id:"low_points",
+  type:"textarea"
+});
+
+renderField(c,{
+  label:"Challenges faced",
+  id:"challenges",
+  type:"textarea"
+});
+
+renderField(c,{
+  label:"Projected targets for next month",
+  id:"projected_targets",
+  type:"textarea"
+});
+
+/* ================= FILE UPLOADS ================= */
+
+const vchroDiv=document.createElement("div");
+vchroDiv.className="form-group";
+vchroDiv.innerHTML=`
+  <label>Upload VCHRO Invoice</label>
+  <input type="file" id="vchro_invoice" accept=".pdf,.jpg,.png,.xlsx,.xls">
+`;
+c.appendChild(vchroDiv);
+
+const sharedDiv=document.createElement("div");
+sharedDiv.className="form-group";
+sharedDiv.innerHTML=`
+  <label>Upload Shared Service Invoice</label>
+  <input type="file" id="shared_invoice" accept=".pdf,.jpg,.png,.xlsx,.xls">
+`;
+c.appendChild(sharedDiv);
+
+/* ================= REMARKS ================= */
+
+renderField(c,{
+  label:"Remarks (if any)",
+  id:"remarks",
+  type:"textarea"
+});
+
+/* ================= SUBMIT ================= */
+
+document.getElementById("submitBtn").onclick=function(){
+
+  const payload={};
+
+  document.querySelectorAll("#f_fields input, #f_fields textarea")
+  .forEach(el=>{
+    if(el.type!=="file"){
+      payload[el.id]=el.value||"";
+    }
+  });
+
+  const vchro=document.getElementById("vchro_invoice");
+  const shared=document.getElementById("shared_invoice");
+
+  payload.vchro_invoice_name=vchro.files[0]?vchro.files[0].name:"";
+  payload.shared_invoice_name=shared.files[0]?shared.files[0].name:"";
+
+  google.script.run
+    .withSuccessHandler(res=>{
+      document.getElementById("status").innerText="Submitted: "+(res.submission_id||"OK");
+    })
+    .withFailureHandler(err=>{
+      document.getElementById("status").innerText="Submit failed: "+err.message;
+    })
+    .submitForm(FORM_CODE.toUpperCase(),payload);
+};
+
+</script>
+</body>
+</html>

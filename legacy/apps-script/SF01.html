@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <base target="_top" />
+  <title>SF01 – Socio Economic Village Level Survey</title>
+
+  <?!= HtmlService.createHtmlOutputFromFile('sharedStyles').getContent(); ?>
+  <?!= HtmlService.createHtmlOutputFromFile('sharedComponents').getContent(); ?>
+</head>
+<body>
+<div class="form-wrapper">
+  <div class="form-title">SF01</div>
+  <div class="form-subtitle">Socio Economic Village Level Survey</div>
+
+  <div id="f_fields"></div>
+
+  <!-- Nearby Industries Section -->
+  <div class="form-section">
+    <div class="section-heading">List of Nearby Industries</div>
+    <div id="industriesBody"></div>
+    <button type="button" class="btn-secondary" id="addIndustryBtn">+ Add Industry</button>
+  </div>
+
+  <div style="margin-top: 20px">
+    <button class="btn-primary" id="submitBtn">Submit</button>
+    <span id="status" class="text-muted" style="margin-left: 12px"></span>
+  </div>
+</div>
+
+<script>
+const FORM_CODE = "SF01";
+const c = document.getElementById("f_fields");
+
+// ---------------- GENERAL FIELDS ----------------
+renderField(c,{ label:"Survey Date", id:"survey_date", type:"date" });
+renderField(c,{ label:"Interviewer First Name", id:"interviewer_fname" });
+renderField(c,{ label:"Interviewer Last Name", id:"interviewer_lname" });
+renderField(c,{ label:"Respondent Name", id:"respondent_name" });
+renderField(c,{ label:"Designation of Respondent", id:"respondent_designation" });
+renderField(c,{ label:"Contact No. of Respondent", id:"respondent_contact", required:true });
+renderField(c,{ label:"Village", id:"village" });
+renderField(c,{ label:"District", id:"district" });
+renderField(c,{ label:"Tehsil", id:"tehsil" });
+renderField(c,{ label:"Gram Panchayat", id:"gram_panchayat" });
+renderField(c,{ label:"Number of Households", id:"num_households" });
+renderField(c,{ label:"Total Households", id:"total_households" });
+renderField(c,{ label:"BPL Households", id:"bpl_households" });
+renderField(c,{ label:"Total Population", id:"total_population" });
+renderField(c,{ label:"Female Population", id:"female_population" });
+renderField(c,{ label:"Male Population", id:"male_population" });
+
+// Religion
+renderField(c,{ label:"Hindu Population", id:"religion_hindu" });
+renderField(c,{ label:"Muslim Population", id:"religion_muslim" });
+renderField(c,{ label:"Other Religion Population", id:"religion_others" });
+
+// Caste
+renderField(c,{ label:"General HHs", id:"caste_general" });
+renderField(c,{ label:"OBC HHs", id:"caste_obc" });
+renderField(c,{ label:"SC HHs", id:"caste_sc" });
+renderField(c,{ label:"ST HHs", id:"caste_st" });
+
+// Connectivity
+renderField(c,{ label:"Distance from Main Road (km)", id:"distance_mainroad" });
+renderField(c,{ label:"Kachha Road Length (km)", id:"kachha_road" });
+renderField(c,{ label:"Metal Road Length (km)", id:"metal_road" });
+
+// Type of House
+renderField(c,{ label:"Pacca (Concrete)", id:"house_pacca" });
+renderField(c,{ label:"Semi Pacca (Concrete & Tin)", id:"house_semi" });
+renderField(c,{ label:"Kutcha (Mud & Grass)", id:"house_kutcha" });
+renderField(c,{ label:"Other", id:"house_other" });
+
+// Toilet
+renderField(c,{ label:"Individual Toilets", id:"toilet_individual" });
+renderField(c,{ label:"Public Toilets", id:"toilet_public" });
+renderField(c,{ label:"Open Defecation", id:"toilet_none" });
+
+// Educational Facilities
+renderField(c,{ label:"Anganwadi", id:"edu_anganwadi" });
+renderField(c,{ label:"Primary School", id:"edu_primary" });
+renderField(c,{ label:"Middle School", id:"edu_middle" });
+renderField(c,{ label:"High School", id:"edu_high" });
+renderField(c,{ label:"College", id:"edu_college" });
+renderField(c,{ label:"Other Institutions", id:"edu_other" });
+
+// Medical Facilities
+renderField(c,{ label:"Sub-Centre", id:"med_subcentre" });
+renderField(c,{ label:"Primary Health Centre", id:"med_phc" });
+renderField(c,{ label:"Dispensary", id:"med_dispensary" });
+renderField(c,{ label:"Private Clinic", id:"med_privateclinic" });
+renderField(c,{ label:"Private Nursing Home", id:"med_nursing" });
+renderField(c,{ label:"Asha Workers", id:"med_asha" });
+
+// Occupation
+renderField(c,{ label:"Agriculture - Farmers (HHs)", id:"occ_farmers" });
+renderField(c,{ label:"Agriculture Labour (HHs)", id:"occ_agri_labour" });
+renderField(c,{ label:"Other Labour (HHs)", id:"occ_other_labour" });
+renderField(c,{ label:"Private Service (Persons)", id:"occ_private" });
+renderField(c,{ label:"Government Service (Persons)", id:"occ_govt" });
+renderField(c,{ label:"Self Employed", id:"occ_self" });
+renderField(c,{ label:"Shops", id:"occ_shops" });
+renderField(c,{ label:"Business", id:"occ_business" });
+renderField(c,{ label:"Others", id:"occ_others" });
+
+// Drinking Water Source
+renderField(c,{ label:"PWS-Individual HHs", id:"water_pws_individual" });
+renderField(c,{ label:"PWS-Community HHs", id:"water_pws_community" });
+renderField(c,{ label:"Hand Pump HHs", id:"water_handpump" });
+renderField(c,{ label:"Tubewell HHs", id:"water_tubewell" });
+renderField(c,{ label:"Spring Water HHs", id:"water_spring" });
+renderField(c,{ label:"Open Well HHs", id:"water_openwell" });
+renderField(c,{ label:"River/Pond HHs", id:"water_river" });
+
+// Public Utilities
+renderField(c,{ label:"Banks", id:"public_banks" });
+renderField(c,{ label:"ATM", id:"public_atm" });
+renderField(c,{ label:"Public Toilets", id:"public_toilets" });
+renderField(c,{ label:"Community Hall", id:"public_community" });
+renderField(c,{ label:"Dharamshala", id:"public_dharamshala" });
+renderField(c,{ label:"Panchayat Office", id:"public_panchayat" });
+renderField(c,{ label:"Police Station", id:"public_police" });
+renderField(c,{ label:"Government Office", id:"public_govt" });
+renderField(c,{ label:"Others", id:"public_others" });
+
+// Electrification
+renderField(c,{ label:"Electrified? (Yes/No)", id:"electrified" });
+renderField(c,{ label:"No. of Individual Connections", id:"elect_connections" });
+renderField(c,{ label:"Street Lights Present? (Yes/No)", id:"street_lights" });
+renderField(c,{ label:"Electricity for Agriculture? (Yes/No)", id:"electric_agri" });
+renderField(c,{ label:"Solar Lighting? (Yes/No)", id:"solar_lighting" });
+renderField(c,{ label:"Avg Daily Duration of Supply (hrs)", id:"electric_duration" });
+
+// Sanitation
+renderField(c,{ label:"Proper Drainage Available? (Yes/No)", id:"sanitation_drainage" });
+renderField(c,{ label:"Liquid Waste Managed? (Yes/No)", id:"sanitation_liquid" });
+renderField(c,{ label:"Solid Waste Managed? (Yes/No)", id:"sanitation_solid" });
+
+// Solid Waste Disposal
+renderField(c,{ label:"On-Land Disposal (Yes/No)", id:"waste_land" });
+renderField(c,{ label:"Public Dustbin (Yes/No)", id:"waste_dustbin" });
+renderField(c,{ label:"Composting (Yes/No)", id:"waste_compost" });
+renderField(c,{ label:"Other Disposal (Yes/No)", id:"waste_other" });
+
+// Income
+renderField(c,{ label:"Annual Average Income (₹)", id:"income_avg" });
+renderField(c,{ label:"Source of Income: Agriculture", id:"income_agri" });
+renderField(c,{ label:"Source of Income: Labour", id:"income_labour" });
+renderField(c,{ label:"Animal Husbandry", id:"income_animal" });
+renderField(c,{ label:"Poultry", id:"income_poultry" });
+renderField(c,{ label:"Self Employment", id:"income_self" });
+renderField(c,{ label:"Private Job", id:"income_private" });
+renderField(c,{ label:"Government Job", id:"income_govt" });
+renderField(c,{ label:"Pension", id:"income_pension" });
+renderField(c,{ label:"Others", id:"income_others" });
+
+// Crops
+renderField(c,{ label:"Key Crops & Area Covered (%)", id:"crops_area" });
+renderField(c,{ label:"Avg Yield Q/ha", id:"crops_yield" });
+renderField(c,{ label:"Avg Selling Price", id:"crops_price" });
+
+// Disease Prevalence
+renderField(c,{ label:"Diarrhea (%)", id:"disease_diarrhea" });
+renderField(c,{ label:"Dysentery (%)", id:"disease_dysentery" });
+renderField(c,{ label:"Jaundice (%)", id:"disease_jaundice" });
+renderField(c,{ label:"Gastroenteritis (%)", id:"disease_gastro" });
+renderField(c,{ label:"Typhoid (%)", id:"disease_typhoid" });
+renderField(c,{ label:"Tuberculosis (%)", id:"disease_tb" });
+renderField(c,{ label:"Bronchitis (%)", id:"disease_bronchitis" });
+renderField(c,{ label:"Asthma (%)", id:"disease_asthma" });
+renderField(c,{ label:"Pneumonia (%)", id:"disease_pneumonia" });
+renderField(c,{ label:"Others (%)", id:"disease_others" });
+
+// Skills
+renderField(c,{ label:"Mason", id:"skill_mason" });
+renderField(c,{ label:"Carpenter", id:"skill_carpenter" });
+renderField(c,{ label:"Blacksmith", id:"skill_blacksmith" });
+renderField(c,{ label:"Mechanic", id:"skill_mechanic" });
+renderField(c,{ label:"Electrician", id:"skill_electrician" });
+renderField(c,{ label:"Weavers", id:"skill_weavers" });
+renderField(c,{ label:"Artisans", id:"skill_artisans" });
+renderField(c,{ label:"Others", id:"skill_others" });
+
+// Farmer Category
+renderField(c,{ label:"Marginal Farmers (<1 ha)", id:"farmer_marginal" });
+renderField(c,{ label:"Small Farmers (>1 & <=2 ha)", id:"farmer_small" });
+renderField(c,{ label:"Medium Farmers (>2 & <=4 ha)", id:"farmer_medium" });
+renderField(c,{ label:"Large Farmers (>4 ha)", id:"farmer_large" });
+
+// Awareness
+renderField(c,{ label:"Villagers aware of industrial/mining project? (Yes/No)", id:"aware_project" });
+renderField(c,{ label:"Villagers in favor of project? (Yes/No)", id:"favor_project" });
+
+// Problems / Suggestions
+renderField(c,{ label:"5 Most Important Problems/Gaps", id:"problems" });
+renderField(c,{ label:"Suggestions (if any)", id:"suggestions" });
+
+// ---------------- MULTIPLE ENTRY: Nearby Industries ----------------
+document.getElementById("addIndustryBtn").addEventListener("click",()=>{
+  const container = document.getElementById("industriesBody");
+  const row = document.createElement("div");
+  row.className = "subform-row";
+  row.innerHTML = `
+    <input type="text" placeholder="Industry Name" class="industry_name" style="margin-right:4px" />
+    <input type="text" placeholder="Distance" class="industry_distance" style="margin-right:4px" />
+    <input type="text" placeholder="Direction" class="industry_direction" style="margin-right:4px" />
+    <input type="number" placeholder="No. of Workers" class="industry_workers" style="margin-right:4px" />
+    <button type="button" class="btn-secondary btn-sm removeIndustryBtn">Remove</button>
+  `;
+  container.appendChild(row);
+
+  row.querySelector(".removeIndustryBtn").addEventListener("click",()=>row.remove());
+});
+
+function collectIndustries() {
+  const rows = Array.from(document.querySelectorAll("#industriesBody .subform-row"));
+  return rows.map(r=>({
+    name: r.querySelector(".industry_name")?.value || "",
+    distance: r.querySelector(".industry_distance")?.value || "",
+    direction: r.querySelector(".industry_direction")?.value || "",
+    workers: r.querySelector(".industry_workers")?.value || ""
+  })).filter(x => x.name);
+}
+
+// ---------------- SUBMIT ----------------
+document.getElementById("submitBtn").addEventListener("click",()=>{
+  const payload = {};
+  document.querySelectorAll("#f_fields input, #f_fields select, #f_fields textarea").forEach(el=>{
+    if(el.id) payload[el.id] = el.value;
+  });
+  payload.nearby_industries = collectIndustries();
+
+  google.script.run
+    .withSuccessHandler(res=>document.getElementById("status").innerText="SF01 submitted successfully")
+    .withFailureHandler(err=>document.getElementById("status").innerText="Submit failed: "+err.message)
+    .submitForm(FORM_CODE, payload);
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <base target="_top" />
+  <title>TF27 – QCC Marking</title>
+
+  <?!= HtmlService.createHtmlOutputFromFile('sharedStyles').getContent(); ?>
+  <?!= HtmlService.createHtmlOutputFromFile('sharedComponents').getContent(); ?>
+</head>
+
+<body>
+<div class="form-wrapper">
+  <div class="form-title">TF27</div>
+  <div class="form-subtitle">
+    QCC Marking for Quality Assurance of EIA (as per NABET V3 – Page 65)
+  </div>
+
+  <div id="prefill-area"></div>
+  <div id="f_selects"></div>
+  <div id="f_fields"></div>
+
+  <div style="margin-top:20px">
+    <button class="btn-primary" id="submitBtn">Submit</button>
+    <span id="status" class="text-muted" style="margin-left:12px"></span>
+  </div>
+</div>
+
+<script>
+const FORM_CODE = "TF27";
+const c = document.getElementById("f_fields");
+
+/* ================= BASIC DETAILS ================= */
+
+renderField(c,{ label:"Recipient Team Name", id:"recipient_team", required:true });
+
+renderField(c,{ label:"EIA Coordinator", id:"eia_coordinator", required:true });
+
+renderField(c,{ label:"C-Suite Officer Involved", id:"csuite_officer", required:true });
+
+renderField(c,{ label:"Name of the Project", id:"project_name", required:true });
+
+renderField(c,{ label:"Company Name", id:"company_name", required:true });
+
+renderField(c,{ label:"Location of the Project", id:"project_location", required:true });
+
+renderField(c,{
+  label:"PCODE",
+  id:"pcode",
+  required:true,
+  placeholder:"Enter active PCODE"
+});
+
+renderField(c,{
+  label:"Status / Stage of the Case",
+  id:"case_status",
+  required:true
+});
+
+/* ================= CHECKED BY ================= */
+
+renderField(c,{
+  label:"Checked By",
+  id:"checked_by",
+  type:"select",
+  required:true
+});
+
+const checkedBySelect = document.getElementById("checked_by");
+[
+  "All QCC members",
+  "Bidhu Bhushan Barman",
+  "Dr. Anil Kumar",
+  "Dr. Nipun Bhargava",
+  "Dr. Suresh Chandra Jain",
+  "Kantharaj Kempanna",
+  "Muthukumaran Ganpathi Narayana",
+  "Neha Aggarwal",
+  "Praveen Bhargava",
+  "Rachna Bhargava",
+  "Rajneesh Srivasatava",
+  "Santosh Pant"
+].forEach(v => checkedBySelect.appendChild(new Option(v,v)));
+
+renderField(c,{
+  label:"Checked On",
+  id:"checked_on",
+  type:"date",
+  required:true
+});
+
+/* ================= SCORING SECTION ================= */
+
+renderField(c,{
+  label:"1. Site and project description (0–10)",
+  id:"score_1",
+  type:"number",
+  min:0,
+  max:10,
+  required:true,
+  helper:"Photos, layout maps, flow diagrams, material balance, receptors"
+});
+
+renderField(c,{
+  label:"2. Alternatives of site / technology / process (0–5)",
+  id:"score_2",
+  type:"number",
+  min:0,
+  max:5,
+  required:true
+});
+
+renderField(c,{
+  label:"3. Methodology for data collection (0–15)",
+  id:"score_3",
+  type:"number",
+  min:0,
+  max:15,
+  required:true,
+  helper:"Primary & secondary baseline data"
+});
+
+renderField(c,{
+  label:"4. Impact identification & quantification (0–15)",
+  id:"score_4",
+  type:"number",
+  min:0,
+  max:15,
+  required:true
+});
+
+renderField(c,{
+  label:"5. Ecological & social impact assessment (0–15)",
+  id:"score_5",
+  type:"number",
+  min:0,
+  max:15,
+  required:true
+});
+
+renderField(c,{
+  label:"6. Risk assessment & emergency plan (0–10)",
+  id:"score_6",
+  type:"number",
+  min:0,
+  max:10,
+  required:true
+});
+
+renderField(c,{
+  label:"7. Environmental Management Plan & monitoring (0–10)",
+  id:"score_7",
+  type:"number",
+  min:0,
+  max:10,
+  required:true
+});
+
+renderField(c,{
+  label:"8. Signed declaration of experts (0–10)",
+  id:"score_8",
+  type:"number",
+  min:0,
+  max:10,
+  required:true
+});
+
+renderField(c,{
+  label:"9. Compliance to TOR & public hearing (0–10)",
+  id:"score_9",
+  type:"number",
+  min:0,
+  max:10,
+  required:true
+});
+
+renderField(c,{
+  label:"Total Score according to weightage (%)",
+  id:"total_score",
+  type:"number",
+  readonly:true
+});
+
+/* ================= AUTO TOTAL ================= */
+
+function calcTotal(){
+  let total = 0;
+  for(let i=1;i<=9;i++){
+    total += Number(document.getElementById("score_"+i).value || 0);
+  }
+  document.getElementById("total_score").value = total;
+}
+
+for(let i=1;i<=9;i++){
+  document.getElementById("score_"+i).addEventListener("input", calcTotal);
+}
+
+/* ================= SUBMIT ================= */
+
+document.getElementById("submitBtn").addEventListener("click",function(){
+  const payload = {};
+  document.querySelectorAll("input, textarea, select").forEach(el=>{
+    if(el.id){
+      payload[el.id] = el.value;
+    }
+  });
+
+  google.script.run
+    .withSuccessHandler(function(){
+      document.getElementById("status").innerText =
+        "TF27 submitted successfully";
+    })
+    .withFailureHandler(function(err){
+      document.getElementById("status").innerText =
+        "Submit failed: " + err.message;
+    })
+    .submitForm(FORM_CODE, payload);
+});
+</script>
+</body>
+</html>

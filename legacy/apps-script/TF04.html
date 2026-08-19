@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <base target="_top" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TF04</title>
+    <?!= HtmlService.createHtmlOutputFromFile('shared-styles').getContent(); ?>
+    <style>
+      .section-divider {
+        margin: 22px 0 14px;
+        padding-top: 8px;
+        border-top: 1px solid #e5e7eb;
+        font-weight: 700;
+        font-size: 18px;
+      }
+      .subform-card {
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 14px;
+        background: #fff;
+        margin-bottom: 12px;
+      }
+      .actions-row {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+        flex-wrap: wrap;
+      }
+      .subtle-note {
+        font-size: 12px;
+        color: #6b7280;
+        margin-top: 6px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="form-wrapper">
+      <div class="form-title">TF04</div>
+      <div class="form-subtitle">
+        Technical Format for Long Leave / Relieving Work handover
+      </div>
+
+      <div class="form-section">
+        <div class="form-group">
+          <label class="form-label" for="date">Date</label>
+          <input type="date" id="date" />
+          <div class="helper-text">dd-MMM-yyyy</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="employee_email"
+            >Employee Email ID <span class="required">*</span></label
+          >
+          <input type="email" id="employee_email" required />
+          <div class="helper-text">Email ID of the person filling the form</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="team_name"
+            >Team Name <span class="required">*</span></label
+          >
+          <select id="team_name" required></select>
+        </div>
+
+        <div class="section-divider">Work Handovering</div>
+
+        <div class="form-group">
+          <label class="form-label">Name</label>
+          <div class="form-row">
+            <div class="form-col">
+              <input
+                type="text"
+                id="employee_first_name"
+                placeholder="First Name"
+              />
+              <div class="helper-text">First Name</div>
+            </div>
+            <div class="form-col">
+              <input
+                type="text"
+                id="employee_last_name"
+                placeholder="Last Name"
+              />
+              <div class="helper-text">Last Name</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="designation">Designation</label>
+          <input type="text" id="designation" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="joining_date">Joining Date</label>
+          <input type="date" id="joining_date" />
+          <div class="helper-text">dd-MMM-yyyy</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="leaving_or_relieving_date"
+            >Leaving/Relieving Date</label
+          >
+          <input type="date" id="leaving_or_relieving_date" />
+          <div class="helper-text">dd-MMM-yyyy</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="reason_for_handover"
+            >Reason for Handover</label
+          >
+          <textarea id="reason_for_handover"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Team Head Name</label>
+          <div class="form-row">
+            <div class="form-col">
+              <input
+                type="text"
+                id="team_head_first_name"
+                placeholder="First Name"
+              />
+              <div class="helper-text">First Name</div>
+            </div>
+            <div class="form-col">
+              <input
+                type="text"
+                id="team_head_last_name"
+                placeholder="Last Name"
+              />
+              <div class="helper-text">Last Name</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="team_head_email"
+            >Team Head Email ID <span class="required">*</span></label
+          >
+          <input type="email" id="team_head_email" required />
+        </div>
+
+        <div class="section-divider">Details of Projects being handeled</div>
+
+        <div class="form-group">
+          <div id="projects-rows"></div>
+          <div class="actions-row">
+            <button type="button" class="btn-secondary" id="add-project-row">
+              + Add Row
+            </button>
+          </div>
+          <div class="subtle-note">
+            Add one row for each project being handed over.
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="remarks">Remarks</label>
+          <textarea id="remarks"></textarea>
+        </div>
+      </div>
+
+      <button
+        class="btn-primary"
+        type="button"
+        id="submitBtn"
+        onclick="submitTF04()"
+      >
+        Submit
+      </button>
+    </div>
+
+    <script>
+      let isSubmitting = false;
+
+      window.addEventListener("DOMContentLoaded", function () {
+        populateDropdowns();
+        const wrap = document.getElementById("projects-rows");
+        wrap.appendChild(createProjectRow());
+
+        document
+          .getElementById("add-project-row")
+          .addEventListener("click", function () {
+            wrap.appendChild(createProjectRow());
+          });
+      });
+
+      function populateDropdowns() {
+        google.script.run
+          .withSuccessHandler(function (data) {
+            data = data || {};
+            fillSelect(
+              document.getElementById("team_name"),
+              data.team || [],
+              "Select",
+            );
+          })
+          .getDropdownData();
+      }
+
+      function fillSelect(select, items, placeholder) {
+        if (!select) return;
+        select.innerHTML = "";
+        const first = document.createElement("option");
+        first.value = "";
+        first.textContent = placeholder || "Select";
+        select.appendChild(first);
+        (items || []).forEach(function (item) {
+          const option = document.createElement("option");
+          option.value = item;
+          option.textContent = item;
+          select.appendChild(option);
+        });
+      }
+
+      function createProjectRow() {
+        const row = document.createElement("div");
+        row.className = "subform-card";
+        row.innerHTML = `
+          <div class="form-row">
+            <div class="form-col">
+              <label class="form-label">Project Name</label>
+              <input type="text" class="tf04-project-name" />
+            </div>
+            <div class="form-col">
+              <label class="form-label">PCode</label>
+              <input type="text" class="tf04-pcode" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Details of project</label>
+            <textarea class="tf04-details"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Links to important documents - Docx</label>
+            <input type="url" class="tf04-docx-link" placeholder="Paste URL" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Links to important documents - PDF</label>
+            <input type="url" class="tf04-pdf-link" placeholder="Paste URL" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Critical points (if any)</label>
+            <textarea class="tf04-critical-points"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">New contact person for project (name)</label>
+            <input type="text" class="tf04-new-contact-person" />
+          </div>
+
+          <div class="actions-row">
+            <button type="button" class="btn-secondary tf04-remove-row">Remove</button>
+          </div>
+        `;
+        row
+          .querySelector(".tf04-remove-row")
+          .addEventListener("click", function () {
+            row.remove();
+          });
+        return row;
+      }
+
+      function collectProjectRows() {
+        return Array.from(
+          document.querySelectorAll("#projects-rows .subform-card"),
+        )
+          .map(function (row) {
+            return {
+              project_name:
+                row.querySelector(".tf04-project-name")?.value || "",
+              pcode: row.querySelector(".tf04-pcode")?.value || "",
+              details_of_project:
+                row.querySelector(".tf04-details")?.value || "",
+              important_docs_docx_link:
+                row.querySelector(".tf04-docx-link")?.value || "",
+              important_docs_pdf_link:
+                row.querySelector(".tf04-pdf-link")?.value || "",
+              critical_points:
+                row.querySelector(".tf04-critical-points")?.value || "",
+              new_contact_person_name:
+                row.querySelector(".tf04-new-contact-person")?.value || "",
+            };
+          })
+          .filter(function (r) {
+            return (
+              String(r.project_name).trim() ||
+              String(r.pcode).trim() ||
+              String(r.details_of_project).trim() ||
+              String(r.important_docs_docx_link).trim() ||
+              String(r.important_docs_pdf_link).trim() ||
+              String(r.critical_points).trim() ||
+              String(r.new_contact_person_name).trim()
+            );
+          });
+      }
+
+      function validateTF04(payload) {
+        const missing = [];
+        if (!payload.employee_email) missing.push("Employee Email ID");
+        if (!payload.team_name) missing.push("Team Name");
+        if (!payload.employee_first_name) missing.push("Employee First Name");
+        if (!payload.employee_last_name) missing.push("Employee Last Name");
+        if (!payload.team_head_email) missing.push("Team Head Email ID");
+
+        if (
+          !payload.projects_being_handeled ||
+          !payload.projects_being_handeled.length
+        ) {
+          missing.push("Details of Projects being handeled");
+        } else {
+          payload.projects_being_handeled.forEach(function (r, i) {
+            if (!r.project_name) missing.push(`Project Name (row ${i + 1})`);
+            if (!r.pcode) missing.push(`PCode (row ${i + 1})`);
+            if (!r.details_of_project)
+              missing.push(`Details of project (row ${i + 1})`);
+            if (!r.important_docs_docx_link)
+              missing.push(`Important documents Docx link (row ${i + 1})`);
+            if (!r.important_docs_pdf_link)
+              missing.push(`Important documents PDF link (row ${i + 1})`);
+            if (!r.new_contact_person_name)
+              missing.push(`New contact person for project (row ${i + 1})`);
+          });
+        }
+
+        if (missing.length) {
+          alert("Please fill:\n\n" + missing.join("\n"));
+          return false;
+        }
+        return true;
+      }
+
+      function submitTF04() {
+        if (isSubmitting) return; // blocks double-clicks instantly
+        isSubmitting = true;
+        const submitBtn = document.getElementById("submitBtn");
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Submitting...";
+
+        const payload = {
+          date: document.getElementById("date")?.value || "",
+          employee_email: document.getElementById("employee_email").value,
+          team_name: document.getElementById("team_name").value,
+          employee_first_name: document.getElementById("employee_first_name")
+            .value,
+          employee_last_name:
+            document.getElementById("employee_last_name").value,
+          designation: document.getElementById("designation").value,
+          joining_date: document.getElementById("joining_date").value,
+          leaving_or_relieving_date: document.getElementById(
+            "leaving_or_relieving_date",
+          ).value,
+          reason_for_handover: document.getElementById("reason_for_handover")
+            .value,
+          team_head_first_name: document.getElementById("team_head_first_name")
+            .value,
+          team_head_last_name: document.getElementById("team_head_last_name")
+            .value,
+          team_head_email: document.getElementById("team_head_email").value,
+          projects_being_handeled: collectProjectRows(),
+          remarks: document.getElementById("remarks").value,
+        };
+
+        if (!validateTF04(payload)) {
+          isSubmitting = false;
+          submitBtn.disabled = false;
+          submitBtn.innerText = "Submit";
+          return;
+        }
+
+        google.script.run
+          .withSuccessHandler(function (res) {
+            console.log("SUCCESS HANDLER RUNNING"); // 👈 debug
+            document.body.innerHTML = res.thankYouHtml;
+          })
+          .withFailureHandler(function (err) {
+            alert("Submission failed: " + err.message);
+            isSubmitting = false;
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Submit";
+          })
+          .submitTF04(payload);
+      }
+    </script>
+  </body>
+</html>

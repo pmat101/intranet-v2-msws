@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <base target="_top" />
+    <title>TRF Response - FR10</title>
+
+    <?!= HtmlService.createHtmlOutputFromFile('sharedStyles').getContent(); ?>
+    <?!= HtmlService.createHtmlOutputFromFile('sharedComponents').getContent(); ?>
+    
+   
+  </head>
+  <body>
+    <div class="form-wrapper">
+      <div class="form-title">FR10</div>
+      <div class="form-subtitle">TRF Response</div>
+
+      <div id="prefill-area"></div>
+
+      <div class="form-section">
+        <div class="section-heading">Basic Information</div>
+        <div id="f_responder"></div>
+        <div id="f_project"></div>
+      </div>
+
+      <div class="form-section">
+        <div class="section-heading">Site Address</div>
+        <div id="f_address"></div>
+      </div>
+
+      <div class="form-section">
+        <div id="f_season"></div>
+      </div>
+
+      <div class="form-section">
+        <div class="section-heading">Monitoring Details</div>
+
+        <div class="monitoring-group">
+          <strong>Ambient Air</strong>
+          <div id="air_entries"></div>
+          <div class="add-btn-container">
+            <button type="button" class="btn-secondary" onclick="addAirEntry()">+ Add Air Location</button>
+          </div>
+        </div>
+
+        <div class="monitoring-group">
+          <strong>Water</strong>
+          <div id="water_entries"></div>
+          <div class="add-btn-container">
+            <button type="button" class="btn-secondary" onclick="addWaterEntry()">+ Add Water Location</button>
+          </div>
+        </div>
+
+        <div class="monitoring-group">
+          <strong>Soil Analysis</strong>
+          <div id="soil_entries"></div>
+          <div class="add-btn-container">
+            <button type="button" class="btn-secondary" onclick="addSoilEntry()">+ Add Soil Location</button>
+          </div>
+        </div>
+
+        <div class="monitoring-group">
+          <strong>Noise Monitoring</strong>
+          <div id="noise_entries"></div>
+          <div class="add-btn-container">
+            <button type="button" class="btn-secondary" onclick="addNoiseEntry()">+ Add Noise Location</button>
+          </div>
+        </div>
+
+        <div class="monitoring-group">
+          <strong>Source Emission Monitoring</strong>
+          <div id="emission_entries"></div>
+          <div class="add-btn-container">
+            <button type="button" class="btn-secondary" onclick="addEmissionEntry()">+ Add Stack Location</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="section-heading">Additional documents</div>
+        <div id="f_docs"></div>
+      </div>
+
+      <div style="margin-top: 20px">
+        <button class="btn-primary" id="submitBtn">Submit</button>
+        <span id="status" class="text-muted" style="margin-left: 12px"></span>
+      </div>
+    </div>
+
+    <script>
+      const FORM_CODE = "FR10";
+      const resC = document.getElementById("f_responder");
+      const projC = document.getElementById("f_project");
+      const addC = document.getElementById("f_address");
+      const seaC = document.getElementById("f_season");
+      const docC = document.getElementById("f_docs");
+
+      // --- Core Fields ---
+      renderField(resC, { label: "First Name", id: "first_name" });
+      renderField(resC, { label: "Last Name", id: "last_name" });
+      renderField(resC, { label: "Email *", id: "email_id", type: "email" });
+      const teamSel = renderField(resC, { label: "Recipient Team Name *", id: "team_name", type: "select" });
+      
+      renderField(projC, { label: "Company Name *", id: "company_name" });
+      renderField(projC, { label: "Name of the project *", id: "project_name" });
+      const pcodeInput = renderField(projC, { label: "PCODE *", id: "pcode", helper: "REFER LINK FOR ACTIVE CODES" });
+
+      // --- Address Fields ---
+      renderField(addC, { label: "Street Address", id: "street_address" });
+      renderField(addC, { label: "Address Line 2", id: "address_line2" });
+      renderField(addC, { label: "City *", id: "city" });
+      renderField(addC, { label: "State/Region/Province", id: "state" });
+      renderField(addC, { label: "Postal / Zip Code", id: "zip_code" });
+      const countrySel = renderField(addC, { label: "Country", id: "country", type: "select" });
+
+      // --- Season ---
+      const seasonSel = renderField(seaC, { label: "Baseline / Project specific monitoring season *", id: "monitoring_season", type: "select" });
+
+      // --- Docs ---
+      renderField(docC, { label: "Additional documents (PDF)", id: "extra_docs", type: "file" });
+      renderField(docC, { label: "Sampling Plan *", id: "sampling_plan", type: "file" });
+      renderField(docC, { label: "Post Site Visit PPT *", id: "site_visit_ppt", type: "file" });
+
+      // --- Dynamic Entry Logic ---
+      function createEntry(containerId, fieldsRenderer) {
+        const container = document.getElementById(containerId);
+        const entryDiv = document.createElement('div');
+        entryDiv.className = 'entry-row';
+        const removeLink = document.createElement('a');
+        removeLink.className = 'remove-btn';
+        removeLink.innerText = '✕ Remove Entry';
+        removeLink.onclick = () => entryDiv.remove();
+        entryDiv.appendChild(removeLink);
+        fieldsRenderer(entryDiv);
+        container.appendChild(entryDiv);
+      }
+
+      const addAirEntry = () => createEntry('air_entries', (div) => {
+        renderField(div, { label: "Location *", className: "air_loc" });
+        renderField(div, { label: "Start Date *", type: "date", className: "air_start" });
+        renderField(div, { label: "End Date *", type: "date", className: "air_end" });
+        renderField(div, { label: "Parameters *", className: "air_param" });
+        renderField(div, { label: "Remarks", className: "air_rem" });
+      });
+
+      const addWaterEntry = () => createEntry('water_entries', (div) => {
+        renderField(div, { label: "Location *", className: "wat_loc" });
+        const src = renderField(div, { label: "Source *", type: "select", className: "wat_src" });
+        ["Ground Water","Surface Water","Waste Water","STP","ETP"].forEach(o => src.appendChild(new Option(o,o)));
+        renderField(div, { label: "Type of use *", className: "wat_use" });
+        renderField(div, { label: "Parameters *", className: "wat_param" });
+      });
+
+      const addSoilEntry = () => createEntry('soil_entries', (div) => {
+        renderField(div, { label: "Location *", className: "soil_loc" });
+        const type = renderField(div, { label: "Type of Land *", type: "select", className: "soil_land" });
+        ["Vacant","Vegetative","Agricultural"].forEach(o => type.appendChild(new Option(o,o)));
+        renderField(div, { label: "Type of Sampling / Depth *", className: "soil_depth" });
+        renderField(div, { label: "Use of Land *", className: "soil_use" });
+        renderField(div, { label: "Parameters *", className: "soil_param" });
+      });
+
+      const addNoiseEntry = () => createEntry('noise_entries', (div) => {
+        renderField(div, { label: "Location *", className: "noise_loc" });
+        const type = renderField(div, { label: "Sampling type *", type: "select", className: "noise_type" });
+        ["Ambient","Source"].forEach(o => type.appendChild(new Option(o,o)));
+        renderField(div, { label: "Parameters *", className: "noise_param" });
+      });
+
+      const addEmissionEntry = () => createEntry('emission_entries', (div) => {
+        renderField(div, { label: "Location *", className: "em_loc" });
+        const type = renderField(div, { label: "Type of Stack *", type: "select", className: "em_stack" });
+        ["D. G","Boiler","others"].forEach(o => type.appendChild(new Option(o,o)));
+        renderField(div, { label: "Parameters *", className: "em_param" });
+      });
+
+      // --- Initialize Dropdowns & First Rows ---
+      const teamList = ["Arctic","Canal","Cove","Creek","Delta","Estuary","Fountain","Glacier","Lagoon","Lakes","Oasis","Ocean","Pond","Pool","Reservoir","River","Spring","Tributary","Upstream","N/A"];
+      teamList.forEach(t => teamSel.appendChild(new Option(t, t)));
+      
+      const seasons = ["Summer (Mar to May)","Post Monsoon (Oct to Dec)","Winter (Dec to Feb)"];
+      seasons.forEach(s => seasonSel.appendChild(new Option(s, s)));
+
+      // Helper for Country list (Subset provided for brevity)
+      ["India", "Afghanistan", "USA", "UK"].forEach(c => countrySel.appendChild(new Option(c,c)));
+
+      window.onload = () => {
+        addAirEntry(); addWaterEntry(); addSoilEntry(); addNoiseEntry(); addEmissionEntry();
+      };
+
+      // --- PCODE Prefill ---
+      pcodeInput.addEventListener("blur", function() {
+        const v = this.value?.trim();
+        if (v) google.script.run.withSuccessHandler(p => {
+          if(p) { 
+            document.getElementById("project_name").value = p.project_name || ""; 
+            document.getElementById("company_name").value = p.company_name || ""; 
+          }
+        }).getProjectByPcode(v);
+      });
+
+      // --- Submission ---
+      document.getElementById("submitBtn").onclick = function() {
+        const getValues = (selector, key) => Array.from(document.querySelectorAll(selector)).map(i => i.value);
+        
+        const payload = {
+          pcode: document.getElementById("pcode").value,
+          monitoring_data: {
+            air: Array.from(document.querySelectorAll('#air_entries .entry-row')).map(r => ({
+              loc: r.querySelector('.air_loc input').value,
+              start: r.querySelector('.air_start input').value,
+              end: r.querySelector('.air_end input').value,
+              param: r.querySelector('.air_param input').value
+            }))
+            // Repeat mapping for water, soil, noise, emission...
+          }
+        };
+        
+        google.script.run.withSuccessHandler(() => {
+          document.getElementById("status").innerText = "Submitted successfully!";
+        }).submitForm(FORM_CODE, payload);
+      };
+    </script>
+  </body>
+</html>

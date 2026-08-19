@@ -1,0 +1,731 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <base target="_top" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ACC02</title>
+    <?!= HtmlService.createHtmlOutputFromFile('shared-styles').getContent(); ?>
+    <style>
+      .conditional-block {
+        display: none;
+        margin-top: 12px;
+        padding-top: 12px;
+        border-top: 1px dashed #d1d5db;
+      }
+      .section-divider {
+        margin-top: 28px;
+        margin-bottom: 14px;
+        padding-bottom: 6px;
+        border-bottom: 2px solid var(--primary);
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--primary);
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+      }
+      .item-table-wrap {
+        overflow-x: auto;
+        background: var(--bg-subform);
+        padding: 16px;
+        border-radius: var(--radius-sm);
+        margin-bottom: 14px;
+      }
+      table.item-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+        background: #fff;
+      }
+      table.item-table th {
+        background: #f5f7fa;
+        font-weight: 600;
+        text-align: left;
+        padding: 8px;
+        border: 1px solid var(--border);
+        font-size: 12px;
+        white-space: nowrap;
+      }
+      table.item-table td {
+        padding: 6px;
+        border: 1px solid var(--border);
+        vertical-align: middle;
+      }
+      table.item-table td.row-num {
+        text-align: center;
+        width: 36px;
+        background: #fafbfc;
+        font-weight: 600;
+        color: var(--text-muted);
+      }
+      table.item-table input,
+      table.item-table select {
+        width: 100%;
+        padding: 6px 8px;
+        font-size: 13px;
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        box-sizing: border-box;
+      }
+      table.item-table input[readonly] {
+        background: #f3f4f6;
+        color: var(--text-muted);
+      }
+      .item-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 8px;
+        align-items: center;
+      }
+      .item-totals {
+        margin-top: 12px;
+        text-align: right;
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--primary);
+      }
+      .col-desc {
+        min-width: 180px;
+      }
+      .col-num {
+        min-width: 90px;
+      }
+      .col-gst {
+        min-width: 80px;
+      }
+      .btn-remove-row {
+        background: transparent;
+        border: 1px solid #dc2626;
+        color: #dc2626;
+        padding: 4px 10px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 12px;
+      }
+      .btn-remove-row:hover {
+        background: #dc2626;
+        color: #fff;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="form-wrapper">
+      <div class="form-title">ACC02</div>
+      <div class="form-subtitle">
+        Vendor Bill Form — to be filled by the requestor on receipt of any
+        vendor invoice
+      </div>
+
+      <div class="form-section">
+        <div class="section-divider">Requestor Details</div>
+
+        <div class="form-group">
+          <label class="form-label">Name of Requestor</label>
+          <div class="form-row">
+            <div class="form-col">
+              <input
+                type="text"
+                id="requestor_first_name"
+                placeholder="First Name"
+              />
+              <div class="helper-text">First Name</div>
+            </div>
+            <div class="form-col">
+              <input
+                type="text"
+                id="requestor_last_name"
+                placeholder="Last Name"
+              />
+              <div class="helper-text">Last Name</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-col">
+            <div class="form-group">
+              <label class="form-label" for="requestor_email"
+                >Official Email ID of Requestor
+                <span class="required">*</span></label
+              >
+              <input type="email" id="requestor_email" required />
+            </div>
+          </div>
+          <div class="form-col">
+            <div class="form-group">
+              <label class="form-label" for="team_name">Team Name</label>
+              <select id="team_name"></select>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-divider">Vendor Details</div>
+
+        <div class="form-group">
+          <label class="form-label" for="vendor_name"
+            >Vendor Name <span class="required">*</span></label
+          >
+          <input type="text" id="vendor_name" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Address</label>
+          <input type="text" id="address_line1" placeholder="Street Address" />
+          <div class="helper-text">Street Address</div>
+        </div>
+
+        <div class="form-group">
+          <input type="text" id="address_line2" placeholder="Address Line 2" />
+          <div class="helper-text">Address Line 2</div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-col">
+            <div class="form-group">
+              <input type="text" id="address_city" placeholder="City" />
+              <div class="helper-text">City</div>
+            </div>
+          </div>
+          <div class="form-col">
+            <div class="form-group">
+              <input
+                type="text"
+                id="address_region"
+                placeholder="State / Region / Province"
+              />
+              <div class="helper-text">State / Region / Province</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-col">
+            <div class="form-group">
+              <input
+                type="text"
+                id="address_zip"
+                placeholder="Postal / Zip Code"
+              />
+              <div class="helper-text">Postal / Zip Code</div>
+            </div>
+          </div>
+          <div class="form-col">
+            <div class="form-group">
+              <input
+                type="text"
+                id="address_country"
+                placeholder="Country"
+                value="India"
+              />
+              <div class="helper-text">Country</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-col">
+            <div class="form-group">
+              <label class="form-label" for="gst_registered"
+                >GST Registered <span class="required">*</span></label
+              >
+              <select id="gst_registered" required>
+                <option value="">Select</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-col">
+            <div id="gst_number_block" class="form-group" style="display: none">
+              <label class="form-label" for="gst_number"
+                >GST Number <span class="required">*</span></label
+              >
+              <input type="text" id="gst_number" />
+              <div class="helper-text">
+                15-digit GSTIN, e.g. 07ABCDE1234F1Z5
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-divider">Transaction Details</div>
+
+        <div class="form-row">
+          <div class="form-col">
+            <div class="form-group">
+              <label class="form-label" for="branch">Branch</label>
+              <select id="branch">
+                <option value="">Select</option>
+                <option value="Head Office">Head Office</option>
+                <option value="Gujarat Office">Gujarat Office</option>
+                <option value="Gurgaon Office">Gurgaon Office</option>
+                <option value="Lucknow Office">Lucknow Office</option>
+                <option value="Tamil Nadu Office">Tamil Nadu Office</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-col">
+            <div class="form-group">
+              <label class="form-label" for="reference"
+                >Reference (Email / PO)</label
+              >
+              <input type="text" id="reference" />
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-col">
+            <div class="form-group">
+              <label class="form-label" for="bill_number"
+                >Bill Number <span class="required">*</span></label
+              >
+              <input type="text" id="bill_number" required />
+            </div>
+          </div>
+          <div class="form-col">
+            <div class="form-group">
+              <label class="form-label" for="bill_date"
+                >Bill Date <span class="required">*</span></label
+              >
+              <input type="date" id="bill_date" required />
+              <div class="helper-text">dd-MMM-yyyy</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="mode_of_payment"
+            >Mode of Payment</label
+          >
+          <select id="mode_of_payment">
+            <option value="">Select</option>
+            <option value="Cash">Cash</option>
+            <option value="Bank Transfer">Bank Transfer</option>
+            <option value="Credit Card">Credit Card</option>
+            <option value="Cheque">Cheque</option>
+          </select>
+        </div>
+
+        <div class="section-divider">Item Table</div>
+        <div class="helper-text" style="margin-bottom: 10px">
+          Add one row per line item from the vendor bill. Amount, Total Amount
+          and Net Amount are computed automatically.
+        </div>
+
+        <div class="item-table-wrap">
+          <table class="item-table" id="item_table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th class="col-desc">Item Description</th>
+                <th class="col-num">Rate (₹)</th>
+                <th class="col-num">Quantity</th>
+                <th class="col-num">Amount (₹)</th>
+                <th class="col-gst">GST</th>
+                <th class="col-num">Total Amount (₹)</th>
+                <th class="col-num">Discount (₹)</th>
+                <th class="col-num">Net Amount (₹)</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="item_table_body"></tbody>
+          </table>
+
+          <div class="item-actions">
+            <button type="button" class="btn-secondary" id="add_item_row">
+              + Add Item
+            </button>
+          </div>
+
+          <div class="item-totals" id="grand_total">
+            Grand Net Total: ₹ 0.00
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="target_date"
+            >Target Date of Payment or Payment Terms</label
+          >
+          <select id="target_date">
+            <option value="">Select</option>
+            <option value="Net 7 days">Net 7 days</option>
+            <option value="Net 15 days">Net 15 days</option>
+            <option value="Net 30 days">Net 30 days</option>
+            <option value="Net 45 days">Net 45 days</option>
+            <option value="Net 60 days">Net 60 days</option>
+            <option value="Due on end of the Month">
+              Due on end of the Month
+            </option>
+            <option value="Due on end of next Month">
+              Due on end of next Month
+            </option>
+            <option value="Due on Receipt">Due on Receipt</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="invoice_url"
+            >Invoice Copy (URL link) <span class="required">*</span></label
+          >
+          <input
+            type="url"
+            id="invoice_url"
+            placeholder="https://drive.google.com/..."
+            required
+          />
+          <div class="helper-text">
+            Paste the Google Drive (or equivalent) link to the scanned invoice
+            copy. Ensure access is shared with accounts@perfactgroup.in.
+          </div>
+        </div>
+
+        <div class="section-divider">Advance Payment Options</div>
+        <div class="helper-text" style="margin-bottom: 10px">
+          Fill only if any advance has already been paid to this vendor against
+          this bill.
+        </div>
+
+        <div class="form-row">
+          <div class="form-col">
+            <div class="form-group">
+              <label class="form-label" for="advance_amount"
+                >Amount Paid in Advance (₹)</label
+              >
+              <input type="number" id="advance_amount" step="0.01" min="0" />
+            </div>
+          </div>
+          <div class="form-col">
+            <div class="form-group">
+              <label class="form-label" for="advance_date"
+                >Date of Advance Payment</label
+              >
+              <input type="date" id="advance_date" />
+              <div class="helper-text">dd-MMM-yyyy</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="advance_paid_via">Paid via</label>
+          <select id="advance_paid_via">
+            <option value="">Select</option>
+            <option value="Cash">Cash</option>
+            <option value="Bank Transfer">Bank Transfer</option>
+            <option value="Credit Card">Credit Card</option>
+            <option value="Cheque">Cheque</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="remarks">Remarks</label>
+          <textarea id="remarks" rows="3"></textarea>
+        </div>
+      </div>
+
+      <button
+        class="btn-primary"
+        type="button"
+        id="submitBtn"
+        onclick="submitACC02()"
+      >
+        Submit
+      </button>
+    </div>
+
+    <script>
+      window.addEventListener("DOMContentLoaded", function () {
+        populateDropdowns();
+        bindGstToggle();
+
+        // Start with one item row
+        addItemRow();
+        document
+          .getElementById("add_item_row")
+          .addEventListener("click", function () {
+            addItemRow();
+          });
+      });
+
+      function populateDropdowns() {
+        google.script.run
+          .withSuccessHandler(function (data) {
+            data = data || {};
+            fillSelect(
+              document.getElementById("team_name"),
+              data.team || [],
+              "Select",
+            );
+          })
+          .getDropdownData();
+      }
+
+      function fillSelect(select, items, placeholder) {
+        if (!select) return;
+        // Preserve currently selected value if any
+        const current = select.value;
+        select.innerHTML = "";
+        const first = document.createElement("option");
+        first.value = "";
+        first.textContent = placeholder || "Select";
+        select.appendChild(first);
+        (items || []).forEach(function (item) {
+          const option = document.createElement("option");
+          option.value = item;
+          option.textContent = item;
+          select.appendChild(option);
+        });
+        if (current) select.value = current;
+      }
+
+      function bindGstToggle() {
+        const sel = document.getElementById("gst_registered");
+        const block = document.getElementById("gst_number_block");
+        const input = document.getElementById("gst_number");
+
+        function sync() {
+          const show = sel.value === "Yes";
+          block.style.display = show ? "block" : "none";
+          if (!show) input.value = "";
+        }
+        sel.addEventListener("change", sync);
+        sync();
+      }
+
+      /* ---------- Item Table ---------- */
+
+      function addItemRow() {
+        const tbody = document.getElementById("item_table_body");
+        const idx = tbody.children.length + 1;
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td class="row-num">${idx}</td>
+          <td><input type="text" class="it-desc" /></td>
+          <td><input type="number" class="it-rate" step="0.01" min="0" /></td>
+          <td><input type="number" class="it-qty" step="any" min="0" /></td>
+          <td><input type="number" class="it-amount" step="0.01" readonly tabindex="-1" /></td>
+          <td>
+            <select class="it-gst">
+              <option value="0">0%</option>
+              <option value="5">5%</option>
+              <option value="12">12%</option>
+              <option value="18">18%</option>
+              <option value="28">28%</option>
+            </select>
+          </td>
+          <td><input type="number" class="it-total" step="0.01" readonly tabindex="-1" /></td>
+          <td><input type="number" class="it-discount" step="0.01" min="0" /></td>
+          <td><input type="number" class="it-net" step="0.01" readonly tabindex="-1" /></td>
+          <td>
+            <button type="button" class="btn-remove-row" title="Remove">×</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+
+        // Wire calc listeners
+        tr.querySelectorAll(".it-rate, .it-qty, .it-gst, .it-discount").forEach(
+          function (el) {
+            el.addEventListener("input", function () {
+              recalcRow(tr);
+            });
+            el.addEventListener("change", function () {
+              recalcRow(tr);
+            });
+          },
+        );
+
+        tr.querySelector(".btn-remove-row").addEventListener(
+          "click",
+          function () {
+            tr.remove();
+            renumberRows();
+            recalcGrandTotal();
+          },
+        );
+
+        recalcRow(tr);
+      }
+
+      function renumberRows() {
+        const tbody = document.getElementById("item_table_body");
+        Array.from(tbody.children).forEach(function (tr, i) {
+          tr.querySelector(".row-num").textContent = i + 1;
+        });
+      }
+
+      function num(el) {
+        const v = parseFloat(el.value);
+        return isNaN(v) ? 0 : v;
+      }
+
+      function recalcRow(tr) {
+        const rate = num(tr.querySelector(".it-rate"));
+        const qty = num(tr.querySelector(".it-qty"));
+        const gst = num(tr.querySelector(".it-gst"));
+        const disc = num(tr.querySelector(".it-discount"));
+
+        const amount = rate * qty;
+        const total = amount + (gst / 100) * amount;
+        const net = total - disc;
+
+        tr.querySelector(".it-amount").value = amount ? amount.toFixed(2) : "";
+        tr.querySelector(".it-total").value = total ? total.toFixed(2) : "";
+        tr.querySelector(".it-net").value = total ? net.toFixed(2) : "";
+
+        recalcGrandTotal();
+      }
+
+      function recalcGrandTotal() {
+        const tbody = document.getElementById("item_table_body");
+        let sum = 0;
+        Array.from(tbody.children).forEach(function (tr) {
+          sum += num(tr.querySelector(".it-net"));
+        });
+        document.getElementById("grand_total").textContent =
+          "Grand Net Total: ₹ " +
+          sum.toLocaleString("en-IN", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          });
+      }
+
+      function collectItemRows() {
+        const tbody = document.getElementById("item_table_body");
+        return Array.from(tbody.children)
+          .map(function (tr) {
+            return {
+              item_description:
+                tr.querySelector(".it-desc")?.value.trim() || "",
+              rate: tr.querySelector(".it-rate")?.value || "",
+              quantity: tr.querySelector(".it-qty")?.value || "",
+              amount: tr.querySelector(".it-amount")?.value || "",
+              gst_percent: tr.querySelector(".it-gst")?.value || "",
+              total_amount: tr.querySelector(".it-total")?.value || "",
+              discount: tr.querySelector(".it-discount")?.value || "",
+              net_amount: tr.querySelector(".it-net")?.value || "",
+            };
+          })
+          .filter(function (r) {
+            // keep only rows with at least description or rate or qty
+            return (
+              String(r.item_description).trim() ||
+              String(r.rate).trim() ||
+              String(r.quantity).trim()
+            );
+          });
+      }
+
+      /* ---------- Validation & Submit ---------- */
+
+      function validateACC02(p) {
+        const missing = [];
+
+        if (!String(p.requestor_email || "").trim())
+          missing.push("Official Email ID of Requestor");
+
+        if (!String(p.vendor_name || "").trim()) missing.push("Vendor Name");
+
+        if (!String(p.gst_registered || "").trim())
+          missing.push("GST Registered");
+
+        if (p.gst_registered === "Yes" && !String(p.gst_number || "").trim()) {
+          missing.push("GST Number");
+        }
+
+        if (!String(p.bill_number || "").trim()) missing.push("Bill Number");
+        if (!String(p.bill_date || "").trim()) missing.push("Bill Date");
+
+        if (!String(p.invoice_url || "").trim())
+          missing.push("Invoice Copy (URL link)");
+
+        // Item table — must have at least one valid row
+        const items = Array.isArray(p.items) ? p.items : [];
+        if (!items.length) {
+          missing.push("Item Table — add at least one item");
+        } else {
+          items.forEach(function (r, i) {
+            const rn = i + 1;
+            if (!String(r.item_description || "").trim())
+              missing.push(`Item Table row ${rn} — Item Description`);
+            if (!String(r.rate || "").trim())
+              missing.push(`Item Table row ${rn} — Rate`);
+            if (!String(r.quantity || "").trim())
+              missing.push(`Item Table row ${rn} — Quantity`);
+          });
+        }
+
+        if (missing.length) {
+          alert("Please fill:\n\n" + missing.join("\n"));
+          return false;
+        }
+        return true;
+      }
+
+      let isSubmitting = false;
+
+      function submitACC02() {
+        if (isSubmitting) return;
+        isSubmitting = true;
+        const submitBtn = document.getElementById("submitBtn");
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Submitting...";
+
+        const payload = {
+          requestor_first_name: document.getElementById("requestor_first_name")
+            .value,
+          requestor_last_name: document.getElementById("requestor_last_name")
+            .value,
+          requestor_email: document.getElementById("requestor_email").value,
+          team_name: document.getElementById("team_name").value,
+
+          vendor_name: document.getElementById("vendor_name").value,
+          address_line1: document.getElementById("address_line1").value,
+          address_line2: document.getElementById("address_line2").value,
+          address_city: document.getElementById("address_city").value,
+          address_region: document.getElementById("address_region").value,
+          address_zip: document.getElementById("address_zip").value,
+          address_country: document.getElementById("address_country").value,
+
+          gst_registered: document.getElementById("gst_registered").value,
+          gst_number: document.getElementById("gst_number").value,
+
+          branch: document.getElementById("branch").value,
+          reference: document.getElementById("reference").value,
+          bill_number: document.getElementById("bill_number").value,
+          bill_date: document.getElementById("bill_date").value,
+          mode_of_payment: document.getElementById("mode_of_payment").value,
+
+          items: collectItemRows(),
+
+          target_date: document.getElementById("target_date").value,
+          invoice_url: document.getElementById("invoice_url").value,
+
+          advance_amount: document.getElementById("advance_amount").value,
+          advance_date: document.getElementById("advance_date").value,
+          advance_paid_via: document.getElementById("advance_paid_via").value,
+
+          remarks: document.getElementById("remarks").value,
+        };
+
+        if (!validateACC02(payload)) {
+          isSubmitting = false;
+          submitBtn.disabled = false;
+          submitBtn.innerText = "Submit";
+          return;
+        }
+
+        google.script.run
+          .withSuccessHandler(function (res) {
+            document.body.innerHTML = res.thankYouHtml;
+          })
+          .withFailureHandler(function (err) {
+            alert("Submission failed: " + err.message);
+            isSubmitting = false;
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Submit";
+          })
+          .submitACC02(payload);
+      }
+    </script>
+  </body>
+</html>

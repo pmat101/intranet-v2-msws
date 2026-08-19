@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <base target="_top" />
+    <title>TF11</title>
+
+    <?!= HtmlService.createHtmlOutputFromFile('sharedStyles').getContent(); ?>
+    <?!= HtmlService.createHtmlOutputFromFile('sharedComponents').getContent(); ?>
+  </head>
+
+  <body>
+    <div class="form-wrapper">
+      <div class="form-title">TF11</div>
+      <div class="form-subtitle">
+        Documents Shared with EIA Coordinator for Review
+      </div>
+
+      <div id="prefill-area"></div>
+      <div id="f_fields"></div>
+
+      <script>
+        const FORM_CODE = "TF11";
+        const c = document.getElementById("f_fields");
+
+        /* ================= BASIC DETAILS ================= */
+
+        renderField(c, {
+          label: "Date",
+          id: "form_date",
+          type: "date",
+        });
+
+        renderField(c, {
+          label: "Team Name",
+          id: "team_name",
+          required: true,
+        });
+
+        renderField(c, {
+          label: "Team Member First Name",
+          id: "member_first_name",
+        });
+
+        renderField(c, {
+          label: "Team Member Last Name",
+          id: "member_last_name",
+        });
+
+        renderField(c, {
+          label: "Team Member Email",
+          id: "member_email",
+          type: "email",
+          required: true,
+        });
+
+        /* ================= PROJECT DETAILS ================= */
+
+        renderField(c, {
+          label: "Client Name",
+          id: "client_name",
+          required: true,
+        });
+
+        renderField(c, {
+          label: "Project Name",
+          id: "project_name",
+          required: true,
+        });
+
+        renderField(c, {
+          label: "Project Code",
+          id: "project_code",
+          required: true,
+          helper:
+            "Refer active PCODES list: https://docs.google.com/spreadsheets/d/1POfI4IgCQv7Pj2dcaOj3mZG_Tnuybid-eVrLQn5KO9k",
+        });
+
+        renderField(c, {
+          label: "Project Proponent First Name",
+          id: "pp_first_name",
+        });
+
+        renderField(c, {
+          label: "Project Proponent Last Name",
+          id: "pp_last_name",
+        });
+
+        renderField(c, {
+          label:
+            "Concerned Person Name (to whom documents are shared for review)",
+          id: "concerned_person_name",
+        });
+
+        renderField(c, {
+          label: "Project Proponent / Concerned Person Email",
+          id: "concerned_person_email",
+          type: "email",
+          required: true,
+          helper:
+            "Email ID where documents are shared for review",
+        });
+
+        renderField(c, {
+          label: "Project Address",
+          id: "project_address",
+          type: "textarea",
+        });
+
+        renderField(c, {
+          label: "Project Stage",
+          id: "project_stage",
+        });
+
+        /* ================= DOCUMENT DETAILS ================= */
+
+        renderField(c, {
+          label: "Details of Documents Shared for Review",
+          id: "document_details",
+          type: "textarea",
+        });
+
+        renderField(c, {
+          label: "Link of the Document",
+          id: "document_link",
+          required: true,
+        });
+
+        renderField(c, {
+          label:
+            "Name of the Authority where document needs to be submitted",
+          id: "authority_name",
+        });
+
+        renderField(c, {
+          label:
+            "Final Date of Submission to Concerned Authority",
+          id: "final_submission_date",
+          type: "date",
+        });
+
+        renderField(c, {
+          label: "EIA Coordinator",
+          id: "eia_coordinator",
+          required: true,
+        });
+      </script>
+
+      <div style="margin-top: 20px">
+        <button class="btn-primary" id="submitBtn">Submit</button>
+        <span id="status" class="text-muted" style="margin-left: 12px"></span>
+      </div>
+    </div>
+
+    <script>
+      document
+        .getElementById("submitBtn")
+        .addEventListener("click", function () {
+          const payload = {};
+          document
+            .querySelectorAll("input, textarea, select")
+            .forEach((el) => {
+              if (el.id) payload[el.id] = el.value;
+            });
+
+          google.script.run
+            .withSuccessHandler(() => {
+              document.getElementById("status").innerText =
+                "TF11 submitted successfully";
+            })
+            .withFailureHandler((err) => {
+              document.getElementById("status").innerText =
+                "Submit failed: " + err.message;
+            })
+            .submitForm(FORM_CODE, payload);
+        });
+    </script>
+  </body>
+</html>

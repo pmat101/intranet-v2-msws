@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <base target="_top" />
+  <title>TF20 – Job Allocation</title>
+
+  <?!= HtmlService.createHtmlOutputFromFile('sharedStyles').getContent(); ?>
+  <?!= HtmlService.createHtmlOutputFromFile('sharedComponents').getContent(); ?>
+</head>
+
+<body>
+<div class="form-wrapper">
+  <div class="form-title">TF20</div>
+  <div class="form-subtitle">Job Allocation</div>
+
+  <div id="prefill-area"></div>
+  <div id="f_selects"></div>
+  <div id="f_fields"></div>
+
+  <div style="margin-top:20px">
+    <button class="btn-primary" id="submitBtn">Submit</button>
+    <span id="status" class="text-muted" style="margin-left:12px"></span>
+  </div>
+</div>
+
+<script>
+const FORM_CODE = "TF20";
+
+const c = document.getElementById("f_fields");
+const selContainer = document.getElementById("f_selects");
+
+/* ================= BASIC DETAILS ================= */
+
+renderField(c,{label:"Date",id:"date",type:"date",required:true});
+
+renderField(c,{label:"First Name",id:"first_name"});
+renderField(c,{label:"Last Name",id:"last_name"});
+renderField(c,{label:"Official Email ID",id:"official_email",type:"email",required:true});
+
+/* ================= PROJECT ================= */
+
+renderField(c,{label:"Project Name",id:"project_name"});
+
+/* ================= SITE ADDRESS ================= */
+
+renderField(c,{label:"Street Address",id:"street_address"});
+renderField(c,{label:"Address Line 2",id:"address_line2"});
+renderField(c,{label:"City",id:"city"});
+renderField(c,{label:"State / Region / Province",id:"state"});
+renderField(c,{label:"Postal / Zip Code",id:"zip"});
+renderField(c,{label:"Country",id:"country"});
+
+/* ================= PCODE ================= */
+
+const pcodeInput = renderField(c,{
+  label:"PCODE",
+  id:"pcode",
+  required:true,
+  placeholder:"Enter PCODE to auto-fill"
+});
+
+/* ================= COMPANY & CONTACT ================= */
+
+renderField(c,{label:"Company Name",id:"company_name"});
+
+renderField(c,{label:"Contact Person First Name",id:"contact_first"});
+renderField(c,{label:"Contact Person Last Name",id:"contact_last"});
+renderField(c,{label:"Contact Number",id:"contact_number"});
+
+/* ================= EIA ================= */
+
+renderField(c,{label:"EIA Coordinator",id:"eia_coordinator",required:true});
+
+/* ================= WORK DETAILS ================= */
+
+renderField(c,{label:"Scope of Work",id:"scope_of_work",type:"textarea"});
+renderField(c,{label:"Brief Description of Project",id:"project_description",type:"textarea"});
+renderField(c,{label:"Baseline / Project Specific Monitoring Season",id:"monitoring_season"});
+renderField(c,{label:"TOR Specific Requirements (If Any)",id:"tor_requirements",type:"textarea"});
+
+/* ================= DATES ================= */
+
+renderField(c,{label:"Completion Target Date",id:"completion_date",type:"date"});
+renderField(c,{label:"Test Report Issuance Date",id:"test_report_date",type:"date"});
+
+/* ================= OTHER ================= */
+
+renderField(c,{label:"Any Other Details Required from Site",id:"other_details",type:"textarea"});
+
+/* ================= PCODE AUTOFILL ================= */
+
+pcodeInput.addEventListener("blur", function () {
+  const v = this.value && this.value.trim();
+  if (!v) return;
+  autoPrefillFromProject(v);
+});
+
+function autoPrefillFromProject(pcode){
+  google.script.run
+    .withSuccessHandler(function(project){
+      if(!project){
+        status.innerText="No project found";
+        return;
+      }
+      Object.keys(project).forEach(function(key){
+        const f=document.getElementById(key);
+        if(f) f.value=project[key];
+      });
+      status.innerText="Prefilled from projects";
+    })
+    .getProjectByPcode(pcode);
+}
+
+/* ================= SUBMIT ================= */
+
+document.getElementById("submitBtn").addEventListener("click",function(){
+  const payload={};
+  document.querySelectorAll("input, textarea, select").forEach(el=>{
+    if(el.id && el.type!=="file") payload[el.id]=el.value;
+  });
+
+  google.script.run
+    .withSuccessHandler(function(res){
+      status.innerText="TF20 submitted successfully";
+    })
+    .withFailureHandler(function(err){
+      status.innerText="Submit failed: "+err.message;
+    })
+    .submitForm(FORM_CODE,payload);
+});
+</script>
+</body>
+</html>

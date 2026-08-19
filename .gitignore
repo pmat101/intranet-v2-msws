@@ -1,0 +1,16 @@
+# macOS noise
+.DS_Store
+
+# Secrets, never commit these
+local.settings.json
+api/local.settings.json
+.env
+.env.*
+
+# Dependencies and build output
+node_modules/
+dist/
+.swa/
+
+# Logs
+*.log

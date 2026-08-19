@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <base target="_top" />
+    <title>TF10</title>
+
+    <?!= HtmlService.createHtmlOutputFromFile('sharedStyles').getContent(); ?>
+    <?!= HtmlService.createHtmlOutputFromFile('sharedComponents').getContent(); ?>
+  </head>
+
+  <body>
+    <div class="form-wrapper">
+      <div class="form-title">TF10</div>
+      <div class="form-subtitle">
+        Technical Format for Handover Document to EIA Coordinator
+      </div>
+
+      <div id="prefill-area"></div>
+      <div id="f_fields"></div>
+
+      <script>
+        const FORM_CODE = "TF10";
+        const c = document.getElementById("f_fields");
+
+        /* ================= BASIC DETAILS ================= */
+
+        renderField(c, { label: "Date", id: "form_date", type: "date" });
+
+        renderField(c, { label: "First Name", id: "emp_first_name" });
+        renderField(c, { label: "Last Name", id: "emp_last_name" });
+
+        renderField(c, {
+          label: "Employee Email ID",
+          id: "emp_email",
+          type: "email",
+          required: true,
+          helper: "Email ID of the person filling the form",
+        });
+
+        renderField(c, {
+          label: "Team Name",
+          id: "team_name",
+          required: true,
+        });
+
+        renderField(c, {
+          label: "EIA Coordinator",
+          id: "eia_coordinator",
+          required: true,
+        });
+
+        /* ================= PROJECT DETAILS ================= */
+
+        renderField(c, { label: "Project Name", id: "project_name" });
+
+        renderField(c, {
+          label: "Project Code",
+          id: "project_code",
+          required: true,
+          helper:
+            "Refer active PCODES list: https://docs.google.com/spreadsheets/d/1POfI4IgCQv7Pj2dcaOj3mZG_Tnuybid-eVrLQn5KO9k",
+        });
+
+        renderField(c, {
+          label: "Project Proponent First Name",
+          id: "pp_first_name",
+        });
+
+        renderField(c, {
+          label: "Project Proponent Last Name",
+          id: "pp_last_name",
+        });
+
+        renderField(c, {
+          label: "Project Location",
+          id: "project_location",
+        });
+
+        renderField(c, {
+          label: "Category",
+          id: "category",
+        });
+
+        renderField(c, {
+          label: "Activity",
+          id: "activity",
+        });
+
+        renderField(c, {
+          label: "Appraisal Committee",
+          id: "committee",
+        });
+
+        renderField(c, {
+          label: "Proposal Number",
+          id: "proposal_no",
+        });
+
+        renderField(c, {
+          label: "Parivesh Login Details",
+          id: "parivesh_login",
+        });
+
+        renderField(c, {
+          label: "Current Project Stage",
+          id: "project_stage",
+        });
+
+        renderField(c, {
+          label: "Baseline Season",
+          id: "baseline_season",
+        });
+
+        /* ================= DOCUMENT LINKS ================= */
+
+        renderField(c, {
+          label: "Link to Field Project Sheet (PDF)",
+          id: "field_project_sheet",
+        });
+
+        renderField(c, {
+          label: "Link to Project Chronology (PDF)",
+          id: "project_chronology",
+        });
+
+        renderField(c, {
+          label: "Link to Single File (PDF)",
+          id: "single_file_pdf",
+        });
+
+        renderField(c, {
+          label: "Link to Test Report (PDF)",
+          id: "test_report_pdf",
+        });
+
+        renderField(c, {
+          label: "Link to Compliance Report (PDF)",
+          id: "compliance_pdf",
+        });
+
+        renderField(c, {
+          label: "Link to Compliance Report (DOCX)",
+          id: "compliance_docx",
+        });
+
+        renderField(c, {
+          label: "Link to Certified Compliance Report (PDF)",
+          id: "cert_compliance_pdf",
+        });
+
+        renderField(c, {
+          label: "Link to Certified Compliance Report (DOCX)",
+          id: "cert_compliance_docx",
+        });
+
+        renderField(c, {
+          label:
+            "Link to PF / Reserve Forest Marked KML & Topography Map (PDF)",
+          id: "forest_kml_pdf",
+        });
+
+        renderField(c, {
+          label: "Link to Water Approval (PDF)",
+          id: "water_approval_pdf",
+        });
+
+        renderField(c, {
+          label: "Link to Power / Electricity Approval (PDF)",
+          id: "power_approval_pdf",
+        });
+
+        renderField(c, {
+          label: "Link to Fire NOC (PDF)",
+          id: "fire_noc_pdf",
+        });
+
+        renderField(c, {
+          label: "Link to Tree Cutting Permission (PDF)",
+          id: "tree_cut_pdf",
+        });
+
+        renderField(c, {
+          label:
+            "Link to Important Notifications (Forest / Industrial etc.) (PDF)",
+          id: "important_notifications",
+        });
+
+        renderField(c, {
+          label: "Link to Uploading Folder (PDF)",
+          id: "upload_folder_pdf",
+        });
+
+        renderField(c, {
+          label: "Link to Uploading Folder (DOCX)",
+          id: "upload_folder_docx",
+        });
+
+        /* ================= FINAL INPUTS ================= */
+
+        renderField(c, {
+          label: "Any Additional Critical Points",
+          id: "critical_points",
+          type: "textarea",
+        });
+
+        renderField(c, {
+          label:
+            "Issues in Uploading / Pendency / Compromise Required from Client",
+          id: "upload_issues",
+          type: "textarea",
+        });
+
+        renderField(c, {
+          label: "Review",
+          id: "review",
+          type: "textarea",
+        });
+      </script>
+
+      <div style="margin-top: 20px">
+        <button class="btn-primary" id="submitBtn">Submit</button>
+        <span id="status" class="text-muted" style="margin-left: 12px"></span>
+      </div>
+    </div>
+
+    <script>
+      document.getElementById("submitBtn").addEventListener("click", function () {
+        const payload = {};
+        document.querySelectorAll("input, textarea, select").forEach((el) => {
+          if (el.id) payload[el.id] = el.value;
+        });
+
+        google.script.run
+          .withSuccessHandler(() => {
+            document.getElementById("status").innerText =
+              "TF10 submitted successfully";
+          })
+          .withFailureHandler((err) => {
+            document.getElementById("status").innerText =
+              "Submit failed: " + err.message;
+          })
+          .submitForm(FORM_CODE, payload);
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <base target="_top" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HR01</title>
+    <?!= HtmlService.createHtmlOutputFromFile('shared-styles').getContent(); ?>
+  </head>
+  <body>
+    <div class="form-wrapper">
+      <div class="form-title">HR01</div>
+      <div class="form-subtitle">Interview Evaluation Form</div>
+
+      <div class="form-section">
+        <div class="form-group">
+          <label class="form-label" for="date">Date</label>
+          <input type="date" id="date" />
+          <div class="helper-text">dd-MMM-yyyy</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="employee_email"
+            >Email of person filling the form
+            <span class="required">*</span></label
+          >
+          <input type="email" id="employee_email" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label"
+            >Applicant Name <span class="required">*</span></label
+          >
+          <div class="form-row">
+            <div class="form-col">
+              <input
+                type="text"
+                id="applicant_first_name"
+                placeholder="First Name"
+              />
+              <div class="helper-text">First Name</div>
+            </div>
+            <div class="form-col">
+              <input
+                type="text"
+                id="applicant_last_name"
+                placeholder="Last Name"
+              />
+              <div class="helper-text">Last Name</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="position_applied_for"
+            >Position applied for <span class="required">*</span></label
+          >
+          <input type="text" id="position_applied_for" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="interview_date"
+            >InterviewDate <span class="required">*</span></label
+          >
+          <input type="date" id="interview_date" required />
+          <div class="helper-text">dd-MMM-yyyy</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label"
+            >Interviewer Name <span class="required">*</span></label
+          >
+          <div class="form-row">
+            <div class="form-col">
+              <input
+                type="text"
+                id="interviewer_first_name"
+                placeholder="First Name"
+              />
+              <div class="helper-text">First Name</div>
+            </div>
+            <div class="form-col">
+              <input
+                type="text"
+                id="interviewer_last_name"
+                placeholder="Last Name"
+              />
+              <div class="helper-text">Last Name</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="meeting_recording_link"
+            >Meeting Recording Link</label
+          >
+          <input type="url" id="meeting_recording_link" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Evaluation Matrix</label>
+          <div id="hr01-rating-grid"></div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="interviewer_comments"
+            >Comments of the Interviewer</label
+          >
+          <textarea id="interviewer_comments"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label"
+            >Overall Rating <span class="required">*</span></label
+          >
+
+          <div id="starRating" class="star-rating">
+            <span data-value="1">☆</span>
+            <span data-value="2">☆</span>
+            <span data-value="3">☆</span>
+            <span data-value="4">☆</span>
+            <span data-value="5">☆</span>
+          </div>
+
+          <!-- hidden input to store value -->
+          <input type="hidden" id="star_rating" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="final_recommendation"
+            >Final Recommendation <span class="required">*</span></label
+          >
+          <select id="final_recommendation" required></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="remarks">Remarks</label>
+          <textarea id="remarks"></textarea>
+        </div>
+      </div>
+
+      <button
+        class="btn-primary"
+        type="button"
+        id="submitBtn"
+        onclick="submitHR01()"
+      >
+        Submit
+      </button>
+    </div>
+
+    <script>
+      const scoreFields = [
+        "education_training",
+        "technical_skills",
+        "communication",
+        "job_knowledge",
+        "work_experience",
+        "body_language",
+        "attitude_towards_interview_job",
+        "culture_compatibility",
+      ];
+
+      window.addEventListener("DOMContentLoaded", function () {
+        populateDropdowns();
+        renderScoreMatrix();
+        initStarRating();
+      });
+
+      function populateDropdowns() {
+        google.script.run
+          .withSuccessHandler(function (data) {
+            data = data || {};
+            fillSelect(
+              document.getElementById("final_recommendation"),
+              data.hrRecommendation || ["Selected", "Rejected", "On Hold"],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("star_rating"),
+              ["1", "2", "3", "4", "5"],
+              "Select",
+            );
+          })
+          .getDropdownData();
+      }
+
+      function fillSelect(select, items, placeholder) {
+        if (!select) return;
+        select.innerHTML = "";
+        const first = document.createElement("option");
+        first.value = "";
+        first.textContent = placeholder || "Select";
+        select.appendChild(first);
+
+        (items || []).forEach(function (item) {
+          const option = document.createElement("option");
+          option.value = item;
+          option.textContent = item;
+          select.appendChild(option);
+        });
+      }
+
+      function renderScoreMatrix() {
+        const wrap = document.getElementById("hr01-rating-grid");
+        wrap.innerHTML = `
+          <div style="overflow-x:auto;">
+            <table class="matrix-table" style="width:100%;">
+              <thead>
+                <tr>
+                  <th style="min-width:260px;">Criteria</th>
+                  <th style="min-width:180px;">Rating</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${scoreFields
+                  .map(function (field) {
+                    const label = field
+                      .replaceAll("_", " ")
+                      .replace(/\b\w/g, (c) => c.toUpperCase())
+                      .replace(
+                        "Towards Interview Job",
+                        "towards Interview/Job",
+                      );
+                    return `
+                    <tr>
+                      <td>${label}</td>
+                      <td>
+                        <select id="${field}">
+                          <option value="">Select</option>
+                          <option value="Excellent">Excellent</option>
+                          <option value="Very Good">Very Good</option>
+                          <option value="Good">Good</option>
+                          <option value="Average">Average</option>
+                          <option value="Below Average">Below Average</option>
+                        </select>
+                      </td>
+                    </tr>
+                  `;
+                  })
+                  .join("")}
+              </tbody>
+            </table>
+          </div>
+        `;
+      }
+
+      function initStarRating() {
+        const stars = document.querySelectorAll("#starRating span");
+        const input = document.getElementById("star_rating");
+
+        stars.forEach((star) => {
+          star.addEventListener("click", function () {
+            const value = this.getAttribute("data-value");
+            input.value = value;
+
+            stars.forEach((s) => {
+              s.classList.toggle(
+                "active",
+                s.getAttribute("data-value") <= value,
+              );
+            });
+          });
+        });
+      }
+
+      function validateHR01(p) {
+        const missing = [];
+        if (!p.employee_email) missing.push("Email of person filling the form");
+        if (!p.applicant_first_name) missing.push("Applicant First Name");
+        if (!p.applicant_last_name) missing.push("Applicant Last Name");
+        if (!p.position_applied_for) missing.push("Position applied for");
+        if (!p.interview_date) missing.push("InterviewDate");
+        if (!p.interviewer_first_name) missing.push("Interviewer First Name");
+        if (!p.interviewer_last_name) missing.push("Interviewer Last Name");
+        if (!p.final_recommendation) missing.push("Final Recommendation");
+        if (!p.star_rating) missing.push("Overall Rating");
+
+        scoreFields.forEach(function (field) {
+          if (!p[field]) {
+            const label = field
+              .replaceAll("_", " ")
+              .replace(/\b\w/g, (c) => c.toUpperCase());
+            missing.push(label);
+          }
+        });
+
+        if (missing.length) {
+          alert("Please fill:\n\n" + missing.join("\n"));
+          return false;
+        }
+        return true;
+      }
+
+      let isSubmitting = false;
+
+      function submitHR01() {
+        if (isSubmitting) return; // blocks double-clicks instantly
+        isSubmitting = true;
+        const submitBtn = document.getElementById("submitBtn");
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Submitting...";
+
+        const payload = {
+          date: document.getElementById("date").value,
+          employee_email: document.getElementById("employee_email").value,
+          applicant_first_name: document.getElementById("applicant_first_name")
+            .value,
+          applicant_last_name: document.getElementById("applicant_last_name")
+            .value,
+          position_applied_for: document.getElementById("position_applied_for")
+            .value,
+          interview_date: document.getElementById("interview_date").value,
+          interviewer_first_name: document.getElementById(
+            "interviewer_first_name",
+          ).value,
+          interviewer_last_name: document.getElementById(
+            "interviewer_last_name",
+          ).value,
+          meeting_recording_link: document.getElementById(
+            "meeting_recording_link",
+          ).value,
+          interviewer_comments: document.getElementById("interviewer_comments")
+            .value,
+          star_rating: document.getElementById("star_rating").value,
+          final_recommendation: document.getElementById("final_recommendation")
+            .value,
+          remarks: document.getElementById("remarks").value,
+        };
+
+        scoreFields.forEach(function (field) {
+          payload[field] = document.getElementById(field).value;
+        });
+
+        if (!validateHR01(payload)) {
+          isSubmitting = false;
+          submitBtn.disabled = false;
+          submitBtn.innerText = "Submit";
+          return;
+        }
+
+        google.script.run
+          .withSuccessHandler(function (res) {
+            console.log("SUCCESS HANDLER RUNNING"); // 👈 debug
+            document.body.innerHTML = res.thankYouHtml;
+          })
+          .withFailureHandler(function (err) {
+            alert("Submission failed: " + err.message);
+            isSubmitting = false;
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Submit";
+          })
+          .submitHR01(payload);
+      }
+    </script>
+  </body>
+</html>

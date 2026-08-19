@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <base target="_top" />
+    <title>BD-00 - Client Cancellation Form</title>
+    <?!= HtmlService.createHtmlOutputFromFile('sharedStyles').getContent(); ?>
+    <?!= HtmlService.createHtmlOutputFromFile('sharedComponents').getContent(); ?>
+  </head>
+  <body>
+    <div class="form-wrapper">
+      <div class="form-title">BD-00 - Client Cancellation Form</div>
+      <div class="form-subtitle">To be filled by BD Team when a client cancels with reason</div>
+
+      <div id="f_fields"></div>
+
+      <div style="margin-top: 20px">
+        <button class="btn-primary" id="submitBtn">Submit</button>
+        <span id="status" class="text-muted" style="margin-left: 12px"></span>
+      </div>
+    </div>
+
+    <script>
+      const FORM_CODE = "bd00";
+      const c = document.getElementById("f_fields");
+
+      // Basic Info
+      renderField(c, { label: "Date of Client's Mail/Lead Generation *", id: "mail_date", type: "date", placeholder: "dd-MMM-yyyy" });
+      renderField(c, { label: "First Name of Form Filler", id: "filler_first_name" });
+      renderField(c, { label: "Last Name of Form Filler", id: "filler_last_name" });
+      renderField(c, { label: "Official Email ID", id: "filler_email", type: "email" });
+
+      // Customer Details
+      renderField(c, { label: "Customer's Company Legal Name *", id: "customer_company" });
+      renderField(c, { label: "Customer First Name", id: "customer_first_name" });
+      renderField(c, { label: "Customer Last Name", id: "customer_last_name" });
+      renderField(c, { label: "Customer Contact Number", id: "customer_contact", placeholder: "+91" });
+      renderField(c, { label: "Customer Email *", id: "customer_email", type: "email" });
+      renderField(c, { label: "Email ID from which email received", id: "email_from" });
+      renderField(c, { label: "Confirm Email", id: "confirm_email", type: "email" });
+
+      // Proposed Project Info
+      renderField(c, { label: "Type of Activity Proposed", id: "activity_type" });
+      renderField(c, { label: "Proposed Project Location (Tentative)", id: "project_location" });
+      renderField(c, { label: "Village", id: "village" });
+      renderField(c, { label: "Taluka", id: "taluka" });
+      renderField(c, { label: "District", id: "district" });
+      renderField(c, { label: "State/Region/Province", id: "state" });
+      renderField(c, { label: "Postal / Zip Code", id: "postal" });
+      renderField(c, { label: "Country", id: "country" });
+      renderField(c, { label: "ST/UT *", id: "st_ut" });
+
+      // Project Details
+      renderField(c, { label: "Type of Work *", id: "type_of_work" });
+      renderField(c, { label: "Service Type/Code/NABET Sector", id: "service_type" });
+      renderField(c, { label: "Specifications *", id: "specifications" });
+      renderField(c, { label: "Financial Year *", id: "financial_year" });
+      renderField(c, { label: "Perfact Group Company Name *", id: "perfact_company" });
+      renderField(c, { label: "Customer Classification *", id: "customer_classification" });
+      renderField(c, { label: "Lead Source *", id: "lead_source" });
+
+      // Upload Document
+      renderField(c, { label: "Upload RFQ or Scope of Work document", id: "rfq_upload", type: "file" });
+
+      // Cancellation Details
+      renderField(c, { label: "Reason for Cancellation of Project", id: "cancel_reason", type: "textarea" });
+      renderField(c, { label: "Date of Cancellation", id: "cancel_date", type: "date", placeholder: "dd-MMM-yyyy" });
+      renderField(c, { label: "Cost Incurred so far (if applicable)", id: "cost_incurred" });
+      renderField(c, { label: "Additional Details", id: "additional_details", type: "textarea" });
+      renderField(c, { label: "Remarks", id: "remarks", type: "textarea" });
+
+      // E-Signature
+      renderField(c, { label: "Signature", id: "signature", type: "signature" });
+
+      // Submit Handler
+      document.getElementById("submitBtn").addEventListener("click", function () {
+        const payload = {
+          mail_date: document.getElementById("mail_date")?.value || "",
+          filler_first_name: document.getElementById("filler_first_name")?.value || "",
+          filler_last_name: document.getElementById("filler_last_name")?.value || "",
+          filler_email: document.getElementById("filler_email")?.value || "",
+          customer_company: document.getElementById("customer_company")?.value || "",
+          customer_first_name: document.getElementById("customer_first_name")?.value || "",
+          customer_last_name: document.getElementById("customer_last_name")?.value || "",
+          customer_contact: document.getElementById("customer_contact")?.value || "",
+          customer_email: document.getElementById("customer_email")?.value || "",
+          email_from: document.getElementById("email_from")?.value || "",
+          confirm_email: document.getElementById("confirm_email")?.value || "",
+          activity_type: document.getElementById("activity_type")?.value || "",
+          project_location: document.getElementById("project_location")?.value || "",
+          village: document.getElementById("village")?.value || "",
+          taluka: document.getElementById("taluka")?.value || "",
+          district: document.getElementById("district")?.value || "",
+          state: document.getElementById("state")?.value || "",
+          postal: document.getElementById("postal")?.value || "",
+          country: document.getElementById("country")?.value || "",
+          st_ut: document.getElementById("st_ut")?.value || "",
+          type_of_work: document.getElementById("type_of_work")?.value || "",
+          service_type: document.getElementById("service_type")?.value || "",
+          specifications: document.getElementById("specifications")?.value || "",
+          financial_year: document.getElementById("financial_year")?.value || "",
+          perfact_company: document.getElementById("perfact_company")?.value || "",
+          customer_classification: document.getElementById("customer_classification")?.value || "",
+          lead_source: document.getElementById("lead_source")?.value || "",
+          rfq_upload: document.getElementById("rfq_upload")?.files?.[0] || null,
+          cancel_reason: document.getElementById("cancel_reason")?.value || "",
+          cancel_date: document.getElementById("cancel_date")?.value || "",
+          cost_incurred: document.getElementById("cost_incurred")?.value || "",
+          additional_details: document.getElementById("additional_details")?.value || "",
+          remarks: document.getElementById("remarks")?.value || "",
+          signature: document.getElementById("signature")?.value || ""
+        };
+
+        google.script.run
+          .withSuccessHandler(res => {
+            document.getElementById("status").innerText = "Submitted: " + (res.submission_id || "OK");
+          })
+          .withFailureHandler(err => {
+            document.getElementById("status").innerText = "Submit failed: " + err.message;
+          })
+          .submitForm(FORM_CODE.toUpperCase(), payload);
+      });
+    </script>
+  </body>
+</html>

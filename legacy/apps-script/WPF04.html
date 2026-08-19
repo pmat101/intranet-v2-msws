@@ -1,0 +1,171 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <base target="_top" />
+  <title>WPF04</title>
+
+  <?!= HtmlService.createHtmlOutputFromFile('sharedStyles').getContent(); ?>
+  <?!= HtmlService.createHtmlOutputFromFile('sharedComponents').getContent(); ?>
+</head>
+
+<body>
+<div class="form-wrapper">
+
+  <div class="form-title">WPF04</div>
+  <div class="form-subtitle">WPF - Reservoir / Lagoon</div>
+
+  <div id="f_fields"></div>
+
+  <!-- WEEKLY TEAM WORK INFO -->
+  <div class="form-section">
+    <div class="section-heading">Weekly Team Work Info</div>
+    <div id="teamInfoBody"></div>
+    <button type="button" class="btn-secondary" id="addMemberBtn">+ Add Member</button>
+  </div>
+
+  <div style="margin-top:10px">
+    <strong>Total Working Hours: </strong>
+    <span id="totalHours">0</span>
+  </div>
+
+  <div style="margin-top:20px">
+    <button class="btn-primary" id="submitBtn">Submit</button>
+    <span id="status" style="margin-left:10px"></span>
+  </div>
+
+</div>
+
+<script>
+
+const FORM_CODE = "wpf04";
+const c = document.getElementById("f_fields");
+
+/* ================= BASIC DETAILS ================= */
+
+renderField(c,{label:"Week Start Date *Required",id:"week_start",type:"date"});
+renderField(c,{label:"Week End Date *Required",id:"week_end",type:"date"});
+renderField(c,{label:"Team Name *Required",id:"team_name"});
+
+/* ================= SUBMISSIONS THIS WEEK ================= */
+
+renderField(c,{label:"Number of submissions this week *Required",id:"submissions_total",type:"number"});
+renderField(c,{label:"Environmental Audit Reports *Required",id:"sub_env_audit",type:"number"});
+renderField(c,{label:"Compliance Reports *Required",id:"sub_compliance",type:"number"});
+renderField(c,{label:"Consent Applications *Required",id:"sub_consent",type:"number"});
+renderField(c,{label:"Dust Audit Reports *Required",id:"sub_dust",type:"number"});
+renderField(c,{label:"EPR *Required",id:"sub_epr",type:"number"});
+
+/* ================= TARGETS SECTION FUNCTION ================= */
+
+function renderTargetSection(title,prefix){
+  const div=document.createElement("div");
+  div.className="form-section";
+  div.innerHTML=`<div class="section-heading">${title}</div>`;
+  c.appendChild(div);
+
+  renderField(div,{label:"Environmental Audit Report *Required",id:prefix+"_env",type:"number"});
+  renderField(div,{label:"Compliance Reports *Required",id:prefix+"_compliance",type:"number"});
+  renderField(div,{label:"Consent Application *Required",id:prefix+"_consent",type:"number"});
+  renderField(div,{label:"Dust Audit Report *Required",id:prefix+"_dust",type:"number"});
+  renderField(div,{label:"EPR *Required",id:prefix+"_epr",type:"number"});
+  renderField(div,{label:"Preparation *Required",id:prefix+"_prep",type:"number"});
+  renderField(div,{label:"Submission *Required",id:prefix+"_submission",type:"number"});
+  renderField(div,{label:"Granted *Required",id:prefix+"_granted",type:"number"});
+}
+
+renderTargetSection("Targets planned this week *","planned");
+renderTargetSection("Targets achieved this week *","achieved");
+renderTargetSection("Projected targets for next week *","projected");
+
+/* ================= ACTIVE PROJECTS ================= */
+
+renderField(c,{label:"Number of Active Projects *Required",id:"active_projects",type:"number"});
+
+/* ================= PERFORMANCE ================= */
+
+renderField(c,{label:"Highlights *Required",id:"highlights",type:"textarea"});
+renderField(c,{label:"Low Points / Complaints Received *Required",id:"low_points",type:"textarea"});
+renderField(c,{label:"Challenges faced *Required",id:"challenges",type:"textarea"});
+renderField(c,{label:"Bottlenecks in completing targets *Required",id:"bottlenecks",type:"textarea"});
+
+/* ================= FILE UPLOAD ================= */
+
+const fileDiv=document.createElement("div");
+fileDiv.className="form-group";
+fileDiv.innerHTML=`
+  <label>Upload Weekly PPT *Required</label>
+  <input type="file" id="weekly_ppt" accept=".ppt,.pptx,.pdf" />
+`;
+c.appendChild(fileDiv);
+
+/* ================= TEAM MULTIPLE ================= */
+
+document.getElementById("addMemberBtn").onclick=function(){
+  const d=document.createElement("div");
+  d.className="subform-row";
+  d.innerHTML=`
+    <input class="member_name" placeholder="Name *Required">
+    <input class="member_desg" placeholder="Designation *Required">
+    <input type="number" class="member_days" placeholder="Working days *Required">
+    <input type="number" class="member_site" placeholder="Site Visit / External Meeting days">
+    <input class="member_remarks" placeholder="Remarks (if any)">
+    <input type="number" class="member_hours" placeholder="Total working hours">
+    <button type="button" onclick="this.parentElement.remove();calculateHours()">Remove</button>
+  `;
+  teamInfoBody.appendChild(d);
+  d.querySelector(".member_hours").addEventListener("input",calculateHours);
+};
+
+function calculateHours(){
+  let total=0;
+  document.querySelectorAll(".member_hours").forEach(i=>{
+    total+=Number(i.value)||0;
+  });
+  document.getElementById("totalHours").innerText=total;
+}
+
+function collectTeam(){
+  return Array.from(document.querySelectorAll("#teamInfoBody .subform-row"))
+  .map(r=>({
+    name:r.querySelector(".member_name")?.value||"",
+    designation:r.querySelector(".member_desg")?.value||"",
+    working_days:r.querySelector(".member_days")?.value||"",
+    site_visit_days:r.querySelector(".member_site")?.value||"",
+    remarks:r.querySelector(".member_remarks")?.value||"",
+    hours:r.querySelector(".member_hours")?.value||""
+  })).filter(x=>x.name);
+}
+
+/* ================= SUBMIT ================= */
+
+document.getElementById("submitBtn").onclick=function(){
+
+  const payload={};
+
+  document.querySelectorAll("#f_fields input, #f_fields textarea")
+  .forEach(el=>{
+    if(el.type!=="file"){
+      payload[el.id]=el.value||"";
+    }
+  });
+
+  payload.team_info=collectTeam();
+  payload.total_working_hours=document.getElementById("totalHours").innerText;
+
+  const file=document.getElementById("weekly_ppt");
+  payload.weekly_ppt_name=file.files[0]?file.files[0].name:"";
+
+  google.script.run
+    .withSuccessHandler(res=>{
+      document.getElementById("status").innerText="Submitted: "+(res.submission_id||"OK");
+    })
+    .withFailureHandler(err=>{
+      document.getElementById("status").innerText="Submit failed: "+err.message;
+    })
+    .submitForm(FORM_CODE.toUpperCase(),payload);
+};
+
+</script>
+</body>
+</html>

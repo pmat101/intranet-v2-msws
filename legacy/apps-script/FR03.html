@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <base target="_top" />
+    <title>QRA Report - FR03</title>
+
+    <?!= HtmlService.createHtmlOutputFromFile('sharedStyles').getContent(); ?>
+    <?!= HtmlService.createHtmlOutputFromFile('sharedComponents').getContent(); ?>
+  </head>
+  <body>
+    <div class="form-wrapper">
+      <div class="form-title">FR03</div>
+      <div class="form-subtitle">QRA Report</div>
+
+      <div id="prefill-area"></div>
+
+      <div class="form-section">
+        <div class="section-heading">Responder Details</div>
+        <div id="f_responder"></div>
+      </div>
+
+      <div class="form-section">
+        <div class="section-heading">Project Identity</div>
+        <div id="f_fields"></div>
+        <div id="f_selects"></div>
+      </div>
+
+      <div class="form-section">
+        <div class="section-heading">Report Submission</div>
+        <div id="f_links"></div>
+      </div>
+
+      <div class="form-section">
+        <div class="section-heading">QRA Analysis & Mitigation</div>
+        <div id="f_technical"></div>
+      </div>
+
+      <div class="form-section">
+        <div id="f_final"></div>
+        <div style="margin-top: 15px; padding: 12px; border: 1px solid #c8e6c9; border-radius: 4px; background: #f1f8e9;">
+          <label style="display: flex; align-items: flex-start; cursor: pointer;">
+            <input type="checkbox" id="disclaimer_check" style="margin-top: 4px;" />
+            <span style="margin-left: 10px; font-size: 0.9rem; color: #333;">
+              <strong>Disclaimer *</strong>: I hereby confirm that all information in the report is correct and to the best of my knowledge and I own the responsibility for any error
+            </span>
+          </label>
+        </div>
+      </div>
+
+      <div style="margin-top: 20px">
+        <button class="btn-primary" id="submitBtn">Submit</button>
+        <span id="status" class="text-muted" style="margin-left: 12px"></span>
+      </div>
+    </div>
+
+    <script>
+      const FORM_CODE = "FR03";
+
+      const resC = document.getElementById("f_responder");
+      const projC = document.getElementById("f_fields");
+      const selC = document.getElementById("f_selects");
+      const linkC = document.getElementById("f_links");
+      const techC = document.getElementById("f_technical");
+      const finalC = document.getElementById("f_final");
+
+      // --- Responder Fields ---
+      renderField(resC, { label: "Date", id: "report_date", type: "date" });
+      renderField(resC, { label: "First Name", id: "first_name" });
+      renderField(resC, { label: "Last Name", id: "last_name" });
+      renderField(resC, { label: "Official Email ID of Responder *", id: "email_id", placeholder: "Required" });
+      const teamSelect = renderField(resC, { label: "Recipient Team Name", id: "team_name", type: "select" });
+
+      // --- Project Identity ---
+      renderField(projC, { label: "Company Name", id: "company_name" });
+      renderField(projC, { label: "Name of the project *", id: "project_name" });
+      const pcodeInput = renderField(projC, { 
+        label: "PCODE *", id: "pcode", 
+        helper: "REFER LINK: https://docs.google.com/spreadsheets/d/1POfI4IgCQv7Pj2dcaOj3mZG_Tnuybid-eVrLQn5KO9k/edit?usp=sharing" 
+      });
+
+      const catSelect = renderField(selC, { label: "Category *", id: "category", type: "select" });
+      const sectorSelect = renderField(selC, { label: "Sector *", id: "sector", type: "select" });
+      const eacSelect = renderField(selC, { label: "EAC Name", id: "eac_name", type: "select" });
+
+      // --- Links & Status ---
+      renderField(linkC, { label: "Editable Report Link *", id: "editable_link" });
+      renderField(linkC, { label: "PDF Link *", id: "pdf_link" });
+      const statusSelect = renderField(linkC, { label: "Report update status *", id: "update_status", type: "select" });
+
+      // --- QRA Technical Fields ---
+      renderField(techC, { label: "Impact Identified *", id: "impact_identified", type: "textarea", placeholder: "Required" });
+      renderField(techC, { label: "Mitigation Proposed *", id: "mitigation_proposed", type: "textarea", placeholder: "Required" });
+
+      // --- Recommendation & Precautions ---
+      const recSelect = renderField(finalC, { 
+        label: "Do you recommend this project should be granted environmental clearance? *", 
+        id: "recommendation", type: "select" 
+      });
+      renderField(finalC, { label: "If so what should be the precautions? *", id: "precautions", type: "textarea", placeholder: "Required" });
+      renderField(finalC, { label: "Remarks", id: "remarks", placeholder: "if any" });
+
+      // --- Populate Dropdowns ---
+      const teams = ["Arctic","Canal","Cove","Creek","Delta","Estuary","Fountain","Glacier","Lagoon","Lakes","Oasis","Ocean","Pond","Pool","Reservoir","River","Spring","Tributary","Upstream","N/A"];
+      teams.forEach(t => teamSelect.appendChild(new Option(t, t)));
+
+      ["A", "B1", "B2"].forEach(c => catSelect.appendChild(new Option(c, c)));
+      
+      const sectors = ["1a","1b","1d","2a","2b","3a","3b","4a","4c","4d","4f","5a","5b","5c","5d","5e","5f","5g","5h","5j","6a","6b","7a","7b","7c","7d","7da","7e","7f","7g","7h","7i","8a","8b"];
+      sectors.forEach(s => sectorSelect.appendChild(new Option(s, s)));
+
+      const eacs = ["Coal Mining","Non-Coal Mining","CRZ","Hydro & River Valley","Industry-1","Industry-2","Industry-3","Infrastructure-1","Infrastructure-2","Nuclear & Defence","Thermal","Violation Cases","Andaman and Nicobar SEAC/SEIAA","Andhra Pradesh SEAC/SEIAA","Arunachal Pradesh SEAC/SEIAA","Assam SEAC/SEIAA","Bihar SEAC/SEIAA","Chandigarh SEAC/SEIAA","Chattisgarh SEAC/SEIAA","Daman, Diu, Dadra and Nagar Haveli SEAC/SEIAA","Delhi SEAC/SEIAA","Goa SEAC/SEIAA","Gujarat SEAC/SEIAA","Haryana SEAC/SEIAA","Himachal Pradesh SEAC/SEIAA","Jammu & Kashmir SEAC/SEIAA","Jharkhand SEAC/SEIAA","Karnataka SEAC/SEIAA","Kerala SEAC/SEIAA","Ladakh SEAC/SEIAA","Lakshadweep SEAC/SEIAA","Madhya Pradesh SEAC/SEIAA","Maharashtra SEAC/SEIAA","Manipur SEAC/SEIAA","Meghalaya SEAC/SEIAA","Mizoram SEAC/SEIAA","Nagaland SEAC/SEIAA","Odisha SEAC/SEIAA","Puducherry SEAC/SEIAA","Punjab SEAC/SEIAA","Rajasthan SEAC/SEIAA","Sikkim SEAC/SEIAA","Tamil Nadu SEAC/SEIAA","Telangana SEAC/SEIAA","Tripura SEAC/SEIAA","Uttar Pradesh SEAC/SEIAA","Uttarakhand SEAC/SEIAA","West Bengal SEAC/SEIAA"];
+      eacs.forEach(e => eacSelect.appendChild(new Option(e, e)));
+
+      ["New", "Revised"].forEach(st => statusSelect.appendChild(new Option(st, st)));
+      ["Yes", "No"].forEach(r => recSelect.appendChild(new Option(r, r)));
+
+      // --- Prefill Logic ---
+      pcodeInput.addEventListener("blur", function () {
+        const v = this.value && this.value.trim();
+        if (v) autoPrefillFromProject(v);
+      });
+
+      function autoPrefillFromProject(pcode) {
+        google.script.run
+          .withSuccessHandler(function (project) {
+            if (!project) return;
+            Object.keys(project).forEach(key => {
+              const field = document.getElementById(key);
+              if (field) field.value = project[key];
+            });
+          })
+          .getProjectByPcode(pcode);
+      }
+
+      // --- Submission Logic ---
+      document.getElementById("submitBtn").addEventListener("click", function () {
+        if(!document.getElementById("disclaimer_check").checked) {
+            alert("Please confirm the disclaimer by checking the box.");
+            return;
+        }
+
+        const payload = {
+          report_date: document.getElementById("report_date").value,
+          first_name: document.getElementById("first_name").value,
+          last_name: document.getElementById("last_name").value,
+          email_id: document.getElementById("email_id").value,
+          team_name: document.getElementById("team_name").value,
+          company_name: document.getElementById("company_name").value,
+          project_name: document.getElementById("project_name").value,
+          pcode: document.getElementById("pcode").value,
+          category: document.getElementById("category").value,
+          sector: document.getElementById("sector").value,
+          eac_name: document.getElementById("eac_name").value,
+          editable_link: document.getElementById("editable_link").value,
+          pdf_link: document.getElementById("pdf_link").value,
+          update_status: document.getElementById("update_status").value,
+          impact_identified: document.getElementById("impact_identified").value,
+          mitigation_proposed: document.getElementById("mitigation_proposed").value,
+          recommendation: document.getElementById("recommendation").value,
+          precautions: document.getElementById("precautions").value,
+          remarks: document.getElementById("remarks").value
+        };
+
+        google.script.run
+          .withSuccessHandler(res => {
+            document.getElementById("status").innerText = "Submitted Successfully: " + (res.submission_id || "");
+          })
+          .withFailureHandler(err => {
+            document.getElementById("status").innerText = "Error: " + err.message;
+          })
+          .submitForm(FORM_CODE, payload);
+      });
+    </script>
+  </body>
+</html>

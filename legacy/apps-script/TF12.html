@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <base target="_top" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TF12</title>
+    <?!= HtmlService.createHtmlOutputFromFile('shared-styles').getContent(); ?>
+    <style>
+      .section-divider {
+        margin: 22px 0 14px;
+        padding-top: 8px;
+        border-top: 1px solid #e5e7eb;
+        font-weight: 700;
+        font-size: 18px;
+      }
+      .subform-card {
+        border: 1px solid #e5e7eb;
+        border-radius: 14px;
+        padding: 14px;
+        margin-bottom: 14px;
+        background: #fff;
+      }
+      .subtle-note {
+        font-size: 12px;
+        color: #6b7280;
+        margin-top: 6px;
+      }
+      .actions-row {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+        flex-wrap: wrap;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="form-wrapper">
+      <div class="form-title">TF12</div>
+      <div class="form-subtitle">
+        To be submitted between document uploading and Agenda Enlistment to QCC
+        for review
+      </div>
+
+      <div class="form-section">
+        <div class="form-group">
+          <label class="form-label" for="team_name"
+            >Team Name <span class="required">*</span></label
+          >
+          <select id="team_name" required></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="eia_coordinator"
+            >EIA Coordinator <span class="required">*</span></label
+          >
+          <select id="eia_coordinator" required></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="csuite_officer"
+            >C-Suite Officer involved <span class="required">*</span></label
+          >
+          <select id="csuite_officer" required></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="company_name">Company Name</label>
+          <input type="text" id="company_name" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="project_name"
+            >Name of the project <span class="required">*</span></label
+          >
+          <input type="text" id="project_name" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="pcode"
+            >PCODE <span class="required">*</span></label
+          >
+          <input type="text" id="pcode" required />
+          <div class="helper-text">
+            Refer the active PCODE list in your database
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="location_of_project"
+            >Location of the project <span class="required">*</span></label
+          >
+          <input type="text" id="location_of_project" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="category"
+            >Category <span class="required">*</span></label
+          >
+          <select id="category" required></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="sector"
+            >Sector <span class="required">*</span></label
+          >
+          <select id="sector" required></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="eac_name"
+            >EAC Name <span class="required">*</span></label
+          >
+          <select id="eac_name" required></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="stage_of_case"
+            >Status/ Stage of the Case <span class="required">*</span></label
+          >
+          <select id="stage_of_case" required></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Files to be reviewed</label>
+          <div id="files-review-rows"></div>
+          <div class="subtle-note">
+            Docs linked for review must be PDFs only.
+          </div>
+          <div class="actions-row">
+            <button type="button" class="btn-secondary" id="add-file-row">
+              + Add Row
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="project_sheet_link"
+            >Link to Project Sheet <span class="required">*</span></label
+          >
+          <input type="url" id="project_sheet_link" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="kml_link"
+            >Link to KML <span class="required">*</span></label
+          >
+          <input type="url" id="kml_link" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="annexure_folder_link"
+            >Link to Annexure Folder</label
+          >
+          <input type="url" id="annexure_folder_link" />
+          <div class="helper-text">
+            Applicable only for PFR/EMP/EDS/ADS/EIA report submission
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="initial_pages_link"
+            >Link to Initial Pages</label
+          >
+          <input type="url" id="initial_pages_link" />
+          <div class="helper-text">
+            Applicable only for PFR/EMP/EIA report submission
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="target_date_for_review"
+            >Target Date for review <span class="required">*</span></label
+          >
+          <input type="date" id="target_date_for_review" required />
+          <div class="helper-text">dd-MMM-yyyy</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="remarks"
+            >Remarks / Critical points by Team</label
+          >
+          <textarea id="remarks"></textarea>
+        </div>
+      </div>
+
+      <button
+        class="btn-primary"
+        type="button"
+        id="submitBtn"
+        onclick="submitTF12()"
+      >
+        Submit
+      </button>
+    </div>
+
+    <script>
+      let isSubmitting = false;
+
+      window.addEventListener("DOMContentLoaded", function () {
+        populateDropdowns();
+        const wrap = document.getElementById("files-review-rows");
+        wrap.appendChild(createFileReviewRow());
+
+        document
+          .getElementById("add-file-row")
+          .addEventListener("click", function () {
+            wrap.appendChild(createFileReviewRow());
+          });
+      });
+
+      function populateDropdowns() {
+        google.script.run
+          .withSuccessHandler(function (data) {
+            data = data || {};
+            fillSelect(
+              document.getElementById("team_name"),
+              data.team || [],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("eia_coordinator"),
+              data.eiaCoordinator || [],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("csuite_officer"),
+              data.csuite || [],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("category"),
+              data.category || ["A", "B1", "B2"],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("eac_name"),
+              data.eac || [],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("stage_of_case"),
+              data.qccStageOfCase || [],
+              "Select",
+            );
+            fillMultiSelect(
+              document.getElementById("sector"),
+              data.sector || [],
+            );
+          })
+          .getDropdownData();
+      }
+
+      function fillSelect(select, items, placeholder) {
+        if (!select) return;
+        select.innerHTML = "";
+        const first = document.createElement("option");
+        first.value = "";
+        first.textContent = placeholder || "Select";
+        select.appendChild(first);
+
+        (items || []).forEach(function (item) {
+          const option = document.createElement("option");
+          option.value = item;
+          option.textContent = item;
+          select.appendChild(option);
+        });
+      }
+
+      function fillMultiSelect(select, items) {
+        if (!select) return;
+        select.innerHTML = "";
+        (items || []).forEach(function (item) {
+          const option = document.createElement("option");
+          option.value = item;
+          option.textContent = item;
+          select.appendChild(option);
+        });
+      }
+
+      function getSelectedMultiValues(id) {
+        const el = document.getElementById(id);
+        return Array.from(el.selectedOptions)
+          .map((opt) => opt.value)
+          .join(", ");
+      }
+
+      function createFileReviewRow() {
+        const row = document.createElement("div");
+        row.className = "subform-card";
+        row.innerHTML = `
+          <div class="form-row">
+            <div class="form-col">
+              <label class="form-label">Type of document</label>
+              <select class="tf12-doc-type"></select>
+            </div>
+            <div class="form-col">
+              <label class="form-label">Link to document</label>
+              <input type="url" class="tf12-doc-link" placeholder="Paste PDF link" />
+            </div>
+          </div>
+          <div class="subtle-note">Docs linked for review must be PDFs only.</div>
+          <div class="actions-row">
+            <button type="button" class="btn-secondary tf12-remove-row">Remove</button>
+          </div>
+        `;
+
+        const docTypeSelect = row.querySelector(".tf12-doc-type");
+        fillSelect(
+          docTypeSelect,
+          [
+            "ADS reply",
+            "Detailed Project Report",
+            "EC Amendment application",
+            "EC Corrigendum application",
+            "EC Transfer application",
+            "EC application",
+            "EDS reply",
+            "EIA",
+            "Executive Summary",
+            "NIPL report",
+            "PFR",
+            "PPT",
+            "TOR Amendment application",
+            "TOR Corrigendum application",
+            "TOR Transfer application",
+          ],
+          "Select",
+        );
+
+        row
+          .querySelector(".tf12-remove-row")
+          .addEventListener("click", function () {
+            row.remove();
+          });
+
+        return row;
+      }
+
+      function collectFileReviewRows() {
+        return Array.from(
+          document.querySelectorAll("#files-review-rows .subform-card"),
+        )
+          .map(function (row) {
+            return {
+              type_of_document:
+                row.querySelector(".tf12-doc-type")?.value || "",
+              document_link: row.querySelector(".tf12-doc-link")?.value || "",
+            };
+          })
+          .filter(function (r) {
+            return (
+              String(r.type_of_document).trim() ||
+              String(r.document_link).trim()
+            );
+          });
+      }
+
+      function validateTF12(p) {
+        const missing = [];
+
+        if (!p.team_name) missing.push("Team Name");
+        if (!p.eia_coordinator) missing.push("EIA Coordinator");
+        if (!p.csuite_officer) missing.push("C-Suite Officer involved");
+        if (!p.project_name) missing.push("Name of the project");
+        if (!p.pcode) missing.push("PCODE");
+        if (!p.location_of_project) missing.push("Location of the project");
+        if (!p.category) missing.push("Category");
+        if (!p.sector) missing.push("Sector");
+        if (!p.eac_name) missing.push("EAC Name");
+        if (!p.stage_of_case) missing.push("Status/ Stage of the Case");
+        if (!p.project_sheet_link) missing.push("Link to Project Sheet");
+        if (!p.kml_link) missing.push("Link to KML");
+        if (!p.target_date_for_review) missing.push("Target Date for review");
+
+        if (!p.files_to_be_reviewed || !p.files_to_be_reviewed.length) {
+          missing.push("Files to be reviewed");
+        } else {
+          p.files_to_be_reviewed.forEach(function (row, i) {
+            if (!row.type_of_document)
+              missing.push(
+                `Files to be reviewed - Type of document (row ${i + 1})`,
+              );
+            if (!row.document_link)
+              missing.push(`Files to be reviewed - Link (row ${i + 1})`);
+          });
+        }
+
+        if (missing.length) {
+          alert("Please fill:\n\n" + missing.join("\n"));
+          return false;
+        }
+
+        return true;
+      }
+
+      function submitTF12() {
+        if (isSubmitting) return; // blocks double-clicks instantly
+        isSubmitting = true;
+        const submitBtn = document.getElementById("submitBtn");
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Submitting...";
+
+        const payload = {
+          team_name: document.getElementById("team_name").value,
+          eia_coordinator: document.getElementById("eia_coordinator").value,
+          csuite_officer: document.getElementById("csuite_officer").value,
+          company_name: document.getElementById("company_name").value,
+          project_name: document.getElementById("project_name").value,
+          pcode: document.getElementById("pcode").value,
+          location_of_project: document.getElementById("location_of_project")
+            .value,
+          category: document.getElementById("category").value,
+          sector: getSelectedMultiValues("sector"),
+          eac_name: document.getElementById("eac_name").value,
+          stage_of_case: document.getElementById("stage_of_case").value,
+          files_to_be_reviewed: collectFileReviewRows(),
+          project_sheet_link:
+            document.getElementById("project_sheet_link").value,
+          kml_link: document.getElementById("kml_link").value,
+          annexure_folder_link: document.getElementById("annexure_folder_link")
+            .value,
+          initial_pages_link:
+            document.getElementById("initial_pages_link").value,
+          target_date_for_review: document.getElementById(
+            "target_date_for_review",
+          ).value,
+          remarks: document.getElementById("remarks").value,
+        };
+
+        if (!validateTF12(payload)) {
+          isSubmitting = false;
+          submitBtn.disabled = false;
+          submitBtn.innerText = "Submit";
+          return;
+        }
+
+        google.script.run
+          .withSuccessHandler(function (res) {
+            console.log("SUCCESS HANDLER RUNNING"); // 👈 debug
+            document.body.innerHTML = res.thankYouHtml;
+          })
+          .withFailureHandler(function (err) {
+            alert("Submission failed: " + err.message);
+            isSubmitting = false;
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Submit";
+          })
+          .submitTF12(payload);
+      }
+    </script>
+  </body>
+</html>

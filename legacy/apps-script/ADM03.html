@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <base target="_top" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ADM03</title>
+    <?!= HtmlService.createHtmlOutputFromFile('shared-styles').getContent(); ?>
+  </head>
+  <body>
+    <div class="form-wrapper">
+      <div class="form-title">ADM03</div>
+      <div class="form-subtitle">Vehicle Requirement Details</div>
+
+      <div class="form-section">
+        <div class="form-group">
+          <label class="form-label" for="date">Date</label>
+          <input type="date" id="date" />
+          <div class="helper-text">dd-MMM-yyyy</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Name of Requester</label>
+          <div class="form-row">
+            <div class="form-col">
+              <input
+                type="text"
+                id="requestor_first_name"
+                placeholder="First Name"
+              />
+              <div class="helper-text">First Name</div>
+            </div>
+            <div class="form-col">
+              <input
+                type="text"
+                id="requestor_last_name"
+                placeholder="Last Name"
+              />
+              <div class="helper-text">Last Name</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="requestor_email"
+            >Official Email ID of Requester
+            <span class="required">*</span></label
+          >
+          <input type="email" id="requestor_email" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="team_name">Team Name</label>
+          <select id="team_name"></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="department">Department</label>
+          <input type="text" id="department" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Vehicle Requirement Details</label>
+          <div id="adm03-subform-rows"></div>
+          <button
+            type="button"
+            class="btn-secondary"
+            id="add-adm03-row"
+            style="margin-top: 10px"
+          >
+            + Add Row
+          </button>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="remarks">Remarks</label>
+          <textarea id="remarks"></textarea>
+        </div>
+      </div>
+
+      <button
+        class="btn-primary"
+        type="button"
+        id="submitBtn"
+        onclick="submitADM03()"
+      >
+        Submit
+      </button>
+    </div>
+
+    <script>
+      window.addEventListener("DOMContentLoaded", function () {
+        populateDropdowns();
+
+        const wrap = document.getElementById("adm03-subform-rows");
+        wrap.appendChild(createADM03Row());
+
+        document
+          .getElementById("add-adm03-row")
+          .addEventListener("click", function () {
+            wrap.appendChild(createADM03Row());
+          });
+      });
+
+      function populateDropdowns() {
+        google.script.run
+          .withSuccessHandler(function (data) {
+            data = data || {};
+            fillSelect(
+              document.getElementById("team_name"),
+              data.team || [],
+              "Select",
+            );
+          })
+          .getDropdownData();
+      }
+
+      function fillSelect(select, items, placeholder) {
+        if (!select) return;
+        select.innerHTML = "";
+        const first = document.createElement("option");
+        first.value = "";
+        first.textContent = placeholder || "Select";
+        select.appendChild(first);
+
+        (items || []).forEach(function (item) {
+          const option = document.createElement("option");
+          option.value = item;
+          option.textContent = item;
+          select.appendChild(option);
+        });
+      }
+
+      function createADM03Row() {
+        const row = document.createElement("div");
+        row.className = "subform-row";
+        row.style.border = "1px solid #e5e7eb";
+        row.style.borderRadius = "12px";
+        row.style.padding = "14px";
+        row.style.marginBottom = "14px";
+        row.innerHTML = `
+                <div class="form-row">
+                <div class="form-col">
+                    <label class="form-label">Date of pick up</label>
+                    <input type="date" class="adm03-date-of-pickup" />
+                </div>
+                <div class="form-col">
+                    <label class="form-label">Vehicle Required Till Date</label>
+                    <input type="date" class="adm03-vehicle-required-till-date" />
+                </div>
+                </div>
+
+                <div class="form-row">
+                <div class="form-col">
+                    <label class="form-label">Name of person going for visit</label>
+                    <input type="text" class="adm03-person-going" />
+                </div>
+                <div class="form-col">
+                    <label class="form-label">Time of Pick up team</label>
+                    <input type="time" class="adm03-time-of-pickup" />
+                </div>
+                </div>
+
+                <div class="form-row">
+                <div class="form-col">
+                    <label class="form-label">Pick up point</label>
+                    <input type="text" class="adm03-pickup-point" />
+                </div>
+                <div class="form-col">
+                    <label class="form-label">Place/s to be visited</label>
+                    <input type="text" class="adm03-places-to-be-visited" />
+                </div>
+                </div>
+
+                <div class="form-row">
+                <div class="form-col">
+                    <label class="form-label">Project Name <span class="required">*</span></label>
+                    <input type="text" class="adm03-project-name" />
+                </div>
+                <div class="form-col">
+                    <label class="form-label">PCODE <span class="required">*</span></label>
+                    <input type="text" class="adm03-pcode" />
+                </div>
+                </div>
+
+                <div class="form-row">
+                <div class="form-col">
+                    <label class="form-label">Distance travelled <span class="required">*</span></label>
+                    <input type="text" class="adm03-distance-travelled" />
+                </div>
+                <div class="form-col">
+                    <label class="form-label">Purpose of visit</label>
+                    <input type="text" class="adm03-purpose-of-visit" />
+                </div>
+                </div>
+
+                <button type="button" class="btn-secondary adm03-remove-row" style="margin-top:10px;">Remove</button>
+      `;
+
+        row
+          .querySelector(".adm03-remove-row")
+          .addEventListener("click", function () {
+            row.remove();
+          });
+
+        return row;
+      }
+
+      function collectADM03Rows() {
+        return Array.from(
+          document.querySelectorAll("#adm03-subform-rows .subform-row"),
+        )
+          .map(function (row) {
+            return {
+              date_of_pickup:
+                row.querySelector(".adm03-date-of-pickup")?.value || "",
+              vehicle_required_till_date:
+                row.querySelector(".adm03-vehicle-required-till-date")?.value ||
+                "",
+              name_of_person_going_for_visit:
+                row.querySelector(".adm03-person-going")?.value || "",
+              time_of_pickup_team:
+                row.querySelector(".adm03-time-of-pickup")?.value || "",
+              pickup_point:
+                row.querySelector(".adm03-pickup-point")?.value || "",
+              places_to_be_visited:
+                row.querySelector(".adm03-places-to-be-visited")?.value || "",
+              project_name:
+                row.querySelector(".adm03-project-name")?.value || "",
+              pcode: row.querySelector(".adm03-pcode")?.value || "",
+              distance_travelled:
+                row.querySelector(".adm03-distance-travelled")?.value || "",
+              purpose_of_visit:
+                row.querySelector(".adm03-purpose-of-visit")?.value || "",
+            };
+          })
+          .filter(function (r) {
+            return (
+              r.date_of_pickup ||
+              r.vehicle_required_till_date ||
+              r.name_of_person_going_for_visit ||
+              r.time_of_pickup_team ||
+              r.pickup_point ||
+              r.places_to_be_visited ||
+              r.project_name ||
+              r.pcode ||
+              r.distance_travelled ||
+              r.purpose_of_visit
+            );
+          });
+      }
+
+      function validateADM03(p) {
+        const missing = [];
+
+        if (!String(p.requestor_email || "").trim())
+          missing.push("Official Email ID of Requester");
+        if (!String(p.team_name || "").trim()) missing.push("Team Name");
+
+        const details = Array.isArray(p.details) ? p.details : [];
+        const usedRows = details.filter(function (r) {
+          return (
+            String(r.date_of_pick_up || "").trim() ||
+            String(r.vehicle_required_till_date || "").trim() ||
+            String(r.name_of_person_going_for_visit || "").trim() ||
+            String(r.time_of_pickup_team || "").trim() ||
+            String(r.pickup_point || "").trim() ||
+            String(r.places_to_be_visited || "").trim() ||
+            String(r.project_name || "").trim() ||
+            String(r.pcode || "").trim() ||
+            String(r.distance_travelled || "").trim() ||
+            String(r.purpose_of_visit || "").trim()
+          );
+        });
+
+        if (!usedRows.length) {
+          missing.push("Vehicle Requirement Details");
+        } else {
+          usedRows.forEach(function (r, i) {
+            if (!String(r.project_name || "").trim())
+              missing.push(`Project Name (row ${i + 1})`);
+            if (!String(r.pcode || "").trim())
+              missing.push(`PCODE (row ${i + 1})`);
+            if (!String(r.distance_travelled || "").trim())
+              missing.push(`Distance travelled (row ${i + 1})`);
+          });
+        }
+
+        if (missing.length) {
+          alert("Please fill:\n\n" + missing.join("\n"));
+          return false;
+        }
+
+        return true;
+      }
+
+      let isSubmitting = false;
+
+      function submitADM03() {
+        if (isSubmitting) return; // blocks double-clicks instantly
+        isSubmitting = true;
+        const submitBtn = document.getElementById("submitBtn");
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Submitting...";
+
+        const payload = {
+          date: document.getElementById("date").value,
+          requestor_first_name: document.getElementById("requestor_first_name")
+            .value,
+          requestor_last_name: document.getElementById("requestor_last_name")
+            .value,
+          requestor_email: document.getElementById("requestor_email").value,
+          team_name: document.getElementById("team_name").value,
+          department: document.getElementById("department").value,
+          remarks: document.getElementById("remarks").value,
+          details: collectADM03Rows(),
+        };
+        const firstDetail =
+          (payload.details || []).find(function (r) {
+            return (
+              String(r.project_name || "").trim() ||
+              String(r.pcode || "").trim()
+            );
+          }) || {};
+
+        const projectName = firstDetail.project_name || "";
+        const pcode = firstDetail.pcode || "";
+
+        if (!validateADM03(payload)) {
+          isSubmitting = false;
+          submitBtn.disabled = false;
+          submitBtn.innerText = "Submit";
+          return;
+        }
+
+        google.script.run
+          .withSuccessHandler(function (res) {
+            console.log("SUCCESS HANDLER RUNNING"); // 👈 debug
+            document.body.innerHTML = res.thankYouHtml;
+          })
+          .withFailureHandler(function (err) {
+            alert("Submission failed: " + err.message);
+            isSubmitting = false;
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Submit";
+          })
+          .submitADM03(payload);
+      }
+    </script>
+  </body>
+</html>

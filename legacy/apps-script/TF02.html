@@ -1,0 +1,688 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <base target="_top" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TF02</title>
+    <?!= HtmlService.createHtmlOutputFromFile('shared-styles').getContent(); ?>
+  </head>
+  <body>
+    <div class="form-wrapper">
+      <div class="form-title">TF02</div>
+      <div class="form-subtitle">Technical Format for EAC MOM to Team EIA</div>
+
+      <div class="form-section">
+        <div class="form-group">
+          <label class="form-label" for="date">Date</label>
+          <input type="date" id="date" />
+          <div class="helper-text">dd-MMM-yyyy</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Name</label>
+          <div class="form-row">
+            <div class="form-col">
+              <input type="text" id="first_name" placeholder="First Name" />
+            </div>
+            <div class="form-col">
+              <input type="text" id="last_name" placeholder="Last Name" />
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="employee_email"
+            >Employee Email ID <span class="required">*</span></label
+          >
+          <input type="email" id="employee_email" required />
+          <div class="helper-text">Email ID of the person filling the form</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="team_name"
+            >Team Name <span class="required">*</span></label
+          >
+          <select id="team_name" required></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="eia_coordinator_name"
+            >EIA Coordinator Name <span class="required">*</span></label
+          >
+          <select id="eia_coordinator_name" required></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label"
+            >QCC Reviewer Name <span class="required">*</span></label
+          >
+          <div id="qcc-reviewers-wrap" class="form-grid"></div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="committee_name"
+            >Name of the Committee (EAC/SEAC/etc)
+            <span class="required">*</span></label
+          >
+          <input type="text" id="committee_name" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="agenda_number"
+            >Agenda Number <span class="required">*</span></label
+          >
+          <input type="text" id="agenda_number" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="project_name"
+            >Project Name <span class="required">*</span></label
+          >
+          <input type="text" id="project_name" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="proposed_project_cost"
+            >Proposed Project Cost</label
+          >
+          <input
+            type="number"
+            id="proposed_project_cost"
+            step="0.01"
+            placeholder="in lacs"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="existing_project_cost"
+            >Existing Project Cost</label
+          >
+          <input
+            type="number"
+            id="existing_project_cost"
+            step="0.01"
+            placeholder="in lacs"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="case_type">Case Type</label>
+          <input type="text" id="case_type" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="meeting_type"
+            >Type of Meeting <span class="required">*</span></label
+          >
+          <select id="meeting_type" required></select>
+          <div
+            id="meeting_type_other_wrap"
+            style="display: none; margin-top: 10px"
+          >
+            <input
+              type="text"
+              id="meeting_type_other"
+              placeholder="Please specify"
+            />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="proposal_number"
+            >Proposal Number <span class="required">*</span></label
+          >
+          <input type="text" id="proposal_number" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="pcode"
+            >Project Code <span class="required">*</span></label
+          >
+          <input type="text" id="pcode" required />
+          <div class="helper-text">
+            Refer the active PCODE list in your project sheet
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="meeting_date"
+            >Date of Meeting <span class="required">*</span></label
+          >
+          <input type="date" id="meeting_date" required />
+          <div class="helper-text">dd-MMM-yyyy</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Time of Meeting</label>
+          <div class="form-row">
+            <div class="form-col">
+              <select id="time_hours"></select>
+            </div>
+            <div class="form-col" style="max-width: 110px">
+              <select id="time_minutes"></select>
+            </div>
+            <div class="form-col" style="max-width: 110px">
+              <select id="time_meridiem"></select>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="perfact_officials"
+            >Name of Perfact Official(s) attended the meeting</label
+          >
+          <input type="text" id="perfact_officials" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="project_proponent"
+            >Name of Project Proponent attended the meeting</label
+          >
+          <input type="text" id="project_proponent" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Name of Person who gave presentation</label>
+          <div class="form-row">
+            <div class="form-col">
+              <input
+                type="text"
+                id="presenter_first_name"
+                placeholder="First Name"
+              />
+            </div>
+            <div class="form-col">
+              <input
+                type="text"
+                id="presenter_last_name"
+                placeholder="Last Name"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="key_points_queries"
+            >Key Points &amp; Queries Raised by EAC
+            <span class="required">*</span></label
+          >
+          <textarea id="key_points_queries"></textarea>
+          <div class="helper-text">
+            List the specific, non-negotiable key points of EAC which they
+            asked. Document the question/observation and the required
+            action/data.
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="eac_future_focus"
+            >EAC's Future Focus / Issues <span class="required">*</span></label
+          >
+          <textarea
+            id="eac_future_focus"
+            placeholder="e.g. increased focus on specific environmental parameters, CSR activities, or cumulative impact assessment methodologies"
+          ></textarea>
+          <div class="helper-text">
+            Identify points for future/ issues that EAC is focusing on mostly.
+            These may be recurring themes, broader policy emphases or specific
+            technical aspects the Committee is for future project assessments
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="fae_suggestions"
+            >Suggestions on FAE Reports <span class="required">*</span></label
+          >
+          <textarea id="fae_suggestions"></textarea>
+          <div class="helper-text">
+            Document any suggestions in FAE reports if any (format, content,
+            data quality or methodology) made by the EAC, the Project Proponent
+            or the technical reviewers
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="ppt_changes"
+            >Change in PPT Format <span class="required">*</span></label
+          >
+          <textarea id="ppt_changes"></textarea>
+          <div class="helper-text">
+            Document any change in PPT format (structural, content or visual)
+            that was suggested or mandated by the EAC for this case or for
+            future presentations.
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="immediate_actions"
+            >Immediate Actions Required <span class="required">*</span></label
+          >
+          <textarea id="immediate_actions"></textarea>
+          <div class="helper-text">
+            Outline the specific, prioritised reply/submittal actions needed
+            immediately. Include the responsible team/person and the
+            internal/external deadline.
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="post_submittal_points"
+            >Post-Submittals Related Points
+            <span class="required">*</span></label
+          >
+          <textarea id="post_submittal_points"></textarea>
+          <div class="helper-text">
+            Note all follow-up actions, coordination requirements or
+            documentation steps necessary after the primary reply is submitted
+            (e.g., site visits, public hearing follow-ups, data validation
+            checks or final document archiving)
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="key_learnings"
+            >Key Learnings for Team &amp; FAEs
+            <span class="required">*</span></label
+          >
+          <textarea id="key_learnings"></textarea>
+          <div class="helper-text">
+            Capture critical, actionable insights and learnings for the team and
+            FAEs etc. specific to the preparation and the meeting itself. Focus
+            on improving future work
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="struggles_and_reason"
+            >Points We Struggled In &amp; Reason
+            <span class="required">*</span></label
+          >
+          <textarea id="struggles_and_reason"></textarea>
+          <div class="helper-text">
+            Detail which points we struggled in the meeting and reason. Be
+            specific and honest to drive systemic change.
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="future_implications"
+            >Implications for Future Projects
+            <span class="required">*</span></label
+          >
+          <textarea id="future_implications"></textarea>
+          <div class="helper-text">
+            Based on the EAC feedback and internal struggles, identify what
+            future projects to consider for strategy. Mandatory changes or best
+            practices that must be implemented starting from the inception stage
+            of future, similar EIA projects
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="feedback_suggestions"
+            >Feedback &amp; Suggestions given</label
+          >
+          <textarea id="feedback_suggestions"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="reply_to_be_submitted"
+            >Reply to be submitted</label
+          >
+          <textarea id="reply_to_be_submitted"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="case_recommended"
+            >Case Recommended <span class="required">*</span></label
+          >
+          <select id="case_recommended" required>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+            <option value="others">Others</option>
+          </select>
+          <div
+            id="case_recommended_other_wrap"
+            style="display: none; margin-top: 10px"
+          >
+            <input
+              type="text"
+              id="case_recommended_other"
+              placeholder="Please specify"
+            />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="warning_signs"
+            >Warning Signs <span class="required">*</span></label
+          >
+          <textarea id="warning_signs"></textarea>
+          <div class="helper-text">
+            Explicitly document any critical, non-negotiable issues or red flags
+            raised by the EAC that may affect the final recommendation or future
+            EC compliance.
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="action_points"
+            >Action points to be taken</label
+          >
+          <textarea id="action_points"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="meeting_recording_link"
+            >Meeting Recording Link <span class="required">*</span></label
+          >
+          <input type="url" id="meeting_recording_link" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="final_presentation_link"
+            >Final Presentation Link <span class="required">*</span></label
+          >
+          <input type="url" id="final_presentation_link" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="remarks">Remarks</label>
+          <textarea id="remarks"></textarea>
+        </div>
+      </div>
+
+      <button
+        class="btn-primary"
+        type="button"
+        onclick="submitTF02()"
+        id="submitBtn"
+      >
+        Submit
+      </button>
+    </div>
+
+    <script>
+      window.addEventListener("DOMContentLoaded", function () {
+        populateDropdowns();
+        bindEvents();
+      });
+
+      function populateDropdowns() {
+        google.script.run
+          .withSuccessHandler(function (data) {
+            data = data || {};
+            fillSelect(
+              document.getElementById("team_name"),
+              data.team || [],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("eia_coordinator_name"),
+              data.eiaCoordinator || [],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("meeting_type"),
+              data.meetingType || [],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("time_hours"),
+              Array.from({ length: 12 }, (_, i) =>
+                String(i + 1).padStart(2, "0"),
+              ),
+              "HH",
+            );
+            fillSelect(
+              document.getElementById("time_minutes"),
+              Array.from({ length: 60 }, (_, i) => String(i).padStart(2, "0")),
+              "MM",
+            );
+            fillSelect(
+              document.getElementById("time_meridiem"),
+              ["AM", "PM"],
+              "AM / PM",
+            );
+            renderQccReviewers(data.qccReviewer || []);
+          })
+          .getDropdownData();
+      }
+
+      function fillSelect(select, items, placeholder) {
+        if (!select) return;
+        select.innerHTML = "";
+        const first = document.createElement("option");
+        first.value = "";
+        first.textContent = placeholder || "Select";
+        select.appendChild(first);
+
+        (items || []).forEach(function (item) {
+          const option = document.createElement("option");
+          option.value = item;
+          option.textContent = item;
+          select.appendChild(option);
+        });
+      }
+
+      function renderQccReviewers(items) {
+        const wrap = document.getElementById("qcc-reviewers-wrap");
+        if (!wrap) return;
+
+        wrap.innerHTML = "";
+        (items || []).forEach(function (name, i) {
+          const id = "qcc_" + i;
+          const item = document.createElement("div");
+          item.className = "form-col-choice";
+          item.innerHTML = `
+            <input type="checkbox" id="${id}" name="qcc-reviewer" value="${name}">
+            <label for="${id}">${name}</label>
+          `;
+          wrap.appendChild(item);
+        });
+      }
+
+      function getCheckedValues(name) {
+        return Array.from(
+          document.querySelectorAll(`input[name="${name}"]:checked`),
+        )
+          .map(function (el) {
+            return el.value;
+          })
+          .join(", ");
+      }
+
+      function getRadioValue(name) {
+        const checked = document.querySelector(`input[name="${name}"]:checked`);
+        return checked ? checked.value : "";
+      }
+
+      function bindOther(selectId, wrapId, inputId) {
+        const select = document.getElementById(selectId);
+        const wrap = document.getElementById(wrapId);
+        const input = document.getElementById(inputId);
+
+        function sync() {
+          const show = String(select.value || "").toLowerCase() === "others";
+          wrap.style.display = show ? "block" : "none";
+          if (!show) input.value = "";
+        }
+
+        select.addEventListener("change", sync);
+        sync();
+      }
+
+      function bindEvents() {
+        bindOther(
+          "meeting_type",
+          "meeting_type_other_wrap",
+          "meeting_type_other",
+        );
+        bindOther(
+          "case_recommended",
+          "case_recommended_other_wrap",
+          "case_recommended_other",
+        );
+      }
+
+      function validateTF02(payload) {
+        const missing = [];
+
+        if (!payload.date) missing.push("Date");
+        if (!payload.employee_email) missing.push("Employee Email ID");
+        if (!payload.team_name) missing.push("Team Name");
+        if (!payload.eia_coordinator_name) missing.push("EIA Coordinator Name");
+        if (!payload.qcc_reviewers) missing.push("QCC Reviewer Name");
+        if (!payload.committee_name) missing.push("Name of the Committee");
+        if (!payload.agenda_number) missing.push("Agenda Number");
+        if (!payload.project_name) missing.push("Project Name");
+        if (!payload.meeting_type) missing.push("Type of Meeting");
+        if (!payload.proposal_number) missing.push("Proposal Number");
+        if (!payload.pcode) missing.push("Project Code");
+        if (!payload.meeting_date) missing.push("Date of Meeting");
+        if (!payload.key_points_queries)
+          missing.push("Key Points & Queries Raised by EAC");
+        if (!payload.eac_future_focus)
+          missing.push("EAC’s Future Focus / Issues");
+        if (!payload.fae_suggestions)
+          missing.push("Suggestions on FAE Reports");
+        if (!payload.ppt_changes) missing.push("Change in PPT Format");
+        if (!payload.immediate_actions)
+          missing.push("Immediate Actions Required");
+        if (!payload.post_submittal_points)
+          missing.push("Post-Submittals Related Points");
+        if (!payload.key_learnings)
+          missing.push("Key Learnings for Team & FAEs");
+        if (!payload.struggles_and_reason)
+          missing.push("Points We Struggled In & Reason");
+        if (!payload.future_implications)
+          missing.push("Implications for Future Projects");
+        if (!payload.case_recommended) missing.push("Case Recommended");
+        if (!payload.warning_signs) missing.push("Warning Signs");
+        if (!payload.meeting_recording_link)
+          missing.push("Meeting Recording Link");
+        if (!payload.final_presentation_link)
+          missing.push("Final Presentation Link");
+
+        if (payload.meeting_type === "Others" && !payload.meeting_type_other) {
+          missing.push("Please specify for Type of Meeting");
+        }
+
+        if (
+          payload.case_recommended === "Others" &&
+          !payload.case_recommended_other
+        ) {
+          missing.push("Please specify for Case Recommended");
+        }
+
+        if (missing.length) {
+          alert("Please fill:\n\n" + missing.join("\n"));
+          return false;
+        }
+
+        return true;
+      }
+
+      let isSubmitting = false;
+
+      function submitTF02() {
+        if (isSubmitting) return; // blocks double-clicks instantly
+        isSubmitting = true;
+        const submitBtn = document.getElementById("submitBtn");
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Submitting...";
+
+        const payload = {
+          date: document.getElementById("date").value,
+          first_name: document.getElementById("first_name").value,
+          last_name: document.getElementById("last_name").value,
+          employee_email: document.getElementById("employee_email").value,
+          team_name: document.getElementById("team_name").value,
+          eia_coordinator_name: document.getElementById("eia_coordinator_name")
+            .value,
+          qcc_reviewers: getCheckedValues("qcc-reviewer"),
+          committee_name: document.getElementById("committee_name").value,
+          agenda_number: document.getElementById("agenda_number").value,
+          project_name: document.getElementById("project_name").value,
+          proposed_project_cost: document.getElementById(
+            "proposed_project_cost",
+          ).value,
+          existing_project_cost: document.getElementById(
+            "existing_project_cost",
+          ).value,
+          case_type: document.getElementById("case_type").value,
+          meeting_type: document.getElementById("meeting_type").value,
+          meeting_type_other:
+            document.getElementById("meeting_type_other").value,
+          proposal_number: document.getElementById("proposal_number").value,
+          pcode: document.getElementById("pcode").value,
+          meeting_date: document.getElementById("meeting_date").value,
+          meeting_time:
+            document.getElementById("time_hours").value +
+            ":" +
+            document.getElementById("time_minutes").value +
+            " " +
+            document.getElementById("time_meridiem").value,
+          perfact_officials: document.getElementById("perfact_officials").value,
+          project_proponent: document.getElementById("project_proponent").value,
+          presenter_first_name: document.getElementById("presenter_first_name")
+            .value,
+          presenter_last_name: document.getElementById("presenter_last_name")
+            .value,
+          key_points_queries:
+            document.getElementById("key_points_queries").value,
+          eac_future_focus: document.getElementById("eac_future_focus").value,
+          fae_suggestions: document.getElementById("fae_suggestions").value,
+          ppt_changes: document.getElementById("ppt_changes").value,
+          immediate_actions: document.getElementById("immediate_actions").value,
+          post_submittal_points: document.getElementById(
+            "post_submittal_points",
+          ).value,
+          key_learnings: document.getElementById("key_learnings").value,
+          struggles_and_reason: document.getElementById("struggles_and_reason")
+            .value,
+          future_implications: document.getElementById("future_implications")
+            .value,
+          feedback_suggestions: document.getElementById("feedback_suggestions")
+            .value,
+          reply_to_be_submitted: document.getElementById(
+            "reply_to_be_submitted",
+          ).value,
+          case_recommended: document.getElementById("case_recommended").value,
+          case_recommended_other: document.getElementById(
+            "case_recommended_other",
+          ).value,
+          warning_signs: document.getElementById("warning_signs").value,
+          action_points: document.getElementById("action_points").value,
+          meeting_recording_link: document.getElementById(
+            "meeting_recording_link",
+          ).value,
+          final_presentation_link: document.getElementById(
+            "final_presentation_link",
+          ).value,
+          remarks: document.getElementById("remarks").value,
+        };
+
+        if (!validateTF02(payload)) {
+          isSubmitting = false;
+          submitBtn.disabled = false;
+          submitBtn.innerText = "Submit";
+          return;
+        }
+
+        google.script.run
+          .withSuccessHandler(function (res) {
+            console.log("SUCCESS HANDLER RUNNING"); // 👈 debug
+            document.body.innerHTML = res.thankYouHtml;
+          })
+          .withFailureHandler(function (err) {
+            alert("Submission failed: " + err.message);
+            isSubmitting = false;
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Submit";
+          })
+          .submitTF02(payload);
+      }
+    </script>
+  </body>
+</html>

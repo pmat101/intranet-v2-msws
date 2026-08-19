@@ -1,0 +1,515 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <base target="_top" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BD-01(A)</title>
+    <?!= HtmlService.createHtmlOutputFromFile('shared-styles').getContent(); ?>
+  </head>
+  <body>
+    <div class="form-wrapper">
+      <div class="form-title">BD-01(A)</div>
+      <div class="form-subtitle">
+        To be filled by BD Team before offer is sent
+      </div>
+      <div class="form-section">
+        <div class="form-group">
+          <label class="form-label" for="lead-date"
+            >Date of Client's Mail/ Lead Generation
+            <span class="required">*</span></label
+          >
+          <input type="date" id="lead-date" required />
+          <div class="helper-text">dd-mm-yyyy</div>
+        </div>
+
+        <h4>Name of the Form Filler</h4>
+        <div class="form-row">
+          <div class="form-col">
+            <div class="form-group">
+              <label class="form-label" for="form-filler-first-name"
+                >First Name</label
+              >
+              <input type="text" id="form-filler-first-name" />
+            </div>
+          </div>
+          <div class="form-col">
+            <div class="form-group">
+              <label class="form-label" for="form-filler-last-name"
+                >Last Name</label
+              >
+              <input type="text" id="form-filler-last-name" />
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="official-email"
+            >Official Email ID <span class="required">*</span></label
+          >
+          <input type="email" id="official-email" required />
+        </div>
+        <h2>Customer Details</h2>
+        <div class="form-group">
+          <label class="form-label" for="customer-company"
+            >Customer's Company Legal Name
+            <span class="required">*</span></label
+          >
+          <input type="text" id="customer-company" required />
+        </div>
+        <h4>Customer Name</h4>
+        <div class="form-row">
+          <div class="form-col">
+            <div class="form-group">
+              <label class="form-label" for="customer-first-name"
+                >First Name</label
+              >
+              <input type="text" id="customer-first-name" />
+            </div>
+          </div>
+          <div class="form-col">
+            <div class="form-group">
+              <label class="form-label" for="customer-last-name"
+                >Last Name</label
+              >
+              <input type="text" id="customer-last-name" />
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="customer-contact"
+            >Customer Contact Number
+          </label>
+          <input type="tel" id="customer-contact" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="customer-email">
+            Customer Email <span class="required">*</span>
+          </label>
+          <input
+            type="email"
+            id="customer-email"
+            placeholder="From which ID did you get the email from"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="customer-email-confirm">
+            Confirm Email <span class="required">*</span>
+          </label>
+          <input
+            type="email"
+            id="customer-email-confirm"
+            placeholder="Confirm Email"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Is it a repeat customer?</label>
+          <div class="form-row">
+            <div class="form-col-choice">
+              <input type="radio" id="repeat-yes" name="repeat" value="yes" />
+              <label for="repeat-yes">YES</label>
+            </div>
+            <div class="form-col-choice">
+              <input type="radio" id="repeat-no" name="repeat" value="no" />
+              <label for="repeat-no">NO</label>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="activity-proposed"
+            >Type of Activity Proposed <span class="required">*</span></label
+          >
+          <input type="text" id="activity-proposed" required />
+        </div>
+
+        <h4>Proposed Project Location (Tentative)</h4>
+        <div class="form-row">
+          <div class="form-col">
+            <div class="form-group">
+              <label class="form-label" for="village">Village</label>
+              <input type="text" id="village" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="taluka">Taluka</label>
+              <input type="text" id="taluka" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="district">District</label>
+              <input type="text" id="district" />
+            </div>
+          </div>
+          <div class="form-col">
+            <div class="form-group">
+              <label class="form-label" for="state"
+                >State/Region/Province</label
+              >
+              <input type="text" id="state" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="postal-code"
+                >Postal / Zip Code</label
+              >
+              <input type="text" id="postal-code" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="country">Country</label>
+              <select id="country"></select>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="st-ut"
+            >ST/UT <span class="required">*</span></label
+          >
+          <select id="st-ut" required></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="work-type"
+            >Type of Work <span class="required">*</span></label
+          >
+          <select id="work-type" required></select>
+          <div class="helper-text">Select from Index sheet</div>
+        </div>
+
+        <div class="form-group" id="work-type-other-wrap" style="display: none">
+          <label class="form-label" for="work-type-other-specify">
+            Please specify <span class="required">*</span>
+          </label>
+          <input
+            type="text"
+            id="work-type-other-specify"
+            placeholder="Specify type of work"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="sector"
+            >Service Type/ Code/ NABET Sector</label
+          >
+          <select id="sector"></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="specs"
+            >Specifications <span class="required">*</span></label
+          >
+          <select id="specs" required></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="fin-year"
+            >Financial Year <span class="required">*</span></label
+          >
+          <select id="fin-year" required>
+            <option value="2023">2023</option>
+            <option value="2024">2024</option>
+            <option value="2025">2025</option>
+            <option value="2026">2026</option>
+            <option value="2027">2027</option>
+            <option value="2028">2028</option>
+            <option value="2029">2029</option>
+            <option value="2030">2030</option>
+            <option value="2031">2031</option>
+            <option value="2032">2032</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="pg-company"
+            >Perfact group company name <span class="required">*</span></label
+          >
+          <select id="pg-company"></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="customer-class"
+            >Customer Classification <span class="required">*</span></label
+          >
+          <select id="customer-class" required>
+            <option value="new">New Customer</option>
+            <option value="existing">Existing Customer</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="lead-source"
+            >Lead Source <span class="required">*</span></label
+          >
+          <select id="lead-source" required>
+            <option value="">Select</option>
+            <option value="pb">Mr. Praveen Bhargava</option>
+            <option value="rb">Mrs. Rachna Bhargava</option>
+            <option value="nb">Dr. Nipun Bhargava</option>
+            <option value="rd">Mrs. Rachna Dogra</option>
+            <option value="gmk">Mr. Muthukumaran Ganpathi Narayanan</option>
+            <option value="ag">Mrs. Aarti Gupta</option>
+            <option value="others">Others</option>
+          </select>
+        </div>
+        <div
+          class="form-group"
+          id="lead-source-other-wrap"
+          style="display: none"
+        >
+          <label class="form-label" for="lead-source-other-specify">
+            Please specify <span class="required">*</span>
+          </label>
+          <input
+            type="text"
+            id="lead-source-other-specify"
+            placeholder="Specify lead source"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="rfq-url">
+            RFQ / Scope of Work document URL
+          </label>
+          <input type="url" id="rfq-url" placeholder="Paste file URL here" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="remarks">Remarks</label>
+          <textarea id="remarks"></textarea>
+        </div>
+      </div>
+      <button
+        class="btn-primary"
+        type="button"
+        onclick="submitBD01A()"
+        id="submitBtn"
+      >
+        Submit
+      </button>
+    </div>
+    <script>
+      window.addEventListener("DOMContentLoaded", function () {
+        populateDropdowns();
+        bindLeadSourceOther();
+        bindWorkTypeOther();
+      });
+
+      function populateDropdowns() {
+        google.script.run
+          .withSuccessHandler(function (data) {
+            data = data || {};
+
+            fillSelect(
+              document.getElementById("country"),
+              data.country || [],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("st-ut"),
+              data.stUt || [],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("work-type"),
+              data.workType || [],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("sector"),
+              data.sector || [],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("specs"),
+              data.specs || [],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("pg-company"),
+              data.pgCompany || [],
+              "Select",
+            );
+          })
+          .getDropdownData();
+      }
+
+      function fillSelect(select, items, placeholder, selectedValue) {
+        if (!select) return;
+
+        const keep = selectedValue !== undefined ? selectedValue : select.value;
+        select.innerHTML = "";
+
+        const first = document.createElement("option");
+        first.value = "";
+        first.textContent = placeholder || "Select";
+        select.appendChild(first);
+
+        (items || []).forEach(function (item) {
+          const option = document.createElement("option");
+          if (typeof item === "string") {
+            option.value = item;
+            option.textContent = item;
+          } else {
+            option.value = item.value;
+            option.textContent = item.label || item.value;
+          }
+          select.appendChild(option);
+        });
+
+        if (keep) select.value = keep;
+      }
+
+      function getCheckedValue(name) {
+        const checked = document.querySelector(`input[name="${name}"]:checked`);
+        return checked ? checked.value : "";
+      }
+
+      function bindLeadSourceOther() {
+        const select = document.getElementById("lead-source");
+        const wrap = document.getElementById("lead-source-other-wrap");
+        const input = document.getElementById("lead-source-other-specify");
+
+        function sync() {
+          const show = String(select.value || "").toLowerCase() === "others";
+          wrap.style.display = show ? "block" : "none";
+          if (!show) input.value = "";
+        }
+
+        select.addEventListener("change", sync);
+        sync();
+      }
+
+      function bindWorkTypeOther() {
+        const select = document.getElementById("work-type");
+        const wrap = document.getElementById("work-type-other-wrap");
+        const input = document.getElementById("work-type-other-specify");
+
+        function sync() {
+          const show = String(select.value || "").toLowerCase() === "others";
+          wrap.style.display = show ? "block" : "none";
+          if (!show) input.value = "";
+        }
+
+        select.addEventListener("change", sync);
+        sync();
+      }
+
+      function validateBD01A(payload) {
+        const missing = [];
+
+        if (!payload.leadDate)
+          missing.push("Date of Client's Mail/ Lead Generation");
+        if (!payload.formFillerFirstName)
+          missing.push("Form filler first name");
+        if (!payload.formFillerLastName) missing.push("Form filler last name");
+        if (!payload.officialEmail) missing.push("Official Email ID");
+        if (!payload.customerCompany)
+          missing.push("Customer's Company Legal Name");
+        if (!payload.customerContact) missing.push("Customer contact number");
+        if (!payload.customerEmail) missing.push("Customer Email");
+        if (!payload.customerEmailConfirm) missing.push("Confirm Email");
+        if (!payload.isRepeatCustomer) missing.push("Repeat customer yes/no");
+        if (!payload.activityProposed)
+          missing.push("Type of Activity Proposed");
+        if (!payload.stUt) missing.push("ST/UT");
+        if (!payload.workType) missing.push("Type of Work");
+        if (
+          String(payload.workType || "").toLowerCase() === "others" &&
+          !String(payload.workTypeOtherSpecify || "").trim()
+        ) {
+          missing.push("Type of Work specify");
+        }
+        if (!payload.specs) missing.push("Specifications");
+        if (!payload.finYear) missing.push("Financial Year");
+        if (!payload.pgCompany) missing.push("Perfact group company name");
+        if (!payload.customerClass) missing.push("Customer Classification");
+        if (!payload.leadSource) missing.push("Lead Source");
+        if (
+          String(payload.leadSource || "").toLowerCase() === "others" &&
+          !String(payload.leadSourceOtherSpecify || "").trim()
+        ) {
+          missing.push("Lead Source specify");
+        }
+
+        if (
+          payload.customerEmail &&
+          payload.customerEmailConfirm &&
+          payload.customerEmail !== payload.customerEmailConfirm
+        ) {
+          missing.push("Customer email and confirm email do not match");
+        }
+
+        if (missing.length) {
+          alert("Please fill:\n\n" + missing.join("\n"));
+          return false;
+        }
+
+        return true;
+      }
+
+      let isSubmitting = false;
+
+      function submitBD01A() {
+        if (isSubmitting) return; // blocks double-clicks instantly
+        isSubmitting = true;
+        const submitBtn = document.getElementById("submitBtn");
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Submitting...";
+
+        const payload = {
+          leadDate: document.getElementById("lead-date").value,
+          formFillerFirstName: document.getElementById("form-filler-first-name")
+            .value,
+          formFillerLastName: document.getElementById("form-filler-last-name")
+            .value,
+          officialEmail: document.getElementById("official-email").value,
+          customerCompany: document.getElementById("customer-company").value,
+          customerFirstName: document.getElementById("customer-first-name")
+            .value,
+          customerLastName: document.getElementById("customer-last-name").value,
+          customerContact: document.getElementById("customer-contact").value,
+          customerEmail: document.getElementById("customer-email").value,
+          customerEmailConfirm: document.getElementById(
+            "customer-email-confirm",
+          ).value,
+          isRepeatCustomer: getCheckedValue("repeat"),
+          activityProposed: document.getElementById("activity-proposed").value,
+          village: document.getElementById("village").value,
+          taluka: document.getElementById("taluka").value,
+          district: document.getElementById("district").value,
+          state: document.getElementById("state").value,
+          postalCode: document.getElementById("postal-code").value,
+          country: document.getElementById("country").value,
+          stUt: document.getElementById("st-ut").value,
+          workType: document.getElementById("work-type").value,
+          sector: document.getElementById("sector").value,
+          specs: document.getElementById("specs").value,
+          finYear: document.getElementById("fin-year").value,
+          pgCompany: document.getElementById("pg-company").value,
+          customerClass: document.getElementById("customer-class").value,
+          leadSource: document.getElementById("lead-source").value,
+          rfqUrl: document.getElementById("rfq-url").value,
+          remarks: document.getElementById("remarks").value,
+          leadSourceOtherSpecify: document.getElementById(
+            "lead-source-other-specify",
+          ).value,
+          workTypeOtherSpecify: document.getElementById(
+            "work-type-other-specify",
+          ).value,
+        };
+
+        if (!validateBD01A(payload)) {
+          isSubmitting = false;
+          submitBtn.disabled = false;
+          submitBtn.innerText = "Submit";
+          return;
+        }
+
+        google.script.run
+          .withSuccessHandler(function (res) {
+            console.log("SUCCESS HANDLER RUNNING"); // 👈 debug
+            document.body.innerHTML = res.thankYouHtml;
+          })
+          .withFailureHandler(function (err) {
+            alert("Submission failed: " + err.message);
+            isSubmitting = false;
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Submit";
+          })
+          .submitBD01A(payload);
+      }
+    </script>
+  </body>
+</html>

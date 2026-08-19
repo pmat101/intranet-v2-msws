@@ -1,0 +1,1346 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <base target="_blank" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PG Intranet</title>
+    <?!= HtmlService.createHtmlOutputFromFile('shared-styles').getContent(); ?>
+    <style>
+      .home-shell {
+        max-width: 1440px;
+        margin: 0 auto;
+        padding: 24px;
+      }
+
+      .hero {
+        background: linear-gradient(
+          135deg,
+          rgba(63, 143, 123, 0.12),
+          rgba(63, 143, 123, 0.03)
+        );
+        border: 1px solid rgba(63, 143, 123, 0.18);
+        border-radius: 20px;
+        padding: 28px;
+        box-shadow: var(--shadow-soft);
+      }
+
+      .hero-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 18px;
+        flex-wrap: wrap;
+      }
+
+      .hero-title {
+        font-size: 34px;
+        font-weight: 700;
+        letter-spacing: -0.03em;
+        margin: 0;
+      }
+
+      .search-row {
+        margin-top: 18px;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 12px;
+      }
+
+      .search-box {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 14px;
+        border: 1px solid var(--border);
+        background: #fff;
+        border-radius: 14px;
+      }
+
+      .search-box svg {
+        flex: 0 0 auto;
+        color: var(--text-muted);
+      }
+
+      .search-box input {
+        border: 0;
+        padding: 0;
+        box-shadow: none !important;
+        font-size: 15px;
+      }
+
+      .quick-jump {
+        min-width: 220px;
+      }
+
+      .section-card {
+        margin-top: 24px;
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        box-shadow: var(--shadow-soft);
+        overflow: hidden;
+      }
+
+      .section-head {
+        padding: 18px 22px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        border-bottom: 1px solid var(--border);
+        background: linear-gradient(180deg, #ffffff, #fbfcfd);
+      }
+
+      .section-title {
+        margin: 0;
+        font-size: 20px;
+        font-weight: 700;
+      }
+
+      .section-count {
+        font-size: 13px;
+        color: var(--text-muted);
+        background: #f3f5f8;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        padding: 6px 10px;
+        white-space: nowrap;
+      }
+
+      .form-grid-home {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+        gap: 14px;
+        padding: 18px;
+      }
+
+      .form-link-card {
+        display: block;
+        text-decoration: none;
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 16px;
+        background: linear-gradient(180deg, #ffffff, #fbfcfd);
+        transition:
+          transform 0.16s ease,
+          box-shadow 0.16s ease,
+          border-color 0.16s ease;
+        color: inherit;
+      }
+
+      .form-link-card:hover {
+        transform: translateY(-2px);
+        border-color: rgba(63, 143, 123, 0.45);
+        box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
+      }
+
+      .form-code {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 58px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: rgba(63, 143, 123, 0.12);
+        color: var(--primary);
+        font-weight: 700;
+        font-size: 13px;
+      }
+
+      .form-name {
+        margin: 12px 0 6px;
+        font-size: 17px;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+      }
+
+      .form-desc {
+        margin: 0;
+        color: var(--text-muted);
+        font-size: 14px;
+        line-height: 1.5;
+      }
+
+      .empty-state {
+        display: none;
+        padding: 26px 18px 30px;
+        color: var(--text-muted);
+        text-align: center;
+      }
+
+      .footer-note {
+        margin: 24px 0 8px;
+        text-align: center;
+        color: var(--text-muted);
+        font-size: 13px;
+      }
+
+      .section-anchor {
+        scroll-margin-top: 18px;
+      }
+
+      @media (max-width: 720px) {
+        .home-shell {
+          padding: 14px;
+        }
+
+        .hero {
+          padding: 20px;
+          border-radius: 16px;
+        }
+
+        .hero-title {
+          font-size: 28px;
+        }
+
+        .search-row {
+          grid-template-columns: 1fr;
+        }
+
+        .quick-jump {
+          min-width: 0;
+        }
+
+        .section-head {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+
+        .form-grid-home {
+          grid-template-columns: 1fr;
+          padding: 14px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="home-shell">
+      <section class="hero">
+        <div class="hero-top">
+          <div>
+            <h1 class="hero-title">Active Forms</h1>
+          </div>
+        </div>
+
+        <div class="search-row">
+          <div class="search-box">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <circle cx="11" cy="11" r="7"></circle>
+              <path d="M20 20l-3.5-3.5"></path>
+            </svg>
+            <input
+              id="searchInput"
+              type="search"
+              placeholder="Search forms by code, title, or description"
+            />
+          </div>
+          <select class="quick-jump" id="jumpSelect">
+            <option value="">Jump to section</option>
+            <option value="#performance">Performance</option>
+            <option value="#workflow">Workflow</option>
+            <option value="#questionnaire">Questionnaire</option>
+            <option value="#response">Response</option>
+            <option value="#surveys">Surveys</option>
+            <option value="#admin">Admin</option>
+            <option value="#bd">BD</option>
+            <option value="#wpf">Weekly Performance</option>
+            <option value="#mpf">Monthly Performance</option>
+            <option value="#accounts">Accounts</option>
+            <option value="#hr">HR</option>
+            <option value="#council">Council</option>
+          </select>
+        </div>
+      </section>
+
+      <section class="section-card section-anchor" id="performance">
+        <div class="section-head">
+          <h2 class="section-title">Performance Forms</h2>
+          <span class="section-count">Weekly and monthly team tracking</span>
+        </div>
+        <div class="form-grid-home form-group-list">
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=WPF01"
+            target="_blank"
+            data-search="WPF01 Weekly performance form all teams To record weekly performance of all teams"
+          >
+            <span class="form-code">WPF 01</span>
+            <div class="form-name">Weekly Performance - All Teams</div>
+            <p class="form-desc">To record weekly performance of all teams</p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=WPF02"
+            target="_blank"
+            data-search="WPF02 Weekly performance of Lakes team"
+          >
+            <span class="form-code">WPF 02</span>
+            <div class="form-name">Weekly Performance - Lakes</div>
+            <p class="form-desc">To record weekly performance of Lakes team</p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=WPF03"
+            target="_blank"
+            data-search="WPF03 Weekly performance of Fountain team"
+          >
+            <span class="form-code">WPF 03</span>
+            <div class="form-name">Weekly Performance - Fountain</div>
+            <p class="form-desc">
+              To record weekly performance of Fountain team
+            </p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=WPF04"
+            target="_blank"
+            data-search="WPF04 Weekly performance of Reservoir team"
+          >
+            <span class="form-code">WPF 04</span>
+            <div class="form-name">Weekly Performance - Reservoir</div>
+            <p class="form-desc">
+              To record weekly performance of Reservoir team
+            </p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=WPF05"
+            target="_blank"
+            data-search="WPF05 Monthly performance of Arctic team"
+          >
+            <span class="form-code">WPF 05</span>
+            <div class="form-name">Monthly Performance - Arctic</div>
+            <p class="form-desc">
+              To record monthly performance of Arctic team
+            </p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=WPF06"
+            target="_blank"
+            data-search="WPF06 Weekly performance of Glacier team"
+          >
+            <span class="form-code">WPF 06</span>
+            <div class="form-name">Weekly Performance - Glacier</div>
+            <p class="form-desc">
+              To record weekly performance of Glacier team
+            </p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=MPF01"
+            target="_blank"
+            data-search="MPF01 Monthly performance of River team"
+          >
+            <span class="form-code">MPF 01</span>
+            <div class="form-name">Monthly Performance - River</div>
+            <p class="form-desc">To record monthly performance of River team</p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=MPF02"
+            target="_blank"
+            data-search="MPF02 Monthly performance of Empaneled Experts"
+          >
+            <span class="form-code">MPF 02</span>
+            <div class="form-name">Monthly Performance - Empaneled Experts</div>
+            <p class="form-desc">
+              To record monthly performance of Empaneled Experts
+            </p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=MPF03"
+            target="_blank"
+            data-search="MPF03 Monthly performance of FAs FAAs FAEs"
+          >
+            <span class="form-code">MPF 03</span>
+            <div class="form-name">Monthly Performance - FAs, FAAs & FAEs</div>
+            <p class="form-desc">
+              To record monthly performance of FAs, FAAs and FAEs
+            </p>
+          </a>
+        </div>
+      </section>
+
+      <section class="section-card section-anchor" id="workflow">
+        <div class="section-head">
+          <h2 class="section-title">Workflow Forms</h2>
+          <span class="section-count"
+            >Technical formats and response flows</span
+          >
+        </div>
+        <div class="form-grid-home form-group-list">
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=TF01"
+            target="_blank"
+            data-search="TF01 requisition slip for printing"
+          >
+            <span class="form-code">TF 01</span>
+            <div class="form-name">Requisition Slip for Printing</div>
+            <p class="form-desc">
+              Technical Format for requisition slip for printing
+            </p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=TF02"
+            target="_blank"
+            data-search="TF02 EAC MOM to Team EIA"
+          >
+            <span class="form-code">TF 02</span>
+            <div class="form-name">EAC MOM to Team EIA</div>
+            <p class="form-desc">Technical Format for EAC MOM to Team EIA</p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=TF04"
+            target="_blank"
+            data-search="TF04 long leave relieving work handover"
+          >
+            <span class="form-code">TF 04</span>
+            <div class="form-name">Long Leave / Relieving Handover</div>
+            <p class="form-desc">
+              Technical Format for long leave / relieving work handover
+            </p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=TF05"
+            target="_blank"
+            data-search="TF05 handover PPT EAC meeting"
+          >
+            <span class="form-code">TF 05</span>
+            <div class="form-name">Handover PPT - EAC Meeting</div>
+            <p class="form-desc">
+              Technical Format for Handover PPT_EAC Meeting
+            </p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=TF06"
+            target="_blank"
+            data-search="TF06 handover uploading documents"
+          >
+            <span class="form-code">TF 06</span>
+            <div class="form-name">Handover Uploading Documents</div>
+            <p class="form-desc">
+              Technical Format for Handover Uploading documents
+            </p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=TF07"
+            target="_blank"
+            data-search="TF07 accounts information"
+          >
+            <span class="form-code">TF 07</span>
+            <div class="form-name">Accounts Information</div>
+            <p class="form-desc">Technical Format for Accounts Information</p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=TF08"
+            target="_blank"
+            data-search="TF08 closing project"
+          >
+            <span class="form-code">TF 08</span>
+            <div class="form-name">Closing Project</div>
+            <p class="form-desc">Technical Format for Closing Project</p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=TF09"
+            target="_blank"
+            data-search="TF09 documents sharing between two sections teams"
+          >
+            <span class="form-code">TF 09</span>
+            <div class="form-name">Documents Sharing Between Teams</div>
+            <p class="form-desc">
+              Technical Format for documents sharing between two sections/teams
+            </p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=TF10"
+            target="_blank"
+            data-search="TF10 handover document to BH EIA coordinator"
+          >
+            <span class="form-code">TF 10</span>
+            <div class="form-name">Handover to BH / EIA Coordinator</div>
+            <p class="form-desc">
+              Technical Format for Handover document to BH/EIA coordinator
+            </p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=TF11"
+            target="_blank"
+            data-search="TF11 documents shared with EIA Coordinator for review"
+          >
+            <span class="form-code">TF 11</span>
+            <div class="form-name">Documents Shared for Review</div>
+            <p class="form-desc">
+              Documents shared with EIA Coordinator for review
+            </p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=TF12"
+            target="_blank"
+            data-search="TF12 submission between document uploading and Agenda Enlistment to QCC for review"
+          >
+            <span class="form-code">TF 12</span>
+            <div class="form-name">Document Uploading to QCC</div>
+            <p class="form-desc">
+              To be submitted between document uploading and Agenda Enlistment
+              to QCC for review
+            </p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=TF13"
+            target="_blank"
+            data-search="TF13 QCC response to team requests"
+          >
+            <span class="form-code">TF 13</span>
+            <div class="form-name">QCC Response</div>
+            <p class="form-desc">
+              To be submitted by QCC in response to Team requests
+            </p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=TF14"
+            target="_blank"
+            data-search="TF14 coordination meeting agenda"
+          >
+            <span class="form-code">TF 14</span>
+            <div class="form-name">Coordination Meeting - Agenda</div>
+            <p class="form-desc">
+              Technical Format for Coordination meeting - Agenda
+            </p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=TF15"
+            target="_blank"
+            data-search="TF15 coordination meeting mom"
+          >
+            <span class="form-code">TF 15</span>
+            <div class="form-name">Coordination Meeting - MoM</div>
+            <p class="form-desc">
+              Technical Format for Coordination meeting - MoM
+            </p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=TF16"
+            target="_blank"
+            data-search="TF16 agenda enlistment"
+          >
+            <span class="form-code">TF 16</span>
+            <div class="form-name">Agenda Enlistment</div>
+            <p class="form-desc">for Agenda Enlistment</p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=TF17"
+            target="_blank"
+            data-search="TF17 MoM for appraisal meeting"
+          >
+            <span class="form-code">TF 17</span>
+            <div class="form-name">MoM for Appraisal Meeting</div>
+            <p class="form-desc">MoM for Appraisal meeting</p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=TF18"
+            target="_blank"
+            data-search="TF18 updated TRF"
+          >
+            <span class="form-code">TF 18</span>
+            <div class="form-name">Updated TRF</div>
+            <p class="form-desc">for Updated TRF</p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=TF19"
+            target="_blank"
+            data-search="TF19 initial pages"
+          >
+            <span class="form-code">TF 19</span>
+            <div class="form-name">Initial Pages</div>
+            <p class="form-desc">for Initial Pages</p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=TF20"
+            target="_blank"
+            data-search="TF20 job allocation"
+          >
+            <span class="form-code">TF 20</span>
+            <div class="form-name">Job Allocation</div>
+            <p class="form-desc">for Job Allocation</p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=TF21"
+            target="_blank"
+            data-search="TF21 accounts team information"
+          >
+            <span class="form-code">TF 21</span>
+            <div class="form-name">Accounts / Team Information</div>
+            <p class="form-desc">
+              Technical Format for Accounts / Team Information
+            </p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=TF22"
+            target="_blank"
+            data-search="TF22 information to account section wrt submission completion of project"
+          >
+            <span class="form-code">TF 22</span>
+            <div class="form-name">Info to Accounts Section</div>
+            <p class="form-desc">
+              Information to Account section wrt submission / completion of
+              project
+            </p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=TF23"
+            target="_blank"
+            data-search="TF23 covers govt fee and petty cash requests to be paid by client or PG"
+          >
+            <span class="form-code">TF 23</span>
+            <div class="form-name">Govt Fee & Petty Cash Request</div>
+            <p class="form-desc">
+              Covers Govt fee and petty cash requests to be paid by client or PG
+            </p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=TF24"
+            target="_blank"
+            data-search="TF24 EDS raised"
+          >
+            <span class="form-code">TF 24</span>
+            <div class="form-name">EDS Raised</div>
+            <p class="form-desc">for EDS raised</p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=TF25"
+            target="_blank"
+            data-search="TF25 ADS raised"
+          >
+            <span class="form-code">TF 25</span>
+            <div class="form-name">ADS Raised</div>
+            <p class="form-desc">for ADS raised</p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=TF26"
+            target="_blank"
+            data-search="TF26 plagiarism check"
+          >
+            <span class="form-code">TF 26</span>
+            <div class="form-name">Plagiarism Check</div>
+            <p class="form-desc">for Plagiarism check</p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=TF27"
+            target="_blank"
+            data-search="TF27 qcc marking quality assurance"
+          >
+            <span class="form-code">TF 27</span>
+            <div class="form-name">QCC Marking</div>
+            <p class="form-desc">
+              QCC Marking for Quality assurance of EIA as per description page
+              65 of V3 of NABET scheme
+            </p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=TF31"
+            target="_blank"
+            data-search="TF31 accounts team information"
+          >
+            <span class="form-code">TF 31</span>
+            <div class="form-name">Accounts / Team Information</div>
+            <p class="form-desc">
+              Technical Format for Accounts / Team Information
+            </p>
+          </a>
+        </div>
+        <div class="empty-state">No workflow forms match your search.</div>
+      </section>
+
+      <section class="section-card section-anchor" id="questionnaire">
+        <div class="section-head">
+          <h2 class="section-title">Questionnaire Forms</h2>
+          <span class="section-count">Field capture and study sheets</span>
+        </div>
+        <div class="form-grid-home form-group-list">
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=FQ01"
+            target="_blank"
+            data-search="FQ01 FAE reports questionnaire AQ"
+          >
+            <span class="form-code">FQ 01</span>
+            <div class="form-name">AQ Questionnaire</div>
+            <p class="form-desc">FAE reports Questionnaire - AQ</p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=FQ02"
+            target="_blank"
+            data-search="FQ02 AQ Dispersion Model Questionnaire"
+          >
+            <span class="form-code">FQ 02</span>
+            <div class="form-name">AQ Dispersion Model</div>
+            <p class="form-desc">AQ Dispersion Model Questionnaire</p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=FQ03"
+            target="_blank"
+            data-search="FQ03 FAE reports questionnaire RH"
+          >
+            <span class="form-code">FQ 03</span>
+            <div class="form-name">RH Questionnaire</div>
+            <p class="form-desc">FAE reports Questionnaire - RH</p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=FQ04"
+            target="_blank"
+            data-search="FQ04 FAE reports questionnaire QRA"
+          >
+            <span class="form-code">FQ 04</span>
+            <div class="form-name">QRA Questionnaire</div>
+            <p class="form-desc">FAE reports Questionnaire - QRA</p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=FQ05"
+            target="_blank"
+            data-search="FQ05 FAE reports questionnaire EB"
+          >
+            <span class="form-code">FQ 05</span>
+            <div class="form-name">EB Questionnaire</div>
+            <p class="form-desc">FAE reports Questionnaire - EB</p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=FQ06"
+            target="_blank"
+            data-search="FQ06 FAE reports questionnaire Geo HG"
+          >
+            <span class="form-code">FQ 06</span>
+            <div class="form-name">Geo & HG Questionnaire</div>
+            <p class="form-desc">FAE reports Questionnaire - Geo & HG</p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=FQ07"
+            target="_blank"
+            data-search="FQ07 FAE reports questionnaire LU"
+          >
+            <span class="form-code">FQ 07</span>
+            <div class="form-name">LU Questionnaire</div>
+            <p class="form-desc">FAE reports Questionnaire - LU</p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=FQ08"
+            target="_blank"
+            data-search="FQ08 FAE reports questionnaire SE"
+          >
+            <span class="form-code">FQ 08</span>
+            <div class="form-name">SE Questionnaire</div>
+            <p class="form-desc">FAE reports Questionnaire - SE</p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=FQ09"
+            target="_blank"
+            data-search="FQ09 environmental sensitivity KML topo maps"
+          >
+            <span class="form-code">FQ 09</span>
+            <div class="form-name">Environmental Sensitivity</div>
+            <p class="form-desc">
+              For Environmental Sensitivity, KML and Topo maps
+            </p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=FQ10"
+            target="_blank"
+            data-search="FQ10 LU and other maps"
+          >
+            <span class="form-code">FQ 10</span>
+            <div class="form-name">LU & Other Maps</div>
+            <p class="form-desc">For LU and other maps</p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=FQ11"
+            target="_blank"
+            data-search="FQ11 FAE reports questionnaire traffic"
+          >
+            <span class="form-code">FQ 11</span>
+            <div class="form-name">Traffic Questionnaire</div>
+            <p class="form-desc">FAE reports Questionnaire - Traffic</p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=FQ12"
+            target="_blank"
+            data-search="FQ12 FAE reports questionnaire SC"
+          >
+            <span class="form-code">FQ 12</span>
+            <div class="form-name">SC Questionnaire</div>
+            <p class="form-desc">FAE reports Questionnaire - SC</p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=FQ13"
+            target="_blank"
+            data-search="FQ13 LCA CFP information sheet"
+          >
+            <span class="form-code">FQ 13</span>
+            <div class="form-name">LCA/CFP Info Sheet</div>
+            <p class="form-desc">LCA/CFP information sheet</p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=FQ14"
+            target="_blank"
+            data-search="FQ14 WFP information sheet"
+          >
+            <span class="form-code">FQ 14</span>
+            <div class="form-name">WFP Info Sheet</div>
+            <p class="form-desc">WFP information sheet</p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=FQ15"
+            target="_blank"
+            data-search="FQ15 CBA information sheet"
+          >
+            <span class="form-code">FQ 15</span>
+            <div class="form-name">CBA Info Sheet</div>
+            <p class="form-desc">CBA information sheet</p>
+          </a>
+        </div>
+        <div class="empty-state">No questionnaire forms match your search.</div>
+      </section>
+
+      <section class="section-card section-anchor" id="response">
+        <div class="section-head">
+          <h2 class="section-title">Response Forms</h2>
+          <span class="section-count">Reply and closure workflows</span>
+        </div>
+        <div class="form-grid-home form-group-list">
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=FR01"
+            target="_blank"
+            data-search="FR01 AQ Report"
+          >
+            <span class="form-code">FR 01</span>
+            <div class="form-name">AQ Report</div>
+            <p class="form-desc">for AQ Report</p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=FR02"
+            target="_blank"
+            data-search="FR02 RH Report"
+          >
+            <span class="form-code">FR 02</span>
+            <div class="form-name">RH Report</div>
+            <p class="form-desc">for RH Report</p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=FR03"
+            target="_blank"
+            data-search="FR03 QRA Report"
+          >
+            <span class="form-code">FR 03</span>
+            <div class="form-name">QRA Report</div>
+            <p class="form-desc">for QRA Report</p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=FR04"
+            target="_blank"
+            data-search="FR04 EB Report"
+          >
+            <span class="form-code">FR 04</span>
+            <div class="form-name">EB Report</div>
+            <p class="form-desc">for EB Report</p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=FR05"
+            target="_blank"
+            data-search="FR05 Geo HG Report"
+          >
+            <span class="form-code">FR 05</span>
+            <div class="form-name">Geo & HG Report</div>
+            <p class="form-desc">for Geo & HG Report</p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=FR06"
+            target="_blank"
+            data-search="FR06 LU Report"
+          >
+            <span class="form-code">FR 06</span>
+            <div class="form-name">LU Report</div>
+            <p class="form-desc">for LU Report</p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=FR07"
+            target="_blank"
+            data-search="FR07 SE Report"
+          >
+            <span class="form-code">FR 07</span>
+            <div class="form-name">SE Report</div>
+            <p class="form-desc">for SE Report</p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=FR08"
+            target="_blank"
+            data-search="FR08 Traffic Report"
+          >
+            <span class="form-code">FR 08</span>
+            <div class="form-name">Traffic Report</div>
+            <p class="form-desc">for Traffic Report</p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=FR09"
+            target="_blank"
+            data-search="FR09 SC Report"
+          >
+            <span class="form-code">FR 09</span>
+            <div class="form-name">SC Report</div>
+            <p class="form-desc">for SC Report</p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=FR10"
+            target="_blank"
+            data-search="FR10 TRF Response"
+          >
+            <span class="form-code">FR 10</span>
+            <div class="form-name">TRF Response</div>
+            <p class="form-desc">for TRF Response</p>
+          </a>
+        </div>
+        <div class="empty-state">No response forms match your search.</div>
+      </section>
+
+      <section class="section-card section-anchor" id="surveys">
+        <div class="section-head">
+          <h2 class="section-title">Survey Forms</h2>
+          <span class="section-count">Field surveys and checklists</span>
+        </div>
+        <div class="form-grid-home form-group-list">
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=SF01"
+            target="_blank"
+            data-search="SF01 socio economic village survey"
+          >
+            <span class="form-code">SF 01</span>
+            <div class="form-name">Socio Economic Village Survey</div>
+            <p class="form-desc">Socio Economic Village Survey</p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=SF02"
+            target="_blank"
+            data-search="SF02 EB project checklist"
+          >
+            <span class="form-code">SF 02</span>
+            <div class="form-name">EB Project Checklist</div>
+            <p class="form-desc">EB Project Checklist</p>
+          </a>
+        </div>
+      </section>
+
+      <section class="section-card section-anchor" id="admin">
+        <div class="section-head">
+          <h2 class="section-title">Admin Forms</h2>
+          <span class="section-count">Operations and procurement</span>
+        </div>
+        <div class="form-grid-home form-group-list">
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=ADM01"
+            target="_blank"
+            data-search="ADM01 client visit checklist"
+          >
+            <span class="form-code">ADM 01</span>
+            <div class="form-name">Client Visit Checklist</div>
+            <p class="form-desc">Checklist for client visits</p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=ADM02"
+            target="_blank"
+            data-search="ADM02 common purchase form"
+          >
+            <span class="form-code">ADM 02</span>
+            <div class="form-name">Common Purchase Form</div>
+            <p class="form-desc">Common purchase requisition workflow</p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=ADM03"
+            target="_blank"
+            data-search="ADM03 vehicle requirement"
+          >
+            <span class="form-code">ADM 03</span>
+            <div class="form-name">Vehicle Requirement</div>
+            <p class="form-desc">Vehicle requirement requests</p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=ADM04"
+            target="_blank"
+            data-search="ADM04 vehicle maintenance"
+          >
+            <span class="form-code">ADM 04</span>
+            <div class="form-name">Vehicle Maintenance</div>
+            <p class="form-desc">Vehicle maintenance tracking</p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=ADM05"
+            target="_blank"
+            data-search="ADM05 travel booking requisition"
+          >
+            <span class="form-code">ADM 05</span>
+            <div class="form-name">Travel Booking Requisition</div>
+            <p class="form-desc">Travel booking requests</p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=ADM06"
+            target="_blank"
+            data-search="ADM06 hotspot requirement"
+          >
+            <span class="form-code">ADM 06</span>
+            <div class="form-name">Hotspot Requirement</div>
+            <p class="form-desc">Hotspot requirement requests</p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=ADM07"
+            target="_blank"
+            data-search="ADM07 vendor approval form"
+          >
+            <span class="form-code">ADM 07</span>
+            <div class="form-name">Vendor Approval Form</div>
+            <p class="form-desc">Vendor approval workflow</p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=ADM08"
+            target="_blank"
+            data-search="ADM08 vendor review form"
+          >
+            <span class="form-code">ADM 08</span>
+            <div class="form-name">Vendor Review Form</div>
+            <p class="form-desc">Vendor review workflow</p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=ADM09"
+            target="_blank"
+            data-search="ADM09 Follow up responsibility form"
+          >
+            <span class="form-code">ADM 09</span>
+            <div class="form-name">Follow up responsibility form</div>
+            <p class="form-desc">Follow up responsibility workflow</p>
+          </a>
+        </div>
+      </section>
+
+      <section class="section-card section-anchor" id="bd">
+        <div class="section-head">
+          <h2 class="section-title">Business Development Forms</h2>
+          <span class="section-count">BD pipeline</span>
+        </div>
+        <div class="form-grid-home form-group-list">
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=BD00"
+            target="_blank"
+            data-search="bd00 client cancellation form"
+          >
+            <span class="form-code">BD 00</span>
+            <div class="form-name">Client Cancellation Form</div>
+            <p class="form-desc">Client cancellation handling</p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=BD01A"
+            target="_blank"
+            data-search="BD01A offer pre screen form"
+          >
+            <span class="form-code">BD 01(A)</span>
+            <div class="form-name">Offer Pre-Screen</div>
+            <p class="form-desc">Offer pre-screen form before issue</p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=BD01B"
+            target="_blank"
+            data-search="BD01B project proposal value finalization top management"
+          >
+            <span class="form-code">BD 01(B)</span>
+            <div class="form-name">Proposal Value Finalization</div>
+            <p class="form-desc">
+              Project proposal value finalization by top management
+            </p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=BD02"
+            target="_blank"
+            data-search="BD02 project won"
+          >
+            <span class="form-code">BD 02</span>
+            <div class="form-name">Project Won</div>
+            <p class="form-desc">Project won workflow</p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=BD03"
+            target="_blank"
+            data-search="BD03 team intimation of details"
+          >
+            <span class="form-code">BD 03</span>
+            <div class="form-name">Team Intimation of Details</div>
+            <p class="form-desc">
+              Project team intimation about details of project
+            </p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=BD04"
+            target="_blank"
+            data-search="BD04 accounts section data maintenance"
+          >
+            <span class="form-code">BD 04</span>
+            <div class="form-name">Accounts Section Data Maintenance</div>
+            <p class="form-desc">Accounts section data maintenance</p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=BD05"
+            target="_blank"
+            data-search="BD05 project closure form"
+          >
+            <span class="form-code">BD 05</span>
+            <div class="form-name">Project Closure Form</div>
+            <p class="form-desc">Project closure workflow</p>
+          </a>
+        </div>
+      </section>
+
+      <section class="section-card section-anchor" id="accounts">
+        <div class="section-head">
+          <h2 class="section-title">Accounts Forms</h2>
+          <span class="section-count">Commercial and vendor workflows</span>
+        </div>
+        <div class="form-grid-home form-group-list">
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=ACC01"
+            target="_blank"
+            data-search="ACC01 vendor registration form"
+          >
+            <span class="form-code">ACC 01</span>
+            <div class="form-name">Vendor Registration Form</div>
+            <p class="form-desc">Vendor registration</p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=ACC02"
+            target="_blank"
+            data-search="ACC02 vendor bill form"
+          >
+            <span class="form-code">ACC 02</span>
+            <div class="form-name">Vendor Bill Form</div>
+            <p class="form-desc">Vendor bill submission</p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=ACC03"
+            target="_blank"
+            data-search="ACC03 purchase request form"
+          >
+            <span class="form-code">ACC 03</span>
+            <div class="form-name">Purchase Request Form</div>
+            <p class="form-desc">Purchase request workflow</p>
+          </a>
+        </div>
+      </section>
+
+      <section class="section-card section-anchor" id="hr">
+        <div class="section-head">
+          <h2 class="section-title">HR Forms</h2>
+          <span class="section-count">People and hiring workflows</span>
+        </div>
+        <div class="form-grid-home form-group-list">
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=HR01"
+            target="_blank"
+            data-search="HR01 interview evaluation form"
+          >
+            <span class="form-code">HR 01</span>
+            <div class="form-name">Interview Evaluation Form</div>
+            <p class="form-desc">Interview evaluation</p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=HR02"
+            target="_blank"
+            data-search="HR02 PG exit interview form"
+          >
+            <span class="form-code">HR 02</span>
+            <div class="form-name">PG Exit Interview Form</div>
+            <p class="form-desc">Employee exit interview</p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=HR03"
+            target="_blank"
+            data-search="HR03 employee requisition form"
+          >
+            <span class="form-code">HR 03</span>
+            <div class="form-name">Employee Requisition Form</div>
+            <p class="form-desc">Employee requisition workflow</p>
+          </a>
+        </div>
+      </section>
+
+      <section class="section-card section-anchor" id="council">
+        <div class="section-head">
+          <h2 class="section-title">Council Forms</h2>
+          <span class="section-count">Governance and review forms</span>
+        </div>
+        <div class="form-grid-home form-group-list">
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=CF001"
+            target="_blank"
+            data-search="CF001 council mom"
+          >
+            <span class="form-code">CF 001</span>
+            <div class="form-name">Council MOM</div>
+            <p class="form-desc">Council meeting minutes</p>
+          </a>
+          <a
+            class="form-link-card form-link"
+            href="<?= scriptURL ?>?page=CF002"
+            target="_blank"
+            data-search="CF002 half yearly council performance reporting"
+          >
+            <span class="form-code">CF 002</span>
+            <div class="form-name">
+              Half Yearly Council Performance Reporting
+            </div>
+            <p class="form-desc">Council performance reporting</p>
+          </a>
+        </div>
+      </section>
+
+      <div class="footer-note">
+        Tip: use the search box to filter forms instantly, or jump straight to a
+        section from the chip bar above.
+      </div>
+    </div>
+
+    <script>
+      const searchInput = document.getElementById("searchInput");
+      const jumpSelect = document.getElementById("jumpSelect");
+      const cards = Array.from(document.querySelectorAll(".form-link"));
+      const sections = Array.from(document.querySelectorAll(".section-card"));
+
+      if (jumpSelect) {
+        jumpSelect.addEventListener("change", function () {
+          if (this.value) {
+            document
+              .querySelector(this.value)
+              ?.scrollIntoView({ behavior: "smooth", block: "start" });
+            this.value = "";
+          }
+        });
+      }
+
+      function normalize(text) {
+        return String(text || "")
+          .toLowerCase()
+          .replace(/\s+/g, " ")
+          .trim();
+      }
+
+      function applyFilter() {
+        const query = normalize(searchInput?.value);
+        let visibleCount = 0;
+
+        sections.forEach((section) => {
+          const sectionCards = Array.from(
+            section.querySelectorAll(".form-link"),
+          );
+          let sectionVisible = 0;
+
+          sectionCards.forEach((card) => {
+            const haystack = normalize(card.dataset.search || card.innerText);
+            const match = !query || haystack.includes(query);
+            card.style.display = match ? "" : "none";
+            if (match) {
+              visibleCount += 1;
+              sectionVisible += 1;
+            }
+          });
+
+          const emptyState = section.querySelector(".empty-state");
+          if (emptyState)
+            emptyState.style.display = sectionVisible === 0 ? "block" : "none";
+        });
+      }
+
+      if (searchInput) {
+        searchInput.addEventListener("input", applyFilter);
+      }
+
+      applyFilter();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,622 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <base target="_top" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TF13</title>
+    <?!= HtmlService.createHtmlOutputFromFile('shared-styles').getContent(); ?>
+    <style>
+      .section-divider {
+        margin: 22px 0 14px;
+        padding-top: 8px;
+        border-top: 1px solid #e5e7eb;
+        font-weight: 700;
+        font-size: 18px;
+      }
+      .check-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px 16px;
+      }
+      .check-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        border: 1px solid #e5e7eb;
+        border-radius: 999px;
+        background: #fff;
+      }
+      .level-block {
+        display: none;
+        margin-top: 16px;
+        padding: 16px;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        background: #f8fafc;
+      }
+      .subtle-note {
+        font-size: 12px;
+        color: #6b7280;
+        margin-top: 6px;
+      }
+      .subform-card {
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 14px;
+        background: #fff;
+        margin-bottom: 12px;
+      }
+      .actions-row {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+        flex-wrap: wrap;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="form-wrapper">
+      <div class="form-title">TF13</div>
+      <div class="form-subtitle">
+        To be submitted by QCC in response to Team requests
+      </div>
+
+      <div class="form-section">
+        <div class="form-group">
+          <label class="form-label" for="recipient_team_name"
+            >Recipient Team Name <span class="required">*</span></label
+          >
+          <select id="recipient_team_name" required></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="eia_coordinator_name"
+            >EIA Coordinator <span class="required">*</span></label
+          >
+          <select id="eia_coordinator_name" required></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="csuite_officer_name"
+            >C-Suite officer Involved <span class="required">*</span></label
+          >
+          <select id="csuite_officer_name" required></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="project_name"
+            >Name of the project <span class="required">*</span></label
+          >
+          <input type="text" id="project_name" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="company_name"
+            >Company Name <span class="required">*</span></label
+          >
+          <input type="text" id="company_name" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="location_of_project"
+            >Location of the project <span class="required">*</span></label
+          >
+          <input type="text" id="location_of_project" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="pcode"
+            >PCODE <span class="required">*</span></label
+          >
+          <input type="text" id="pcode" required />
+          <div class="helper-text">
+            Refer the active PCODE list in your project sheet
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="status_stage_of_case"
+            >Status/ Stage of the Case <span class="required">*</span></label
+          >
+          <select id="status_stage_of_case" required></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label"
+            >Review Level <span class="required">*</span></label
+          >
+          <div class="check-grid">
+            <label class="check-chip"
+              ><input type="checkbox" name="review_level" value="Level 1" />
+              Level 1</label
+            >
+            <label class="check-chip"
+              ><input type="checkbox" name="review_level" value="Level 2" />
+              Level 2</label
+            >
+            <label class="check-chip"
+              ><input type="checkbox" name="review_level" value="Level 3" />
+              Level 3</label
+            >
+          </div>
+        </div>
+
+        <div id="review-level-sections"></div>
+
+        <div class="form-group">
+          <label class="form-label">Files Reviewed</label>
+          <div id="files-reviewed-rows"></div>
+          <div class="subtle-note">
+            Docs linked for review must be PDFs only.
+          </div>
+          <div class="actions-row">
+            <button
+              type="button"
+              class="btn-secondary"
+              id="add-files-reviewed-row"
+            >
+              + Add Row
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="review_date"
+            >Review Date <span class="required">*</span></label
+          >
+          <input type="date" id="review_date" required />
+          <div class="helper-text">dd-MMM-yyyy</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="remarks">Remarks</label>
+          <textarea id="remarks"></textarea>
+        </div>
+      </div>
+
+      <button
+        class="btn-primary"
+        type="button"
+        id="submitBtn"
+        onclick="submitTF13()"
+      >
+        Submit
+      </button>
+    </div>
+
+    <script>
+      let isSubmitting = false;
+      let tf13DocTypes = [];
+      let tf13QccReviewers = [];
+
+      window.addEventListener("DOMContentLoaded", function () {
+        populateDropdowns();
+      });
+
+      function populateDropdowns() {
+        google.script.run
+          .withSuccessHandler(function (data) {
+            data = data || {};
+            tf13DocTypes = data.qccTypeOfDocument || [];
+            tf13QccReviewers = data.qccReviewer || [];
+
+            fillSelect(
+              document.getElementById("recipient_team_name"),
+              data.team || [],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("eia_coordinator_name"),
+              data.eiaCoordinator || [],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("csuite_officer_name"),
+              data.csuite || [],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("status_stage_of_case"),
+              data.qccStageOfCase || [],
+              "Select",
+            );
+
+            renderLevelSections();
+            renderFilesReviewedSection();
+            bindReviewLevelToggles();
+            bindFilesReviewedToggleButtons();
+          })
+          .getDropdownData();
+      }
+
+      function fillSelect(select, items, placeholder) {
+        if (!select) return;
+        select.innerHTML = "";
+        const first = document.createElement("option");
+        first.value = "";
+        first.textContent = placeholder || "Select";
+        select.appendChild(first);
+
+        (items || []).forEach(function (item) {
+          const option = document.createElement("option");
+          option.value = item;
+          option.textContent = item;
+          select.appendChild(option);
+        });
+      }
+
+      function createCheckboxChip(name, value, label, idPrefix) {
+        const id = `${idPrefix}_${String(value).replace(/\W+/g, "_")}`;
+        return `
+          <label class="check-chip" for="${id}">
+            <input type="checkbox" id="${id}" name="${name}" value="${value}">
+            ${label}
+          </label>
+        `;
+      }
+
+      function renderReviewerCheckboxes(container, nameAttr) {
+        container.innerHTML = "";
+        tf13QccReviewers.forEach(function (name) {
+          container.insertAdjacentHTML(
+            "beforeend",
+            createCheckboxChip(nameAttr, name, name, nameAttr),
+          );
+        });
+      }
+
+      function createObservationRow(levelKey) {
+        const row = document.createElement("div");
+        row.className = "subform-card";
+        row.innerHTML = `
+          <div class="form-group">
+            <label class="form-label">Observation link</label>
+            <input type="url" class="${levelKey}-obs-link" placeholder="Paste link here" />
+          </div>
+          <div class="actions-row">
+            <button type="button" class="btn-secondary ${levelKey}-remove-row">Remove</button>
+          </div>
+        `;
+        row
+          .querySelector(`.${levelKey}-remove-row`)
+          .addEventListener("click", function () {
+            row.remove();
+          });
+        return row;
+      }
+
+      function createFilesReviewedRow() {
+        const row = document.createElement("div");
+        row.className = "subform-card";
+        row.innerHTML = `
+          <div class="form-row">
+            <div class="form-col">
+              <label class="form-label">Type of Documents submitted</label>
+              <select class="tf13-file-type"></select>
+            </div>
+            <div class="form-col">
+              <label class="form-label">Link to document</label>
+              <input type="url" class="tf13-file-link" placeholder="Paste PDF link" />
+            </div>
+          </div>
+          <div class="subtle-note">Docs linked for review must be PDFs only.</div>
+          <div class="actions-row">
+            <button type="button" class="btn-secondary tf13-remove-file-row">Remove</button>
+          </div>
+        `;
+
+        const select = row.querySelector(".tf13-file-type");
+        fillSelect(select, tf13DocTypes, "Select");
+
+        row
+          .querySelector(".tf13-remove-file-row")
+          .addEventListener("click", function () {
+            row.remove();
+          });
+
+        return row;
+      }
+
+      function renderLevelSections() {
+        const wrap = document.getElementById("review-level-sections");
+        wrap.innerHTML = "";
+
+        [
+          { key: "l1", label: "Level-1 Reviewer", title: "Level 1" },
+          { key: "l2", label: "Level-2 Reviewer", title: "Level 2" },
+          { key: "l3", label: "Level-3 Reviewer", title: "Level 3" },
+        ].forEach(function (lvl) {
+          const block = document.createElement("div");
+          block.className = "level-block";
+          block.id = `${lvl.key}-block`;
+
+          block.innerHTML = `
+            <div class="section-divider" style="margin-top:0;">${lvl.title}</div>
+
+            <div class="form-group">
+              <label class="form-label">${lvl.label} Name <span class="required">*</span></label>
+              <div class="check-grid" id="${lvl.key}-reviewers"></div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">${lvl.label} Observations <span class="required">*</span></label>
+              <div id="${lvl.key}-observations"></div>
+              <div class="actions-row">
+                <button type="button" class="btn-secondary" id="${lvl.key}-add-observation">+ Add Observation Link</button>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">${lvl.label} Remarks <span class="required">*</span></label>
+              <textarea id="${lvl.key}-remarks"></textarea>
+            </div>
+          `;
+
+          wrap.appendChild(block);
+
+          renderReviewerCheckboxes(
+            block.querySelector(`#${lvl.key}-reviewers`),
+            `${lvl.key}_reviewer_name`,
+          );
+
+          const obsWrap = block.querySelector(`#${lvl.key}-observations`);
+          obsWrap.appendChild(createObservationRow(lvl.key));
+
+          block
+            .querySelector(`#${lvl.key}-add-observation`)
+            .addEventListener("click", function () {
+              obsWrap.appendChild(createObservationRow(lvl.key));
+            });
+        });
+      }
+
+      function renderFilesReviewedSection() {
+        const wrap = document.getElementById("files-reviewed-rows");
+        wrap.innerHTML = "";
+        wrap.appendChild(createFilesReviewedRow());
+      }
+
+      function bindFilesReviewedToggleButtons() {
+        document
+          .getElementById("add-files-reviewed-row")
+          .addEventListener("click", function () {
+            document
+              .getElementById("files-reviewed-rows")
+              .appendChild(createFilesReviewedRow());
+          });
+      }
+
+      function getCheckedValues(name) {
+        return Array.from(
+          document.querySelectorAll(`input[name="${name}"]:checked`),
+        )
+          .map(function (el) {
+            return el.value;
+          })
+          .join(", ");
+      }
+
+      function bindReviewLevelToggles() {
+        const map = {
+          "Level 1": document.getElementById("l1-block"),
+          "Level 2": document.getElementById("l2-block"),
+          "Level 3": document.getElementById("l3-block"),
+        };
+
+        function sync() {
+          Object.keys(map).forEach(function (level) {
+            const checked = Array.from(
+              document.querySelectorAll('input[name="review_level"]:checked'),
+            ).some(function (cb) {
+              return cb.value === level;
+            });
+
+            map[level].style.display = checked ? "block" : "none";
+
+            if (!checked) {
+              map[level]
+                .querySelectorAll("input, textarea")
+                .forEach(function (el) {
+                  if (el.type === "checkbox") el.checked = false;
+                  else el.value = "";
+                });
+
+              map[level]
+                .querySelectorAll(".subform-card")
+                .forEach(function (r, idx) {
+                  if (idx > 0) r.remove();
+                });
+            }
+          });
+        }
+
+        document
+          .querySelectorAll('input[name="review_level"]')
+          .forEach(function (cb) {
+            cb.addEventListener("change", sync);
+          });
+
+        sync();
+      }
+
+      function collectObservationRows(levelKey) {
+        return Array.from(
+          document.querySelectorAll(`#${levelKey}-observations .subform-card`),
+        )
+          .map(function (row) {
+            return {
+              observation_link:
+                row.querySelector(`.${levelKey}-obs-link`)?.value || "",
+            };
+          })
+          .filter(function (r) {
+            return String(r.observation_link).trim();
+          });
+      }
+
+      function collectFilesReviewedRows() {
+        return Array.from(
+          document.querySelectorAll("#files-reviewed-rows .subform-card"),
+        )
+          .map(function (row) {
+            return {
+              type_of_document:
+                row.querySelector(".tf13-file-type")?.value || "",
+              document_link: row.querySelector(".tf13-file-link")?.value || "",
+            };
+          })
+          .filter(function (r) {
+            return (
+              String(r.type_of_document).trim() ||
+              String(r.document_link).trim()
+            );
+          });
+      }
+
+      function validateTF13(payload) {
+        const missing = [];
+
+        if (!payload.recipient_team_name) missing.push("Recipient Team Name");
+        if (!payload.eia_coordinator_name) missing.push("EIA Coordinator");
+        if (!payload.csuite_officer_name)
+          missing.push("C-Suite officer Involved");
+        if (!payload.project_name) missing.push("Name of the project");
+        if (!payload.company_name) missing.push("Company Name");
+        if (!payload.location_of_project)
+          missing.push("Location of the project");
+        if (!payload.pcode) missing.push("PCODE");
+        if (!payload.status_stage_of_case)
+          missing.push("Status/ Stage of the Case");
+        if (!payload.review_levels) missing.push("Review Level");
+        if (!payload.review_date) missing.push("Review Date");
+
+        const levels = String(payload.review_levels || "")
+          .split(",")
+          .map((s) => s.trim())
+          .filter(Boolean);
+
+        if (levels.includes("Level 1")) {
+          if (!payload.level1_reviewer_names)
+            missing.push("Level-1 Reviewer Name");
+          if (!payload.level1_reviewer_remarks)
+            missing.push("Level-1 Reviewer Remarks");
+          if (
+            !payload.level1_observations ||
+            !payload.level1_observations.length
+          )
+            missing.push("Level-1 Reviewer Observations");
+        }
+
+        if (levels.includes("Level 2")) {
+          if (!payload.level2_reviewer_names)
+            missing.push("Level-2 Reviewer Name");
+          if (!payload.level2_reviewer_remarks)
+            missing.push("Level-2 Reviewer Remarks");
+          if (
+            !payload.level2_observations ||
+            !payload.level2_observations.length
+          )
+            missing.push("Level-2 Reviewer Observations");
+        }
+
+        if (levels.includes("Level 3")) {
+          if (!payload.level3_reviewer_names)
+            missing.push("Level-3 Reviewer Name");
+          if (!payload.level3_reviewer_remarks)
+            missing.push("Level-3 Reviewer Remarks");
+          if (
+            !payload.level3_observations ||
+            !payload.level3_observations.length
+          )
+            missing.push("Level-3 Reviewer Observations");
+        }
+
+        if (!payload.files_reviewed || !payload.files_reviewed.length) {
+          missing.push("Files Reviewed");
+        } else {
+          payload.files_reviewed.forEach(function (row, i) {
+            if (!row.type_of_document)
+              missing.push(
+                `Files Reviewed - Type of Documents submitted (row ${i + 1})`,
+              );
+            if (!row.document_link)
+              missing.push(`Files Reviewed - Link to document (row ${i + 1})`);
+          });
+        }
+
+        if (missing.length) {
+          alert("Please fill:\n\n" + missing.join("\n"));
+          return false;
+        }
+
+        return true;
+      }
+
+      function submitTF13() {
+        if (isSubmitting) return; // blocks double-clicks instantly
+        isSubmitting = true;
+        const submitBtn = document.getElementById("submitBtn");
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Submitting...";
+
+        const payload = {
+          recipient_team_name: document.getElementById("recipient_team_name")
+            .value,
+          eia_coordinator_name: document.getElementById("eia_coordinator_name")
+            .value,
+          csuite_officer_name: document.getElementById("csuite_officer_name")
+            .value,
+          project_name: document.getElementById("project_name").value,
+          company_name: document.getElementById("company_name").value,
+          location_of_project: document.getElementById("location_of_project")
+            .value,
+          pcode: document.getElementById("pcode").value,
+          status_stage_of_case: document.getElementById("status_stage_of_case")
+            .value,
+          review_levels: getCheckedValues("review_level"),
+
+          level1_reviewer_names: getCheckedValues("l1_reviewer_name"),
+          level1_reviewer_remarks:
+            document.getElementById("l1-remarks")?.value || "",
+          level1_observations: collectObservationRows("l1"),
+
+          level2_reviewer_names: getCheckedValues("l2_reviewer_name"),
+          level2_reviewer_remarks:
+            document.getElementById("l2-remarks")?.value || "",
+          level2_observations: collectObservationRows("l2"),
+
+          level3_reviewer_names: getCheckedValues("l3_reviewer_name"),
+          level3_reviewer_remarks:
+            document.getElementById("l3-remarks")?.value || "",
+          level3_observations: collectObservationRows("l3"),
+
+          files_reviewed: collectFilesReviewedRows(),
+          review_date: document.getElementById("review_date").value,
+          remarks: document.getElementById("remarks").value,
+        };
+
+        if (!validateTF13(payload)) {
+          isSubmitting = false;
+          submitBtn.disabled = false;
+          submitBtn.innerText = "Submit";
+          return;
+        }
+
+        google.script.run
+          .withSuccessHandler(function (res) {
+            console.log("SUCCESS HANDLER RUNNING"); // 👈 debug
+            document.body.innerHTML = res.thankYouHtml;
+          })
+          .withFailureHandler(function (err) {
+            alert("Submission failed: " + err.message);
+            isSubmitting = false;
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Submit";
+          })
+          .submitTF13(payload);
+      }
+    </script>
+  </body>
+</html>

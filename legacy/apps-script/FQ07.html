@@ -1,0 +1,552 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <base target="_top" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FQ07</title>
+    <?!= HtmlService.createHtmlOutputFromFile('shared-styles').getContent(); ?>
+    <style>
+      .section-divider {
+        margin: 22px 0 14px;
+        padding-top: 8px;
+        border-top: 1px solid #e5e7eb;
+        font-weight: 700;
+        font-size: 18px;
+      }
+      .subform-card {
+        border: 1px solid #e5e7eb;
+        border-radius: 14px;
+        padding: 14px;
+        margin-bottom: 14px;
+        background: #fff;
+      }
+      .subform-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="form-wrapper">
+      <div class="form-title">FQ07</div>
+      <div class="form-subtitle">FAE reports Questionnaire - LU</div>
+
+      <div class="form-section">
+        <div class="form-group">
+          <label class="form-label" for="date">Date</label>
+          <input type="date" id="date" />
+          <div class="helper-text">dd-MMM-yyyy</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Name of Requestor</label>
+          <div class="form-row">
+            <div class="form-col">
+              <input
+                type="text"
+                id="requestor_first_name"
+                placeholder="First Name"
+              />
+              <div class="helper-text">First Name</div>
+            </div>
+            <div class="form-col">
+              <input
+                type="text"
+                id="requestor_last_name"
+                placeholder="Last Name"
+              />
+              <div class="helper-text">Last Name</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="requestor_email"
+            >Official Email ID of Requestor
+            <span class="required">*</span></label
+          >
+          <input type="email" id="requestor_email" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="team_name"
+            >Team Name <span class="required">*</span></label
+          >
+          <select id="team_name" required></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="company_name">Company Name</label>
+          <input type="text" id="company_name" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="project_name"
+            >Name of the project <span class="required">*</span></label
+          >
+          <input type="text" id="project_name" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="pcode"
+            >PCODE <span class="required">*</span></label
+          >
+          <input type="text" id="pcode" required />
+          <div class="helper-text">
+            Refer the active PCODE list in your database
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="address_line1">Address</label>
+          <input type="text" id="address_line1" placeholder="Street Address" />
+        </div>
+        <div class="form-group">
+          <input type="text" id="address_line2" placeholder="Address Line 2" />
+        </div>
+        <div class="form-row">
+          <div class="form-col">
+            <input type="text" id="city" placeholder="City" />
+          </div>
+          <div class="form-col">
+            <input type="text" id="state" placeholder="State/Region/Province" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-col">
+            <input
+              type="text"
+              id="postal_code"
+              placeholder="Postal / Zip Code"
+            />
+          </div>
+          <div class="form-col">
+            <select id="country"></select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="type_of_project"
+            >Type of Project <span class="required">*</span></label
+          >
+          <input type="text" id="type_of_project" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="physical_features"
+            >Physical Features</label
+          >
+          <input type="text" id="physical_features" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Core Zone</label>
+          <div class="form-row" style="flex-wrap: wrap; gap: 10px">
+            <label class="form-col-choice"
+              ><input type="radio" name="core_zone_type" value="Forest" />
+              Forest</label
+            >
+            <label class="form-col-choice"
+              ><input type="radio" name="core_zone_type" value="Non Forest" />
+              Non Forest</label
+            >
+            <label class="form-col-choice"
+              ><input type="radio" name="core_zone_type" value="Village" />
+              Village</label
+            >
+            <label class="form-col-choice"
+              ><input type="radio" name="core_zone_type" value="Building" />
+              Building</label
+            >
+            <label class="form-col-choice"
+              ><input type="radio" name="core_zone_type" value="Agriculture" />
+              Agriculture</label
+            >
+            <label class="form-col-choice"
+              ><input type="radio" name="core_zone_type" value="Pond / Lake" />
+              Pond / Lake</label
+            >
+            <label class="form-col-choice"
+              ><input type="radio" name="core_zone_type" value="Drain" />
+              Drain</label
+            >
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Archeological or important buildings</label>
+          <div id="arch-rows"></div>
+          <button
+            type="button"
+            class="btn-secondary"
+            id="add-arch-row"
+            style="margin-top: 10px"
+          >
+            + Add Row
+          </button>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Buffer Zone</label>
+          <div class="form-row" style="flex-wrap: wrap; gap: 10px">
+            <label class="form-col-choice"
+              ><input type="radio" name="buffer_zone_type" value="Forest" />
+              Forest</label
+            >
+            <label class="form-col-choice"
+              ><input type="radio" name="buffer_zone_type" value="Non Forest" />
+              Non Forest</label
+            >
+            <label class="form-col-choice"
+              ><input type="radio" name="buffer_zone_type" value="Village" />
+              Village</label
+            >
+            <label class="form-col-choice"
+              ><input type="radio" name="buffer_zone_type" value="Building" />
+              Building</label
+            >
+            <label class="form-col-choice"
+              ><input
+                type="radio"
+                name="buffer_zone_type"
+                value="Agriculture"
+              />
+              Agriculture</label
+            >
+            <label class="form-col-choice"
+              ><input
+                type="radio"
+                name="buffer_zone_type"
+                value="Pond / Lake"
+              />
+              Pond / Lake</label
+            >
+            <label class="form-col-choice"
+              ><input type="radio" name="buffer_zone_type" value="Drain" />
+              Drain</label
+            >
+          </div>
+        </div>
+
+        <div class="section-divider">LAND DETAILS</div>
+
+        <div class="form-group">
+          <label class="form-label" for="project_area">Project area</label
+          ><input type="text" id="project_area" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="build_up_area">Build-up area</label
+          ><input type="text" id="build_up_area" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="mine_area">Mine area</label
+          ><input type="text" id="mine_area" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="dump_area">Dump area</label
+          ><input type="text" id="dump_area" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="plantation_area">Plantation area</label
+          ><input type="text" id="plantation_area" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="road_area">Road area</label
+          ><input type="text" id="road_area" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="open_area">Open area</label
+          ><input type="text" id="open_area" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="other_details">Other</label
+          ><textarea id="other_details"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="environmentally_sensitive_area"
+            >Environmentally Sensitive Area</label
+          ><input type="text" id="environmentally_sensitive_area" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="core_zone_distance">CORE ZONE</label
+          ><input type="text" id="core_zone_distance" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="buffer_zone_distance"
+            >BUFFER ZONE</label
+          ><input type="text" id="buffer_zone_distance" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="category">Category</label>
+          <select id="category"></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="sector">Sector</label>
+          <select id="sector" multiple size="8"></select>
+          <div class="helper-text">Hold Ctrl/Cmd to select multiple</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="eac_name">EAC Name</label>
+          <select id="eac_name"></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="fae_report_link"
+            >FAE report link <span class="required">*</span></label
+          >
+          <input type="url" id="fae_report_link" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="remarks">Remarks</label>
+          <textarea id="remarks"></textarea>
+        </div>
+      </div>
+
+      <button
+        class="btn-primary"
+        type="button"
+        id="submitBtn"
+        onclick="submitFQ07()"
+      >
+        Submit
+      </button>
+    </div>
+
+    <script>
+      let isSubmitting = false;
+
+      window.addEventListener("DOMContentLoaded", function () {
+        populateDropdowns();
+        const wrap = document.getElementById("arch-rows");
+        wrap.appendChild(createArchRow());
+        document
+          .getElementById("add-arch-row")
+          .addEventListener("click", function () {
+            wrap.appendChild(createArchRow());
+          });
+      });
+
+      function populateDropdowns() {
+        google.script.run
+          .withSuccessHandler(function (data) {
+            data = data || {};
+            fillSelect(
+              document.getElementById("team_name"),
+              data.team || [],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("country"),
+              data.country || ["India"],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("category"),
+              data.category || ["A", "B1", "B2"],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("eac_name"),
+              data.eac || [],
+              "Select",
+            );
+            fillMultiSelect(
+              document.getElementById("sector"),
+              data.sector || [],
+            );
+          })
+          .getDropdownData();
+      }
+
+      function fillSelect(select, items, placeholder) {
+        if (!select) return;
+        select.innerHTML = "";
+        const first = document.createElement("option");
+        first.value = "";
+        first.textContent = placeholder || "Select";
+        select.appendChild(first);
+        (items || []).forEach(function (item) {
+          const option = document.createElement("option");
+          option.value = item;
+          option.textContent = item;
+          select.appendChild(option);
+        });
+      }
+
+      function fillMultiSelect(select, items) {
+        if (!select) return;
+        select.innerHTML = "";
+        (items || []).forEach(function (item) {
+          const option = document.createElement("option");
+          option.value = item;
+          option.textContent = item;
+          select.appendChild(option);
+        });
+      }
+
+      function createArchRow() {
+        const row = document.createElement("div");
+        row.className = "subform-card";
+        row.innerHTML = `
+          <div class="form-row">
+            <div class="form-col">
+              <label class="form-label">Name</label>
+              <input type="text" class="arch-name" />
+            </div>
+            <div class="form-col">
+              <label class="form-label">Distance from project site</label>
+              <input type="text" class="arch-distance" />
+            </div>
+          </div>
+          <button type="button" class="btn-secondary arch-remove" style="margin-top:10px;">Remove</button>
+        `;
+        row
+          .querySelector(".arch-remove")
+          .addEventListener("click", function () {
+            row.remove();
+          });
+        return row;
+      }
+
+      function collectArchRows() {
+        return Array.from(document.querySelectorAll("#arch-rows .subform-card"))
+          .map(function (row) {
+            return {
+              name: row.querySelector(".arch-name")?.value || "",
+              distance_from_project_site:
+                row.querySelector(".arch-distance")?.value || "",
+            };
+          })
+          .filter(function (r) {
+            return (
+              String(r.name).trim() ||
+              String(r.distance_from_project_site).trim()
+            );
+          });
+      }
+
+      function getSelectedMultiValues(id) {
+        const el = document.getElementById(id);
+        return Array.from(el.selectedOptions)
+          .map((opt) => opt.value)
+          .join(", ");
+      }
+
+      function getRadioValue(name) {
+        const checked = document.querySelector(`input[name="${name}"]:checked`);
+        return checked ? checked.value : "";
+      }
+
+      function validateFQ07(p) {
+        const missing = [];
+        if (!p.requestor_email) missing.push("Official Email ID of Requestor");
+        if (!p.team_name) missing.push("Team Name");
+        if (!p.project_name) missing.push("Name of the project");
+        if (!p.pcode) missing.push("PCODE");
+        if (!p.type_of_project) missing.push("Type of Project");
+        if (!p.fae_report_link) missing.push("FAE report link");
+
+        (p.archaeological_details || []).forEach(function (r, i) {
+          if (
+            String(r.name || "").trim() ||
+            String(r.distance_from_project_site || "").trim()
+          ) {
+            if (!String(r.name || "").trim())
+              missing.push(
+                `Archeological or important buildings - Name (row ${i + 1})`,
+              );
+            if (!String(r.distance_from_project_site || "").trim())
+              missing.push(
+                `Archeological or important buildings - Distance from project site (row ${i + 1})`,
+              );
+          }
+        });
+
+        if (missing.length) {
+          alert("Please fill:\n\n" + missing.join("\n"));
+          return false;
+        }
+        return true;
+      }
+
+      function submitFQ07() {
+        if (isSubmitting) return; // blocks double-clicks instantly
+        isSubmitting = true;
+        const submitBtn = document.getElementById("submitBtn");
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Submitting...";
+
+        const payload = {
+          date: document.getElementById("date").value,
+          requestor_first_name: document.getElementById("requestor_first_name")
+            .value,
+          requestor_last_name: document.getElementById("requestor_last_name")
+            .value,
+          requestor_email: document.getElementById("requestor_email").value,
+          team_name: document.getElementById("team_name").value,
+          company_name: document.getElementById("company_name").value,
+          project_name: document.getElementById("project_name").value,
+          pcode: document.getElementById("pcode").value,
+          address_line1: document.getElementById("address_line1").value,
+          address_line2: document.getElementById("address_line2").value,
+          city: document.getElementById("city").value,
+          state: document.getElementById("state").value,
+          postal_code: document.getElementById("postal_code").value,
+          country: document.getElementById("country").value,
+          type_of_project: document.getElementById("type_of_project").value,
+          physical_features: document.getElementById("physical_features").value,
+          core_zone_type: getRadioValue("core_zone_type"),
+          buffer_zone_type: getRadioValue("buffer_zone_type"),
+          archaeological_details: collectArchRows(),
+          project_area: document.getElementById("project_area").value,
+          build_up_area: document.getElementById("build_up_area").value,
+          mine_area: document.getElementById("mine_area").value,
+          dump_area: document.getElementById("dump_area").value,
+          plantation_area: document.getElementById("plantation_area").value,
+          road_area: document.getElementById("road_area").value,
+          open_area: document.getElementById("open_area").value,
+          other_details: document.getElementById("other_details").value,
+          environmentally_sensitive_area: document.getElementById(
+            "environmentally_sensitive_area",
+          ).value,
+          core_zone_distance:
+            document.getElementById("core_zone_distance").value,
+          buffer_zone_distance: document.getElementById("buffer_zone_distance")
+            .value,
+          category: document.getElementById("category").value,
+          sector: getSelectedMultiValues("sector"),
+          eac_name: document.getElementById("eac_name").value,
+          fae_report_link: document.getElementById("fae_report_link").value,
+          remarks: document.getElementById("remarks").value,
+        };
+
+        if (!validateFQ07(payload)) {
+          isSubmitting = false;
+          submitBtn.disabled = false;
+          submitBtn.innerText = "Submit";
+          return;
+        }
+
+        google.script.run
+          .withSuccessHandler(function (res) {
+            console.log("SUCCESS HANDLER RUNNING"); // 👈 debug
+            document.body.innerHTML = res.thankYouHtml;
+          })
+          .withFailureHandler(function (err) {
+            alert("Submission failed: " + err.message);
+            isSubmitting = false;
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Submit";
+          })
+          .submitFQ07(payload);
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <base target="_top" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TF01</title>
+    <?!= HtmlService.createHtmlOutputFromFile('shared-styles').getContent(); ?>
+  </head>
+  <body>
+    <div class="form-wrapper">
+      <div class="form-title">TF01</div>
+      <div class="form-subtitle">
+        Technical Format for REQUISITION SLIP FOR PRINTING
+      </div>
+
+      <div class="form-section">
+        <div class="form-group">
+          <label class="form-label" for="date">Date</label>
+          <input type="date" id="date" />
+          <div class="helper-text">dd-MMM-yyyy</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Employee Name</label>
+          <div class="form-row">
+            <div class="form-col">
+              <input
+                type="text"
+                id="employee_first_name"
+                placeholder="First Name"
+              />
+              <div class="helper-text">First Name</div>
+            </div>
+            <div class="form-col">
+              <input
+                type="text"
+                id="employee_last_name"
+                placeholder="Last Name"
+              />
+              <div class="helper-text">Last Name</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="employee_email"
+            >Employee Email ID <span class="required">*</span></label
+          >
+          <input type="email" id="employee_email" required />
+          <div class="helper-text">Email ID of the person filling the form</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="team_name"
+            >Team Name <span class="required">*</span></label
+          >
+          <select id="team_name" required></select>
+        </div>
+
+        <div class="section-heading">PROJECT(S) DETAILS</div>
+
+        <div class="work-matrix-wrap">
+          <table class="matrix-table">
+            <thead>
+              <tr>
+                <th class="col-project">Project Name</th>
+                <th class="col-pcode">PCode</th>
+                <th class="col-member">PP Name</th>
+                <th class="col-member">Report Name</th>
+                <th class="col-member">Purpose of Printing</th>
+                <th class="col-member">PDF Link</th>
+                <th class="col-member">No. of Pages</th>
+                <th class="col-member">Type of Print</th>
+                <th class="col-member">No. of Copies</th>
+                <th style="width: 60px">&nbsp;</th>
+              </tr>
+            </thead>
+            <tbody id="project-details-body"></tbody>
+          </table>
+        </div>
+
+        <button
+          type="button"
+          class="btn-secondary"
+          id="add-project-row"
+          style="margin-top: 12px"
+        >
+          + Add Project
+        </button>
+
+        <div class="form-group" style="margin-top: 18px">
+          <label class="form-label" for="remarks">Remarks</label>
+          <textarea id="remarks"></textarea>
+          <div class="helper-text">if any</div>
+        </div>
+      </div>
+
+      <button
+        class="btn-primary"
+        type="button"
+        id="submitBtn"
+        onclick="submitTF01()"
+      >
+        Submit
+      </button>
+    </div>
+
+    <script>
+      window.addEventListener("DOMContentLoaded", function () {
+        populateDropdowns();
+        bindEvents();
+      });
+
+      function populateDropdowns() {
+        google.script.run
+          .withSuccessHandler(function (data) {
+            data = data || {};
+            fillSelect(
+              document.getElementById("team_name"),
+              data.team || [],
+              "Select",
+            );
+          })
+          .getDropdownData();
+      }
+
+      function fillSelect(select, items, placeholder) {
+        if (!select) return;
+        select.innerHTML = "";
+
+        const first = document.createElement("option");
+        first.value = "";
+        first.textContent = placeholder || "Select";
+        select.appendChild(first);
+
+        (items || []).forEach(function (item) {
+          const option = document.createElement("option");
+          option.value = item;
+          option.textContent = item;
+          select.appendChild(option);
+        });
+      }
+
+      function makeKey() {
+        return (
+          "PR_" +
+          Date.now().toString(36) +
+          "_" +
+          Math.random().toString(36).slice(2, 8)
+        );
+      }
+
+      function createProjectRow() {
+        const tr = document.createElement("tr");
+        tr.className = "project-row";
+        tr.dataset.rowKey = makeKey();
+        tr.innerHTML = `
+          <td class="col-project"><input type="text" class="pr-project-name" placeholder="Project name"></td>
+          <td class="col-pcode"><input type="text" class="pr-pcode" placeholder="PCODE"></td>
+          <td class="col-member"><input type="text" class="pr-pp-name" placeholder="PP name"></td>
+          <td class="col-member"><input type="text" class="pr-report-name" placeholder="Report name"></td>
+          <td class="col-member"><input type="text" class="pr-purpose" placeholder="Purpose of printing"></td>
+          <td class="col-member"><input type="url" class="pr-pdf-link" placeholder="PDF link"></td>
+          <td class="col-member"><input type="number" class="pr-pages" min="0" step="1" placeholder="No. of pages"></td>
+          <td class="col-member">
+            <div class="form-row" style="gap:10px;">
+              <div class="form-col-choice">
+                <input type="radio" name="print_type_${tr.dataset.rowKey}" value="Colour" checked>
+                <label>Colour</label>
+              </div>
+              <div class="form-col-choice">
+                <input type="radio" name="print_type_${tr.dataset.rowKey}" value="Black & White">
+                <label>Black &amp; White</label>
+              </div>
+            </div>
+          </td>
+          <td class="col-member"><input type="number" class="pr-copies" min="0" step="1" placeholder="No. of copies"></td>
+          <td style="width:60px; vertical-align:middle;">
+            <button type="button" class="btn-secondary remove-row">✕</button>
+          </td>
+        `;
+
+        tr.querySelector(".remove-row").addEventListener("click", function () {
+          tr.remove();
+        });
+
+        return tr;
+      }
+
+      function bindEvents() {
+        document
+          .getElementById("add-project-row")
+          .addEventListener("click", function () {
+            document
+              .getElementById("project-details-body")
+              .appendChild(createProjectRow());
+          });
+
+        document.getElementById("add-project-row").click();
+      }
+
+      function collectProjectRows() {
+        return Array.from(
+          document.querySelectorAll("#project-details-body tr.project-row"),
+        )
+          .map(function (tr) {
+            const printType =
+              tr.querySelector('input[type="radio"]:checked')?.value || "";
+            return {
+              project_name: tr.querySelector(".pr-project-name")?.value || "",
+              pcode: tr.querySelector(".pr-pcode")?.value || "",
+              pp_name: tr.querySelector(".pr-pp-name")?.value || "",
+              report_name: tr.querySelector(".pr-report-name")?.value || "",
+              purpose_of_printing: tr.querySelector(".pr-purpose")?.value || "",
+              pdf_link: tr.querySelector(".pr-pdf-link")?.value || "",
+              no_of_pages: tr.querySelector(".pr-pages")?.value || "",
+              type_of_print: printType,
+              no_of_copies: tr.querySelector(".pr-copies")?.value || "",
+            };
+          })
+          .filter(function (r) {
+            return (
+              r.project_name ||
+              r.pcode ||
+              r.pp_name ||
+              r.report_name ||
+              r.purpose_of_printing ||
+              r.pdf_link ||
+              r.no_of_pages ||
+              r.type_of_print ||
+              r.no_of_copies
+            );
+          });
+      }
+
+      function validateTF01(payload) {
+        const missing = [];
+        if (!payload.employee_email) missing.push("Employee Email ID");
+        if (!payload.team_name) missing.push("Team Name");
+        if (!payload.project_details.length) missing.push("PROJECT(S) DETAILS");
+
+        payload.project_details.forEach(function (r, idx) {
+          if (!r.project_name) missing.push(`Row ${idx + 1}: Project Name`);
+          if (!r.pcode) missing.push(`Row ${idx + 1}: PCode`);
+          if (!r.pp_name) missing.push(`Row ${idx + 1}: PP Name`);
+          if (!r.report_name) missing.push(`Row ${idx + 1}: Report Name`);
+          if (!r.purpose_of_printing)
+            missing.push(`Row ${idx + 1}: Purpose of Printing`);
+          if (!r.pdf_link) missing.push(`Row ${idx + 1}: PDF Link`);
+          if (r.no_of_pages === "")
+            missing.push(`Row ${idx + 1}: No. of Pages`);
+          if (!r.type_of_print) missing.push(`Row ${idx + 1}: Type of Print`);
+          if (r.no_of_copies === "")
+            missing.push(`Row ${idx + 1}: No. of Copies`);
+        });
+
+        if (missing.length) {
+          alert("Please fill:\n\n" + missing.join("\n"));
+          return false;
+        }
+        return true;
+      }
+
+      let isSubmitting = false;
+
+      function submitTF01() {
+        if (isSubmitting) return; // blocks double-clicks instantly
+        isSubmitting = true;
+        const submitBtn = document.getElementById("submitBtn");
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Submitting...";
+
+        const payload = {
+          date: document.getElementById("date").value,
+          employee_first_name: document.getElementById("employee_first_name")
+            .value,
+          employee_last_name:
+            document.getElementById("employee_last_name").value,
+          employee_email: document.getElementById("employee_email").value,
+          team_name: document.getElementById("team_name").value,
+          project_details: collectProjectRows(),
+          remarks: document.getElementById("remarks").value,
+        };
+
+        if (!validateTF01(payload)) {
+          isSubmitting = false;
+          submitBtn.disabled = false;
+          submitBtn.innerText = "Submit";
+          return;
+        }
+
+        google.script.run
+          .withSuccessHandler(function (res) {
+            console.log("SUCCESS HANDLER RUNNING"); // 👈 debug
+            document.body.innerHTML = res.thankYouHtml;
+          })
+          .withFailureHandler(function (err) {
+            alert("Submission failed: " + err.message);
+            isSubmitting = false;
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Submit";
+          })
+          .submitTF01(payload);
+      }
+    </script>
+  </body>
+</html>

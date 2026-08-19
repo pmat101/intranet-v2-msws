@@ -1,0 +1,751 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <base target="_top" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FQ05</title>
+    <?!= HtmlService.createHtmlOutputFromFile('shared-styles').getContent(); ?>
+    <style>
+      .section-divider {
+        margin: 22px 0 14px;
+        padding-top: 8px;
+        border-top: 1px solid #e5e7eb;
+        font-weight: 700;
+        font-size: 18px;
+      }
+      .attachment-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="form-wrapper">
+      <div class="form-title">FQ05</div>
+      <div class="form-subtitle">FAE reports Questionnaire - EB</div>
+
+      <div class="form-section">
+        <div class="form-group">
+          <label class="form-label" for="date">Date</label>
+          <input type="date" id="date" />
+          <div class="helper-text">dd-MMM-yyyy</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Name of Requestor</label>
+          <div class="form-row">
+            <div class="form-col">
+              <input
+                type="text"
+                id="requestor_first_name"
+                placeholder="First Name"
+              />
+              <div class="helper-text">First Name</div>
+            </div>
+            <div class="form-col">
+              <input
+                type="text"
+                id="requestor_last_name"
+                placeholder="Last Name"
+              />
+              <div class="helper-text">Last Name</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="requestor_email"
+            >Official Email ID of Requestor
+            <span class="required">*</span></label
+          >
+          <input type="email" id="requestor_email" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="team_name"
+            >Team Name <span class="required">*</span></label
+          >
+          <select id="team_name" required></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="company_name">Company Name</label>
+          <input type="text" id="company_name" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="project_name"
+            >Name of the project <span class="required">*</span></label
+          >
+          <input type="text" id="project_name" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="pcode"
+            >PCODE <span class="required">*</span></label
+          >
+          <input type="text" id="pcode" required />
+          <div class="helper-text">
+            Refer the active PCODE list in your database
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="category"
+            >Category <span class="required">*</span></label
+          >
+          <select id="category" required></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="sector"
+            >Sector <span class="required">*</span></label
+          >
+          <select id="sector"></select>
+          <div class="helper-text">Hold Ctrl/Cmd to select multiple</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="eac_name"
+            >EAC Name <span class="required">*</span></label
+          >
+          <select id="eac_name" required></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Type of Development</label>
+          <div class="form-row" style="flex-wrap: wrap; gap: 10px">
+            <label class="form-col-choice"
+              ><input
+                type="radio"
+                name="type_of_development"
+                value="Green Field"
+              />
+              Green Field</label
+            >
+            <label class="form-col-choice"
+              ><input
+                type="radio"
+                name="type_of_development"
+                value="Brown Field"
+              />
+              Brown Field</label
+            >
+            <label class="form-col-choice"
+              ><input type="radio" name="type_of_development" value="Other" />
+              Other</label
+            >
+          </div>
+        </div>
+
+        <div
+          class="form-group"
+          id="type_of_development_other_wrap"
+          style="display: none"
+        >
+          <label class="form-label" for="type_of_development_other"
+            >If Others (Specify) <span class="required">*</span></label
+          >
+          <input type="text" id="type_of_development_other" />
+        </div>
+
+        <div class="section-divider">Area Details</div>
+
+        <div class="form-group">
+          <label class="form-label" for="area_of_project_m2"
+            >Area of Project</label
+          >
+          <input type="number" id="area_of_project_m2" step="0.01" />
+          <div class="helper-text">in ㎡</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="green_area_percentage"
+            >Percentage (%) of area required to be developed as green</label
+          >
+          <input type="number" id="green_area_percentage" step="0.01" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="green_area_status"
+            >Area that is already green or Green area needs to be
+            developed</label
+          >
+          <input type="text" id="green_area_status" />
+          <div class="helper-text">For calculation of no. of trees</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="existing_trees_shrub_grass_list"
+            >Existing Trees / Shrub / Grass list</label
+          >
+          <textarea id="existing_trees_shrub_grass_list"></textarea>
+          <div class="helper-text">If present</div>
+        </div>
+
+        <div class="section-divider">Uploads / Links</div>
+
+        <div class="attachment-grid">
+          <div class="form-group">
+            <label class="form-label" for="primary_site_visit_report_url"
+              >Primary Site visit data / report
+              <span class="required">*</span></label
+            >
+            <input
+              type="url"
+              id="primary_site_visit_report_url"
+              required
+              placeholder="Paste file URL here"
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="kml_file_url"
+              >KML file <span class="required">*</span></label
+            >
+            <input
+              type="url"
+              id="kml_file_url"
+              required
+              placeholder="Paste file URL here"
+            />
+          </div>
+
+          <div class="form-group" id="flora_fauna_list_wrap">
+            <label class="form-label" for="flora_fauna_list_url"
+              >Authenticated list of Flora and Fauna</label
+            >
+            <input
+              type="url"
+              id="flora_fauna_list_url"
+              placeholder="Paste file URL here"
+            />
+            <div class="helper-text">If available</div>
+          </div>
+
+          <div class="form-group" id="lulc_map_wrap">
+            <label class="form-label" for="lulc_map_url"
+              >LULC map <span class="required">*</span></label
+            >
+            <input
+              type="url"
+              id="lulc_map_url"
+              placeholder="Paste file URL here"
+            />
+          </div>
+
+          <div class="form-group" id="dem_wrap">
+            <label class="form-label" for="dem_url"
+              >DEM <span class="required">*</span></label
+            >
+            <input type="url" id="dem_url" placeholder="Paste file URL here" />
+          </div>
+
+          <div class="form-group" id="topo_map_wrap">
+            <label class="form-label" for="topo_map_url"
+              >TOPO map <span class="required">*</span></label
+            >
+            <input
+              type="url"
+              id="topo_map_url"
+              placeholder="Paste file URL here"
+            />
+          </div>
+
+          <div class="form-group" id="drainage_map_wrap">
+            <label class="form-label" for="drainage_map_url"
+              >Drainage map <span class="required">*</span></label
+            >
+            <input
+              type="url"
+              id="drainage_map_url"
+              placeholder="Paste file URL here"
+            />
+          </div>
+
+          <div class="form-group" id="forest_cover_map_wrap">
+            <label class="form-label" for="forest_cover_map_url"
+              >Forest Cover map <span class="required">*</span></label
+            >
+            <input
+              type="url"
+              id="forest_cover_map_url"
+              placeholder="Paste file URL here"
+            />
+          </div>
+
+          <div class="form-group" id="moisture_conservation_map_wrap">
+            <label class="form-label" for="moisture_conservation_map_url"
+              >Moisture Conservation map <span class="required">*</span></label
+            >
+            <input
+              type="url"
+              id="moisture_conservation_map_url"
+              placeholder="Paste file URL here"
+            />
+          </div>
+
+          <div class="form-group" id="fire_prone_area_map_wrap">
+            <label class="form-label" for="fire_prone_area_map_url"
+              >Fire Prone Area map <span class="required">*</span></label
+            >
+            <input
+              type="url"
+              id="fire_prone_area_map_url"
+              placeholder="Paste file URL here"
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="project_sheet_url"
+              >Project Sheet link <span class="required">*</span></label
+            >
+            <input
+              type="url"
+              id="project_sheet_url"
+              required
+              placeholder="Paste file URL here"
+            />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="other_project_area_maps_url"
+              >Other project area related maps</label
+            >
+            <input
+              type="url"
+              id="other_project_area_maps_url"
+              placeholder="Paste file URL here"
+            />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="coordinate_details_chapter2"
+            >Coordinate details / elevations / Chapter 2</label
+          >
+          <textarea id="coordinate_details_chapter2"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="eb_tor_point_details"
+            >EB related TOR Point no. and details</label
+          >
+          <textarea id="eb_tor_point_details"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="requirement"
+            >Requirement <span class="required">*</span></label
+          >
+          <select id="requirement" required>
+            <option value="">Select</option>
+            <option value="EBR">EBR</option>
+            <option value="WLCP">WLCP</option>
+            <option value="other">other</option>
+            <option value="none">none</option>
+          </select>
+        </div>
+
+        <div
+          class="form-group"
+          id="requirement_other_wrap"
+          style="display: none"
+        >
+          <label class="form-label" for="requirement_other"
+            >Other requirement <span class="required">*</span></label
+          >
+          <input type="text" id="requirement_other" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="environment_sensitivity_sheet_url"
+            >Environment Sensitivity sheet link</label
+          >
+          <input
+            type="url"
+            id="environment_sensitivity_sheet_url"
+            placeholder="Paste sheet URL here"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="eb_sheet_url"
+            >EB sheet link <span class="required">*</span></label
+          >
+          <input
+            type="url"
+            id="eb_sheet_url"
+            required
+            placeholder="Paste sheet URL here"
+          />
+        </div>
+      </div>
+
+      <button
+        class="btn-primary"
+        type="button"
+        id="submitBtn"
+        onclick="submitFQ05()"
+      >
+        Submit
+      </button>
+    </div>
+
+    <script>
+      let isSubmitting = false;
+
+      // Category-driven upload visibility rules
+      // A   -> show all eight: flora_fauna, lulc, dem, topo, drainage, forest_cover, moisture, fire_prone
+      // B1  -> show six: flora_fauna, lulc, dem, topo, drainage, forest_cover
+      // B2  -> show six: flora_fauna, lulc, dem, topo, drainage, forest_cover
+      const CATEGORY_UPLOAD_RULES = {
+        A: {
+          show: [
+            "flora_fauna_list_wrap",
+            "lulc_map_wrap",
+            "dem_wrap",
+            "topo_map_wrap",
+            "drainage_map_wrap",
+            "forest_cover_map_wrap",
+            "moisture_conservation_map_wrap",
+            "fire_prone_area_map_wrap",
+          ],
+          requiredUrls: [
+            "lulc_map_url",
+            "dem_url",
+            "topo_map_url",
+            "drainage_map_url",
+            "forest_cover_map_url",
+            "moisture_conservation_map_url",
+            "fire_prone_area_map_url",
+          ],
+        },
+        B1: {
+          show: [
+            "flora_fauna_list_wrap",
+            "lulc_map_wrap",
+            "dem_wrap",
+            "topo_map_wrap",
+            "drainage_map_wrap",
+            "forest_cover_map_wrap",
+          ],
+          requiredUrls: [
+            "lulc_map_url",
+            "dem_url",
+            "topo_map_url",
+            "drainage_map_url",
+            "forest_cover_map_url",
+          ],
+        },
+        B2: {
+          show: [
+            "flora_fauna_list_wrap",
+            "lulc_map_wrap",
+            "dem_wrap",
+            "topo_map_wrap",
+            "drainage_map_wrap",
+            "forest_cover_map_wrap",
+          ],
+          requiredUrls: [
+            "lulc_map_url",
+            "dem_url",
+            "topo_map_url",
+            "drainage_map_url",
+            "forest_cover_map_url",
+          ],
+        },
+      };
+
+      const ALL_CONDITIONAL_WRAPS = [
+        "flora_fauna_list_wrap",
+        "lulc_map_wrap",
+        "dem_wrap",
+        "topo_map_wrap",
+        "drainage_map_wrap",
+        "forest_cover_map_wrap",
+        "moisture_conservation_map_wrap",
+        "fire_prone_area_map_wrap",
+      ];
+
+      window.addEventListener("DOMContentLoaded", function () {
+        populateDropdowns();
+        bindTypeOfDevelopmentToggle();
+        bindRequirementToggle();
+        bindCategoryToggle();
+        // initial hide of all conditional upload blocks until a category is chosen
+        applyCategoryVisibility("");
+      });
+
+      function populateDropdowns() {
+        google.script.run
+          .withSuccessHandler(function (data) {
+            data = data || {};
+            fillSelect(
+              document.getElementById("team_name"),
+              data.team || [],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("category"),
+              ["A", "B1", "B2"],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("eac_name"),
+              data.eac || [],
+              "Select",
+            );
+            fillMultiSelect(
+              document.getElementById("sector"),
+              data.sector || [],
+            );
+          })
+          .getDropdownData();
+      }
+
+      function fillSelect(select, items, placeholder) {
+        if (!select) return;
+        select.innerHTML = "";
+        const first = document.createElement("option");
+        first.value = "";
+        first.textContent = placeholder || "Select";
+        select.appendChild(first);
+
+        (items || []).forEach(function (item) {
+          const option = document.createElement("option");
+          option.value = item;
+          option.textContent = item;
+          select.appendChild(option);
+        });
+      }
+
+      function fillMultiSelect(select, items) {
+        if (!select) return;
+        select.innerHTML = "";
+        (items || []).forEach(function (item) {
+          const option = document.createElement("option");
+          option.value = item;
+          option.textContent = item;
+          select.appendChild(option);
+        });
+      }
+
+      function getSelectedMultiValues(id) {
+        const el = document.getElementById(id);
+        return Array.from(el.selectedOptions)
+          .map((opt) => opt.value)
+          .join(", ");
+      }
+
+      function getRadioValue(name) {
+        const checked = document.querySelector(`input[name="${name}"]:checked`);
+        return checked ? checked.value : "";
+      }
+
+      function bindTypeOfDevelopmentToggle() {
+        const radios = document.querySelectorAll(
+          'input[name="type_of_development"]',
+        );
+        radios.forEach(function (radio) {
+          radio.addEventListener("change", function () {
+            const wrap = document.getElementById(
+              "type_of_development_other_wrap",
+            );
+            const otherField = document.getElementById(
+              "type_of_development_other",
+            );
+            if (this.checked && this.value === "Other") {
+              wrap.style.display = "block";
+            } else if (this.checked) {
+              wrap.style.display = "none";
+              if (otherField) otherField.value = "";
+            }
+          });
+        });
+      }
+
+      function bindRequirementToggle() {
+        const sel = document.getElementById("requirement");
+        sel.addEventListener("change", function () {
+          const wrap = document.getElementById("requirement_other_wrap");
+          const otherField = document.getElementById("requirement_other");
+          if (this.value === "other") {
+            wrap.style.display = "block";
+          } else {
+            wrap.style.display = "none";
+            if (otherField) otherField.value = "";
+          }
+        });
+      }
+
+      function bindCategoryToggle() {
+        const sel = document.getElementById("category");
+        sel.addEventListener("change", function () {
+          applyCategoryVisibility(this.value);
+        });
+      }
+
+      function applyCategoryVisibility(category) {
+        const rule = CATEGORY_UPLOAD_RULES[category];
+        const shownSet = new Set(rule ? rule.show : []);
+
+        ALL_CONDITIONAL_WRAPS.forEach(function (wrapId) {
+          const wrap = document.getElementById(wrapId);
+          if (!wrap) return;
+          if (shownSet.has(wrapId)) {
+            wrap.style.display = "";
+          } else {
+            wrap.style.display = "none";
+            // clear hidden field values so stale data is never submitted
+            const inputs = wrap.querySelectorAll("input, textarea, select");
+            inputs.forEach(function (input) {
+              input.value = "";
+            });
+          }
+        });
+      }
+
+      function validateFQ05(p) {
+        const missing = [];
+
+        if (!p.requestor_email) missing.push("Official Email ID of Requestor");
+        if (!p.team_name) missing.push("Team Name");
+        if (!p.project_name) missing.push("Name of the project");
+        if (!p.pcode) missing.push("PCODE");
+        if (!p.category) missing.push("Category");
+        if (!p.sector) missing.push("Sector");
+        if (!p.eac_name) missing.push("EAC Name");
+
+        if (p.type_of_development === "Other" && !p.type_of_development_other) {
+          missing.push("If Others (Specify) - Type of Development");
+        }
+
+        if (!p.primary_site_visit_report_url)
+          missing.push("Primary Site visit data / report");
+        if (!p.kml_file_url) missing.push("KML file");
+        if (!p.project_sheet_url) missing.push("Project Sheet link");
+        if (!p.eb_sheet_url) missing.push("EB sheet link");
+
+        // category-driven upload requirements
+        const rule = CATEGORY_UPLOAD_RULES[p.category];
+        if (rule) {
+          const labelMap = {
+            lulc_map_url: "LULC map",
+            dem_url: "DEM",
+            topo_map_url: "TOPO map",
+            drainage_map_url: "Drainage map",
+            forest_cover_map_url: "Forest Cover map",
+            moisture_conservation_map_url: "Moisture Conservation map",
+            fire_prone_area_map_url: "Fire Prone Area map",
+          };
+          rule.requiredUrls.forEach(function (key) {
+            if (!p[key]) missing.push(labelMap[key]);
+          });
+        }
+
+        if (!p.requirement) missing.push("Requirement");
+        if (p.requirement === "other" && !p.requirement_other) {
+          missing.push("Other requirement");
+        }
+
+        if (missing.length) {
+          alert("Please fill:\n\n" + missing.join("\n"));
+          return false;
+        }
+        return true;
+      }
+
+      function submitFQ05() {
+        if (isSubmitting) return;
+        isSubmitting = true;
+        const submitBtn = document.getElementById("submitBtn");
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Submitting...";
+
+        const payload = {
+          date: document.getElementById("date").value,
+          requestor_first_name: document.getElementById("requestor_first_name")
+            .value,
+          requestor_last_name: document.getElementById("requestor_last_name")
+            .value,
+          requestor_email: document.getElementById("requestor_email").value,
+          team_name: document.getElementById("team_name").value,
+          company_name: document.getElementById("company_name").value,
+          project_name: document.getElementById("project_name").value,
+          pcode: document.getElementById("pcode").value,
+          category: document.getElementById("category").value,
+          sector: getSelectedMultiValues("sector"),
+          eac_name: document.getElementById("eac_name").value,
+          type_of_development: getRadioValue("type_of_development"),
+          type_of_development_other: document.getElementById(
+            "type_of_development_other",
+          ).value,
+          area_of_project_m2:
+            document.getElementById("area_of_project_m2").value,
+          green_area_percentage: document.getElementById(
+            "green_area_percentage",
+          ).value,
+          green_area_status: document.getElementById("green_area_status").value,
+          existing_trees_shrub_grass_list: document.getElementById(
+            "existing_trees_shrub_grass_list",
+          ).value,
+          flora_fauna_list_url: document.getElementById("flora_fauna_list_url")
+            .value,
+          primary_site_visit_report_url: document.getElementById(
+            "primary_site_visit_report_url",
+          ).value,
+          kml_file_url: document.getElementById("kml_file_url").value,
+          lulc_map_url: document.getElementById("lulc_map_url").value,
+          dem_url: document.getElementById("dem_url").value,
+          topo_map_url: document.getElementById("topo_map_url").value,
+          drainage_map_url: document.getElementById("drainage_map_url").value,
+          forest_cover_map_url: document.getElementById("forest_cover_map_url")
+            .value,
+          moisture_conservation_map_url: document.getElementById(
+            "moisture_conservation_map_url",
+          ).value,
+          fire_prone_area_map_url: document.getElementById(
+            "fire_prone_area_map_url",
+          ).value,
+          project_sheet_url: document.getElementById("project_sheet_url").value,
+          other_project_area_maps_url: document.getElementById(
+            "other_project_area_maps_url",
+          ).value,
+          coordinate_details_chapter2: document.getElementById(
+            "coordinate_details_chapter2",
+          ).value,
+          eb_tor_point_details: document.getElementById("eb_tor_point_details")
+            .value,
+          requirement: document.getElementById("requirement").value,
+          requirement_other: document.getElementById("requirement_other").value,
+          environment_sensitivity_sheet_url: document.getElementById(
+            "environment_sensitivity_sheet_url",
+          ).value,
+          eb_sheet_url: document.getElementById("eb_sheet_url").value,
+        };
+
+        if (!validateFQ05(payload)) {
+          isSubmitting = false;
+          submitBtn.disabled = false;
+          submitBtn.innerText = "Submit";
+          return;
+        }
+
+        google.script.run
+          .withSuccessHandler(function (res) {
+            document.body.innerHTML = res.thankYouHtml;
+          })
+          .withFailureHandler(function (err) {
+            alert("Submission failed: " + err.message);
+            isSubmitting = false;
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Submit";
+          })
+          .submitFQ05(payload);
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,563 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <base target="_top" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ADM04</title>
+    <?!= HtmlService.createHtmlOutputFromFile('shared-styles').getContent(); ?>
+  </head>
+  <body>
+    <div class="form-wrapper">
+      <div class="form-title">ADM04</div>
+      <div class="form-subtitle">Vehicle Maintenance Form</div>
+
+      <div class="form-section">
+        <div class="form-group">
+          <label class="form-label" for="date">Date</label>
+          <input type="date" id="date" />
+          <div class="helper-text">dd-MMM-yyyy</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Name</label>
+          <div class="form-row">
+            <div class="form-col">
+              <input
+                type="text"
+                id="requestor_first_name"
+                placeholder="First Name"
+              />
+              <div class="helper-text">First Name</div>
+            </div>
+            <div class="form-col">
+              <input
+                type="text"
+                id="requestor_last_name"
+                placeholder="Last Name"
+              />
+              <div class="helper-text">Last Name</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="requestor_email"
+            >Email <span class="required">*</span></label
+          >
+          <input type="email" id="requestor_email" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="department">Department</label>
+          <input type="text" id="department" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="team_name">Team Name</label>
+          <select id="team_name"></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="vehicle_detail">Vehicle Detail</label>
+          <select id="vehicle_detail"></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="type_of_work"
+            >Type of work to be done</label
+          >
+          <select id="type_of_work"></select>
+        </div>
+
+        <div id="periodic-block" style="display: none">
+          <div class="form-group">
+            <label class="form-label" for="workshop">Workshop</label
+            ><input type="text" id="workshop" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="date_of_last_service"
+              >Date of last service</label
+            ><input type="date" id="date_of_last_service" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="last_service_kms"
+              >Last service done at -Kms</label
+            ><input type="number" id="last_service_kms" />
+          </div>
+          <div class="form-group">
+            <label
+              class="form-label"
+              for="amount_incurred_on_last_periodic_service"
+              >Amount incurred on last periodic service</label
+            ><input
+              type="number"
+              id="amount_incurred_on_last_periodic_service"
+              step="0.01"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="current_running_kms"
+              >Current running Kms</label
+            ><input type="number" id="current_running_kms" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="proposed_date_of_service"
+              >Proposed date of service</label
+            ><input type="date" id="proposed_date_of_service" />
+          </div>
+        </div>
+
+        <div id="puc-block" style="display: none">
+          <div class="form-group">
+            <label class="form-label" for="puc_valid_till">PUC valid Till</label
+            ><input type="date" id="puc_valid_till" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="puc_to_be_renewed_on_or_before"
+              >PUC to be renewed on or before</label
+            ><input type="date" id="puc_to_be_renewed_on_or_before" />
+          </div>
+        </div>
+
+        <div id="tyres-block" style="display: none">
+          <div class="form-group">
+            <label class="form-label" for="last_time_tyres_purchase_date"
+              >Last time Tyres purchase date</label
+            ><input type="date" id="last_time_tyres_purchase_date" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="cost_of_last_tyres_purchase"
+              >Cost of last Tyres purchase</label
+            ><input
+              type="number"
+              id="cost_of_last_tyres_purchase"
+              step="0.01"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="proposed_date_of_new_tyres_purchase"
+              >Proposed date of new Tyres purchace</label
+            ><input type="date" id="proposed_date_of_new_tyres_purchase" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="brand_of_tyres">Brand of Tyres</label
+            ><input type="text" id="brand_of_tyres" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="vendor_name_tyres">Vendor Name</label
+            ><input type="text" id="vendor_name_tyres" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="warranty_of_tyres"
+              >Warranty of Tyres</label
+            ><input type="text" id="warranty_of_tyres" />
+          </div>
+        </div>
+
+        <div id="battery-block" style="display: none">
+          <div class="form-group">
+            <label class="form-label" for="last_battery_purchase_date"
+              >Last battery purchase date</label
+            ><input type="date" id="last_battery_purchase_date" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="cost_of_last_purchase_battery"
+              >Cost Of last purchase battery</label
+            ><input
+              type="number"
+              id="cost_of_last_purchase_battery"
+              step="0.01"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="buy_back_cost_of_exiting_old_battery"
+              >Buy back cost of exiting old battery</label
+            ><input
+              type="number"
+              id="buy_back_cost_of_exiting_old_battery"
+              step="0.01"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="cost_of_new_battery"
+              >Cost of new battery</label
+            ><input type="number" id="cost_of_new_battery" step="0.01" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="brand_of_battery"
+              >brand of battery</label
+            ><input type="text" id="brand_of_battery" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="warranty_of_battery"
+              >Warranty of battery</label
+            ><input type="text" id="warranty_of_battery" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="vendor_name_battery"
+              >Vendor name</label
+            ><input type="text" id="vendor_name_battery" />
+          </div>
+        </div>
+
+        <div id="insurance-block" style="display: none">
+          <div class="form-group">
+            <label class="form-label" for="insurance_valid_till"
+              >Insurance valid Till</label
+            ><input type="date" id="insurance_valid_till" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="current_insurance_provider"
+              >Current insurance provider</label
+            ><input type="text" id="current_insurance_provider" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="last_insurance_premium_paid"
+              >Last insurance premium paid</label
+            ><input
+              type="number"
+              id="last_insurance_premium_paid"
+              step="0.01"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="insurance_renewal_on_or_before"
+              >Insurance renewal to be done on or before</label
+            ><input type="date" id="insurance_renewal_on_or_before" />
+          </div>
+        </div>
+
+        <div id="emergency-block" style="display: none">
+          <div class="form-group">
+            <label
+              class="form-label"
+              for="details_of_emergency_repair_and_maintenance"
+              >Details of emergency repair and maintenance</label
+            >
+            <textarea
+              id="details_of_emergency_repair_and_maintenance"
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="remarks">Remarks(If any)</label>
+          <textarea id="remarks"></textarea>
+        </div>
+      </div>
+
+      <button
+        class="btn-primary"
+        type="button"
+        id="submitBtn"
+        onclick="submitADM04()"
+      >
+        Submit
+      </button>
+    </div>
+
+    <script>
+      window.addEventListener("DOMContentLoaded", function () {
+        populateDropdowns();
+        bindEvents();
+      });
+
+      function populateDropdowns() {
+        google.script.run
+          .withSuccessHandler(function (data) {
+            data = data || {};
+            fillSelect(
+              document.getElementById("team_name"),
+              data.team || [],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("vehicle_detail"),
+              data.vehicleDetails || [
+                "Alcazar - DL 4CBA 6641",
+                "Alcazar - DL 4CBB 1165",
+                "Aura -DL4C BA 9054",
+                "Aura- DL4C BB 7364",
+                "Ciaz-DL8C AV 9972",
+                "Kona - DL4GD 4656",
+                "MG ZS DL10EV 8746",
+                "Mahindra DL8EV 8277",
+                "Nexon EV - DL 9EV 1263",
+                "Suzuki-DL11 CE5098",
+                "Verna-DL4C AY 7936",
+              ],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("type_of_work"),
+              data.adm04WorkTypes || [
+                "Periodic Service",
+                "PUC Renewal",
+                "New Tyres to be purchased",
+                "New Battery required",
+                "Insurance Renewal",
+                "Emergency repair & maintenance work",
+              ],
+              "Select",
+            );
+          })
+          .getDropdownData();
+      }
+
+      function fillSelect(select, items, placeholder) {
+        if (!select) return;
+        select.innerHTML = "";
+        const first = document.createElement("option");
+        first.value = "";
+        first.textContent = placeholder || "Select";
+        select.appendChild(first);
+        (items || []).forEach(function (item) {
+          const option = document.createElement("option");
+          option.value = item;
+          option.textContent = item;
+          select.appendChild(option);
+        });
+      }
+
+      function hideAllBlocks() {
+        [
+          "periodic-block",
+          "puc-block",
+          "tyres-block",
+          "battery-block",
+          "insurance-block",
+          "emergency-block",
+        ].forEach(function (id) {
+          document.getElementById(id).style.display = "none";
+        });
+      }
+
+      function clearBlockValues(blockId) {
+        document
+          .querySelectorAll(`#${blockId} input, #${blockId} textarea`)
+          .forEach(function (el) {
+            el.value = "";
+          });
+      }
+
+      function bindEvents() {
+        document
+          .getElementById("type_of_work")
+          .addEventListener("change", function () {
+            hideAllBlocks();
+            [
+              "periodic-block",
+              "puc-block",
+              "tyres-block",
+              "battery-block",
+              "insurance-block",
+              "emergency-block",
+            ].forEach(clearBlockValues);
+
+            const v = String(this.value || "").toLowerCase();
+            if (v === "periodic service")
+              document.getElementById("periodic-block").style.display = "block";
+            if (v === "puc renewal")
+              document.getElementById("puc-block").style.display = "block";
+            if (v === "new tyres to be purchased")
+              document.getElementById("tyres-block").style.display = "block";
+            if (v === "new battery required")
+              document.getElementById("battery-block").style.display = "block";
+            if (v === "insurance renewal")
+              document.getElementById("insurance-block").style.display =
+                "block";
+            if (v === "emergency repair & maintenance work")
+              document.getElementById("emergency-block").style.display =
+                "block";
+          });
+      }
+
+      function validateADM04(p) {
+        const missing = [];
+
+        if (!p.requestor_email) missing.push("Email");
+        if (!p.vehicle_detail) missing.push("Vehicle Detail");
+        if (!p.type_of_work) missing.push("Type of work to be done");
+
+        const t = String(p.type_of_work || "").toLowerCase();
+
+        if (t === "periodic service") {
+          if (!p.workshop) missing.push("Workshop");
+          if (!p.date_of_last_service) missing.push("Date of last service");
+          if (!p.last_service_kms) missing.push("Last service done at -Kms");
+          if (!p.amount_incurred_on_last_periodic_service)
+            missing.push("Amount incurred on last periodic service");
+          if (!p.current_running_kms) missing.push("Current running Kms");
+          if (!p.proposed_date_of_service)
+            missing.push("Proposed date of service");
+        }
+
+        if (t === "puc renewal") {
+          if (!p.puc_valid_till) missing.push("PUC valid Till");
+          if (!p.puc_to_be_renewed_on_or_before)
+            missing.push("PUC to be renewed on or before");
+        }
+
+        if (t === "new tyres to be purchased") {
+          [
+            "last_time_tyres_purchase_date",
+            "cost_of_last_tyres_purchase",
+            "proposed_date_of_new_tyres_purchase",
+            "brand_of_tyres",
+            "vendor_name_tyres",
+            "warranty_of_tyres",
+          ].forEach(function (k) {
+            if (!p[k]) missing.push(k.replaceAll("_", " "));
+          });
+        }
+
+        if (t === "new battery required") {
+          [
+            "last_battery_purchase_date",
+            "cost_of_last_purchase_battery",
+            "buy_back_cost_of_exiting_old_battery",
+            "cost_of_new_battery",
+            "brand_of_battery",
+            "warranty_of_battery",
+            "vendor_name_battery",
+          ].forEach(function (k) {
+            if (!p[k]) missing.push(k.replaceAll("_", " "));
+          });
+        }
+
+        if (t === "insurance renewal") {
+          if (!p.insurance_valid_till) missing.push("Insurance valid Till");
+          if (!p.current_insurance_provider)
+            missing.push("Current insurance provider");
+          if (!p.last_insurance_premium_paid)
+            missing.push("Last insurance premium paid");
+          if (!p.insurance_renewal_on_or_before)
+            missing.push("Insurance renewal to be done on or before");
+        }
+
+        if (t === "emergency repair & maintenance work") {
+          if (!p.details_of_emergency_repair_and_maintenance)
+            missing.push("Details of emergency repair and maintenance");
+        }
+
+        if (missing.length) {
+          alert("Please fill:\n\n" + missing.join("\n"));
+          return false;
+        }
+
+        return true;
+      }
+
+      let isSubmitting = false;
+
+      function submitADM04() {
+        if (isSubmitting) return; // blocks double-clicks instantly
+        isSubmitting = true;
+        const submitBtn = document.getElementById("submitBtn");
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Submitting...";
+
+        const payload = {
+          date: document.getElementById("date").value,
+          requestor_first_name: document.getElementById("requestor_first_name")
+            .value,
+          requestor_last_name: document.getElementById("requestor_last_name")
+            .value,
+          requestor_email: document.getElementById("requestor_email").value,
+          department: document.getElementById("department").value,
+          team_name: document.getElementById("team_name").value,
+          vehicle_detail: document.getElementById("vehicle_detail").value,
+          type_of_work: document.getElementById("type_of_work").value,
+
+          workshop: document.getElementById("workshop")?.value || "",
+          date_of_last_service:
+            document.getElementById("date_of_last_service")?.value || "",
+          last_service_kms:
+            document.getElementById("last_service_kms")?.value || "",
+          amount_incurred_on_last_periodic_service:
+            document.getElementById("amount_incurred_on_last_periodic_service")
+              ?.value || "",
+          current_running_kms:
+            document.getElementById("current_running_kms")?.value || "",
+          proposed_date_of_service:
+            document.getElementById("proposed_date_of_service")?.value || "",
+
+          puc_valid_till:
+            document.getElementById("puc_valid_till")?.value || "",
+          puc_to_be_renewed_on_or_before:
+            document.getElementById("puc_to_be_renewed_on_or_before")?.value ||
+            "",
+
+          last_time_tyres_purchase_date:
+            document.getElementById("last_time_tyres_purchase_date")?.value ||
+            "",
+          cost_of_last_tyres_purchase:
+            document.getElementById("cost_of_last_tyres_purchase")?.value || "",
+          proposed_date_of_new_tyres_purchase:
+            document.getElementById("proposed_date_of_new_tyres_purchase")
+              ?.value || "",
+          brand_of_tyres:
+            document.getElementById("brand_of_tyres")?.value || "",
+          vendor_name_tyres:
+            document.getElementById("vendor_name_tyres")?.value || "",
+          warranty_of_tyres:
+            document.getElementById("warranty_of_tyres")?.value || "",
+
+          last_battery_purchase_date:
+            document.getElementById("last_battery_purchase_date")?.value || "",
+          cost_of_last_purchase_battery:
+            document.getElementById("cost_of_last_purchase_battery")?.value ||
+            "",
+          buy_back_cost_of_exiting_old_battery:
+            document.getElementById("buy_back_cost_of_exiting_old_battery")
+              ?.value || "",
+          cost_of_new_battery:
+            document.getElementById("cost_of_new_battery")?.value || "",
+          brand_of_battery:
+            document.getElementById("brand_of_battery")?.value || "",
+          warranty_of_battery:
+            document.getElementById("warranty_of_battery")?.value || "",
+          vendor_name_battery:
+            document.getElementById("vendor_name_battery")?.value || "",
+
+          insurance_valid_till:
+            document.getElementById("insurance_valid_till")?.value || "",
+          current_insurance_provider:
+            document.getElementById("current_insurance_provider")?.value || "",
+          last_insurance_premium_paid:
+            document.getElementById("last_insurance_premium_paid")?.value || "",
+          insurance_renewal_on_or_before:
+            document.getElementById("insurance_renewal_on_or_before")?.value ||
+            "",
+
+          details_of_emergency_repair_and_maintenance:
+            document.getElementById(
+              "details_of_emergency_repair_and_maintenance",
+            )?.value || "",
+          remarks: document.getElementById("remarks").value,
+        };
+
+        if (!validateADM04(payload)) {
+          isSubmitting = false;
+          submitBtn.disabled = false;
+          submitBtn.innerText = "Submit";
+          return;
+        }
+
+        google.script.run
+          .withSuccessHandler(function (res) {
+            console.log("SUCCESS HANDLER RUNNING"); // 👈 debug
+            document.body.innerHTML = res.thankYouHtml;
+          })
+          .withFailureHandler(function (err) {
+            alert("Submission failed: " + err.message);
+            isSubmitting = false;
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Submit";
+          })
+          .submitADM04(payload);
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <base target="_top" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HR03</title>
+    <?!= HtmlService.createHtmlOutputFromFile('shared-styles').getContent(); ?>
+  </head>
+  <body>
+    <div class="form-wrapper">
+      <div class="form-title">HR03</div>
+      <div class="form-subtitle">Employee Requisition Form</div>
+      <p class="helper-text" style="margin-bottom: 16px">
+        This form facilitates the recruitment process through proper channels by
+        informing the Human Resource Department of the intent to recruit for a
+        position.
+      </p>
+
+      <div class="form-section">
+        <div class="form-group">
+          <label class="form-label" for="date">Date</label>
+          <input type="date" id="date" />
+          <div class="helper-text">dd-MMM-yyyy</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Requestor Name</label>
+          <div class="form-row">
+            <div class="form-col">
+              <input
+                type="text"
+                id="requestor_first_name"
+                placeholder="First Name"
+              />
+              <div class="helper-text">First Name</div>
+            </div>
+            <div class="form-col">
+              <input
+                type="text"
+                id="requestor_last_name"
+                placeholder="Last Name"
+              />
+              <div class="helper-text">Last Name</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="requestor_email"
+            >Requestor Email ID <span class="required">*</span></label
+          >
+          <input type="email" id="requestor_email" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="team_name"
+            >Team / Department <span class="required">*</span></label
+          >
+          <select id="team_name" required></select>
+        </div>
+
+        <div class="section-heading">Position Details</div>
+
+        <div class="form-group">
+          <label class="form-label" for="job_title"
+            >Job Title <span class="required">*</span></label
+          >
+          <input type="text" id="job_title" required />
+        </div>
+
+        <div class="form-row">
+          <div class="form-col">
+            <div class="form-group">
+              <label class="form-label" for="no_of_post"
+                >No. of Posts <span class="required">*</span></label
+              >
+              <input type="number" id="no_of_post" min="1" required />
+            </div>
+          </div>
+          <div class="form-col">
+            <div class="form-group">
+              <label class="form-label" for="existing_staff_in_category"
+                >Existing Staff in this Category
+                <span class="required">*</span></label
+              >
+              <input type="text" id="existing_staff_in_category" required />
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="location"
+            >Location <span class="required">*</span></label
+          >
+          <textarea id="location" required></textarea>
+          <div class="helper-text">Mention details</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label"
+            >Type of Appointment <span class="required">*</span></label
+          >
+          <div>
+            <label class="radio-inline">
+              <input type="radio" name="type_of_appointment" value="New Hire" />
+              New Hire
+            </label>
+            <label class="radio-inline">
+              <input
+                type="radio"
+                name="type_of_appointment"
+                value="Replacement"
+              />
+              Replacement
+            </label>
+          </div>
+        </div>
+
+        <div class="section-heading">Candidate Requirements</div>
+
+        <div class="form-group">
+          <label class="form-label" for="educational_qualifications_required"
+            >Educational / Professional Qualifications Required
+            <span class="required">*</span></label
+          >
+          <input
+            type="text"
+            id="educational_qualifications_required"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="skills_required"
+            >Skills Required <span class="required">*</span></label
+          >
+          <input type="text" id="skills_required" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="experience_required"
+            >Experience Required <span class="required">*</span></label
+          >
+          <input type="text" id="experience_required" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="job_description"
+            >Job Description <span class="required">*</span></label
+          >
+          <textarea id="job_description" required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="date_resource_required"
+            >Date by which Resource is Required
+            <span class="required">*</span></label
+          >
+          <input type="date" id="date_resource_required" required />
+          <div class="helper-text">dd-MMM-yyyy</div>
+        </div>
+
+        <div class="section-heading">Justification &amp; Approval</div>
+
+        <div class="form-group">
+          <label class="form-label"
+            >Vacancy caused due to <span class="required">*</span></label
+          >
+          <div>
+            <label class="radio-inline">
+              <input
+                type="radio"
+                name="vacancy_caused_due_to"
+                value="Resignation"
+              />
+              Resignation
+            </label>
+            <label class="radio-inline">
+              <input
+                type="radio"
+                name="vacancy_caused_due_to"
+                value="Work Load"
+              />
+              Work Load
+            </label>
+            <label class="radio-inline">
+              <input
+                type="radio"
+                name="vacancy_caused_due_to"
+                value="Additional Assignments"
+              />
+              Additional Assignments
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label"
+            >Can vacancy be filled through internal transfers / promotion?
+            <span class="required">*</span></label
+          >
+          <div>
+            <label class="radio-inline">
+              <input
+                type="radio"
+                name="internal_transfer_possible"
+                value="Yes"
+              />
+              Yes
+            </label>
+            <label class="radio-inline">
+              <input
+                type="radio"
+                name="internal_transfer_possible"
+                value="No"
+              />
+              No
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label"
+            >Is Position Approved? <span class="required">*</span></label
+          >
+          <div>
+            <label class="radio-inline">
+              <input
+                type="radio"
+                name="position_approval_status"
+                value="Approved"
+              />
+              Approved
+            </label>
+            <label class="radio-inline">
+              <input
+                type="radio"
+                name="position_approval_status"
+                value="Not Approved"
+              />
+              Not Approved
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="remarks">Remarks (if any)</label>
+          <textarea id="remarks"></textarea>
+        </div>
+      </div>
+
+      <button
+        class="btn-primary"
+        type="button"
+        id="submitBtn"
+        onclick="submitHR03()"
+      >
+        Submit
+      </button>
+    </div>
+
+    <script>
+      window.addEventListener("DOMContentLoaded", function () {
+        populateDropdowns();
+      });
+
+      function populateDropdowns() {
+        google.script.run
+          .withSuccessHandler(function (data) {
+            data = data || {};
+            fillSelect(
+              document.getElementById("team_name"),
+              data.team || [],
+              "Select",
+            );
+          })
+          .getDropdownData();
+      }
+
+      function fillSelect(select, items, placeholder) {
+        if (!select) return;
+        select.innerHTML = "";
+        const first = document.createElement("option");
+        first.value = "";
+        first.textContent = placeholder || "Select";
+        select.appendChild(first);
+
+        (items || []).forEach(function (item) {
+          const option = document.createElement("option");
+          option.value = item;
+          option.textContent = item;
+          select.appendChild(option);
+        });
+      }
+
+      function getRadioValue(name) {
+        const el = document.querySelector('input[name="' + name + '"]:checked');
+        return el ? el.value : "";
+      }
+
+      function validateHR03(p) {
+        const missing = [];
+        if (!p.requestor_email) missing.push("Requestor Email ID");
+        if (!p.team_name) missing.push("Team / Department");
+        if (!p.job_title) missing.push("Job Title");
+        if (!p.no_of_post) missing.push("No. of Posts");
+        if (!p.existing_staff_in_category)
+          missing.push("Existing Staff in this Category");
+        if (!p.location) missing.push("Location");
+        if (!p.type_of_appointment) missing.push("Type of Appointment");
+        if (!p.educational_qualifications_required)
+          missing.push("Educational / Professional Qualifications Required");
+        if (!p.skills_required) missing.push("Skills Required");
+        if (!p.experience_required) missing.push("Experience Required");
+        if (!p.job_description) missing.push("Job Description");
+        if (!p.date_resource_required)
+          missing.push("Date by which Resource is Required");
+        if (!p.vacancy_caused_due_to) missing.push("Vacancy caused due to");
+        if (!p.internal_transfer_possible)
+          missing.push(
+            "Can vacancy be filled through internal transfers / promotion?",
+          );
+        if (!p.position_approval_status) missing.push("Is Position Approved?");
+
+        if (missing.length) {
+          alert("Please fill:\n\n" + missing.join("\n"));
+          return false;
+        }
+        return true;
+      }
+
+      let isSubmitting = false;
+
+      function submitHR03() {
+        if (isSubmitting) return; // blocks double-clicks instantly
+        isSubmitting = true;
+        const submitBtn = document.getElementById("submitBtn");
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Submitting...";
+
+        const payload = {
+          date: document.getElementById("date").value,
+          requestor_first_name: document.getElementById("requestor_first_name")
+            .value,
+          requestor_last_name: document.getElementById("requestor_last_name")
+            .value,
+          requestor_email: document.getElementById("requestor_email").value,
+          team_name: document.getElementById("team_name").value,
+          job_title: document.getElementById("job_title").value,
+          no_of_post: document.getElementById("no_of_post").value,
+          existing_staff_in_category: document.getElementById(
+            "existing_staff_in_category",
+          ).value,
+          location: document.getElementById("location").value,
+          type_of_appointment: getRadioValue("type_of_appointment"),
+          educational_qualifications_required: document.getElementById(
+            "educational_qualifications_required",
+          ).value,
+          skills_required: document.getElementById("skills_required").value,
+          experience_required: document.getElementById("experience_required")
+            .value,
+          job_description: document.getElementById("job_description").value,
+          date_resource_required: document.getElementById(
+            "date_resource_required",
+          ).value,
+          vacancy_caused_due_to: getRadioValue("vacancy_caused_due_to"),
+          internal_transfer_possible: getRadioValue(
+            "internal_transfer_possible",
+          ),
+          position_approval_status: getRadioValue("position_approval_status"),
+          remarks: document.getElementById("remarks").value,
+        };
+
+        if (!validateHR03(payload)) {
+          isSubmitting = false;
+          submitBtn.disabled = false;
+          submitBtn.innerText = "Submit";
+          return;
+        }
+
+        google.script.run
+          .withSuccessHandler(function (res) {
+            console.log("SUCCESS HANDLER RUNNING"); // 👈 debug
+            document.body.innerHTML = res.thankYouHtml;
+          })
+          .withFailureHandler(function (err) {
+            alert("Submission failed: " + err.message);
+            isSubmitting = false;
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Submit";
+          })
+          .submitHR03(payload);
+      }
+    </script>
+  </body>
+</html>

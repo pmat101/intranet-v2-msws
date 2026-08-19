@@ -1,0 +1,1044 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <base target="_top" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BD03</title>
+    <?!= HtmlService.createHtmlOutputFromFile('shared-styles').getContent(); ?>
+  </head>
+  <body>
+    <div class="form-wrapper">
+      <div class="form-title">BD03</div>
+      <div class="form-subtitle">For team intimation of project details</div>
+
+      <div class="form-section">
+        <div class="form-group">
+          <label class="form-label" for="lead_date"
+            >Date of Client's Mail/ Lead Generation
+            <span class="required">*</span></label
+          >
+          <input type="date" id="lead_date" required />
+          <div class="helper-text">dd-MMM-yyyy</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Name of Form Filler</label>
+          <div class="form-row">
+            <div class="form-col">
+              <input
+                type="text"
+                id="form_filler_first_name"
+                placeholder="First Name"
+              />
+              <div class="helper-text">First Name</div>
+            </div>
+            <div class="form-col">
+              <input
+                type="text"
+                id="form_filler_last_name"
+                placeholder="Last Name"
+              />
+              <div class="helper-text">Last Name</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="official_email"
+            >Official Email ID <span class="required">*</span></label
+          >
+          <input type="email" id="official_email" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="team">
+            Team Name <span class="required">*</span></label
+          >
+          <select id="team" required></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Team Head Name</label>
+          <div class="form-row">
+            <div class="form-col">
+              <input
+                type="text"
+                id="team_head_first_name"
+                placeholder="First Name"
+              />
+            </div>
+            <div class="form-col">
+              <input
+                type="text"
+                id="team_head_last_name"
+                placeholder="Last Name"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="team_head_email"
+            >Team Head Email ID <span class="required">*</span></label
+          >
+          <input type="email" id="team_head_email" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="csuite_officer_name"
+            >C-Suite Officer Name</label
+          >
+          <select id="csuite_officer_name"></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="csuite_officer_email"
+            >C-Suite Officer Email ID <span class="required">*</span></label
+          >
+          <input type="email" id="csuite_officer_email" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="eia_coordinator_name"
+            >EIA Coordinator Name</label
+          >
+          <select id="eia_coordinator_name"></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="eia_coordinator_email"
+            >EIA Coordinator Email</label
+          >
+          <input type="email" id="eia_coordinator_email" />
+        </div>
+
+        <div class="form-section">
+          <div class="section-heading">
+            Any other person whom details to be shared
+          </div>
+          <div id="other-persons-rows"></div>
+          <button type="button" class="btn-secondary" id="add-other-person">
+            + Add Person
+          </button>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="customer_company"
+            >Customer's Company Legal Name
+            <span class="required">*</span></label
+          >
+          <input type="text" id="customer_company" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label"
+            >Client Name <span class="required">*</span></label
+          >
+          <div class="form-row">
+            <div class="form-col">
+              <input
+                type="text"
+                id="client_first_name"
+                placeholder="First Name"
+                required
+              />
+            </div>
+            <div class="form-col">
+              <input
+                type="text"
+                id="client_last_name"
+                placeholder="Last Name"
+                required
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label"
+            >Client Contact No. <span class="required">*</span></label
+          >
+          <div class="form-row">
+            <div class="form-col" style="max-width: 110px">
+              <input type="text" id="client_contact_code" value="+91" />
+            </div>
+            <div class="form-col">
+              <input type="text" id="client_contact_number" required />
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="client_email"
+            >Client Email <span class="required">*</span></label
+          >
+          <input type="email" id="client_email" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="project_name"
+            >Project Name <span class="required">*</span></label
+          >
+          <input type="text" id="project_name" required />
+        </div>
+
+        <h4>Project Location</h4>
+        <div class="form-group">
+          <label class="form-label" for="project_location_address_line1"
+            >Address Line 1</label
+          >
+          <input type="text" id="project_location_address_line1" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="project_location_village"
+            >Village</label
+          >
+          <input type="text" id="project_location_village" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="project_location_taluka">Taluka</label>
+          <input type="text" id="project_location_taluka" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="project_location_district"
+            >District</label
+          >
+          <input type="text" id="project_location_district" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="project_location_state"
+            >State/Region/Province</label
+          >
+          <input type="text" id="project_location_state" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="project_location_postal_code"
+            >Postal / Zip Code</label
+          >
+          <input type="text" id="project_location_postal_code" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="project_location_country"
+            >Country</label
+          >
+          <select id="project_location_country"></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="type_of_work"
+            >Type of Work <span class="required">*</span></label
+          >
+          <select id="type_of_work" required></select>
+          <div
+            id="type_of_work_other_wrap"
+            style="display: none; margin-top: 10px"
+          >
+            <input
+              type="text"
+              id="type_of_work_other_specify"
+              placeholder="Specify (if type of work - others)"
+            />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="pcode"
+            >PCode <span class="required">*</span></label
+          >
+          <input type="text" id="pcode" required />
+          <div class="helper-text">
+            Refer the active PCODE list used in your database
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="scope_of_work"
+            >Scope of Work <span class="required">*</span></label
+          >
+          <textarea id="scope_of_work"></textarea>
+          <div class="helper-text">
+            Pls add project milestones in numbered list i.e 1,2,3,4,5,6
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="terms_and_conditions"
+            >Terms and Conditions</label
+          >
+          <textarea id="terms_and_conditions"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="relevant_documents_url"
+            >Relevant documents URL</label
+          >
+          <input
+            type="url"
+            id="relevant_documents_url"
+            placeholder="Paste file URL here"
+          />
+        </div>
+
+        <div class="section-heading" style="margin-top: 18px">
+          Project Milestones & Billing Plan
+        </div>
+        <div id="milestone-rows"></div>
+        <button type="button" class="btn-secondary" id="add-milestone">
+          + Add Milestone
+        </button>
+
+        <div class="form-group" style="margin-top: 18px">
+          <label class="form-label" for="current_status">Current Status</label>
+          <input type="text" id="current_status" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="gantt_chart_link"
+            >Gantt Chart link</label
+          >
+          <input
+            type="url"
+            id="gantt_chart_link"
+            placeholder="Paste link here"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="date_of_updating"
+            >Date of Updating</label
+          >
+          <input type="date" id="date_of_updating" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="project_start_date"
+            >Project Start Date</label
+          >
+          <input type="date" id="project_start_date" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">General Conditions applicability</label>
+          <div class="form-row">
+            <div class="form-col-choice">
+              <input
+                type="radio"
+                name="general_conditions_applicability"
+                value="YES"
+                id="gca-yes"
+              />
+              <label for="gca-yes">YES</label>
+            </div>
+            <div class="form-col-choice">
+              <input
+                type="radio"
+                name="general_conditions_applicability"
+                value="NO"
+                id="gca-no"
+              />
+              <label for="gca-no">NO</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Overhead Expenses borne by</label>
+          <div class="form-row">
+            <div class="form-col-choice">
+              <input
+                type="radio"
+                name="overhead_expenses_borne_by"
+                value="PP"
+                id="oh-pp"
+              />
+              <label for="oh-pp">PP</label>
+            </div>
+            <div class="form-col-choice">
+              <input
+                type="radio"
+                name="overhead_expenses_borne_by"
+                value="Perfact"
+                id="oh-perfact"
+              />
+              <label for="oh-perfact">Perfact</label>
+            </div>
+            <div class="form-col-choice">
+              <input
+                type="radio"
+                name="overhead_expenses_borne_by"
+                value="N/A"
+                id="oh-na"
+              />
+              <label for="oh-na">N/A (Not Applicable)</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label"
+            >Travelling, boarding, lodging etc. borne by</label
+          >
+          <div class="form-row">
+            <div class="form-col-choice">
+              <input
+                type="radio"
+                name="travelling_borne_by"
+                value="PP"
+                id="trav-pp"
+              />
+              <label for="trav-pp">PP</label>
+            </div>
+            <div class="form-col-choice">
+              <input
+                type="radio"
+                name="travelling_borne_by"
+                value="Perfact"
+                id="trav-perfact"
+              />
+              <label for="trav-perfact">Perfact</label>
+            </div>
+            <div class="form-col-choice">
+              <input
+                type="radio"
+                name="travelling_borne_by"
+                value="other"
+                id="trav-other"
+              />
+              <label for="trav-other">Other</label>
+            </div>
+          </div>
+          <div
+            id="travelling_borne_by_other_wrap"
+            style="display: none; margin-top: 10px"
+          >
+            <label class="form-label" for="travelling_borne_by_other_specify"
+              >Specify (if other)</label
+            >
+            <textarea id="travelling_borne_by_other_specify"></textarea>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="details_of_previous_ec_and_consents"
+            >Details of previous EC and consents</label
+          >
+          <textarea id="details_of_previous_ec_and_consents"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="category"
+            >Category <span class="required">*</span></label
+          >
+          <select id="category" required></select>
+          <div id="category_other_wrap" style="display: none; margin-top: 10px">
+            <input
+              type="text"
+              id="category_other_specify"
+              placeholder="Specify (if category - others)"
+            />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="service_type_code_nabet_sector"
+            >Service Type/ Code/ NABET Sector
+            <span class="required">*</span></label
+          >
+          <select id="service_type_code_nabet_sector" required></select>
+          <div id="sector_other_wrap" style="display: none; margin-top: 10px">
+            <input
+              type="text"
+              id="sector_other_specify"
+              placeholder="Specify (if sectors - others)"
+            />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="baseline_season"
+            >Baseline Season <span class="required">*</span></label
+          >
+          <select id="baseline_season" required></select>
+          <div
+            id="baseline_season_other_wrap"
+            style="display: none; margin-top: 10px"
+          >
+            <input
+              type="text"
+              id="baseline_season_other_specify"
+              placeholder="Specify (if season - others)"
+            />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="eac_name"
+            >EAC Name <span class="required">*</span></label
+          >
+          <select id="eac_name" required></select>
+          <div id="eac_name_other_wrap" style="display: none; margin-top: 10px">
+            <input
+              type="text"
+              id="eac_name_other_specify"
+              placeholder="Specify (if EAC - others)"
+            />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="pg_company"
+            >Perfact Group company name <span class="required">*</span></label
+          >
+          <select id="pg_company" required></select>
+          <div
+            id="pg_company_other_wrap"
+            style="display: none; margin-top: 10px"
+          >
+            <input
+              type="text"
+              id="pg_company_other_specify"
+              placeholder="Specify (if PG company - others)"
+            />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="remarks">Remarks</label>
+          <textarea id="remarks"></textarea>
+        </div>
+      </div>
+
+      <button
+        class="btn-primary"
+        type="button"
+        onclick="submitBD03()"
+        id="submitBtn"
+      >
+        Submit
+      </button>
+    </div>
+
+    <script>
+      window.addEventListener("DOMContentLoaded", function () {
+        populateDropdowns();
+        bindEvents();
+      });
+
+      function populateDropdowns() {
+        google.script.run
+          .withSuccessHandler(function (data) {
+            data = data || {};
+
+            fillSelect(
+              document.getElementById("team"),
+              data.team || [],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("csuite_officer_name"),
+              data.csuite || [],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("eia_coordinator_name"),
+              data.eiaCoordinator || [],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("project_location_country"),
+              data.country || [],
+              "Select",
+            );
+
+            fillSelect(
+              document.getElementById("type_of_work"),
+              data.workType || [],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("category"),
+              data.category || [],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("service_type_code_nabet_sector"),
+              data.sector || [],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("baseline_season"),
+              data.baselineSeason || [],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("eac_name"),
+              data.eac || [],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("pg_company"),
+              data.pgCompany || [],
+              "Select",
+            );
+          })
+          .getDropdownData();
+      }
+
+      function fillSelect(select, items, placeholder) {
+        if (!select) return;
+        select.innerHTML = "";
+
+        const first = document.createElement("option");
+        first.value = "";
+        first.textContent = placeholder || "Select";
+        select.appendChild(first);
+
+        (items || []).forEach(function (item) {
+          const option = document.createElement("option");
+          option.value = item;
+          option.textContent = item;
+          select.appendChild(option);
+        });
+      }
+
+      function bindOtherToggle(selectId, wrapId, inputId) {
+        const select = document.getElementById(selectId);
+        const wrap = document.getElementById(wrapId);
+        const input = document.getElementById(inputId);
+
+        function sync() {
+          const show =
+            String(select.value || "").toLowerCase() === "other" ||
+            String(select.value || "").toLowerCase() === "others";
+          wrap.style.display = show ? "block" : "none";
+          if (!show) input.value = "";
+        }
+
+        select.addEventListener("change", sync);
+        sync();
+      }
+
+      function getRadioValue(name) {
+        const checked = document.querySelector(`input[name="${name}"]:checked`);
+        return checked ? checked.value : "";
+      }
+
+      function makeKey(prefix) {
+        return (
+          prefix +
+          "_" +
+          Date.now().toString(36) +
+          "_" +
+          Math.random().toString(36).slice(2, 8)
+        );
+      }
+
+      function createOtherPersonRow() {
+        const row = document.createElement("div");
+        row.className = "other-person-row";
+        row.innerHTML = `
+          <input type="hidden" class="row-key" value="${makeKey("OP")}">
+          <div class="form-row">
+            <div class="form-col"><input type="text" class="op-name" placeholder="Name"></div>
+            <div class="form-col"><input type="email" class="op-email" placeholder="Email"></div>
+            <div class="form-col"><input type="text" class="op-purpose" placeholder="Purpose"></div>
+            <div style="width:48px; display:flex; align-items:center;">
+              <button type="button" class="btn-secondary remove-row">✕</button>
+            </div>
+          </div>
+        `;
+        row.querySelector(".remove-row").addEventListener("click", function () {
+          row.remove();
+        });
+        return row;
+      }
+
+      function createMilestoneRow() {
+        const row = document.createElement("div");
+        row.className = "milestone-row";
+        row.innerHTML = `
+    <input type="hidden" class="row-key" value="${makeKey("MS")}">
+    <div class="form-row">
+      <div class="form-col"><input type="text" class="ms-name" placeholder="Milestone name"></div>
+      <div class="form-col"><input type="text" class="ms-details" placeholder="Milestone details"></div>
+      <div class="form-col"><input type="text" class="ms-timeline" placeholder="Date / timeline"></div>
+      <div class="form-col"><input type="number" class="ms-billing" step="0.01" placeholder="% billing"></div>
+      <div style="width:48px; display:flex; align-items:center;">
+        <button type="button" class="btn-secondary remove-row">✕</button>
+      </div>
+    </div>
+  `;
+        row.querySelector(".remove-row").addEventListener("click", function () {
+          row.remove();
+        });
+        return row;
+      }
+
+      function bindEvents() {
+        bindOtherToggle(
+          "type_of_work",
+          "type_of_work_other_wrap",
+          "type_of_work_other_specify",
+        );
+        bindOtherToggle(
+          "category",
+          "category_other_wrap",
+          "category_other_specify",
+        );
+        bindOtherToggle(
+          "service_type_code_nabet_sector",
+          "sector_other_wrap",
+          "sector_other_specify",
+        );
+        bindOtherToggle(
+          "baseline_season",
+          "baseline_season_other_wrap",
+          "baseline_season_other_specify",
+        );
+        bindOtherToggle(
+          "eac_name",
+          "eac_name_other_wrap",
+          "eac_name_other_specify",
+        );
+        bindOtherToggle(
+          "pg_company",
+          "pg_company_other_wrap",
+          "pg_company_other_specify",
+        );
+
+        document
+          .getElementById("trav-other")
+          .addEventListener("change", function () {
+            document.getElementById(
+              "travelling_borne_by_other_wrap",
+            ).style.display = this.checked ? "block" : "none";
+            if (!this.checked)
+              document.getElementById(
+                "travelling_borne_by_other_specify",
+              ).value = "";
+          });
+
+        document
+          .getElementById("trav-pp")
+          .addEventListener("change", function () {
+            if (this.checked) {
+              document.getElementById(
+                "travelling_borne_by_other_wrap",
+              ).style.display = "none";
+              document.getElementById(
+                "travelling_borne_by_other_specify",
+              ).value = "";
+            }
+          });
+
+        document
+          .getElementById("trav-perfact")
+          .addEventListener("change", function () {
+            if (this.checked) {
+              document.getElementById(
+                "travelling_borne_by_other_wrap",
+              ).style.display = "none";
+              document.getElementById(
+                "travelling_borne_by_other_specify",
+              ).value = "";
+            }
+          });
+
+        document
+          .getElementById("add-other-person")
+          .addEventListener("click", function () {
+            document
+              .getElementById("other-persons-rows")
+              .appendChild(createOtherPersonRow());
+          });
+
+        document
+          .getElementById("add-milestone")
+          .addEventListener("click", function () {
+            document
+              .getElementById("milestone-rows")
+              .appendChild(createMilestoneRow());
+          });
+
+        // start with one row in each subform
+        document.getElementById("add-other-person").click();
+        document.getElementById("add-milestone").click();
+      }
+
+      function collectOtherPersonsRows() {
+        return Array.from(
+          document.querySelectorAll("#other-persons-rows .other-person-row"),
+        )
+          .map(function (row) {
+            return {
+              name: row.querySelector(".op-name")?.value || "",
+              email: row.querySelector(".op-email")?.value || "",
+              purpose: row.querySelector(".op-purpose")?.value || "",
+            };
+          })
+          .filter(function (r) {
+            return r.name || r.email || r.purpose;
+          });
+      }
+
+      function collectMilestoneRows() {
+        return Array.from(
+          document.querySelectorAll("#milestone-rows .milestone-row"),
+        )
+          .map(function (row) {
+            return {
+              milestone_name: row.querySelector(".ms-name")?.value || "",
+              milestone_details: row.querySelector(".ms-details")?.value || "",
+              timeline: row.querySelector(".ms-timeline")?.value || "",
+              billing_percent: row.querySelector(".ms-billing")?.value || "",
+            };
+          })
+          .filter(function (r) {
+            return (
+              r.milestone_name ||
+              r.milestone_details ||
+              r.timeline ||
+              r.billing_percent
+            );
+          });
+      }
+
+      function validateBD03(payload) {
+        const missing = [];
+
+        if (!payload.lead_date)
+          missing.push("Date of Client's Mail/ Lead Generation");
+        if (!payload.official_email) missing.push("Official Email ID");
+        if (!payload.team) missing.push("Team");
+        if (!payload.team_head_email) missing.push("Team Head Email ID");
+        if (!payload.csuite_officer_email)
+          missing.push("C-Suite Officer Email ID");
+        if (!payload.customer_company)
+          missing.push("Customer's Company Legal Name");
+        if (!payload.client_first_name) missing.push("Client First Name");
+        if (!payload.client_last_name) missing.push("Client Last Name");
+        if (!payload.client_contact_code) missing.push("Client Contact Code");
+        if (!payload.client_contact_number)
+          missing.push("Client Contact Number");
+        if (!payload.client_email) missing.push("Client Email");
+        if (!payload.project_name) missing.push("Project Name");
+        if (!payload.pcode) missing.push("PCode");
+        if (!payload.scope_of_work) missing.push("Scope of Work");
+        if (!payload.category) missing.push("Category");
+        if (!payload.service_type_code_nabet_sector)
+          missing.push("Service Type/ Code/ NABET Sector");
+        if (!payload.baseline_season) missing.push("Baseline Season");
+        if (!payload.eac_name) missing.push("EAC Name");
+        if (!payload.pg_company) missing.push("Perfact Group company name");
+
+        if (
+          String(payload.type_of_work || "").toLowerCase() === "other" &&
+          !payload.type_of_work_other_specify
+        ) {
+          missing.push("Type of Work specify");
+        }
+        if (
+          String(payload.category || "").toLowerCase() === "others" &&
+          !payload.category_other_specify
+        ) {
+          missing.push("Category specify");
+        }
+        if (
+          String(payload.service_type_code_nabet_sector || "").toLowerCase() ===
+            "others" &&
+          !payload.sector_other_specify
+        ) {
+          missing.push("Sector specify");
+        }
+        if (
+          String(payload.baseline_season || "").toLowerCase() === "others" &&
+          !payload.baseline_season_other_specify
+        ) {
+          missing.push("Season specify");
+        }
+        if (
+          String(payload.eac_name || "").toLowerCase() === "others" &&
+          !payload.eac_name_other_specify
+        ) {
+          missing.push("EAC specify");
+        }
+        if (
+          String(payload.pg_company || "").toLowerCase() === "others" &&
+          !payload.pg_company_other_specify
+        ) {
+          missing.push("PG company specify");
+        }
+        if (
+          String(payload.travelling_borne_by || "").toLowerCase() === "other" &&
+          !payload.travelling_borne_by_other_specify
+        ) {
+          missing.push("Travelling specify");
+        }
+
+        if (missing.length) {
+          alert("Please fill:\n\n" + missing.join("\n"));
+          return false;
+        }
+
+        return true;
+      }
+
+      let isSubmitting = false;
+
+      function submitBD03() {
+        if (isSubmitting) return; // blocks double-clicks instantly
+        isSubmitting = true;
+        const submitBtn = document.getElementById("submitBtn");
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Submitting...";
+
+        const payload = {
+          lead_date: document.getElementById("lead_date").value,
+          form_filler_first_name: document.getElementById(
+            "form_filler_first_name",
+          ).value,
+          form_filler_last_name: document.getElementById(
+            "form_filler_last_name",
+          ).value,
+          official_email: document.getElementById("official_email").value,
+
+          team: document.getElementById("team").value,
+          team_head_first_name: document.getElementById("team_head_first_name")
+            .value,
+          team_head_last_name: document.getElementById("team_head_last_name")
+            .value,
+          team_head_email: document.getElementById("team_head_email").value,
+
+          csuite_officer_name: document.getElementById("csuite_officer_name")
+            .value,
+          csuite_officer_email: document.getElementById("csuite_officer_email")
+            .value,
+
+          eia_coordinator_name: document.getElementById("eia_coordinator_name")
+            .value,
+          eia_coordinator_email: document.getElementById(
+            "eia_coordinator_email",
+          ).value,
+
+          other_persons: collectOtherPersonsRows(),
+
+          customer_company: document.getElementById("customer_company").value,
+          client_first_name: document.getElementById("client_first_name").value,
+          client_last_name: document.getElementById("client_last_name").value,
+          client_contact_code: document.getElementById("client_contact_code")
+            .value,
+          client_contact_number: document.getElementById(
+            "client_contact_number",
+          ).value,
+          client_email: document.getElementById("client_email").value,
+
+          project_name: document.getElementById("project_name").value,
+          project_location_address_line1: document.getElementById(
+            "project_location_address_line1",
+          ).value,
+          project_location_village: document.getElementById(
+            "project_location_village",
+          ).value,
+          project_location_taluka: document.getElementById(
+            "project_location_taluka",
+          ).value,
+          project_location_district: document.getElementById(
+            "project_location_district",
+          ).value,
+          project_location_state: document.getElementById(
+            "project_location_state",
+          ).value,
+          project_location_postal_code: document.getElementById(
+            "project_location_postal_code",
+          ).value,
+          project_location_country: document.getElementById(
+            "project_location_country",
+          ).value,
+
+          type_of_work: document.getElementById("type_of_work").value,
+          type_of_work_other_specify: document.getElementById(
+            "type_of_work_other_specify",
+          ).value,
+
+          pcode: document.getElementById("pcode").value,
+          scope_of_work: document.getElementById("scope_of_work").value,
+          terms_and_conditions: document.getElementById("terms_and_conditions")
+            .value,
+          relevant_documents_url: document.getElementById(
+            "relevant_documents_url",
+          ).value,
+
+          milestones: collectMilestoneRows(),
+
+          current_status: document.getElementById("current_status").value,
+          gantt_chart_link: document.getElementById("gantt_chart_link").value,
+          date_of_updating: document.getElementById("date_of_updating").value,
+          project_start_date:
+            document.getElementById("project_start_date").value,
+          general_conditions_applicability: getRadioValue(
+            "general_conditions_applicability",
+          ),
+          overhead_expenses_borne_by: getRadioValue(
+            "overhead_expenses_borne_by",
+          ),
+          travelling_borne_by: getRadioValue("travelling_borne_by"),
+          travelling_borne_by_other_specify: document.getElementById(
+            "travelling_borne_by_other_specify",
+          ).value,
+          details_of_previous_ec_and_consents: document.getElementById(
+            "details_of_previous_ec_and_consents",
+          ).value,
+
+          category: document.getElementById("category").value,
+          category_other_specify: document.getElementById(
+            "category_other_specify",
+          ).value,
+
+          service_type_code_nabet_sector: document.getElementById(
+            "service_type_code_nabet_sector",
+          ).value,
+          sector_other_specify: document.getElementById("sector_other_specify")
+            .value,
+
+          baseline_season: document.getElementById("baseline_season").value,
+          baseline_season_other_specify: document.getElementById(
+            "baseline_season_other_specify",
+          ).value,
+
+          eac_name: document.getElementById("eac_name").value,
+          eac_name_other_specify: document.getElementById(
+            "eac_name_other_specify",
+          ).value,
+
+          pg_company: document.getElementById("pg_company").value,
+          pg_company_other_specify: document.getElementById(
+            "pg_company_other_specify",
+          ).value,
+
+          remarks: document.getElementById("remarks").value,
+        };
+
+        if (!validateBD03(payload)) {
+          isSubmitting = false;
+          submitBtn.disabled = false;
+          submitBtn.innerText = "Submit";
+          return;
+        }
+
+        google.script.run
+          .withSuccessHandler(function (res) {
+            console.log("SUCCESS HANDLER RUNNING"); // 👈 debug
+            document.body.innerHTML = res.thankYouHtml;
+          })
+          .withFailureHandler(function (err) {
+            alert("Submission failed: " + err.message);
+            isSubmitting = false;
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Submit";
+          })
+          .submitBD03(payload);
+      }
+    </script>
+  </body>
+</html>

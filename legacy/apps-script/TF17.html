@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <base target="_top" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TF17</title>
+    <?!= HtmlService.createHtmlOutputFromFile('shared-styles').getContent(); ?>
+    <style>
+      .section-divider {
+        margin: 22px 0 14px;
+        padding-top: 8px;
+        border-top: 1px solid #e5e7eb;
+        font-weight: 700;
+        font-size: 18px;
+      }
+      .subform-card {
+        border: 1px solid #e5e7eb;
+        border-radius: 14px;
+        padding: 14px;
+        margin-bottom: 14px;
+        background: #fff;
+      }
+      .subtle-note {
+        font-size: 12px;
+        color: #6b7280;
+        margin-top: 6px;
+      }
+      .actions-row {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+        flex-wrap: wrap;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="form-wrapper">
+      <div class="form-title">TF17</div>
+      <div class="form-subtitle">MoM for Appraisal meeting</div>
+
+      <div class="form-section">
+        <div class="form-group">
+          <label class="form-label">Employee Name</label>
+          <div class="form-row">
+            <div class="form-col">
+              <input
+                type="text"
+                id="employee_first_name"
+                placeholder="First Name"
+              />
+              <div class="helper-text">First Name</div>
+            </div>
+            <div class="form-col">
+              <input
+                type="text"
+                id="employee_last_name"
+                placeholder="Last Name"
+              />
+              <div class="helper-text">Last Name</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="employee_email"
+            >Employee Email ID <span class="required">*</span></label
+          >
+          <input type="email" id="employee_email" required />
+          <div class="helper-text">Email ID of the person filling the form</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="team_name"
+            >Team Name <span class="required">*</span></label
+          >
+          <select id="team_name" required></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Person/Expert Invited</label>
+          <div id="invitee-rows"></div>
+          <div class="actions-row">
+            <button type="button" class="btn-secondary" id="add-invitee-row">
+              + Add Row
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="project_name"
+            >Project Name <span class="required">*</span></label
+          >
+          <input type="text" id="project_name" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="pcode"
+            >Project Code <span class="required">*</span></label
+          >
+          <input type="text" id="pcode" required />
+          <div class="helper-text">
+            Refer the active PCODE list in your database
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="category">Category</label>
+          <select id="category"></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="eac_seac">EAC/SEAC</label>
+          <select id="eac_seac"></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="agenda_number"
+            >Agenda Number <span class="required">*</span></label
+          >
+          <input type="text" id="agenda_number" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="mom_publish_date"
+            >MoM publish date <span class="required">*</span></label
+          >
+          <input type="date" id="mom_publish_date" required />
+          <div class="helper-text">dd-MMM-yyyy</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Action Points and responsibility</label>
+          <div id="action-rows"></div>
+          <div class="actions-row">
+            <button type="button" class="btn-secondary" id="add-action-row">
+              + Add Row
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="mom_link"
+            >MoM link <span class="required">*</span></label
+          >
+          <input type="url" id="mom_link" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="remarks">Remarks</label>
+          <textarea id="remarks"></textarea>
+        </div>
+      </div>
+
+      <button
+        class="btn-primary"
+        type="button"
+        id="submitBtn"
+        onclick="submitTF17()"
+      >
+        Submit
+      </button>
+    </div>
+
+    <script>
+      let isSubmitting = false;
+
+      window.addEventListener("DOMContentLoaded", function () {
+        populateDropdowns();
+
+        const inviteeWrap = document.getElementById("invitee-rows");
+        inviteeWrap.appendChild(createInviteeRow());
+
+        const actionWrap = document.getElementById("action-rows");
+        actionWrap.appendChild(createActionRow());
+
+        document
+          .getElementById("add-invitee-row")
+          .addEventListener("click", function () {
+            inviteeWrap.appendChild(createInviteeRow());
+          });
+
+        document
+          .getElementById("add-action-row")
+          .addEventListener("click", function () {
+            actionWrap.appendChild(createActionRow());
+          });
+      });
+
+      function populateDropdowns() {
+        google.script.run
+          .withSuccessHandler(function (data) {
+            data = data || {};
+            fillSelect(
+              document.getElementById("team_name"),
+              data.team || [],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("category"),
+              data.categoryAdvanced || [],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("eac_seac"),
+              data.eac || [],
+              "Select",
+            );
+          })
+          .getDropdownData();
+      }
+
+      function fillSelect(select, items, placeholder) {
+        if (!select) return;
+        select.innerHTML = "";
+        const first = document.createElement("option");
+        first.value = "";
+        first.textContent = placeholder || "Select";
+        select.appendChild(first);
+
+        (items || []).forEach(function (item) {
+          const option = document.createElement("option");
+          option.value = item;
+          option.textContent = item;
+          select.appendChild(option);
+        });
+      }
+
+      function createInviteeRow() {
+        const row = document.createElement("div");
+        row.className = "subform-card";
+        row.innerHTML = `
+          <div class="form-row">
+            <div class="form-col">
+              <label class="form-label">Name of Invitee</label>
+              <input type="text" class="tf17-invitee-name" />
+            </div>
+            <div class="form-col">
+              <label class="form-label">Email ID of Invitee</label>
+              <input type="email" class="tf17-invitee-email" />
+            </div>
+          </div>
+          <div class="subtle-note">The email ID will be added to the recipient list.</div>
+          <div class="actions-row">
+            <button type="button" class="btn-secondary tf17-remove-row">Remove</button>
+          </div>
+        `;
+        row
+          .querySelector(".tf17-remove-row")
+          .addEventListener("click", function () {
+            row.remove();
+          });
+        return row;
+      }
+
+      function createActionRow() {
+        const row = document.createElement("div");
+        row.className = "subform-card";
+        row.innerHTML = `
+          <div class="form-row">
+            <div class="form-col">
+              <label class="form-label">actionable point</label>
+              <input type="text" class="tf17-action-point" />
+            </div>
+            <div class="form-col">
+              <label class="form-label">responsible person name</label>
+              <input type="text" class="tf17-responsible-person" />
+            </div>
+          </div>
+          <div class="actions-row">
+            <button type="button" class="btn-secondary tf17-remove-row">Remove</button>
+          </div>
+        `;
+        row
+          .querySelector(".tf17-remove-row")
+          .addEventListener("click", function () {
+            row.remove();
+          });
+        return row;
+      }
+
+      function collectInviteeRows() {
+        return Array.from(
+          document.querySelectorAll("#invitee-rows .subform-card"),
+        )
+          .map(function (row) {
+            return {
+              name_of_invitee:
+                row.querySelector(".tf17-invitee-name")?.value || "",
+              email_id_of_invitee:
+                row.querySelector(".tf17-invitee-email")?.value || "",
+            };
+          })
+          .filter(function (r) {
+            return (
+              String(r.name_of_invitee).trim() ||
+              String(r.email_id_of_invitee).trim()
+            );
+          });
+      }
+
+      function collectActionRows() {
+        return Array.from(
+          document.querySelectorAll("#action-rows .subform-card"),
+        )
+          .map(function (row) {
+            return {
+              actionable_point:
+                row.querySelector(".tf17-action-point")?.value || "",
+              responsible_person_name:
+                row.querySelector(".tf17-responsible-person")?.value || "",
+            };
+          })
+          .filter(function (r) {
+            return (
+              String(r.actionable_point).trim() ||
+              String(r.responsible_person_name).trim()
+            );
+          });
+      }
+
+      function validateTF17(p) {
+        const missing = [];
+
+        if (!p.employee_email) missing.push("Employee Email ID");
+        if (!p.team_name) missing.push("Team Name");
+        if (!p.project_name) missing.push("Project Name");
+        if (!p.pcode) missing.push("Project Code");
+        if (!p.agenda_number) missing.push("Agenda Number");
+        if (!p.mom_publish_date) missing.push("MoM publish date");
+        if (!p.mom_link) missing.push("MoM link");
+
+        if (!p.person_expert_invited || !p.person_expert_invited.length) {
+          missing.push("Person/Expert Invited");
+        } else {
+          p.person_expert_invited.forEach(function (r, i) {
+            if (!r.name_of_invitee)
+              missing.push(
+                `Person/Expert Invited - Name of Invitee (row ${i + 1})`,
+              );
+            if (!r.email_id_of_invitee)
+              missing.push(
+                `Person/Expert Invited - Email ID of Invitee (row ${i + 1})`,
+              );
+          });
+        }
+
+        if (!p.action_points || !p.action_points.length) {
+          missing.push("Action Points and responsibility");
+        } else {
+          p.action_points.forEach(function (r, i) {
+            if (!r.actionable_point)
+              missing.push(
+                `Action Points and responsibility - actionable point (row ${i + 1})`,
+              );
+            if (!r.responsible_person_name)
+              missing.push(
+                `Action Points and responsibility - responsible person name (row ${i + 1})`,
+              );
+          });
+        }
+
+        if (missing.length) {
+          alert("Please fill:\n\n" + missing.join("\n"));
+          return false;
+        }
+        return true;
+      }
+
+      function submitTF17() {
+        if (isSubmitting) return; // blocks double-clicks instantly
+        isSubmitting = true;
+        const submitBtn = document.getElementById("submitBtn");
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Submitting...";
+
+        const payload = {
+          employee_first_name: document.getElementById("employee_first_name")
+            .value,
+          employee_last_name:
+            document.getElementById("employee_last_name").value,
+          employee_email: document.getElementById("employee_email").value,
+          team_name: document.getElementById("team_name").value,
+          person_expert_invited: collectInviteeRows(),
+          project_name: document.getElementById("project_name").value,
+          pcode: document.getElementById("pcode").value,
+          category: document.getElementById("category").value,
+          eac_seac: document.getElementById("eac_seac").value,
+          agenda_number: document.getElementById("agenda_number").value,
+          mom_publish_date: document.getElementById("mom_publish_date").value,
+          action_points: collectActionRows(),
+          mom_link: document.getElementById("mom_link").value,
+          remarks: document.getElementById("remarks").value,
+        };
+
+        if (!validateTF17(payload)) {
+          isSubmitting = false;
+          submitBtn.disabled = false;
+          submitBtn.innerText = "Submit";
+          return;
+        }
+
+        google.script.run
+          .withSuccessHandler(function (res) {
+            console.log("SUCCESS HANDLER RUNNING"); // 👈 debug
+            document.body.innerHTML = res.thankYouHtml;
+          })
+          .withFailureHandler(function (err) {
+            alert("Submission failed: " + err.message);
+            isSubmitting = false;
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Submit";
+          })
+          .submitTF17(payload);
+      }
+    </script>
+  </body>
+</html>

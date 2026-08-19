@@ -1,0 +1,693 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <base target="_top" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TF18</title>
+    <?!= HtmlService.createHtmlOutputFromFile('shared-styles').getContent(); ?>
+    <style>
+      .section-divider {
+        margin: 22px 0 14px;
+        padding-top: 8px;
+        border-top: 1px solid #e5e7eb;
+        font-weight: 700;
+        font-size: 18px;
+      }
+      .conditional-block {
+        display: none;
+        margin-top: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="form-wrapper">
+      <div class="form-title">TF18</div>
+      <div class="form-subtitle">Updated TRF</div>
+
+      <div class="form-section">
+        <div class="form-group">
+          <label class="form-label" for="date">Date</label>
+          <input type="date" id="date" />
+          <div class="helper-text">dd-MMM-yyyy</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Name <span class="required">*</span></label>
+          <div class="form-row">
+            <div class="form-col">
+              <input
+                type="text"
+                id="requestor_first_name"
+                placeholder="First Name"
+              />
+              <div class="helper-text">First Name</div>
+            </div>
+            <div class="form-col">
+              <input
+                type="text"
+                id="requestor_last_name"
+                placeholder="Last Name"
+              />
+              <div class="helper-text">Last Name</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="requestor_email"
+            >Email <span class="required">*</span></label
+          >
+          <input type="email" id="requestor_email" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="team_name"
+            >Team Name <span class="required">*</span></label
+          >
+          <select id="team_name" required></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="company_name"
+            >Company Name <span class="required">*</span></label
+          >
+          <input type="text" id="company_name" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="project_name"
+            >Name of the project <span class="required">*</span></label
+          >
+          <input type="text" id="project_name" required />
+        </div>
+
+        <div class="section-divider">Site Address</div>
+
+        <div class="form-group">
+          <label class="form-label" for="site_address_line1"
+            >Street Address <span class="required">*</span></label
+          >
+          <input type="text" id="site_address_line1" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="site_address_line2"
+            >Address Line 2</label
+          >
+          <input type="text" id="site_address_line2" />
+        </div>
+
+        <div class="form-row">
+          <div class="form-col">
+            <label class="form-label" for="site_city">City</label>
+            <input type="text" id="site_city" />
+          </div>
+          <div class="form-col">
+            <label class="form-label" for="site_state"
+              >State/Region/Province</label
+            >
+            <input type="text" id="site_state" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-col">
+            <label class="form-label" for="site_zipcode"
+              >Postal / Zip Code</label
+            >
+            <input type="text" id="site_zipcode" />
+          </div>
+          <div class="form-col">
+            <label class="form-label" for="site_country">Country</label>
+            <select id="site_country"></select>
+          </div>
+        </div>
+
+        <div class="section-divider">Project / Contact</div>
+
+        <div class="form-group">
+          <label class="form-label" for="pcode"
+            >PCODE <span class="required">*</span></label
+          >
+          <input type="text" id="pcode" required />
+          <div class="helper-text">
+            Refer the active PCODE list in your project sheet
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label"
+            >Name of contact person <span class="required">*</span></label
+          >
+          <div class="form-row">
+            <div class="form-col">
+              <input
+                type="text"
+                id="contact_person_first_name"
+                placeholder="First Name"
+              />
+              <div class="helper-text">First Name</div>
+            </div>
+            <div class="form-col">
+              <input
+                type="text"
+                id="contact_person_last_name"
+                placeholder="Last Name"
+              />
+              <div class="helper-text">Last Name</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="contact_detail_of_contact_person"
+            >Contact detail of contact person
+            <span class="required">*</span></label
+          >
+          <input type="text" id="contact_detail_of_contact_person" required />
+          <div class="helper-text">Number</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label"
+            >Project Incharge name <span class="required">*</span></label
+          >
+          <div class="form-row">
+            <div class="form-col">
+              <input
+                type="text"
+                id="project_incharge_first_name"
+                placeholder="First Name"
+              />
+              <div class="helper-text">First Name</div>
+            </div>
+            <div class="form-col">
+              <input
+                type="text"
+                id="project_incharge_last_name"
+                placeholder="Last Name"
+              />
+              <div class="helper-text">Last Name</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="brief_description_of_project"
+            >Brief description of Project <span class="required">*</span></label
+          >
+          <textarea id="brief_description_of_project" required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="baseline_season"
+            >Baseline / Project specific monitoring season
+            <span class="required">*</span></label
+          >
+          <select id="baseline_season" required>
+            <option value="">Select</option>
+            <option value="Summer (Mar to May)">Summer (Mar to May)</option>
+            <option value="Post Monsoon (Oct to Dec)">
+              Post Monsoon (Oct to Dec)
+            </option>
+            <option value="Winter (Dec to Feb)">Winter (Dec to Feb)</option>
+            <option value="N/A">N/A</option>
+            <option value="others">others</option>
+          </select>
+        </div>
+
+        <div
+          class="form-group conditional-block"
+          id="baseline_season_other_wrap"
+        >
+          <label class="form-label" for="baseline_season_other_specify"
+            >If others, specify</label
+          >
+          <input type="text" id="baseline_season_other_specify" />
+        </div>
+
+        <div class="form-row">
+          <div class="form-col">
+            <label class="form-label" for="baseline_season_start_date"
+              >Baseline Season Start Date <span class="required">*</span></label
+            >
+            <input type="date" id="baseline_season_start_date" disabled />
+          </div>
+          <div class="form-col">
+            <label class="form-label" for="baseline_season_end_date"
+              >Baseline Season End Date <span class="required">*</span></label
+            >
+            <input type="date" id="baseline_season_end_date" disabled />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="date_of_monitoring"
+            >Date of monitoring</label
+          >
+          <input type="date" id="date_of_monitoring" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="tor_specific_requirements"
+            >TOR Specific Requirements <span class="required">*</span></label
+          >
+          <textarea id="tor_specific_requirements" required></textarea>
+          <div class="helper-text">
+            1. Number of sampling locations w.r.t Air, Water, Soil etc<br />2.
+            Parameters - FAE wise
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="socio_economy_requirements"
+            >Socio Economy requirements <span class="required">*</span></label
+          >
+          <input type="text" id="socio_economy_requirements" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="eb_requirements"
+            >EB requirements <span class="required">*</span></label
+          >
+          <select id="eb_requirements" required>
+            <option value="">Select</option>
+            <option value="Nursery">Nursery</option>
+            <option value="Forest office">Forest office</option>
+            <option value="Herbarium">Herbarium</option>
+            <option value="N/A">N/A</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="eb_requirement_specifications"
+            >EB requirement specifications</label
+          >
+          <input type="text" id="eb_requirement_specifications" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="eb_requirement_remark"
+            >EB requirement remark</label
+          >
+          <textarea id="eb_requirement_remark"></textarea>
+        </div>
+
+        <div class="section-divider">File Links</div>
+
+        <div class="form-group">
+          <label class="form-label" for="upload_topo_sheet_link"
+            >Upload Topo sheet</label
+          >
+          <input
+            type="url"
+            id="upload_topo_sheet_link"
+            placeholder="Paste file URL here"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="upload_kml_file_link"
+            >Upload KML file <span class="required">*</span></label
+          >
+          <input
+            type="url"
+            id="upload_kml_file_link"
+            required
+            placeholder="Paste file URL here"
+          />
+        </div>
+
+        <div class="form-group">
+          <label
+            class="form-label"
+            for="upload_environmental_sensitivity_file_link"
+            >Upload Environmental Sensitivity file
+            <span class="required">*</span></label
+          >
+          <input
+            type="url"
+            id="upload_environmental_sensitivity_file_link"
+            required
+            placeholder="Paste file URL here"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="any_other_details_required_from_site"
+            >Any other Details required from Site
+            <span class="required">*</span></label
+          >
+          <textarea
+            id="any_other_details_required_from_site"
+            required
+          ></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="scope_of_travelling_boarding_lodging"
+            >Scope of Travelling, Boarding, Lodging, etc
+            <span class="required">*</span></label
+          >
+          <input
+            type="text"
+            id="scope_of_travelling_boarding_lodging"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="completion_target_date"
+            >Completion target Date <span class="required">*</span></label
+          >
+          <input type="date" id="completion_target_date" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="critical_parameters_if_any"
+            >Critical Parameters if any: <span class="required">*</span></label
+          >
+          <input type="text" id="critical_parameters_if_any" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="sampling_plan_details_link"
+            >Sampling Plan Details <span class="required">*</span></label
+          >
+          <input
+            type="url"
+            id="sampling_plan_details_link"
+            required
+            placeholder="Paste file URL here"
+          />
+        </div>
+      </div>
+
+      <button
+        class="btn-primary"
+        type="button"
+        id="submitBtn"
+        onclick="submitTF18()"
+      >
+        Submit
+      </button>
+    </div>
+
+    <script>
+      let isSubmitting = false;
+
+      window.addEventListener("DOMContentLoaded", function () {
+        populateDropdowns();
+        bindBaselineOther();
+        bindEbRequirementSpec();
+        bindBaselineDates();
+      });
+
+      function populateDropdowns() {
+        google.script.run
+          .withSuccessHandler(function (data) {
+            data = data || {};
+            fillSelect(
+              document.getElementById("team_name"),
+              data.team || [],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("site_country"),
+              data.country || [],
+              "Select",
+            );
+          })
+          .getDropdownData();
+      }
+
+      function fillSelect(select, items, placeholder) {
+        if (!select) return;
+        select.innerHTML = "";
+        const first = document.createElement("option");
+        first.value = "";
+        first.textContent = placeholder || "Select";
+        select.appendChild(first);
+        (items || []).forEach(function (item) {
+          const opt = document.createElement("option");
+          opt.value = item;
+          opt.textContent = item;
+          select.appendChild(opt);
+        });
+      }
+
+      function bindBaselineOther() {
+        const select = document.getElementById("baseline_season");
+        const wrap = document.getElementById("baseline_season_other_wrap");
+        const input = document.getElementById("baseline_season_other_specify");
+
+        function sync() {
+          const show = String(select.value || "").toLowerCase() === "others";
+          wrap.style.display = show ? "block" : "none";
+          if (!show) input.value = "";
+        }
+
+        select.addEventListener("change", sync);
+        sync();
+      }
+
+      function bindEbRequirementSpec() {
+        const select = document.getElementById("eb_requirements");
+        const specWrap = document
+          .getElementById("eb_requirement_specifications")
+          .closest(".form-group");
+        const specInput = document.getElementById(
+          "eb_requirement_specifications",
+        );
+
+        function sync() {
+          const value = String(select.value || "").toLowerCase();
+          const show =
+            value === "nursery" ||
+            value === "forest office" ||
+            value === "herbarium";
+          specWrap.style.display = show ? "block" : "none";
+          if (!show) specInput.value = "";
+        }
+
+        select.addEventListener("change", sync);
+        sync();
+      }
+
+      function bindBaselineDates() {
+        const select = document.getElementById("baseline_season");
+
+        const rowWrap = document
+          .getElementById("baseline_season_start_date")
+          .closest(".form-row");
+
+        const startInput = document.getElementById(
+          "baseline_season_start_date",
+        );
+        const endInput = document.getElementById("baseline_season_end_date");
+
+        function sync() {
+          const show = String(select.value || "").toLowerCase() === "others";
+
+          rowWrap.style.display = show ? "flex" : "none";
+
+          startInput.disabled = !show;
+          endInput.disabled = !show;
+
+          startInput.required = show;
+          endInput.required = show;
+
+          if (!show) {
+            startInput.value = "";
+            endInput.value = "";
+          }
+        }
+
+        select.addEventListener("change", sync);
+        sync();
+      }
+
+      function validateTF18(p) {
+        const missing = [];
+
+        if (!p.requestor_email) missing.push("Email");
+        if (!p.team_name) missing.push("Team Name");
+        if (!p.company_name) missing.push("Company Name");
+        if (!p.project_name) missing.push("Name of the project");
+        if (!p.site_address_line1) missing.push("Site Address");
+        if (!p.pcode) missing.push("PCODE");
+        if (!p.contact_person_first_name)
+          missing.push("Name of contact person");
+        if (!p.contact_detail_of_contact_person)
+          missing.push("Contact detail of contact person");
+        if (!p.project_incharge_first_name)
+          missing.push("Project Incharge name");
+        if (!p.brief_description_of_project)
+          missing.push("Brief description of Project");
+        if (!p.baseline_season)
+          missing.push("Baseline / Project specific monitoring season");
+        if (!p.tor_specific_requirements)
+          missing.push("TOR Specific Requirements");
+        if (!p.socio_economy_requirements)
+          missing.push("Socio Economy requirements");
+        if (!p.eb_requirements) missing.push("EB requirements");
+        if (!p.any_other_details_required_from_site)
+          missing.push("Any other Details required from Site");
+        if (!p.scope_of_travelling_boarding_lodging)
+          missing.push("Scope of Travelling, Boarding, Lodging, etc");
+        if (!p.completion_target_date) missing.push("Completion target Date");
+        if (!p.critical_parameters_if_any)
+          missing.push("Critical Parameters if any");
+        if (!p.upload_kml_file_link) missing.push("Upload KML file");
+        if (!p.upload_environmental_sensitivity_file_link)
+          missing.push("Upload Environmental Sensitivity file");
+        if (!p.sampling_plan_details_link)
+          missing.push("Sampling Plan Details");
+
+        const baselineValue = String(p.baseline_season || "").toLowerCase();
+        if (baselineValue === "others") {
+          if (!p.baseline_season_other_specify)
+            missing.push("Baseline season specify");
+          if (!p.baseline_season_start_date)
+            missing.push("Baseline Season Start Date");
+          if (!p.baseline_season_end_date)
+            missing.push("Baseline Season End Date");
+        }
+
+        const ebValue = String(p.eb_requirements || "").toLowerCase();
+        if (
+          ebValue === "nursery" ||
+          ebValue === "forest office" ||
+          ebValue === "herbarium"
+        ) {
+          if (!p.eb_requirement_specifications) {
+            missing.push("EB requirement specification");
+          }
+        }
+
+        if (missing.length) {
+          alert("Please fill:\n\n" + missing.join("\n"));
+          return false;
+        }
+
+        return true;
+      }
+
+      function submitTF18() {
+        if (isSubmitting) return; // blocks double-clicks instantly
+        isSubmitting = true;
+        const submitBtn = document.getElementById("submitBtn");
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Submitting...";
+
+        const payload = {
+          date: document.getElementById("date").value,
+          requestor_first_name: document.getElementById("requestor_first_name")
+            .value,
+          requestor_last_name: document.getElementById("requestor_last_name")
+            .value,
+          requestor_email: document.getElementById("requestor_email").value,
+          team_name: document.getElementById("team_name").value,
+          company_name: document.getElementById("company_name").value,
+          project_name: document.getElementById("project_name").value,
+          site_address_line1:
+            document.getElementById("site_address_line1").value,
+          site_address_line2:
+            document.getElementById("site_address_line2").value,
+          site_city: document.getElementById("site_city").value,
+          site_state: document.getElementById("site_state").value,
+          site_zipcode: document.getElementById("site_zipcode").value,
+          site_country: document.getElementById("site_country").value,
+          pcode: document.getElementById("pcode").value,
+          contact_person_first_name: document.getElementById(
+            "contact_person_first_name",
+          ).value,
+          contact_person_last_name: document.getElementById(
+            "contact_person_last_name",
+          ).value,
+          contact_detail_of_contact_person: document.getElementById(
+            "contact_detail_of_contact_person",
+          ).value,
+          project_incharge_first_name: document.getElementById(
+            "project_incharge_first_name",
+          ).value,
+          project_incharge_last_name: document.getElementById(
+            "project_incharge_last_name",
+          ).value,
+          brief_description_of_project: document.getElementById(
+            "brief_description_of_project",
+          ).value,
+          baseline_season: document.getElementById("baseline_season").value,
+          baseline_season_other_specify: document.getElementById(
+            "baseline_season_other_specify",
+          ).value,
+          baseline_season_start_date: document.getElementById(
+            "baseline_season_start_date",
+          ).value,
+          baseline_season_end_date: document.getElementById(
+            "baseline_season_end_date",
+          ).value,
+          date_of_monitoring:
+            document.getElementById("date_of_monitoring").value,
+          tor_specific_requirements: document.getElementById(
+            "tor_specific_requirements",
+          ).value,
+          socio_economy_requirements: document.getElementById(
+            "socio_economy_requirements",
+          ).value,
+          eb_requirements: document.getElementById("eb_requirements").value,
+          eb_requirement_specifications: document.getElementById(
+            "eb_requirement_specifications",
+          ).value,
+          eb_requirement_remark: document.getElementById(
+            "eb_requirement_remark",
+          ).value,
+          upload_topo_sheet_link: document.getElementById(
+            "upload_topo_sheet_link",
+          ).value,
+          upload_kml_file_link: document.getElementById("upload_kml_file_link")
+            .value,
+          upload_environmental_sensitivity_file_link: document.getElementById(
+            "upload_environmental_sensitivity_file_link",
+          ).value,
+          any_other_details_required_from_site: document.getElementById(
+            "any_other_details_required_from_site",
+          ).value,
+          scope_of_travelling_boarding_lodging: document.getElementById(
+            "scope_of_travelling_boarding_lodging",
+          ).value,
+          completion_target_date: document.getElementById(
+            "completion_target_date",
+          ).value,
+          critical_parameters_if_any: document.getElementById(
+            "critical_parameters_if_any",
+          ).value,
+          sampling_plan_details_link: document.getElementById(
+            "sampling_plan_details_link",
+          ).value,
+        };
+
+        if (!validateTF18(payload)) {
+          isSubmitting = false;
+          submitBtn.disabled = false;
+          submitBtn.innerText = "Submit";
+          return;
+        }
+
+        google.script.run
+          .withSuccessHandler(function (res) {
+            console.log("SUCCESS HANDLER RUNNING"); // 👈 debug
+            document.body.innerHTML = res.thankYouHtml;
+          })
+          .withFailureHandler(function (err) {
+            alert("Submission failed: " + err.message);
+            isSubmitting = false;
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Submit";
+          })
+          .submitTF18(payload);
+      }
+    </script>
+  </body>
+</html>

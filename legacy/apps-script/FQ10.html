@@ -1,0 +1,662 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <base target="_top" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FQ10</title>
+    <?!= HtmlService.createHtmlOutputFromFile('shared-styles').getContent(); ?>
+    <style>
+      .section-divider {
+        margin: 22px 0 14px;
+        padding-top: 8px;
+        border-top: 1px solid #e5e7eb;
+        font-weight: 700;
+        font-size: 18px;
+      }
+      .check-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px 16px;
+      }
+      .check-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        border: 1px solid #e5e7eb;
+        border-radius: 999px;
+        background: #fff;
+      }
+      .subtle-note {
+        font-size: 12px;
+        color: #6b7280;
+        margin-top: 6px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="form-wrapper">
+      <div class="form-title">FQ10</div>
+      <div class="form-subtitle">LU and other maps</div>
+
+      <div class="form-section">
+        <div class="form-group">
+          <label class="form-label" for="date">Date</label>
+          <input type="date" id="date" />
+          <div class="helper-text">dd-MMM-yyyy</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Name of Requestor</label>
+          <div class="form-row">
+            <div class="form-col">
+              <input
+                type="text"
+                id="requestor_first_name"
+                placeholder="First Name"
+              />
+              <div class="helper-text">First Name</div>
+            </div>
+            <div class="form-col">
+              <input
+                type="text"
+                id="requestor_last_name"
+                placeholder="Last Name"
+              />
+              <div class="helper-text">Last Name</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="requestor_email"
+            >Official Email ID of Requestor
+            <span class="required">*</span></label
+          >
+          <input type="email" id="requestor_email" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="team_name"
+            >Team Name <span class="required">*</span></label
+          >
+          <select id="team_name" required></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="company_name"
+            >Company Name <span class="required">*</span></label
+          >
+          <input type="text" id="company_name" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="project_name"
+            >Name of the project <span class="required">*</span></label
+          >
+          <input type="text" id="project_name" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="pcode"
+            >PCODE <span class="required">*</span></label
+          >
+          <input type="text" id="pcode" required />
+          <div class="helper-text">
+            Refer the active PCODE list in your database
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="category"
+            >Category <span class="required">*</span></label
+          >
+          <select id="category" required></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="sector"
+            >Sector <span class="required">*</span></label
+          >
+          <select id="sector" multiple size="8" required></select>
+          <div class="helper-text">Hold Ctrl/Cmd to select multiple</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="eac_name"
+            >EAC Name <span class="required">*</span></label
+          >
+          <select id="eac_name" required></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="type_of_work"
+            >Type of Work <span class="required">*</span></label
+          >
+          <select id="type_of_work" required></select>
+        </div>
+
+        <div class="section-divider">Project Location / Address</div>
+
+        <div class="form-group">
+          <input type="text" id="address_line1" placeholder="Street Address" />
+        </div>
+        <div class="form-group">
+          <input type="text" id="address_line2" placeholder="Address Line 2" />
+        </div>
+        <div class="form-row">
+          <div class="form-col">
+            <input type="text" id="city" placeholder="City" />
+          </div>
+          <div class="form-col">
+            <input type="text" id="state" placeholder="State/Region/Province" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-col">
+            <input
+              type="text"
+              id="postal_code"
+              placeholder="Postal / Zip Code"
+            />
+          </div>
+          <div class="form-col">
+            <select id="country"></select>
+          </div>
+        </div>
+
+        <div class="section-divider">
+          Basic Requirement (to be filled by the team)
+        </div>
+        <div class="check-grid">
+          <label class="check-chip"
+            ><input type="checkbox" name="basic_requirements" value="Layout" />
+            Layout</label
+          >
+          <label class="check-chip"
+            ><input
+              type="checkbox"
+              name="basic_requirements"
+              value="Coordinates"
+            />
+            Coordinates</label
+          >
+          <label class="check-chip"
+            ><input type="checkbox" name="basic_requirements" value="KML" />
+            KML</label
+          >
+        </div>
+
+        <div class="section-divider">Uploads</div>
+
+        <div class="form-group">
+          <label class="form-label" for="layout_upload_link"
+            >Layout Upload <span class="required">*</span></label
+          >
+          <input
+            type="url"
+            id="layout_upload_link"
+            required
+            placeholder="Paste file URL here"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="coordinates_upload_link"
+            >Coordinates Upload <span class="required">*</span></label
+          >
+          <input
+            type="url"
+            id="coordinates_upload_link"
+            required
+            placeholder="Paste file URL here"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="kml_upload_link"
+            >KML Upload <span class="required">*</span></label
+          >
+          <input
+            type="url"
+            id="kml_upload_link"
+            required
+            placeholder="Paste file URL here"
+          />
+        </div>
+
+        <div class="section-divider">LU Map (Required from FAE)</div>
+        <div class="check-grid">
+          <label class="check-chip"
+            ><input
+              type="checkbox"
+              name="lu_map_required"
+              value="Landuse Map"
+            />
+            Landuse Map</label
+          >
+          <label class="check-chip"
+            ><input
+              type="checkbox"
+              name="lu_map_required"
+              value="Landuse Report"
+            />
+            Landuse Report</label
+          >
+          <label class="check-chip"
+            ><input
+              type="checkbox"
+              name="lu_map_required"
+              value="Violation LU Map and Report"
+            />
+            Violation LU Map and Report</label
+          >
+          <label class="check-chip"
+            ><input
+              type="checkbox"
+              name="lu_map_required"
+              value="Project Site LU Map (Core Zone)"
+            />
+            Project Site LU Map (Core Zone)</label
+          >
+        </div>
+
+        <div class="section-divider">Other Maps (Required from FAE)</div>
+        <div class="check-grid">
+          <label class="check-chip"
+            ><input
+              type="checkbox"
+              name="other_maps_required"
+              value="Accessibility Map 1 Km & 2 Km"
+            />
+            Accessibility Map 1 Km & 2 Km</label
+          >
+          <label class="check-chip"
+            ><input
+              type="checkbox"
+              name="other_maps_required"
+              value="Dem Map"
+            />
+            Dem Map</label
+          >
+          <label class="check-chip"
+            ><input
+              type="checkbox"
+              name="other_maps_required"
+              value="Drainage Map with Contours"
+            />
+            Drainage Map with Contours</label
+          >
+          <label class="check-chip"
+            ><input
+              type="checkbox"
+              name="other_maps_required"
+              value="Ecological Sensitivity Map"
+            />
+            Ecological Sensitivity Map</label
+          >
+          <label class="check-chip"
+            ><input
+              type="checkbox"
+              name="other_maps_required"
+              value="Geological Map"
+            />
+            Geological Map</label
+          >
+          <label class="check-chip"
+            ><input
+              type="checkbox"
+              name="other_maps_required"
+              value="Geomorphological Map"
+            />
+            Geomorphological Map</label
+          >
+          <label class="check-chip"
+            ><input
+              type="checkbox"
+              name="other_maps_required"
+              value="Hydrogeological Map"
+            />
+            Hydrogeological Map</label
+          >
+          <label class="check-chip"
+            ><input
+              type="checkbox"
+              name="other_maps_required"
+              value="Location Coordinate Map"
+            />
+            Location Coordinate Map</label
+          >
+          <label class="check-chip"
+            ><input
+              type="checkbox"
+              name="other_maps_required"
+              value="NDVI Map"
+            />
+            NDVI Map</label
+          >
+          <label class="check-chip"
+            ><input
+              type="checkbox"
+              name="other_maps_required"
+              value="Seismic Map"
+            />
+            Seismic Map</label
+          >
+          <label class="check-chip"
+            ><input
+              type="checkbox"
+              name="other_maps_required"
+              value="Site Layout on Satellite Imagery 500m and 1Km"
+            />
+            Site Layout on Satellite Imagery 500m and 1Km</label
+          >
+          <label class="check-chip"
+            ><input
+              type="checkbox"
+              name="other_maps_required"
+              value="Study Area on Satellite Imagery 1 Km and 10Km"
+            />
+            Study Area on Satellite Imagery 1 Km and 10Km</label
+          >
+          <label class="check-chip"
+            ><input
+              type="checkbox"
+              name="other_maps_required"
+              value="Village Map"
+            />
+            Village Map</label
+          >
+          <label class="check-chip"
+            ><input
+              type="checkbox"
+              name="other_maps_required"
+              value="Village Map for SE"
+            />
+            Village Map for SE</label
+          >
+          <label class="check-chip"
+            ><input
+              type="checkbox"
+              name="other_maps_required"
+              value="Layout Overlay"
+            />
+            Layout Overlay</label
+          >
+          <label class="check-chip"
+            ><input
+              type="checkbox"
+              name="other_maps_required"
+              value="Distance Maps"
+            />
+            Distance Maps</label
+          >
+          <label class="check-chip"
+            ><input
+              type="checkbox"
+              name="other_maps_required"
+              value="CRZ Maps"
+            />
+            CRZ Maps</label
+          >
+          <label class="check-chip"
+            ><input
+              type="checkbox"
+              name="other_maps_required"
+              value="Contour Map Core Zone"
+            />
+            Contour Map Core Zone</label
+          >
+          <label class="check-chip"
+            ><input
+              type="checkbox"
+              name="other_maps_required"
+              value="Close Birds Eye view of the project site"
+            />
+            Close Birds Eye view of the project site</label
+          >
+          <label class="check-chip"
+            ><input
+              type="checkbox"
+              name="other_maps_required"
+              value="Location Map"
+            />
+            Location Map</label
+          >
+        </div>
+
+        <div class="section-divider">Sampling Maps</div>
+        <div class="check-grid">
+          <label class="check-chip"
+            ><input
+              type="checkbox"
+              name="sampling_maps_required"
+              value="Air Sampling Map"
+            />
+            Air Sampling Map</label
+          >
+          <label class="check-chip"
+            ><input
+              type="checkbox"
+              name="sampling_maps_required"
+              value="Noise Sampling Map"
+            />
+            Noise Sampling Map</label
+          >
+          <label class="check-chip"
+            ><input
+              type="checkbox"
+              name="sampling_maps_required"
+              value="Water Sampling Map"
+            />
+            Water Sampling Map</label
+          >
+          <label class="check-chip"
+            ><input
+              type="checkbox"
+              name="sampling_maps_required"
+              value="Soil Sampling Map"
+            />
+            Soil Sampling Map</label
+          >
+        </div>
+
+        <div class="section-divider">IDW Maps</div>
+        <div class="check-grid">
+          <label class="check-chip"
+            ><input
+              type="checkbox"
+              name="idw_maps_required"
+              value="Air IDW Maps"
+            />
+            Air IDW Maps</label
+          >
+        </div>
+      </div>
+
+      <button
+        class="btn-primary"
+        type="button"
+        id="submitBtn"
+        onclick="submitFQ10()"
+      >
+        Submit
+      </button>
+    </div>
+
+    <script>
+      let isSubmitting = false;
+
+      window.addEventListener("DOMContentLoaded", function () {
+        populateDropdowns();
+      });
+
+      function populateDropdowns() {
+        google.script.run
+          .withSuccessHandler(function (data) {
+            data = data || {};
+            fillSelect(
+              document.getElementById("team_name"),
+              data.team || [],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("category"),
+              data.category || ["A", "B1", "B2"],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("eac_name"),
+              data.eac || [],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("country"),
+              data.country || ["India"],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("type_of_work"),
+              data.fq10WorkType || [],
+              "Select",
+            );
+            fillMultiSelect(
+              document.getElementById("sector"),
+              data.sector || [],
+            );
+          })
+          .getDropdownData();
+      }
+
+      function fillSelect(select, items, placeholder) {
+        if (!select) return;
+        select.innerHTML = "";
+        const first = document.createElement("option");
+        first.value = "";
+        first.textContent = placeholder || "Select";
+        select.appendChild(first);
+
+        (items || []).forEach(function (item) {
+          const option = document.createElement("option");
+          option.value = item;
+          option.textContent = item;
+          select.appendChild(option);
+        });
+      }
+
+      function fillMultiSelect(select, items) {
+        if (!select) return;
+        select.innerHTML = "";
+        (items || []).forEach(function (item) {
+          const option = document.createElement("option");
+          option.value = item;
+          option.textContent = item;
+          select.appendChild(option);
+        });
+      }
+
+      function getSelectedMultiValues(id) {
+        const el = document.getElementById(id);
+        return Array.from(el.selectedOptions)
+          .map((opt) => opt.value)
+          .join(", ");
+      }
+
+      function getCheckedValues(name) {
+        return Array.from(
+          document.querySelectorAll(`input[name="${name}"]:checked`),
+        )
+          .map(function (el) {
+            return el.value;
+          })
+          .join(", ");
+      }
+
+      function validateFQ10(p) {
+        const missing = [];
+
+        if (!p.requestor_email) missing.push("Official Email ID of Requestor");
+        if (!p.team_name) missing.push("Team Name");
+        if (!p.company_name) missing.push("Company Name");
+        if (!p.project_name) missing.push("Name of the project");
+        if (!p.pcode) missing.push("PCODE");
+        if (!p.category) missing.push("Category");
+        if (!p.sector) missing.push("Sector");
+        if (!p.eac_name) missing.push("EAC Name");
+        if (!p.type_of_work) missing.push("Type of Work");
+        if (!p.layout_upload_link) missing.push("Layout Upload");
+        if (!p.coordinates_upload_link) missing.push("Coordinates Upload");
+        if (!p.kml_upload_link) missing.push("KML Upload");
+
+        if (missing.length) {
+          alert("Please fill:\n\n" + missing.join("\n"));
+          return false;
+        }
+        return true;
+      }
+
+      function submitFQ10() {
+        if (isSubmitting) return; // blocks double-clicks instantly
+        isSubmitting = true;
+        const submitBtn = document.getElementById("submitBtn");
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Submitting...";
+
+        const payload = {
+          date: document.getElementById("date").value,
+          requestor_first_name: document.getElementById("requestor_first_name")
+            .value,
+          requestor_last_name: document.getElementById("requestor_last_name")
+            .value,
+          requestor_email: document.getElementById("requestor_email").value,
+          team_name: document.getElementById("team_name").value,
+          company_name: document.getElementById("company_name").value,
+          project_name: document.getElementById("project_name").value,
+          pcode: document.getElementById("pcode").value,
+          category: document.getElementById("category").value,
+          sector: getSelectedMultiValues("sector"),
+          eac_name: document.getElementById("eac_name").value,
+          type_of_work: document.getElementById("type_of_work").value,
+          address_line1: document.getElementById("address_line1").value,
+          address_line2: document.getElementById("address_line2").value,
+          city: document.getElementById("city").value,
+          state: document.getElementById("state").value,
+          postal_code: document.getElementById("postal_code").value,
+          country: document.getElementById("country").value,
+          basic_requirements: getCheckedValues("basic_requirements"),
+          layout_upload_link:
+            document.getElementById("layout_upload_link").value,
+          coordinates_upload_link: document.getElementById(
+            "coordinates_upload_link",
+          ).value,
+          kml_upload_link: document.getElementById("kml_upload_link").value,
+          lu_map_required: getCheckedValues("lu_map_required"),
+          other_maps_required: getCheckedValues("other_maps_required"),
+          sampling_maps_required: getCheckedValues("sampling_maps_required"),
+          idw_maps_required: getCheckedValues("idw_maps_required"),
+        };
+
+        if (!validateFQ10(payload)) {
+          isSubmitting = false;
+          submitBtn.disabled = false;
+          submitBtn.innerText = "Submit";
+          return;
+        }
+
+        google.script.run
+          .withSuccessHandler(function (res) {
+            console.log("SUCCESS HANDLER RUNNING"); // 👈 debug
+            document.body.innerHTML = res.thankYouHtml;
+          })
+          .withFailureHandler(function (err) {
+            alert("Submission failed: " + err.message);
+            isSubmitting = false;
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Submit";
+          })
+          .submitFQ10(payload);
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <base target="_top" />
+  <title>FQ12 – SC Questionnaire</title>
+
+  <?!= HtmlService.createHtmlOutputFromFile('sharedStyles').getContent(); ?>
+  <?!= HtmlService.createHtmlOutputFromFile('sharedComponents').getContent(); ?>
+</head>
+
+<body>
+<div class="form-wrapper">
+  <div class="form-title">FQ12</div>
+  <div class="form-subtitle">FAE Reports Questionnaire – SC</div>
+
+  <div id="f_fields"></div>
+
+  <div style="margin-top:20px">
+    <button class="btn-primary" id="submitBtn">Submit</button>
+    <span id="status" class="text-muted" style="margin-left:12px"></span>
+  </div>
+</div>
+
+<script>
+const FORM_CODE = "FQ12";
+const c = document.getElementById("f_fields");
+
+/* ================= DATE ================= */
+renderField(c,{
+  label:"Date",
+  id:"date",
+  type:"date"
+});
+
+/* ================= REQUESTOR DETAILS ================= */
+renderField(c,{ label:"First Name", id:"req_first_name" });
+renderField(c,{ label:"Last Name", id:"req_last_name" });
+
+renderField(c,{
+  label:"Official Email ID of Requestor",
+  id:"req_email",
+  type:"email",
+  required:true
+});
+
+renderField(c,{
+  label:"Team Name",
+  id:"team_name",
+  required:true
+});
+
+/* ================= PROJECT CLASSIFICATION ================= */
+renderField(c,{
+  label:"Sector",
+  id:"sector",
+  placeholder:"1a1b1d2a2b3a3b4a4c4d4f5a5b5c5d5e5f5g5h5j6a6b7a7b7c7d7da7e7f7g7h7i8a8b"
+});
+
+renderField(c,{ label:"Company Name", id:"company_name" });
+
+renderField(c,{
+  label:"Name of the Project",
+  id:"project_name",
+  required:true
+});
+
+renderField(c,{
+  label:"PCODE",
+  id:"pcode",
+  required:true,
+  placeholder:"Refer active PCODE list"
+});
+
+renderField(c,{
+  label:"Category",
+  id:"category"
+});
+
+renderField(c,{
+  label:"Sector (Detailed)",
+  id:"sector_detail"
+});
+
+renderField(c,{
+  label:"EAC Name",
+  id:"eac_name"
+});
+
+/* ================= LINK ================= */
+renderField(c,{
+  label:"SC Questionnaire Sheet Link",
+  id:"sc_questionnaire_link",
+  required:true
+});
+
+/* ================= SUBMIT ================= */
+document.getElementById("submitBtn").addEventListener("click",()=>{
+  const payload = {};
+  document.querySelectorAll("input, textarea, select").forEach(el=>{
+    if(el.id){
+      payload[el.id] = el.value;
+    }
+  });
+
+  google.script.run
+    .withSuccessHandler(()=>{
+      document.getElementById("status").innerText =
+        "FQ12 submitted successfully";
+    })
+    .withFailureHandler(err=>{
+      document.getElementById("status").innerText =
+        "Submit failed: " + err.message;
+    })
+    .submitForm(FORM_CODE, payload);
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,366 @@
+<style>
+  :root {
+    --bg-page: #f3f5f8;
+    --bg-card: #ffffff;
+    --bg-subform: #eef1f5;
+
+    --primary: #3f8f7b;
+    --primary-hover: #357a69;
+
+    --border: #d9dee5;
+    --border-focus: #3f8f7b;
+
+    --text-main: #1f2937;
+    --text-muted: #6b7280;
+
+    --radius: 12px;
+    --radius-sm: 8px;
+
+    --shadow-soft: 0 6px 24px rgba(0, 0, 0, 0.06);
+  }
+
+  * {
+    outline: 0;
+    box-sizing: border-box;
+  }
+
+  /* Page */
+  body {
+    margin: 0;
+    padding: 40px 0;
+    background: var(--bg-page);
+    font-family: "Inter", "Segoe UI", Roboto, Arial, sans-serif;
+    color: var(--text-main);
+  }
+
+  /* Main Card */
+  .form-wrapper {
+    width: 90%;
+    margin: auto;
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-soft);
+    padding: 40px 50px;
+  }
+
+  /* Title */
+  .form-title {
+    font-size: 32px;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 4px;
+  }
+
+  .form-subtitle {
+    text-align: center;
+    font-size: 16px;
+    color: var(--text-muted);
+    margin-bottom: 30px;
+  }
+
+  /* Section */
+  .form-section {
+    margin-top: 30px;
+  }
+
+  .section-heading {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 16px;
+  }
+
+  /* Layout */
+  .form-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .form-col {
+    flex: 1;
+    min-width: 250px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px 20px;
+  }
+
+  .form-group {
+    margin-bottom: 18px;
+  }
+
+  .form-label {
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  .required {
+    color: #dc2626;
+    margin-left: 4px;
+  }
+
+  /* Inputs */
+  input,
+  select,
+  textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    font-size: 14px;
+    transition: all 0.2s ease;
+    background: #fff;
+  }
+
+  input:focus,
+  select:focus,
+  textarea:focus {
+    outline: none;
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 3px rgba(63, 143, 123, 0.15);
+  }
+
+  /* Subform Container */
+  .subform-card {
+    background: var(--bg-subform);
+    padding: 20px;
+    border-radius: var(--radius-sm);
+    margin-bottom: 20px;
+  }
+
+  .subform-row {
+    border-top: 1px solid var(--border);
+    padding-top: 16px;
+    margin-top: 16px;
+  }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  th,
+  td {
+    border: 1px solid var(--border);
+    padding: 10px;
+    font-size: 13px;
+  }
+
+  th {
+    background: #f9fafb;
+    font-weight: 600;
+  }
+
+  /* Buttons */
+  .btn-primary {
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    padding: 12px 28px;
+    font-size: 16px;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .btn-primary:hover {
+    background: var(--primary-hover);
+  }
+
+  .btn-secondary {
+    background: #e5e7eb;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+  }
+
+  /* Helper text */
+  .helper-text {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  /* 1. Specific reset for radio/checkbox inputs */
+  /* This stops them from trying to be 100% wide and removes that thick padding */
+  input[type="radio"],
+  input[type="checkbox"] {
+    width: 1.25rem; /* Set a fixed, comfortable size */
+    height: 1.25rem;
+    padding: 0; /* Overrides the 10px 12px padding in your main input rule */
+    margin: 0;
+    cursor: pointer;
+    accent-color: var(--primary);
+  }
+
+  /* 2. The Modifier: Only apply flex alignment when this class is present */
+  .form-col-choice {
+    flex: 1; /* Keeps column width consistency with your text fields */
+    display: flex; /* Aligns circle and text horizontally */
+    align-items: center;
+    gap: 10px; /* Space between input and label */
+  }
+
+  /* 3. Label fix for choices */
+  .form-col-choice label {
+    margin-bottom: 0; /* Removes the 6px margin meant for text-field labels */
+    font-weight: 400;
+    cursor: pointer;
+    color: var(--text-main);
+  }
+
+  .range-stack {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .range-value {
+    min-width: 22px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 12px;
+  }
+
+  .tf-slider-label {
+    font-size: 12px;
+    margin-bottom: 4px;
+  }
+
+  .matrix-wrapper {
+    overflow-x: auto;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+  }
+
+  .work-matrix-wrap {
+    width: 100%;
+    overflow-x: auto;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    background: #fff;
+  }
+
+  /* Make table wide and breathable */
+  .matrix-table {
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: fixed; /* 🔥 core rule */
+    width: max-content; /* 🔥 allows horizontal scroll */
+    min-width: 100%; /* keeps initial view clean */
+    font-size: 13px;
+  }
+
+  /* Work done text */
+  .matrix-table textarea {
+    width: 100%;
+    max-width: 100%;
+    min-height: 70px;
+    resize: vertical;
+    font-size: 12px;
+  }
+
+  /* Sticky header */
+  .matrix-table thead th {
+    position: sticky;
+    top: 0;
+    background: #f9fafb;
+    z-index: 3;
+    border-bottom: 2px solid #e5e7eb;
+  }
+
+  /* Project Name */
+  .col-project {
+    width: 260px;
+  }
+
+  /* PCODE */
+  .col-pcode {
+    width: 120px;
+  }
+
+  /* Each member column (Work + Time grouped visually) */
+  .col-member {
+    width: 220px;
+  }
+
+  /* Time input */
+  .matrix-table input.matrix-time {
+    width: 80px;
+    text-align: center;
+  }
+
+  /* Alternate row shading */
+  .matrix-table tbody tr:nth-child(even) {
+    background: #fafafa;
+  }
+
+  /* General cells */
+  .matrix-table td,
+  .matrix-table th {
+    padding: 10px;
+    border: 1px solid #e5e7eb;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  /* Member headers */
+  .matrix-member-head {
+    min-width: 220px;
+    text-align: center;
+    font-weight: 600;
+  }
+
+  .matrix-table input[type="number"] {
+    width: 70px;
+    text-align: center;
+  }
+
+  .matrix-table textarea,
+  .matrix-table input {
+    width: 100%;
+    box-sizing: border-box; /* 🔥 critical */
+    padding: 6px;
+  }
+
+  .cell-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .matrix-table tr[data-misc="1"] td {
+    background: #f8fafc;
+    font-weight: 500;
+  }
+
+  .star-rating {
+    display: flex;
+    gap: 8px;
+    font-size: 32px;
+    cursor: pointer;
+  }
+
+  .star-rating span {
+    color: #ccc;
+    transition:
+      transform 0.1s ease,
+      color 0.2s ease;
+  }
+
+  .star-rating span.active {
+    color: #f5b301;
+  }
+
+  .star-rating span:hover {
+    transform: scale(1.2);
+  }
+</style>

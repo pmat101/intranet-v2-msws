@@ -1,0 +1,187 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <base target="_top" />
+  <title>WPF06</title>
+
+  <?!= HtmlService.createHtmlOutputFromFile('sharedStyles').getContent(); ?>
+  <?!= HtmlService.createHtmlOutputFromFile('sharedComponents').getContent(); ?>
+</head>
+
+<body>
+<div class="form-wrapper">
+
+  <div class="form-title">WPF06</div>
+  <div class="form-subtitle">WPF - Glacier</div>
+
+  <div id="f_fields"></div>
+
+  <!-- BD DETAILS -->
+  <div class="form-section">
+    <div class="section-heading">BDs Filled This Week</div>
+    <div id="bdBody"></div>
+    <button type="button" class="btn-secondary" id="addBdBtn">+ Add BD</button>
+  </div>
+
+  <!-- COMPLAINTS RECEIVED -->
+  <div class="form-section">
+    <div class="section-heading">Complaints Received This Week</div>
+    <div id="complaintBody"></div>
+    <button type="button" class="btn-secondary" id="addComplaintBtn">+ Add Complaint</button>
+  </div>
+
+  <div style="margin-top:20px">
+    <button class="btn-primary" id="submitBtn">Submit</button>
+    <span id="status" style="margin-left:12px"></span>
+  </div>
+
+</div>
+
+<script>
+const FORM_CODE = "wpf06";
+const c = document.getElementById("f_fields");
+
+/* ================= BASIC DETAILS ================= */
+
+renderField(c,{label:"Week Start Date *Required",id:"week_start",type:"date"});
+renderField(c,{label:"Week End Date *Required",id:"week_end",type:"date"});
+
+const bdsFilled = renderField(c,{
+  label:"BDs filled this week *Required",
+  id:"bds_filled",
+  type:"select"
+});
+bdsFilled.appendChild(new Option("Select",""));
+bdsFilled.appendChild(new Option("Yes","Yes"));
+bdsFilled.appendChild(new Option("No","No"));
+
+renderField(c,{label:"Number of BDs filled",id:"bds_count",type:"number"});
+
+/* ================= BD MULTIPLE ENTRY ================= */
+
+document.getElementById("addBdBtn").onclick=function(){
+  const d=document.createElement("div");
+  d.className="subform-row";
+  d.innerHTML=`
+    <input class="bd_name" placeholder="BD Name *Required">
+    <input type="number" class="bd_planned" placeholder="Planned Last Week *Required">
+    <input type="number" class="bd_achieved" placeholder="Achieving this week *Required">
+    <input type="number" class="bd_next" placeholder="Plan for next week *Required">
+    <button type="button" onclick="this.parentElement.remove()">Remove</button>
+  `;
+  bdBody.appendChild(d);
+};
+
+function collectBds(){
+  return Array.from(document.querySelectorAll("#bdBody .subform-row"))
+  .map(r=>({
+    name:r.querySelector(".bd_name")?.value||"",
+    planned:r.querySelector(".bd_planned")?.value||"",
+    achieved:r.querySelector(".bd_achieved")?.value||"",
+    next:r.querySelector(".bd_next")?.value||""
+  })).filter(x=>x.name);
+}
+
+/* ================= PROPOSALS, BILLS ================= */
+
+renderField(c,{label:"Proposals sent - Planned Last Week *Required",id:"prop_planned",type:"number"});
+renderField(c,{label:"Proposals sent - Achieving this week *Required",id:"prop_achieved",type:"number"});
+renderField(c,{label:"Proposals sent - Plan for next week *Required",id:"prop_next",type:"number"});
+renderField(c,{label:"Proposals sent - Number *Required",id:"prop_number",type:"number"});
+
+renderField(c,{label:"Bills Raised - Planned Last Week *Required",id:"bills_planned",type:"number"});
+renderField(c,{label:"Bills Raised - Achieving this week *Required",id:"bills_achieved",type:"number"});
+renderField(c,{label:"Bills Raised - Plan for next week *Required",id:"bills_next",type:"number"});
+renderField(c,{label:"Bills Raised - Number *Required",id:"bills_number",type:"number"});
+
+/* ================= COMPLAINTS SECTION ================= */
+
+const complaintsSel = renderField(c,{
+  label:"Client Complaint received this week *Required",
+  id:"complaints_received",
+  type:"select"
+});
+complaintsSel.appendChild(new Option("Select",""));
+complaintsSel.appendChild(new Option("Yes","Yes"));
+complaintsSel.appendChild(new Option("No","No"));
+
+/* ================= COMPLAINT MULTIPLE ENTRY ================= */
+
+document.getElementById("addComplaintBtn").onclick=function(){
+  const d=document.createElement("div");
+  d.className="subform-row";
+  d.innerHTML=`
+    <input class="compl_team" placeholder="Team Name *Required">
+    <input class="compl_client" placeholder="Client Company name *Required">
+    <input class="compl_project" placeholder="Project Name *Required">
+    <input class="compl_pcode" placeholder="PCODE *Required">
+    <textarea class="compl_text" placeholder="Complaint *Required"></textarea>
+    <button type="button" onclick="this.parentElement.remove()">Remove</button>
+  `;
+  complaintBody.appendChild(d);
+};
+
+function collectComplaints(){
+  return Array.from(document.querySelectorAll("#complaintBody .subform-row"))
+  .map(r=>({
+    team:r.querySelector(".compl_team")?.value||"",
+    client:r.querySelector(".compl_client")?.value||"",
+    project:r.querySelector(".compl_project")?.value||"",
+    pcode:r.querySelector(".compl_pcode")?.value||"",
+    text:r.querySelector(".compl_text")?.value||""
+  })).filter(x=>x.team);
+}
+
+/* ================= TARGETS SUMMARY ================= */
+
+renderField(c,{label:"Targets planned this week",id:"targets_planned",type:"textarea"});
+renderField(c,{label:"Targets achieved this week",id:"targets_achieved",type:"textarea"});
+
+renderField(c,{label:"Highlights",id:"highlights",type:"textarea"});
+renderField(c,{label:"Low Points",id:"low_points",type:"textarea"});
+renderField(c,{label:"Challenges faced",id:"challenges",type:"textarea"});
+renderField(c,{label:"Projected targets for next week",id:"projected_targets",type:"textarea"});
+
+/* ================= FILE UPLOAD ================= */
+
+const fileDiv=document.createElement("div");
+fileDiv.className="form-group";
+fileDiv.innerHTML=`
+  <label>Upload Weekly PPT *Required</label>
+  <input type="file" id="weekly_ppt" accept=".ppt,.pptx,.pdf">
+`;
+c.appendChild(fileDiv);
+
+/* ================= SUBMIT ================= */
+
+document.getElementById("submitBtn").onclick=function(){
+
+  const payload={};
+
+  document.querySelectorAll("#f_fields input, #f_fields textarea, #f_fields select")
+  .forEach(el=>{
+    if(el.type!=="file"){
+      payload[el.id]=el.value||"";
+    }
+  });
+
+  payload.bds_filled_list=collectBds();
+  payload.complaints_list=collectComplaints();
+
+  const file=document.getElementById("weekly_ppt");
+  payload.weekly_ppt_name=file.files[0]?file.files[0].name:"";
+
+  google.script.run
+    .withSuccessHandler(res=>{
+      document.getElementById("status").innerText="Submitted: "+(res.submission_id||"OK");
+    })
+    .withFailureHandler(err=>{
+      document.getElementById("status").innerText="Submit failed: "+err.message;
+    })
+    .submitForm(FORM_CODE.toUpperCase(),payload);
+};
+
+</script>
+</body>
+</html>

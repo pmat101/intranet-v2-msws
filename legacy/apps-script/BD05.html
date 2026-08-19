@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <base target="_top" />
+    <title>BD-05 - Project Closure Form</title>
+    <?!= HtmlService.createHtmlOutputFromFile('sharedStyles').getContent(); ?>
+    <?!= HtmlService.createHtmlOutputFromFile('sharedComponents').getContent(); ?>
+  </head>
+  <body>
+    <div class="form-wrapper">
+      <div class="form-title">BD-05 - Project Closure Form</div>
+      <div class="form-subtitle">To be filled after TF08 received and FNF Payment is done</div>
+
+      <div id="f_fields"></div>
+
+      <div style="margin-top: 20px">
+        <button class="btn-primary" id="submitBtn">Submit</button>
+        <span id="status" class="text-muted" style="margin-left: 12px"></span>
+      </div>
+    </div>
+
+    <script>
+      const FORM_CODE = "bd05";
+      const c = document.getElementById("f_fields");
+
+      // Main Project & Client Fields
+      renderField(c, { label: "Date of Client's Mail/ Lead Generation *", id: "mail_date", type: "date" });
+      renderField(c, { label: "First Name of Form Filler", id: "filler_first_name" });
+      renderField(c, { label: "Last Name of Form Filler", id: "filler_last_name" });
+      renderField(c, { label: "Official Email ID *", id: "filler_email", type: "email" });
+      renderField(c, { label: "Team Name", id: "team_name" });
+
+      // Project Handling Team
+      renderField(c, { label: "Team who was handling the project", id: "handling_team" });
+      renderField(c, { label: "Team Head First Name", id: "team_head_first" });
+      renderField(c, { label: "Team Head Last Name", id: "team_head_last" });
+      renderField(c, { label: "Team Head Email ID *", id: "team_head_email", type: "email" });
+      renderField(c, { label: "Business Head Name", id: "bh_name" });
+      renderField(c, { label: "Business Head Email ID", id: "bh_email", type: "email" });
+      renderField(c, { label: "Lead Source", id: "lead_source" });
+
+      // Customer Details
+      renderField(c, { label: "Customer's Company Legal Name *", id: "customer_company" });
+      renderField(c, { label: "Customer First Name", id: "customer_first" });
+      renderField(c, { label: "Customer Last Name", id: "customer_last" });
+      renderField(c, { label: "Customer Contact Number", id: "customer_contact", placeholder: "+91" });
+      renderField(c, { label: "Customer Email", id: "customer_email", type: "email" });
+
+      // Project Details
+      renderField(c, { label: "Project Name", id: "project_name" });
+      renderField(c, { label: "Proposal ID", id: "proposal_id" });
+      renderField(c, { label: "PCode", id: "pcode", placeholder: "Refer active PCODE list" });
+
+      // Links
+      renderField(c, { label: "Link to Project Completion Certificate", id: "link_completion_certificate", type: "url" });
+      renderField(c, { label: "Link to Feedback Form", id: "link_feedback_form", type: "url" });
+      renderField(c, { label: "Link to Project FNF", id: "link_fnf", type: "url" });
+
+      // Remarks
+      renderField(c, { label: "Remarks by BH", id: "remarks_bh", type: "textarea" });
+      renderField(c, { label: "Remarks by BD Teams", id: "remarks_bd", type: "textarea" });
+      renderField(c, { label: "Remarks by Accounts Teams", id: "remarks_accounts", type: "textarea" });
+
+      // Submit Handler
+      document.getElementById("submitBtn").addEventListener("click", function () {
+        const payload = {};
+        Array.from(c.querySelectorAll("input, select, textarea")).forEach(field => {
+          payload[field.id] = field.value || "";
+        });
+
+        google.script.run
+          .withSuccessHandler(res => {
+            document.getElementById("status").innerText = "Submitted: " + (res.submission_id || "OK");
+          })
+          .withFailureHandler(err => {
+            document.getElementById("status").innerText = "Submit failed: " + err.message;
+          })
+          .submitForm(FORM_CODE.toUpperCase(), payload);
+      });
+    </script>
+  </body>
+</html>

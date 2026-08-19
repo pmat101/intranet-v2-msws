@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <base target="_top" />
+  <title>TF31 – Accounts / Team Information</title>
+
+  <?!= HtmlService.createHtmlOutputFromFile('sharedStyles').getContent(); ?>
+  <?!= HtmlService.createHtmlOutputFromFile('sharedComponents').getContent(); ?>
+</head>
+
+<body>
+<div class="form-wrapper">
+  <div class="form-title">TF31</div>
+  <div class="form-subtitle">
+    Technical Format for Accounts / Team Information
+  </div>
+
+  <div id="prefill-area"></div>
+  <div id="f_selects"></div>
+  <div id="f_fields"></div>
+
+  <div style="margin-top:20px">
+    <button class="btn-primary" id="submitBtn">Submit</button>
+    <span id="status" class="text-muted" style="margin-left:12px"></span>
+  </div>
+</div>
+
+<script>
+const FORM_CODE = "TF31";
+
+const c = document.getElementById("f_fields");
+
+/* ================= DATE ================= */
+
+renderField(c,{
+  label:"Date",
+  id:"form_date",
+  type:"date"
+});
+
+/* ================= EMPLOYEE DETAILS ================= */
+
+renderField(c,{
+  label:"Employee First Name",
+  id:"emp_first_name"
+});
+
+renderField(c,{
+  label:"Employee Last Name",
+  id:"emp_last_name"
+});
+
+renderField(c,{
+  label:"Employee Email ID",
+  id:"emp_email",
+  type:"email",
+  required:true
+});
+
+renderField(c,{
+  label:"Email ID of the person filling the form",
+  id:"filled_by_email",
+  type:"email"
+});
+
+/* ================= PROJECT DETAILS ================= */
+
+renderField(c,{
+  label:"Project Name",
+  id:"project_name"
+});
+
+renderField(c,{
+  label:"Project Code (PCODE)",
+  id:"pcode",
+  required:true,
+  placeholder:"Enter active PCODE"
+});
+
+renderField(c,{
+  label:"Type of Work",
+  id:"type_of_work"
+});
+
+renderField(c,{
+  label:"If Others, please specify",
+  id:"type_of_work_other"
+});
+
+/* ================= TEAM DETAILS ================= */
+
+renderField(c,{
+  label:"Team Name",
+  id:"team_name",
+  required:true
+});
+
+renderField(c,{
+  label:"With whom documents are shared",
+  id:"shared_with"
+});
+
+/* ================= DOCUMENT DETAILS ================= */
+
+renderField(c,{
+  label:"Date of Issuance of Documents",
+  id:"document_issue_date",
+  type:"date"
+});
+
+renderField(c,{
+  label:"Link of the Shared Documents",
+  id:"document_link",
+  type:"url",
+  placeholder:"Paste Google Drive / SharePoint link"
+});
+
+/* ================= REMARKS ================= */
+
+renderField(c,{
+  label:"Remarks (if any)",
+  id:"remarks",
+  type:"textarea"
+});
+
+/* ================= SUBMIT ================= */
+
+document.getElementById("submitBtn").addEventListener("click",function(){
+  const payload = {};
+
+  document.querySelectorAll("input, textarea, select").forEach(el=>{
+    if(el.id){
+      payload[el.id] = el.value;
+    }
+  });
+
+  google.script.run
+    .withSuccessHandler(function(res){
+      document.getElementById("status").innerText =
+        "TF31 submitted successfully";
+    })
+    .withFailureHandler(function(err){
+      document.getElementById("status").innerText =
+        "Submit failed: " + err.message;
+    })
+    .submitForm(FORM_CODE, payload);
+});
+</script>
+</body>
+</html>

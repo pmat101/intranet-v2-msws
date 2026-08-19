@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <base target="_top" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ADM09</title>
+    <?!= HtmlService.createHtmlOutputFromFile('shared-styles').getContent(); ?>
+    <style>
+      .section-divider {
+        margin: 22px 0 14px;
+        padding-top: 8px;
+        border-top: 1px solid #e5e7eb;
+        font-weight: 700;
+        font-size: 18px;
+      }
+      .subform-card {
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 14px;
+        background: #fff;
+        margin-bottom: 12px;
+      }
+      .actions-row {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+        flex-wrap: wrap;
+      }
+      .subtle-note {
+        font-size: 12px;
+        color: #6b7280;
+        margin-top: 6px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="form-wrapper">
+      <div class="form-title">ADM09</div>
+      <div class="form-subtitle">Follow up responsibility</div>
+
+      <div class="form-section">
+        <div class="form-group">
+          <label class="form-label" for="date">Date</label>
+          <input type="date" id="date" />
+          <div class="helper-text">dd-MMM-yyyy</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Name of Employee</label>
+          <div class="form-row">
+            <div class="form-col">
+              <input
+                type="text"
+                id="employee_first_name"
+                placeholder="First Name"
+              />
+              <div class="helper-text">First Name</div>
+            </div>
+            <div class="form-col">
+              <input
+                type="text"
+                id="employee_last_name"
+                placeholder="Last Name"
+              />
+              <div class="helper-text">Last Name</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="employee_email"
+            >Email ID of Employee <span class="required">*</span></label
+          >
+          <input type="email" id="employee_email" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="employee_id"
+            >Employee ID <span class="required">*</span></label
+          >
+          <input type="text" id="employee_id" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="visit_type"
+            >Visit Type <span class="required">*</span></label
+          >
+          <select id="visit_type" required>
+            <option value="">Select</option>
+            <option value="MoEFcc">MoEFcc</option>
+            <option value="SEIAA/SEAC">SEIAA/SEAC</option>
+            <option value="PCB">PCB</option>
+            <option value="CGWB clearances">CGWB clearances</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="place_visited"
+            >Place Visited <span class="required">*</span></label
+          >
+          <input type="text" id="place_visited" required />
+        </div>
+
+        <div class="section-divider">Name email of person</div>
+        <div id="people-rows"></div>
+        <div class="actions-row">
+          <button type="button" class="btn-secondary" id="add-person-row">
+            + Add Person
+          </button>
+        </div>
+        <div class="subtle-note">
+          Add all ministry contacts you are following up with.
+        </div>
+
+        <div class="form-group" style="margin-top: 18px">
+          <label class="form-label" for="last_visit_date"
+            >Last visit date <span class="required">*</span></label
+          >
+          <input type="date" id="last_visit_date" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="next_visit_planned_date"
+            >Next visit planned date <span class="required">*</span></label
+          >
+          <input type="date" id="next_visit_planned_date" required />
+        </div>
+
+        <div class="section-divider">Relevant Project Details</div>
+        <div id="project-rows"></div>
+        <div class="actions-row">
+          <button type="button" class="btn-secondary" id="add-project-row">
+            + Add Project
+          </button>
+        </div>
+
+        <div class="form-group" style="margin-top: 18px">
+          <label class="form-label" for="key_personnel_with_whom_communicated"
+            >Key personnel with whom we communicated in ministry</label
+          >
+          <textarea id="key_personnel_with_whom_communicated"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="details_of_visit"
+            >Details of visit <span class="required">*</span></label
+          >
+          <textarea id="details_of_visit" required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="action_required_expected_update"
+            >Action required / expected update
+            <span class="required">*</span></label
+          >
+          <textarea id="action_required_expected_update" required></textarea>
+          <div class="helper-text">
+            Summarise the next action, expected response, or update needed from
+            the ministry side.
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="remarks">Remarks</label>
+          <textarea id="remarks"></textarea>
+        </div>
+      </div>
+
+      <button
+        class="btn-primary"
+        type="button"
+        id="submitBtn"
+        onclick="submitADM09()"
+      >
+        Submit
+      </button>
+    </div>
+
+    <script>
+      let isSubmitting = false;
+
+      window.addEventListener("DOMContentLoaded", function () {
+        const peopleWrap = document.getElementById("people-rows");
+        peopleWrap.appendChild(createPersonRow());
+        document
+          .getElementById("add-person-row")
+          .addEventListener("click", function () {
+            peopleWrap.appendChild(createPersonRow());
+          });
+
+        const projectWrap = document.getElementById("project-rows");
+        projectWrap.appendChild(createProjectRow());
+        document
+          .getElementById("add-project-row")
+          .addEventListener("click", function () {
+            projectWrap.appendChild(createProjectRow());
+          });
+      });
+
+      function createPersonRow() {
+        const row = document.createElement("div");
+        row.className = "subform-card";
+        row.innerHTML = `
+          <div class="form-row">
+            <div class="form-col">
+              <label class="form-label">Name of person</label>
+              <input type="text" class="adm09-person-name" />
+            </div>
+            <div class="form-col">
+              <label class="form-label">Email ID of person</label>
+              <input type="email" class="adm09-person-email" />
+            </div>
+          </div>
+          <div class="actions-row">
+            <button type="button" class="btn-secondary adm09-remove-row">Remove</button>
+          </div>
+        `;
+        row
+          .querySelector(".adm09-remove-row")
+          .addEventListener("click", function () {
+            row.remove();
+          });
+        return row;
+      }
+
+      function createProjectRow() {
+        const row = document.createElement("div");
+        row.className = "subform-card";
+        row.innerHTML = `
+          <div class="form-row">
+            <div class="form-col">
+              <label class="form-label">Project Name</label>
+              <input type="text" class="adm09-project-name" />
+            </div>
+            <div class="form-col">
+              <label class="form-label">PCODE</label>
+              <input type="text" class="adm09-project-pcode" />
+            </div>
+          </div>
+          <div class="form-group" style="margin-top:10px;">
+            <label class="form-label">Outcome of the Visit</label>
+            <textarea class="adm09-project-outcome"></textarea>
+          </div>
+          <div class="actions-row">
+            <button type="button" class="btn-secondary adm09-remove-row">Remove</button>
+          </div>
+          `;
+        row
+          .querySelector(".adm09-remove-row")
+          .addEventListener("click", function () {
+            row.remove();
+          });
+        return row;
+      }
+
+      function collectPeopleRows() {
+        return Array.from(
+          document.querySelectorAll("#people-rows .subform-card"),
+        )
+          .map(function (row) {
+            return {
+              name_of_person:
+                row.querySelector(".adm09-person-name")?.value || "",
+              email_id_of_person:
+                row.querySelector(".adm09-person-email")?.value || "",
+            };
+          })
+          .filter(function (r) {
+            return (
+              String(r.name_of_person).trim() ||
+              String(r.email_id_of_person).trim()
+            );
+          });
+      }
+
+      function collectProjectRows() {
+        return Array.from(
+          document.querySelectorAll("#project-rows .subform-card"),
+        )
+          .map(function (row) {
+            return {
+              project_name:
+                row.querySelector(".adm09-project-name")?.value || "",
+              pcode: row.querySelector(".adm09-project-pcode")?.value || "",
+              outcome_of_visit:
+                row.querySelector(".adm09-project-outcome")?.value || "",
+            };
+          })
+          .filter(function (r) {
+            return (
+              String(r.project_name).trim() ||
+              String(r.pcode).trim() ||
+              String(r.outcome_of_visit).trim()
+            );
+          });
+      }
+
+      function validateADM09(payload) {
+        const missing = [];
+
+        if (!payload.employee_email) missing.push("Email ID of Employee");
+        if (!payload.employee_id) missing.push("Employee ID");
+        if (!payload.visit_type) missing.push("Visit Type");
+        if (!payload.place_visited) missing.push("Place Visited");
+        if (!payload.last_visit_date) missing.push("Last visit date");
+        if (!payload.next_visit_planned_date)
+          missing.push("Next visit planned date");
+        if (!payload.details_of_visit) missing.push("Details of visit");
+        if (!payload.action_required_expected_update)
+          missing.push("Action required / expected update");
+
+        if (!payload.people || !payload.people.length) {
+          missing.push("Name email of person");
+        } else {
+          payload.people.forEach(function (r, i) {
+            if (!r.name_of_person)
+              missing.push(`Name of person (row ${i + 1})`);
+            if (!r.email_id_of_person)
+              missing.push(`Email ID of person (row ${i + 1})`);
+          });
+        }
+
+        if (!payload.projects || !payload.projects.length) {
+          missing.push("Relevant Project Details");
+        } else {
+          payload.projects.forEach(function (r, i) {
+            if (!r.project_name) missing.push(`Project Name (row ${i + 1})`);
+            if (!r.pcode) missing.push(`PCODE (row ${i + 1})`);
+            if (!r.outcome_of_visit)
+              missing.push(`Outcome of the Visit (row ${i + 1})`);
+          });
+        }
+
+        if (missing.length) {
+          alert("Please fill:\n\n" + missing.join("\n"));
+          return false;
+        }
+        return true;
+      }
+
+      function submitADM09() {
+        if (isSubmitting) return; // blocks double-clicks instantly
+        isSubmitting = true;
+        const submitBtn = document.getElementById("submitBtn");
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Submitting...";
+
+        const payload = {
+          date: document.getElementById("date").value,
+          employee_first_name: document.getElementById("employee_first_name")
+            .value,
+          employee_last_name:
+            document.getElementById("employee_last_name").value,
+          employee_email: document.getElementById("employee_email").value,
+          employee_id: document.getElementById("employee_id").value,
+          visit_type: document.getElementById("visit_type").value,
+          place_visited: document.getElementById("place_visited").value,
+          people: collectPeopleRows(),
+          last_visit_date: document.getElementById("last_visit_date").value,
+          next_visit_planned_date: document.getElementById(
+            "next_visit_planned_date",
+          ).value,
+          projects: collectProjectRows(),
+          key_personnel_with_whom_communicated: document.getElementById(
+            "key_personnel_with_whom_communicated",
+          ).value,
+          details_of_visit: document.getElementById("details_of_visit").value,
+          action_required_expected_update: document.getElementById(
+            "action_required_expected_update",
+          ).value,
+          remarks: document.getElementById("remarks").value,
+        };
+
+        if (!validateADM09(payload)) {
+          isSubmitting = false;
+          submitBtn.disabled = false;
+          submitBtn.innerText = "Submit";
+          return;
+        }
+
+        google.script.run
+          .withSuccessHandler(function (res) {
+            console.log("SUCCESS HANDLER RUNNING"); // 👈 debug
+            document.body.innerHTML = res.thankYouHtml;
+          })
+          .withFailureHandler(function (err) {
+            alert("Submission failed: " + err.message);
+            isSubmitting = false;
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Submit";
+          })
+          .submitADM09(payload);
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,739 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <base target="_top" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MPF02</title>
+    <?!= HtmlService.createHtmlOutputFromFile('shared-styles').getContent(); ?>
+    <style>
+      .section-divider {
+        margin: 22px 0 14px;
+        padding-top: 8px;
+        border-top: 1px solid #e5e7eb;
+        font-weight: 700;
+        font-size: 18px;
+      }
+      .subform-card {
+        border: 1px solid #e5e7eb;
+        border-radius: 14px;
+        padding: 14px;
+        margin-bottom: 14px;
+        background: #fff;
+      }
+      .subform-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="form-wrapper">
+      <div class="form-title">MPF02</div>
+      <div class="form-subtitle">
+        Monthly Performance Form (For Empaneled Experts)
+      </div>
+
+      <div class="form-section">
+        <div class="form-group">
+          <label class="form-label" for="month"
+            >Month <span class="required">*</span></label
+          >
+          <select id="month" required></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Name</label>
+          <div class="form-row">
+            <div class="form-col">
+              <input type="text" id="name_first" placeholder="First Name" />
+              <div class="helper-text">First Name</div>
+            </div>
+            <div class="form-col">
+              <input type="text" id="name_last" placeholder="Last Name" />
+              <div class="helper-text">Last Name</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="employee_code"
+            >Employee Code <span class="required">*</span></label
+          >
+          <select id="employee_code" required></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="email"
+            >Email ID <span class="required">*</span></label
+          >
+          <input type="email" id="email" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="area_of_expertise"
+            >Area of Expertise</label
+          >
+          <input type="text" id="area_of_expertise" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Reporting Manager Name</label>
+          <div class="form-row">
+            <div class="form-col">
+              <input type="text" id="rm_name_first" placeholder="First Name" />
+              <div class="helper-text">First Name</div>
+            </div>
+            <div class="form-col">
+              <input type="text" id="rm_name_last" placeholder="Last Name" />
+              <div class="helper-text">Last Name</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="rm_email"
+            >Reporting Manager Email ID <span class="required">*</span></label
+          >
+          <input type="email" id="rm_email" required />
+        </div>
+
+        <!-- ============ VISITS DONE ============ -->
+        <div class="form-group">
+          <label class="form-label"
+            >Visits Done <span class="required">*</span></label
+          >
+          <div class="form-row" style="gap: 18px">
+            <label class="form-col-choice"
+              ><input type="radio" name="visits_done" value="Yes" /> Yes</label
+            >
+            <label class="form-col-choice"
+              ><input type="radio" name="visits_done" value="No" /> No</label
+            >
+          </div>
+        </div>
+
+        <div id="visits-block" style="display: none">
+          <div class="section-divider">Visit details</div>
+          <div id="visits-rows"></div>
+          <button
+            type="button"
+            class="btn-secondary"
+            id="add-visit"
+            style="margin-top: 4px"
+          >
+            + Add Visit
+          </button>
+        </div>
+
+        <!-- ============ MEETINGS ATTENDED ============ -->
+        <div class="form-group">
+          <label class="form-label"
+            >Meetings Attended <span class="required">*</span></label
+          >
+          <div class="form-row" style="gap: 18px">
+            <label class="form-col-choice"
+              ><input type="radio" name="meetings_attended" value="Yes" />
+              Yes</label
+            >
+            <label class="form-col-choice"
+              ><input type="radio" name="meetings_attended" value="No" />
+              No</label
+            >
+          </div>
+        </div>
+
+        <div id="meetings-block" style="display: none">
+          <div class="section-divider">Meeting details</div>
+          <div id="meetings-rows"></div>
+          <button
+            type="button"
+            class="btn-secondary"
+            id="add-meeting"
+            style="margin-top: 4px"
+          >
+            + Add Meeting
+          </button>
+        </div>
+
+        <!-- ============ REPORTS SUBMITTED ============ -->
+        <div class="form-group">
+          <label class="form-label"
+            >Reports Submitted <span class="required">*</span></label
+          >
+          <div class="form-row" style="gap: 18px">
+            <label class="form-col-choice"
+              ><input type="radio" name="reports_submitted" value="Yes" />
+              Yes</label
+            >
+            <label class="form-col-choice"
+              ><input type="radio" name="reports_submitted" value="No" />
+              No</label
+            >
+          </div>
+        </div>
+
+        <div id="reports-block" style="display: none">
+          <div class="section-divider">Report details</div>
+          <div id="reports-rows"></div>
+          <button
+            type="button"
+            class="btn-secondary"
+            id="add-report"
+            style="margin-top: 4px"
+          >
+            + Add Report
+          </button>
+        </div>
+
+        <!-- ============ NARRATIVE ============ -->
+        <div class="section-divider">Monthly summary</div>
+
+        <div class="form-group">
+          <label class="form-label" for="targets_planned"
+            >Targets planned this month</label
+          >
+          <textarea id="targets_planned"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="targets_achieved"
+            >Targets achieved this month</label
+          >
+          <textarea id="targets_achieved"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="highlights">Highlights</label>
+          <textarea id="highlights"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="low_points">Low Points</label>
+          <textarea id="low_points"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="challenges_faced"
+            >Challenges faced</label
+          >
+          <textarea id="challenges_faced"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="projected_targets"
+            >Projected targets for next month</label
+          >
+          <textarea id="projected_targets"></textarea>
+        </div>
+
+        <!-- ============ MONTHLY INVOICES ============ -->
+        <div class="section-divider">Monthly invoices</div>
+
+        <div class="form-group">
+          <label class="form-label" for="retention_bill_link"
+            >Retention bill</label
+          >
+          <input
+            type="url"
+            id="retention_bill_link"
+            placeholder="Link to bill"
+          />
+          <div class="helper-text">Paste a shareable link to the bill</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="travel_reimbursement_link"
+            >Travel reimbursement</label
+          >
+          <input
+            type="url"
+            id="travel_reimbursement_link"
+            placeholder="Link to bill"
+          />
+          <div class="helper-text">Paste a shareable link to the bill</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Project-wise bills</label>
+          <div id="bills-rows"></div>
+          <button
+            type="button"
+            class="btn-secondary"
+            id="add-bill"
+            style="margin-top: 4px"
+          >
+            + Add Bill
+          </button>
+        </div>
+
+        <!-- ============ REMARKS ============ -->
+        <div class="form-group">
+          <label class="form-label" for="remarks">Remarks</label>
+          <textarea id="remarks"></textarea>
+          <div class="helper-text">if any</div>
+        </div>
+      </div>
+
+      <button
+        class="btn-primary"
+        type="button"
+        id="submitBtn"
+        onclick="submitMPF02()"
+      >
+        Submit
+      </button>
+    </div>
+
+    <script>
+      let isSubmitting = false;
+      let DROPDOWN = {};
+
+      // Empaneled expert list carried over from the legacy MPF02 (Zoho) form.
+      // Kept inline here; can be moved to config.js as `empaneledExpert` if preferred.
+      const EMPANELED_EXPERTS = [
+        "PE107- Manoj Pant",
+        "UC001- Dr. Mamta Pandey",
+        "UC002- Ramdas Wani",
+        "UC004- Dr. Sudipta Chaterjee",
+        "UC005- Dr. Seema Shrivastava",
+        "UC008- Tulika Rawat",
+        "UC009- Partho Mukherjee",
+        "UC010- Dr. Rahul Deshmukh",
+        "UC014- Dr. Jayanta Kumar Moitra",
+        "UC015- Nilesh Potdar",
+        "UC016- Rashi Srivastava",
+        "UC017- Shipra Varshney",
+        "UC020- Suresh Chandra Jain",
+        "UC022- Alok Agrwal",
+      ];
+
+      window.addEventListener("DOMContentLoaded", function () {
+        populateDropdowns();
+        bindRadioReveals();
+
+        document
+          .getElementById("add-visit")
+          .addEventListener("click", function () {
+            document
+              .getElementById("visits-rows")
+              .appendChild(createVisitRow());
+          });
+        document
+          .getElementById("add-meeting")
+          .addEventListener("click", function () {
+            document
+              .getElementById("meetings-rows")
+              .appendChild(createMeetingRow());
+          });
+        document
+          .getElementById("add-report")
+          .addEventListener("click", function () {
+            document
+              .getElementById("reports-rows")
+              .appendChild(createReportRow());
+          });
+        document
+          .getElementById("add-bill")
+          .addEventListener("click", function () {
+            document.getElementById("bills-rows").appendChild(createBillRow());
+          });
+      });
+
+      function populateDropdowns() {
+        google.script.run
+          .withSuccessHandler(function (data) {
+            DROPDOWN = data || {};
+            fillSelect(
+              document.getElementById("month"),
+              DROPDOWN.month || [],
+              "-Select-",
+            );
+            fillSelect(
+              document.getElementById("employee_code"),
+              EMPANELED_EXPERTS,
+              "-Select-",
+            );
+          })
+          .getDropdownData();
+      }
+
+      function fillSelect(select, items, placeholder) {
+        if (!select) return;
+        select.innerHTML = "";
+        const first = document.createElement("option");
+        first.value = "";
+        first.textContent = placeholder || "Select";
+        select.appendChild(first);
+        (items || []).forEach(function (item) {
+          const option = document.createElement("option");
+          option.value = item;
+          option.textContent = item;
+          select.appendChild(option);
+        });
+      }
+
+      function optionsHtml(items, placeholder) {
+        let html =
+          '<option value="">' + (placeholder || "Select") + "</option>";
+        (items || []).forEach(function (item) {
+          html += '<option value="' + item + '">' + item + "</option>";
+        });
+        return html;
+      }
+
+      function getRadioValue(name) {
+        const checked = document.querySelector(
+          'input[name="' + name + '"]:checked',
+        );
+        return checked ? checked.value : "";
+      }
+
+      // ---- Conditional reveal (mirrors ADM04) ----
+      function bindRadioReveals() {
+        bindReveal(
+          "visits_done",
+          "visits-block",
+          "visits-rows",
+          createVisitRow,
+        );
+        bindReveal(
+          "meetings_attended",
+          "meetings-block",
+          "meetings-rows",
+          createMeetingRow,
+        );
+        bindReveal(
+          "reports_submitted",
+          "reports-block",
+          "reports-rows",
+          createReportRow,
+        );
+      }
+
+      function bindReveal(radioName, blockId, rowsId, rowFactory) {
+        document
+          .querySelectorAll('input[name="' + radioName + '"]')
+          .forEach(function (radio) {
+            radio.addEventListener("change", function () {
+              const block = document.getElementById(blockId);
+              const rows = document.getElementById(rowsId);
+              if (this.value === "Yes") {
+                block.style.display = "block";
+                if (!rows.children.length) rows.appendChild(rowFactory());
+              } else {
+                block.style.display = "none";
+                rows.innerHTML = ""; // clear entries when set to No
+              }
+            });
+          });
+      }
+
+      // ---- Row factories ----
+      function createVisitRow() {
+        const row = document.createElement("div");
+        row.className = "subform-card visit-row";
+        row.innerHTML = `
+          <div class="form-row">
+            <div class="form-col">
+              <label class="form-label">Start date</label>
+              <input type="date" class="v-start" />
+            </div>
+            <div class="form-col">
+              <label class="form-label">End date</label>
+              <input type="date" class="v-end" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-col">
+              <label class="form-label">Project name</label>
+              <input type="text" class="v-project" />
+            </div>
+            <div class="form-col">
+              <label class="form-label">PCODE</label>
+              <input type="text" class="v-pcode" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Location</label>
+            <input type="text" class="v-location" />
+          </div>
+          <button type="button" class="btn-secondary row-remove" style="margin-top:6px;">Remove</button>
+        `;
+        row.querySelector(".row-remove").addEventListener("click", function () {
+          row.remove();
+        });
+        return row;
+      }
+
+      function createMeetingRow() {
+        const row = document.createElement("div");
+        row.className = "subform-card meeting-row";
+        row.innerHTML = `
+          <div class="form-row">
+            <div class="form-col">
+              <label class="form-label">Date</label>
+              <input type="date" class="m-date" />
+            </div>
+            <div class="form-col">
+              <label class="form-label">Type of meeting</label>
+              <select class="m-type">${optionsHtml(DROPDOWN.eac || [], "-Select-")}</select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-col">
+              <label class="form-label">Project name</label>
+              <input type="text" class="m-project" />
+            </div>
+            <div class="form-col">
+              <label class="form-label">PCODE</label>
+              <input type="text" class="m-pcode" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Guests / participants</label>
+            <textarea class="m-guests"></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Agenda</label>
+            <textarea class="m-agenda"></textarea>
+          </div>
+          <button type="button" class="btn-secondary row-remove" style="margin-top:6px;">Remove</button>
+        `;
+        row.querySelector(".row-remove").addEventListener("click", function () {
+          row.remove();
+        });
+        return row;
+      }
+
+      function createReportRow() {
+        const row = document.createElement("div");
+        row.className = "subform-card report-row";
+        row.innerHTML = `
+          <div class="form-row">
+            <div class="form-col">
+              <label class="form-label">Date</label>
+              <input type="date" class="r-date" />
+            </div>
+            <div class="form-col">
+              <label class="form-label">Project name</label>
+              <input type="text" class="r-project" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">PCODE</label>
+            <input type="text" class="r-pcode" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Remarks of client</label>
+            <textarea class="r-client"></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Feedback of EAC</label>
+            <textarea class="r-eac"></textarea>
+          </div>
+          <button type="button" class="btn-secondary row-remove" style="margin-top:6px;">Remove</button>
+        `;
+        row.querySelector(".row-remove").addEventListener("click", function () {
+          row.remove();
+        });
+        return row;
+      }
+
+      function createBillRow() {
+        const row = document.createElement("div");
+        row.className = "subform-card bill-row";
+        row.innerHTML = `
+          <div class="form-row">
+            <div class="form-col">
+              <label class="form-label">Project name</label>
+              <input type="text" class="b-project" />
+            </div>
+            <div class="form-col">
+              <label class="form-label">PCODE</label>
+              <input type="text" class="b-pcode" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Link to bill</label>
+            <input type="url" class="b-link" />
+          </div>
+          <button type="button" class="btn-secondary row-remove" style="margin-top:6px;">Remove</button>
+        `;
+        row.querySelector(".row-remove").addEventListener("click", function () {
+          row.remove();
+        });
+        return row;
+      }
+
+      // ---- Collectors ----
+      function collectVisits() {
+        return Array.from(document.querySelectorAll("#visits-rows .visit-row"))
+          .map(function (r) {
+            return {
+              start_date: r.querySelector(".v-start")?.value || "",
+              end_date: r.querySelector(".v-end")?.value || "",
+              project_name: r.querySelector(".v-project")?.value || "",
+              pcode: r.querySelector(".v-pcode")?.value || "",
+              location: r.querySelector(".v-location")?.value || "",
+            };
+          })
+          .filter(rowHasAnyValue);
+      }
+
+      function collectMeetings() {
+        return Array.from(
+          document.querySelectorAll("#meetings-rows .meeting-row"),
+        )
+          .map(function (r) {
+            return {
+              date: r.querySelector(".m-date")?.value || "",
+              project_name: r.querySelector(".m-project")?.value || "",
+              pcode: r.querySelector(".m-pcode")?.value || "",
+              type_of_meeting: r.querySelector(".m-type")?.value || "",
+              guests_participants: r.querySelector(".m-guests")?.value || "",
+              agenda: r.querySelector(".m-agenda")?.value || "",
+            };
+          })
+          .filter(rowHasAnyValue);
+      }
+
+      function collectReports() {
+        return Array.from(
+          document.querySelectorAll("#reports-rows .report-row"),
+        )
+          .map(function (r) {
+            return {
+              date: r.querySelector(".r-date")?.value || "",
+              project_name: r.querySelector(".r-project")?.value || "",
+              pcode: r.querySelector(".r-pcode")?.value || "",
+              remarks_of_client: r.querySelector(".r-client")?.value || "",
+              feedback_of_eac: r.querySelector(".r-eac")?.value || "",
+            };
+          })
+          .filter(rowHasAnyValue);
+      }
+
+      function collectBills() {
+        return Array.from(document.querySelectorAll("#bills-rows .bill-row"))
+          .map(function (r) {
+            return {
+              project_name: r.querySelector(".b-project")?.value || "",
+              pcode: r.querySelector(".b-pcode")?.value || "",
+              link_to_bill: r.querySelector(".b-link")?.value || "",
+            };
+          })
+          .filter(rowHasAnyValue);
+      }
+
+      function rowHasAnyValue(obj) {
+        return Object.keys(obj).some(function (k) {
+          return String(obj[k]).trim();
+        });
+      }
+
+      // ---- Client-side validation (returns boolean; mirrors validate/submit contract) ----
+      function validateMPF02(p) {
+        const missing = [];
+        if (!p.month) missing.push("Month");
+        if (!p.employee_code) missing.push("Employee Code");
+        if (!p.email) missing.push("Email ID");
+        if (!p.rm_email) missing.push("Reporting Manager Email ID");
+        if (!p.visits_done) missing.push("Visits Done");
+        if (!p.meetings_attended) missing.push("Meetings Attended");
+        if (!p.reports_submitted) missing.push("Reports Submitted");
+
+        if (p.visits_done === "Yes" && !(p.visits || []).length)
+          missing.push("At least one Visit entry");
+        if (p.meetings_attended === "Yes" && !(p.meetings || []).length)
+          missing.push("At least one Meeting entry");
+        if (p.reports_submitted === "Yes" && !(p.reports || []).length)
+          missing.push("At least one Report entry");
+
+        (p.visits || []).forEach(function (r, i) {
+          if (!String(r.project_name).trim())
+            missing.push("Visit row " + (i + 1) + " - Project name");
+          if (!String(r.pcode).trim())
+            missing.push("Visit row " + (i + 1) + " - PCODE");
+        });
+        (p.meetings || []).forEach(function (r, i) {
+          if (!String(r.project_name).trim())
+            missing.push("Meeting row " + (i + 1) + " - Project name");
+          if (!String(r.pcode).trim())
+            missing.push("Meeting row " + (i + 1) + " - PCODE");
+        });
+        (p.reports || []).forEach(function (r, i) {
+          if (!String(r.project_name).trim())
+            missing.push("Report row " + (i + 1) + " - Project name");
+          if (!String(r.pcode).trim())
+            missing.push("Report row " + (i + 1) + " - PCODE");
+        });
+        (p.bills || []).forEach(function (r, i) {
+          if (!String(r.project_name).trim())
+            missing.push(
+              "Project-wise bill row " + (i + 1) + " - Project name",
+            );
+          if (!String(r.pcode).trim())
+            missing.push("Project-wise bill row " + (i + 1) + " - PCODE");
+        });
+
+        if (missing.length) {
+          alert("Please fill:\n\n" + missing.join("\n"));
+          return false;
+        }
+        return true;
+      }
+
+      function submitMPF02() {
+        if (isSubmitting) return;
+
+        const payload = {
+          month: document.getElementById("month").value,
+          name_first: document.getElementById("name_first").value,
+          name_last: document.getElementById("name_last").value,
+          employee_code: document.getElementById("employee_code").value,
+          email: document.getElementById("email").value,
+          area_of_expertise: document.getElementById("area_of_expertise").value,
+          rm_name_first: document.getElementById("rm_name_first").value,
+          rm_name_last: document.getElementById("rm_name_last").value,
+          rm_email: document.getElementById("rm_email").value,
+          visits_done: getRadioValue("visits_done"),
+          meetings_attended: getRadioValue("meetings_attended"),
+          reports_submitted: getRadioValue("reports_submitted"),
+          visits: collectVisits(),
+          meetings: collectMeetings(),
+          reports: collectReports(),
+          targets_planned: document.getElementById("targets_planned").value,
+          targets_achieved: document.getElementById("targets_achieved").value,
+          highlights: document.getElementById("highlights").value,
+          low_points: document.getElementById("low_points").value,
+          challenges_faced: document.getElementById("challenges_faced").value,
+          projected_targets: document.getElementById("projected_targets").value,
+          retention_bill_link: document.getElementById("retention_bill_link")
+            .value,
+          travel_reimbursement_link: document.getElementById(
+            "travel_reimbursement_link",
+          ).value,
+          bills: collectBills(),
+          remarks: document.getElementById("remarks").value,
+        };
+
+        // Validate BEFORE disabling the button (prevents the "Submitting..." freeze bug)
+        if (!validateMPF02(payload)) return;
+
+        isSubmitting = true;
+        const submitBtn = document.getElementById("submitBtn");
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Submitting...";
+
+        google.script.run
+          .withSuccessHandler(function (res) {
+            document.body.innerHTML = res.thankYouHtml;
+          })
+          .withFailureHandler(function (err) {
+            alert("Submission failed: " + err.message);
+            isSubmitting = false;
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Submit";
+          })
+          .submitMPF02(payload);
+      }
+    </script>
+  </body>
+</html>

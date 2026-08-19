@@ -1,0 +1,657 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <base target="_top" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TF05</title>
+    <?!= HtmlService.createHtmlOutputFromFile('shared-styles').getContent(); ?>
+  </head>
+  <body>
+    <div class="form-wrapper">
+      <div class="form-title">TF05</div>
+      <div class="form-subtitle">
+        Technical Format for Handover PPT_EAC Meeting
+      </div>
+
+      <div class="form-section">
+        <div class="form-group">
+          <label class="form-label" for="date">Date</label>
+          <input type="date" id="date" />
+          <div class="helper-text">dd-MMM-yyyy</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Name</label>
+          <div class="form-row">
+            <div class="form-col">
+              <input
+                type="text"
+                id="requestor_first_name"
+                placeholder="First Name"
+              />
+              <div class="helper-text">First Name</div>
+            </div>
+            <div class="form-col">
+              <input
+                type="text"
+                id="requestor_last_name"
+                placeholder="Last Name"
+              />
+              <div class="helper-text">Last Name</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="official_email"
+            >Employee Email ID <span class="required">*</span></label
+          >
+          <input type="email" id="official_email" required />
+          <div class="helper-text">Email ID of the person filling the form</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="team_name"
+            >Team Name <span class="required">*</span></label
+          >
+          <select id="team_name" required></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="eia_coordinator_name"
+            >EIA Coordinator Name <span class="required">*</span></label
+          >
+          <select id="eia_coordinator_name" required></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label"
+            >QCC Reviewer Name <span class="required">*</span></label
+          >
+          <div id="qcc-reviewers-wrap" class="form-grid"></div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label"
+            >Name of Person who will present in EAC/ SEAC</label
+          >
+          <div class="form-row">
+            <div class="form-col">
+              <input
+                type="text"
+                id="presenter_first_name"
+                placeholder="First Name"
+              />
+              <div class="helper-text">First Name</div>
+            </div>
+            <div class="form-col">
+              <input
+                type="text"
+                id="presenter_last_name"
+                placeholder="Last Name"
+              />
+              <div class="helper-text">Last Name</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="presenter_email"
+            >Email ID of the person who will present in EAC/ SEAC
+            <span class="required">*</span></label
+          >
+          <input type="email" id="presenter_email" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="developer_company_name"
+            >Developer Company Name</label
+          >
+          <input type="text" id="developer_company_name" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="project_name">Project Name</label>
+          <input type="text" id="project_name" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Project Proponent Name</label>
+          <div class="form-row">
+            <div class="form-col">
+              <input
+                type="text"
+                id="project_proponent_first_name"
+                placeholder="First Name"
+              />
+              <div class="helper-text">First Name</div>
+            </div>
+            <div class="form-col">
+              <input
+                type="text"
+                id="project_proponent_last_name"
+                placeholder="Last Name"
+              />
+              <div class="helper-text">Last Name</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="project_code"
+            >Project Code <span class="required">*</span></label
+          >
+          <input type="text" id="project_code" required />
+          <div class="helper-text">
+            Refer this link to get the list of active PCODES
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="proposed_project_cost_lacs"
+            >Proposed Project Cost (in lacs)</label
+          >
+          <input type="number" id="proposed_project_cost_lacs" step="0.01" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="existing_project_cost_lacs"
+            >Existing Project Cost (in lacs)</label
+          >
+          <input type="number" id="existing_project_cost_lacs" step="0.01" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="project_cost_after_proposed_ec_lacs"
+            >Project Cost after getting proposed EC (in lacs)</label
+          >
+          <input
+            type="number"
+            id="project_cost_after_proposed_ec_lacs"
+            step="0.01"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="project_location"
+            >Project Location</label
+          >
+          <input type="text" id="project_location" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="plot_area_sq_m">Plot Area</label>
+          <input type="text" id="plot_area_sq_m" />
+          <div class="helper-text">in Square Meter</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="built_up_area_sq_m"
+            >Built up Area</label
+          >
+          <input type="text" id="built_up_area_sq_m" />
+          <div class="helper-text">in Square Meter</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="capacity">Capacity</label>
+          <input type="text" id="capacity" />
+          <div class="helper-text">
+            For Industry cases- mention capacity in TPA/ TPM. For Mining cases-
+            mention capacity in ML
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="emp_cost_capital_lacs"
+            >EMP Cost (in lacs)- Capital</label
+          >
+          <input type="number" id="emp_cost_capital_lacs" step="0.01" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="category">Category</label>
+          <select id="category"></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="activity">Activity</label>
+          <input type="text" id="activity" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="parivesh_login_id"
+            >Parivesh Login ID</label
+          >
+          <input type="text" id="parivesh_login_id" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="parivesh_password"
+            >Parivesh Password</label
+          >
+          <input type="text" id="parivesh_password" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="type_of_presentation"
+            >Type of Presentation</label
+          >
+          <select id="type_of_presentation"></select>
+          <div
+            id="type_of_presentation_other_wrap"
+            style="display: none; margin-top: 10px"
+          >
+            <input
+              type="text"
+              id="type_of_presentation_other"
+              placeholder="If Others, Pls Specify"
+            />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="eac_committee">EAC Committee</label>
+          <input type="text" id="eac_committee" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="proposal_no">Proposal No.</label>
+          <input type="text" id="proposal_no" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="date_of_uploading"
+            >Date of uploading</label
+          >
+          <input type="date" id="date_of_uploading" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="agenda_no">Agenda No.</label>
+          <input type="text" id="agenda_no" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="date_of_eac_meeting"
+            >Date of EAC meeting</label
+          >
+          <input type="date" id="date_of_eac_meeting" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="internal_meeting_link"
+            >Internal Meeting Link <span class="required">*</span></label
+          >
+          <input type="url" id="internal_meeting_link" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="eac_meeting_link"
+            >EAC Meeting Link <span class="required">*</span></label
+          >
+          <input type="url" id="eac_meeting_link" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="meeting_s_no">Meeting S.No.</label>
+          <input type="text" id="meeting_s_no" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="master_ppt_link"
+            >Master PPT Link <span class="required">*</span></label
+          >
+          <input type="url" id="master_ppt_link" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="summarised_ppt_link"
+            >Summarised PPT Link <span class="required">*</span></label
+          >
+          <input type="url" id="summarised_ppt_link" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="brief_writeup_annexure"
+            >Brief Writeup (Annexure as per Agenda)</label
+          >
+          <textarea id="brief_writeup_annexure"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="uploading_document_single_file_link"
+            >Uploading Document - Single File Link
+            <span class="required">*</span></label
+          >
+          <input type="url" id="uploading_document_single_file_link" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="online_report_link"
+            >Online Report Link <span class="required">*</span></label
+          >
+          <input type="url" id="online_report_link" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="undertaking_link"
+            >Undertaking Link <span class="required">*</span></label
+          >
+          <input type="url" id="undertaking_link" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="kml_file_link"
+            >KML File Link <span class="required">*</span></label
+          >
+          <input type="url" id="kml_file_link" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="backup_folder_link"
+            >Backup folder Link <span class="required">*</span></label
+          >
+          <input type="url" id="backup_folder_link" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="circulation_documents_link_docx"
+            >Circulation Documents Link- in Docx
+            <span class="required">*</span></label
+          >
+          <textarea id="circulation_documents_link_docx" required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="circulation_documents_pdf"
+            >Circulation Documents- in PDF</label
+          >
+          <input type="url" id="circulation_documents_pdf" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="critical_points"
+            >Critical Points <span class="required">*</span></label
+          >
+          <textarea id="critical_points" required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="remarks">Remarks (if any)</label>
+          <textarea id="remarks"></textarea>
+        </div>
+      </div>
+
+      <button
+        class="btn-primary"
+        type="button"
+        onclick="submitTF05()"
+        id="submitBtn"
+      >
+        Submit
+      </button>
+    </div>
+
+    <script>
+      window.addEventListener("DOMContentLoaded", function () {
+        populateDropdowns();
+        bindEvents();
+      });
+
+      function populateDropdowns() {
+        google.script.run
+          .withSuccessHandler(function (data) {
+            data = data || {};
+            fillSelect(
+              document.getElementById("team_name"),
+              data.team || [],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("eia_coordinator_name"),
+              data.eiaCoordinator || [],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("category"),
+              data.category || [],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("type_of_presentation"),
+              data.tf05PresentationTypes || [],
+              "Select",
+            );
+            renderQccReviewers(data.qccReviewer || []);
+          })
+          .getDropdownData();
+      }
+
+      function fillSelect(select, items, placeholder) {
+        if (!select) return;
+        select.innerHTML = "";
+        const first = document.createElement("option");
+        first.value = "";
+        first.textContent = placeholder || "Select";
+        select.appendChild(first);
+
+        (items || []).forEach(function (item) {
+          const option = document.createElement("option");
+          option.value = item;
+          option.textContent = item;
+          select.appendChild(option);
+        });
+      }
+
+      function renderQccReviewers(items) {
+        const wrap = document.getElementById("qcc-reviewers-wrap");
+        wrap.innerHTML = "";
+        (items || []).forEach(function (name, i) {
+          const id = "qcc_" + i;
+          const div = document.createElement("div");
+          div.className = "form-col-choice";
+          div.innerHTML = `
+            <input type="checkbox" id="${id}" name="qcc-reviewer" value="${name}">
+            <label for="${id}">${name}</label>
+          `;
+          wrap.appendChild(div);
+        });
+      }
+
+      function bindOther(selectId, wrapId, inputId) {
+        const select = document.getElementById(selectId);
+        const wrap = document.getElementById(wrapId);
+        const input = document.getElementById(inputId);
+
+        function sync() {
+          const show = ["other", "others"].includes(
+            String(select.value || "").toLowerCase(),
+          );
+          wrap.style.display = show ? "block" : "none";
+          if (!show) input.value = "";
+        }
+
+        select.addEventListener("change", sync);
+        sync();
+      }
+
+      function bindEvents() {
+        bindOther(
+          "type_of_presentation",
+          "type_of_presentation_other_wrap",
+          "type_of_presentation_other",
+        );
+      }
+
+      function getCheckedValues(name) {
+        return Array.from(
+          document.querySelectorAll(`input[name="${name}"]:checked`),
+        )
+          .map(function (el) {
+            return el.value;
+          })
+          .join(", ");
+      }
+
+      function validateTF05(p) {
+        const missing = [];
+        if (!p.official_email) missing.push("Employee Email ID");
+        if (!p.team_name) missing.push("Team Name");
+        if (!p.eia_coordinator_name) missing.push("EIA Coordinator Name");
+        if (!p.presenter_email)
+          missing.push("Email ID of the person who will present in EAC/ SEAC");
+        if (!p.project_code) missing.push("Project Code");
+        if (!p.internal_meeting_link) missing.push("Internal Meeting Link");
+        if (!p.eac_meeting_link) missing.push("EAC Meeting Link");
+        if (!p.master_ppt_link) missing.push("Master PPT Link");
+        if (!p.summarised_ppt_link) missing.push("Summarised PPT Link");
+        if (!p.uploading_document_single_file_link)
+          missing.push("Uploading Document - Single File Link");
+        if (!p.online_report_link) missing.push("Online Report Link");
+        if (!p.undertaking_link) missing.push("Undertaking Link");
+        if (!p.kml_file_link) missing.push("KML File Link");
+        if (!p.backup_folder_link) missing.push("Backup folder Link");
+        if (!p.circulation_documents_link_docx)
+          missing.push("Circulation Documents Link- in Docx");
+        if (!p.critical_points) missing.push("Critical Points");
+
+        if (
+          p.type_of_presentation &&
+          ["other", "others"].includes(
+            String(p.type_of_presentation).toLowerCase(),
+          ) &&
+          !p.type_of_presentation_other
+        ) {
+          missing.push("If Others, Pls Specify");
+        }
+
+        if (missing.length) {
+          alert("Please fill:\n\n" + missing.join("\n"));
+          return false;
+        }
+        return true;
+      }
+
+      let isSubmitting = false;
+
+      function submitTF05() {
+        if (isSubmitting) return; // blocks double-clicks instantly
+        isSubmitting = true;
+        const submitBtn = document.getElementById("submitBtn");
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Submitting...";
+
+        const payload = {
+          date: document.getElementById("date").value,
+          requestor_first_name: document.getElementById("requestor_first_name")
+            .value,
+          requestor_last_name: document.getElementById("requestor_last_name")
+            .value,
+          official_email: document.getElementById("official_email").value,
+          team_name: document.getElementById("team_name").value,
+          eia_coordinator_name: document.getElementById("eia_coordinator_name")
+            .value,
+          qcc_reviewers: getCheckedValues("qcc-reviewer"),
+          presenter_first_name: document.getElementById("presenter_first_name")
+            .value,
+          presenter_last_name: document.getElementById("presenter_last_name")
+            .value,
+          presenter_email: document.getElementById("presenter_email").value,
+          developer_company_name: document.getElementById(
+            "developer_company_name",
+          ).value,
+          project_name: document.getElementById("project_name").value,
+          project_proponent_first_name: document.getElementById(
+            "project_proponent_first_name",
+          ).value,
+          project_proponent_last_name: document.getElementById(
+            "project_proponent_last_name",
+          ).value,
+          project_code: document.getElementById("project_code").value,
+          proposed_project_cost_lacs: document.getElementById(
+            "proposed_project_cost_lacs",
+          ).value,
+          existing_project_cost_lacs: document.getElementById(
+            "existing_project_cost_lacs",
+          ).value,
+          project_cost_after_proposed_ec_lacs: document.getElementById(
+            "project_cost_after_proposed_ec_lacs",
+          ).value,
+          project_location: document.getElementById("project_location").value,
+          plot_area_sq_m: document.getElementById("plot_area_sq_m").value,
+          built_up_area_sq_m:
+            document.getElementById("built_up_area_sq_m").value,
+          capacity: document.getElementById("capacity").value,
+          emp_cost_capital_lacs: document.getElementById(
+            "emp_cost_capital_lacs",
+          ).value,
+          category: document.getElementById("category").value,
+          activity: document.getElementById("activity").value,
+          parivesh_login_id: document.getElementById("parivesh_login_id").value,
+          parivesh_password: document.getElementById("parivesh_password").value,
+          type_of_presentation: document.getElementById("type_of_presentation")
+            .value,
+          type_of_presentation_other: document.getElementById(
+            "type_of_presentation_other",
+          ).value,
+          eac_committee: document.getElementById("eac_committee").value,
+          proposal_no: document.getElementById("proposal_no").value,
+          date_of_uploading: document.getElementById("date_of_uploading").value,
+          agenda_no: document.getElementById("agenda_no").value,
+          date_of_eac_meeting: document.getElementById("date_of_eac_meeting")
+            .value,
+          internal_meeting_link: document.getElementById(
+            "internal_meeting_link",
+          ).value,
+          eac_meeting_link: document.getElementById("eac_meeting_link").value,
+          meeting_s_no: document.getElementById("meeting_s_no").value,
+          master_ppt_link: document.getElementById("master_ppt_link").value,
+          summarised_ppt_link: document.getElementById("summarised_ppt_link")
+            .value,
+          brief_writeup_annexure: document.getElementById(
+            "brief_writeup_annexure",
+          ).value,
+          uploading_document_single_file_link: document.getElementById(
+            "uploading_document_single_file_link",
+          ).value,
+          online_report_link:
+            document.getElementById("online_report_link").value,
+          undertaking_link: document.getElementById("undertaking_link").value,
+          kml_file_link: document.getElementById("kml_file_link").value,
+          backup_folder_link:
+            document.getElementById("backup_folder_link").value,
+          circulation_documents_link_docx: document.getElementById(
+            "circulation_documents_link_docx",
+          ).value,
+          circulation_documents_pdf: document.getElementById(
+            "circulation_documents_pdf",
+          ).value,
+          critical_points: document.getElementById("critical_points").value,
+          remarks: document.getElementById("remarks").value,
+        };
+
+        if (!validateTF05(payload)) {
+          isSubmitting = false;
+          submitBtn.disabled = false;
+          submitBtn.innerText = "Submit";
+          return;
+        }
+
+        google.script.run
+          .withSuccessHandler(function (res) {
+            console.log("SUCCESS HANDLER RUNNING"); // 👈 debug
+            document.body.innerHTML = res.thankYouHtml;
+          })
+          .withFailureHandler(function (err) {
+            alert("Submission failed: " + err.message);
+            isSubmitting = false;
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Submit";
+          })
+          .submitTF05(payload);
+      }
+    </script>
+  </body>
+</html>

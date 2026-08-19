@@ -1,0 +1,899 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <base target="_top" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TF08</title>
+    <?!= HtmlService.createHtmlOutputFromFile('shared-styles').getContent(); ?>
+    <style>
+      .section-divider {
+        margin: 22px 0 14px;
+        padding-top: 8px;
+        border-top: 1px solid #e5e7eb;
+        font-weight: 700;
+        font-size: 18px;
+      }
+      .subtle-note {
+        font-size: 12px;
+        color: #667085;
+        margin-top: 6px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="form-wrapper">
+      <div class="form-title">TF08</div>
+      <div class="form-subtitle">Technical Format for Closing Project</div>
+
+      <div class="form-section">
+        <div class="form-group">
+          <label class="form-label" for="date">Date</label>
+          <input type="date" id="date" />
+          <div class="helper-text">dd-MMM-yyyy</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Name</label>
+          <div class="form-row">
+            <div class="form-col">
+              <input
+                type="text"
+                id="employee_first_name"
+                placeholder="First Name"
+              />
+              <div class="helper-text">First Name</div>
+            </div>
+            <div class="form-col">
+              <input
+                type="text"
+                id="employee_last_name"
+                placeholder="Last Name"
+              />
+              <div class="helper-text">Last Name</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="employee_email"
+            >Employee Email ID <span class="required">*</span></label
+          >
+          <input type="email" id="employee_email" required />
+          <div class="helper-text">Email ID of the person filling the form</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="team_name"
+            >Team Name <span class="required">*</span></label
+          >
+          <select id="team_name" required></select>
+        </div>
+      </div>
+
+      <div class="section-divider">Project Details</div>
+      <div class="form-section">
+        <div class="form-group">
+          <label class="form-label" for="project_name">Project Name</label>
+          <input type="text" id="project_name" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="project_code"
+            >Project Code <span class="required">*</span></label
+          >
+          <input type="text" id="project_code" required />
+          <div class="helper-text">
+            Refer the active PCODE list used in your database
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Project Proponent Name</label>
+          <div class="form-row">
+            <div class="form-col">
+              <input
+                type="text"
+                id="project_proponent_first_name"
+                placeholder="First Name"
+              />
+              <div class="helper-text">First Name</div>
+            </div>
+            <div class="form-col">
+              <input
+                type="text"
+                id="project_proponent_last_name"
+                placeholder="Last Name"
+              />
+              <div class="helper-text">Last Name</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="proposed_project_cost_lacs"
+            >Proposed Project cost (in lacs)</label
+          >
+          <input
+            type="number"
+            id="proposed_project_cost_lacs"
+            step="0.01"
+            min="0"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="existing_project_cost_lacs"
+            >Existing Project cost (in lacs)</label
+          >
+          <input
+            type="number"
+            id="existing_project_cost_lacs"
+            step="0.01"
+            min="0"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="project_cost_after_proposed_ec_lacs"
+            >Project Cost after getting proposed EC (in lacs)</label
+          >
+          <input
+            type="number"
+            id="project_cost_after_proposed_ec_lacs"
+            step="0.01"
+            min="0"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="plot_area_sq_m">Plot Area</label>
+          <input type="text" id="plot_area_sq_m" />
+          <div class="helper-text">in Square Meter</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="built_up_area_sq_m"
+            >Built Up area</label
+          >
+          <input type="text" id="built_up_area_sq_m" />
+          <div class="helper-text">in Square Meter</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="capacity">Capacity</label>
+          <input type="text" id="capacity" />
+          <div class="helper-text">
+            For Industry cases — pls mention capacity in TPA/ TPM. For Mining
+            cases — pls mention capacity in ML.
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="emp_cost_capital_lacs"
+            >EMP cost (in Lacs) — Capital</label
+          >
+          <input type="number" id="emp_cost_capital_lacs" step="0.01" min="0" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="type_of_work">Type of Work</label>
+          <select id="type_of_work">
+            <option value="">Select</option>
+            <option value="New Project">New Project</option>
+            <option value="EIA">EIA</option>
+            <option value="Expansion">Expansion</option>
+            <option value="ToR">ToR</option>
+            <option value="Amendment">Amendment</option>
+            <option value="Modernisation">Modernisation</option>
+            <option value="EC under Violation">EC under Violation</option>
+            <option value="Transfer of EC">Transfer of EC</option>
+            <option value="Others">Others</option>
+          </select>
+          <div
+            id="type_of_work_other_wrap"
+            style="display: none; margin-top: 10px"
+          >
+            <input
+              type="text"
+              id="type_of_work_other"
+              placeholder="If Others, pls specify"
+            />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="project_folder_link"
+            >Link of Project folder</label
+          >
+          <input
+            type="url"
+            id="project_folder_link"
+            placeholder="Paste folder URL here"
+          />
+        </div>
+      </div>
+
+      <div class="section-divider">Milestone &amp; Parivesh</div>
+      <div class="form-section">
+        <div class="form-group">
+          <label class="form-label" for="milestone_achieved"
+            >Milestone Achieved</label
+          >
+          <select id="milestone_achieved"></select>
+          <div
+            id="milestone_achieved_other_wrap"
+            style="display: none; margin-top: 10px"
+          >
+            <input
+              type="text"
+              id="milestone_achieved_other"
+              placeholder="If others, pls specify"
+            />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="parivesh_login_id"
+            >Parivesh Login ID <span class="required">*</span></label
+          >
+          <input type="text" id="parivesh_login_id" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="parivesh_password"
+            >Parivesh password</label
+          >
+          <input type="text" id="parivesh_password" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="proposal_number"
+            >Proposal number</label
+          >
+          <input type="text" id="proposal_number" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="appraising_committee"
+            >Appraising Committee</label
+          >
+          <input type="text" id="appraising_committee" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="eds_ads_count"
+            >Number of EDS/ ADS generated</label
+          >
+          <input type="number" id="eds_ads_count" min="0" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="appraisals_with_dates"
+            >No. of appraisal along with dates</label
+          >
+          <textarea id="appraisals_with_dates"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="project_sheet_link"
+            >Link of Project Sheet</label
+          >
+          <input
+            type="url"
+            id="project_sheet_link"
+            placeholder="Paste sheet URL here"
+          />
+        </div>
+      </div>
+
+      <div class="section-divider">ToR Documents</div>
+      <div class="form-section">
+        <div class="form-group">
+          <label class="form-label" for="tor_application_pdf_link"
+            >TOR Application — PDF</label
+          >
+          <input
+            type="url"
+            id="tor_application_pdf_link"
+            placeholder="Paste file URL here"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="tor_agenda_pdf_link"
+            >TOR Agenda — PDF</label
+          >
+          <input
+            type="url"
+            id="tor_agenda_pdf_link"
+            placeholder="Paste file URL here"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="tor_presentation_ppt_link"
+            >Link to TOR Presentation — PPT</label
+          >
+          <input
+            type="url"
+            id="tor_presentation_ppt_link"
+            placeholder="Paste PPT URL here"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="tor_presentation_pdf_link"
+            >TOR Presentation — PDF</label
+          >
+          <input
+            type="url"
+            id="tor_presentation_pdf_link"
+            placeholder="Paste file URL here"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="tor_mom_pdf_link">TOR MOM — PDF</label>
+          <input
+            type="url"
+            id="tor_mom_pdf_link"
+            placeholder="Paste file URL here"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="tor_letter_pdf_link"
+            >TOR Letter — PDF</label
+          >
+          <input
+            type="url"
+            id="tor_letter_pdf_link"
+            placeholder="Paste file URL here"
+          />
+        </div>
+      </div>
+
+      <div class="section-divider">Form 1(a), 1(b), 1(c)</div>
+      <div class="form-section">
+        <div class="form-group">
+          <label class="form-label" for="form1a_docx_link"
+            >Link to Uploaded Form1(a) — DOCX with Acknowledgment</label
+          >
+          <input
+            type="url"
+            id="form1a_docx_link"
+            placeholder="Paste DOCX URL here"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="form1a_pdf_link"
+            >Uploaded Form1(a) — PDF With Acknowledgment</label
+          >
+          <input
+            type="url"
+            id="form1a_pdf_link"
+            placeholder="Paste PDF URL here"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="form1b_docx_link"
+            >Link to Uploaded Form1(b) — DOCX with Acknowledgment</label
+          >
+          <input
+            type="url"
+            id="form1b_docx_link"
+            placeholder="Paste DOCX URL here"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="form1b_pdf_link"
+            >Uploaded Form1(b) — PDF With Acknowledgment</label
+          >
+          <input
+            type="url"
+            id="form1b_pdf_link"
+            placeholder="Paste PDF URL here"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="form1c_docx_link"
+            >Link to Uploaded Form1(c) — DOCX with Acknowledgment</label
+          >
+          <input
+            type="url"
+            id="form1c_docx_link"
+            placeholder="Paste DOCX URL here"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="form1c_pdf_link"
+            >Uploaded Form1(c) — PDF With Acknowledgment</label
+          >
+          <input
+            type="url"
+            id="form1c_pdf_link"
+            placeholder="Paste PDF URL here"
+          />
+        </div>
+      </div>
+
+      <div class="section-divider">Public Hearing</div>
+      <div class="form-section">
+        <div class="form-group">
+          <label class="form-label" for="ph_document_pdf_link"
+            >Public Hearing Document — PDF</label
+          >
+          <input
+            type="url"
+            id="ph_document_pdf_link"
+            placeholder="Paste file URL here"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="ph_ppt_link"
+            >Link to Public Hearing PPT — PPTx format</label
+          >
+          <input type="url" id="ph_ppt_link" placeholder="Paste PPT URL here" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="ph_ppt_pdf_link"
+            >Public Hearing PPT — PDF format</label
+          >
+          <input
+            type="url"
+            id="ph_ppt_pdf_link"
+            placeholder="Paste file URL here"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="ph_advertisement_pdf_link"
+            >Public Hearing Advertisement — PDF</label
+          >
+          <input
+            type="url"
+            id="ph_advertisement_pdf_link"
+            placeholder="Paste file URL here"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="ph_mom_pdf_link"
+            >Public Hearing MOM — PDF</label
+          >
+          <input
+            type="url"
+            id="ph_mom_pdf_link"
+            placeholder="Paste file URL here"
+          />
+        </div>
+      </div>
+
+      <div class="section-divider">EAC / SEAC Appraisal</div>
+      <div class="form-section">
+        <div class="form-group">
+          <label class="form-label" for="final_eia_emp_docx_link"
+            >Link to Final EIA/EMP Submitted to EAC — DOCX</label
+          >
+          <input
+            type="url"
+            id="final_eia_emp_docx_link"
+            placeholder="Paste DOCX URL here"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="final_eia_emp_pdf_link"
+            >Final EIA/EMP Submitted to EAC — PDF</label
+          >
+          <input
+            type="url"
+            id="final_eia_emp_pdf_link"
+            placeholder="Paste PDF URL here"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="agenda_pdf_link">Agenda — PDF</label>
+          <input
+            type="url"
+            id="agenda_pdf_link"
+            placeholder="Paste file URL here"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="circulation_docs_docx_link"
+            >Link to Circulation Documents — DOCX</label
+          >
+          <input
+            type="url"
+            id="circulation_docs_docx_link"
+            placeholder="Paste DOCX URL here"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="circulation_docs_pdf_link"
+            >Circulation Docs — PDF</label
+          >
+          <input
+            type="url"
+            id="circulation_docs_pdf_link"
+            placeholder="Paste PDF URL here"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="final_master_presentation_ppt_link"
+            >Link to Final Master Presentation — PPT</label
+          >
+          <input
+            type="url"
+            id="final_master_presentation_ppt_link"
+            placeholder="Paste PPT URL here"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="final_master_presentation_pdf_link"
+            >Final Master Presentation — PDF</label
+          >
+          <input
+            type="url"
+            id="final_master_presentation_pdf_link"
+            placeholder="Paste PDF URL here"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="final_summarised_presentation_pdf_link"
+            >Final Summarised Presentation — PDF</label
+          >
+          <input
+            type="url"
+            id="final_summarised_presentation_pdf_link"
+            placeholder="Paste file URL here"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="post_eac_submittals_pdf_link"
+            >Post EAC Appraisal Submittals — PDF</label
+          >
+          <input
+            type="url"
+            id="post_eac_submittals_pdf_link"
+            placeholder="Paste file URL here"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="eac_seiaa_seac_mom_pdf_link"
+            >MOM (EAC/SEIAA/SEAC) — PDF</label
+          >
+          <input
+            type="url"
+            id="eac_seiaa_seac_mom_pdf_link"
+            placeholder="Paste file URL here"
+          />
+        </div>
+      </div>
+
+      <div class="section-divider">Closing Documents</div>
+      <div class="form-section">
+        <div class="form-group">
+          <label
+            class="form-label"
+            for="project_completion_certificate_pdf_link"
+            >Project Completion Certificate — PDF</label
+          >
+          <input
+            type="url"
+            id="project_completion_certificate_pdf_link"
+            placeholder="Paste file URL here"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="project_feedback_pdf_link"
+            >Project Feedback — PDF</label
+          >
+          <input
+            type="url"
+            id="project_feedback_pdf_link"
+            placeholder="Paste file URL here"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="final_ec_letter_pdf_link"
+            >Final EC Letter — PDF</label
+          >
+          <input
+            type="url"
+            id="final_ec_letter_pdf_link"
+            placeholder="Paste file URL here"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="remarks">Remarks, if any</label>
+          <textarea id="remarks"></textarea>
+        </div>
+      </div>
+
+      <button
+        class="btn-primary"
+        type="button"
+        onclick="submitTF08()"
+        id="submitBtn"
+      >
+        Submit
+      </button>
+    </div>
+
+    <script>
+      window.addEventListener("DOMContentLoaded", function () {
+        populateDropdowns();
+        bindEvents();
+      });
+
+      function populateDropdowns() {
+        google.script.run
+          .withSuccessHandler(function (data) {
+            data = data || {};
+            fillSelect(
+              document.getElementById("team_name"),
+              data.team || [],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("milestone_achieved"),
+              data.milestones || [],
+              "Select",
+            );
+          })
+          .getDropdownData();
+      }
+
+      function fillSelect(select, items, placeholder) {
+        if (!select) return;
+        select.innerHTML = "";
+        const first = document.createElement("option");
+        first.value = "";
+        first.textContent = placeholder || "Select";
+        select.appendChild(first);
+
+        (items || []).forEach(function (item) {
+          const option = document.createElement("option");
+          option.value = item;
+          option.textContent = item;
+          select.appendChild(option);
+        });
+      }
+
+      function bindOther(selectId, wrapId, inputId) {
+        const select = document.getElementById(selectId);
+        const wrap = document.getElementById(wrapId);
+        const input = document.getElementById(inputId);
+
+        function sync() {
+          const show =
+            String(select.value || "").toLowerCase() === "others" ||
+            String(select.value || "").toLowerCase() === "other";
+          wrap.style.display = show ? "block" : "none";
+          if (!show) input.value = "";
+        }
+
+        select.addEventListener("change", sync);
+        sync();
+      }
+
+      function bindEvents() {
+        bindOther(
+          "type_of_work",
+          "type_of_work_other_wrap",
+          "type_of_work_other",
+        );
+        bindOther(
+          "milestone_achieved",
+          "milestone_achieved_other_wrap",
+          "milestone_achieved_other",
+        );
+      }
+
+      function validateTF08(p) {
+        const missing = [];
+        if (!p.employee_email) missing.push("Employee Email ID");
+        if (!p.team_name) missing.push("Team Name");
+        if (!p.project_code) missing.push("Project Code");
+        if (!p.parivesh_login_id) missing.push("Parivesh Login ID");
+
+        if (
+          String(p.type_of_work || "").toLowerCase() === "others" &&
+          !p.type_of_work_other
+        ) {
+          missing.push("Type of Work — pls specify");
+        }
+        if (
+          String(p.milestone_achieved || "").toLowerCase() === "other" &&
+          !p.milestone_achieved_other
+        ) {
+          missing.push("Milestone Achieved — pls specify");
+        }
+
+        if (missing.length) {
+          alert("Please fill:\n\n" + missing.join("\n"));
+          return false;
+        }
+        return true;
+      }
+
+      let isSubmitting = false;
+
+      function submitTF08() {
+        if (isSubmitting) return;
+        isSubmitting = true;
+        const submitBtn = document.getElementById("submitBtn");
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Submitting...";
+
+        const payload = {
+          date: document.getElementById("date").value,
+          employee_first_name: document.getElementById("employee_first_name")
+            .value,
+          employee_last_name:
+            document.getElementById("employee_last_name").value,
+          employee_email: document.getElementById("employee_email").value,
+          team_name: document.getElementById("team_name").value,
+          project_name: document.getElementById("project_name").value,
+          project_code: document.getElementById("project_code").value,
+          project_proponent_first_name: document.getElementById(
+            "project_proponent_first_name",
+          ).value,
+          project_proponent_last_name: document.getElementById(
+            "project_proponent_last_name",
+          ).value,
+          proposed_project_cost_lacs: document.getElementById(
+            "proposed_project_cost_lacs",
+          ).value,
+          existing_project_cost_lacs: document.getElementById(
+            "existing_project_cost_lacs",
+          ).value,
+          project_cost_after_proposed_ec_lacs: document.getElementById(
+            "project_cost_after_proposed_ec_lacs",
+          ).value,
+          plot_area_sq_m: document.getElementById("plot_area_sq_m").value,
+          built_up_area_sq_m:
+            document.getElementById("built_up_area_sq_m").value,
+          capacity: document.getElementById("capacity").value,
+          emp_cost_capital_lacs: document.getElementById(
+            "emp_cost_capital_lacs",
+          ).value,
+          type_of_work: document.getElementById("type_of_work").value,
+          type_of_work_other:
+            document.getElementById("type_of_work_other").value,
+          project_folder_link: document.getElementById("project_folder_link")
+            .value,
+          milestone_achieved:
+            document.getElementById("milestone_achieved").value,
+          milestone_achieved_other: document.getElementById(
+            "milestone_achieved_other",
+          ).value,
+          parivesh_login_id: document.getElementById("parivesh_login_id").value,
+          parivesh_password: document.getElementById("parivesh_password").value,
+          proposal_number: document.getElementById("proposal_number").value,
+          appraising_committee: document.getElementById("appraising_committee")
+            .value,
+          eds_ads_count: document.getElementById("eds_ads_count").value,
+          appraisals_with_dates: document.getElementById(
+            "appraisals_with_dates",
+          ).value,
+          project_sheet_link:
+            document.getElementById("project_sheet_link").value,
+
+          tor_application_pdf_link: document.getElementById(
+            "tor_application_pdf_link",
+          ).value,
+          tor_agenda_pdf_link: document.getElementById("tor_agenda_pdf_link")
+            .value,
+          tor_presentation_ppt_link: document.getElementById(
+            "tor_presentation_ppt_link",
+          ).value,
+          tor_presentation_pdf_link: document.getElementById(
+            "tor_presentation_pdf_link",
+          ).value,
+          tor_mom_pdf_link: document.getElementById("tor_mom_pdf_link").value,
+          tor_letter_pdf_link: document.getElementById("tor_letter_pdf_link")
+            .value,
+
+          form1a_docx_link: document.getElementById("form1a_docx_link").value,
+          form1a_pdf_link: document.getElementById("form1a_pdf_link").value,
+          form1b_docx_link: document.getElementById("form1b_docx_link").value,
+          form1b_pdf_link: document.getElementById("form1b_pdf_link").value,
+          form1c_docx_link: document.getElementById("form1c_docx_link").value,
+          form1c_pdf_link: document.getElementById("form1c_pdf_link").value,
+
+          ph_document_pdf_link: document.getElementById("ph_document_pdf_link")
+            .value,
+          ph_ppt_link: document.getElementById("ph_ppt_link").value,
+          ph_ppt_pdf_link: document.getElementById("ph_ppt_pdf_link").value,
+          ph_advertisement_pdf_link: document.getElementById(
+            "ph_advertisement_pdf_link",
+          ).value,
+          ph_mom_pdf_link: document.getElementById("ph_mom_pdf_link").value,
+
+          final_eia_emp_docx_link: document.getElementById(
+            "final_eia_emp_docx_link",
+          ).value,
+          final_eia_emp_pdf_link: document.getElementById(
+            "final_eia_emp_pdf_link",
+          ).value,
+          agenda_pdf_link: document.getElementById("agenda_pdf_link").value,
+          circulation_docs_docx_link: document.getElementById(
+            "circulation_docs_docx_link",
+          ).value,
+          circulation_docs_pdf_link: document.getElementById(
+            "circulation_docs_pdf_link",
+          ).value,
+          final_master_presentation_ppt_link: document.getElementById(
+            "final_master_presentation_ppt_link",
+          ).value,
+          final_master_presentation_pdf_link: document.getElementById(
+            "final_master_presentation_pdf_link",
+          ).value,
+          final_summarised_presentation_pdf_link: document.getElementById(
+            "final_summarised_presentation_pdf_link",
+          ).value,
+          post_eac_submittals_pdf_link: document.getElementById(
+            "post_eac_submittals_pdf_link",
+          ).value,
+          eac_seiaa_seac_mom_pdf_link: document.getElementById(
+            "eac_seiaa_seac_mom_pdf_link",
+          ).value,
+
+          project_completion_certificate_pdf_link: document.getElementById(
+            "project_completion_certificate_pdf_link",
+          ).value,
+          project_feedback_pdf_link: document.getElementById(
+            "project_feedback_pdf_link",
+          ).value,
+          final_ec_letter_pdf_link: document.getElementById(
+            "final_ec_letter_pdf_link",
+          ).value,
+
+          remarks: document.getElementById("remarks").value,
+        };
+
+        if (!validateTF08(payload)) {
+          isSubmitting = false;
+          submitBtn.disabled = false;
+          submitBtn.innerText = "Submit";
+          return;
+        }
+
+        google.script.run
+          .withSuccessHandler(function (res) {
+            console.log("SUCCESS HANDLER RUNNING");
+            document.body.innerHTML = res.thankYouHtml;
+          })
+          .withFailureHandler(function (err) {
+            alert("Submission failed: " + err.message);
+            isSubmitting = false;
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Submit";
+          })
+          .submitTF08(payload);
+      }
+    </script>
+  </body>
+</html>

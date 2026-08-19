@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <base target="_top" />
+    <title>ADM02 – Common Purchase Form</title>
+
+    <?!= HtmlService.createHtmlOutputFromFile('sharedStyles').getContent(); ?>
+    <?!= HtmlService.createHtmlOutputFromFile('sharedComponents').getContent(); ?>
+  </head>
+  <body>
+    <div class="form-wrapper">
+      <div class="form-title">ADM02 – Common Purchase Form</div>
+      <div class="form-subtitle">Submit Purchase Requests</div>
+
+      <div id="f_fields"></div>
+
+      <div style="margin-top: 20px">
+        <button class="btn-primary" id="submitBtn">Submit</button>
+        <span id="status" class="text-muted" style="margin-left: 12px"></span>
+      </div>
+    </div>
+
+    <script>
+      const FORM_CODE = "ADM02";
+      const c = document.getElementById("f_fields");
+
+      // Utility to render text/number/date fields
+      function renderField(container, opts) {
+        const wrapper = document.createElement("div");
+        wrapper.className = "form-group";
+        const label = document.createElement("label");
+        label.innerText = opts.label + (opts.required ? " *" : "");
+        const input = document.createElement("input");
+        input.id = opts.id;
+        input.type = opts.type || "text";
+        if (opts.placeholder) input.placeholder = opts.placeholder;
+        if (opts.required) input.required = true;
+        wrapper.appendChild(label);
+        wrapper.appendChild(document.createElement("br"));
+        wrapper.appendChild(input);
+        container.appendChild(wrapper);
+        return input;
+      }
+
+      // Utility to render file upload
+      function renderFileField(container, opts) {
+        const wrapper = document.createElement("div");
+        wrapper.className = "form-group";
+        const label = document.createElement("label");
+        label.innerText = opts.label + (opts.required ? " *" : "");
+        const input = document.createElement("input");
+        input.id = opts.id;
+        input.type = "file";
+        if (opts.required) input.required = true;
+        wrapper.appendChild(label);
+        wrapper.appendChild(document.createElement("br"));
+        wrapper.appendChild(input);
+        container.appendChild(wrapper);
+        return input;
+      }
+
+      // Form fields
+      renderField(c, { label: "First Name", id: "first_name", required: true });
+      renderField(c, { label: "Last Name", id: "last_name", required: true });
+      renderField(c, { label: "Email", id: "email", type: "email", required: true });
+      renderField(c, { label: "E Code of Requestor", id: "ecode", required: true });
+      renderField(c, { label: "Date", id: "date", type: "date", required: true });
+      renderField(c, { label: "Department", id: "department", required: true });
+      renderField(c, { label: "Type of Purchase", id: "purchase_type", required: true });
+      renderField(c, { label: "Details of Request", id: "request_details", required: true });
+      renderField(c, { label: "Name of Preferred Vendor", id: "vendor_name" });
+      renderFileField(c, { label: "Upload Combid Format", id: "file_combid" });
+      renderFileField(c, { label: "Upload Quotation", id: "file_quotation" });
+      renderField(c, { label: "Amount INR", id: "amount", type: "number", required: true });
+      renderField(c, { label: "Preferred Mode of Payment", id: "payment_mode" });
+      renderField(c, { label: "Remarks", id: "remarks" });
+      renderField(c, { label: "Target Date for Payment", id: "target_date", type: "date" });
+
+      // Submit handler
+      document.getElementById("submitBtn").addEventListener("click", function () {
+        const payload = {};
+        Array.from(document.querySelectorAll("#f_fields input")).forEach(input => {
+          if (input.type === "file") {
+            payload[input.id] = input.files.length ? input.files[0].name : "";
+          } else {
+            payload[input.id] = input.value || "";
+          }
+        });
+
+        google.script.run
+          .withSuccessHandler(res => {
+            document.getElementById("status").innerText = "Submitted successfully!";
+          })
+          .withFailureHandler(err => {
+            document.getElementById("status").innerText = "Submit failed: " + err.message;
+          })
+          .submitForm(FORM_CODE, payload);
+      });
+    </script>
+  </body>
+</html>

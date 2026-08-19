@@ -1,0 +1,582 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <base target="_top" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TF09</title>
+    <?!= HtmlService.createHtmlOutputFromFile('shared-styles').getContent(); ?>
+  </head>
+  <body>
+    <div class="form-wrapper">
+      <div class="form-title">TF09</div>
+      <div class="form-subtitle">
+        Technical Format for documents sharing between two sections/teams
+      </div>
+
+      <div class="form-section">
+        <div class="form-group">
+          <label class="form-label" for="date">Date</label>
+          <input type="date" id="date" />
+          <div class="helper-text">dd-MMM-yyyy</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Name</label>
+          <div class="form-row">
+            <div class="form-col">
+              <input
+                type="text"
+                id="employee_first_name"
+                placeholder="First Name"
+              />
+              <div class="helper-text">First Name</div>
+            </div>
+            <div class="form-col">
+              <input
+                type="text"
+                id="employee_last_name"
+                placeholder="Last Name"
+              />
+              <div class="helper-text">Last Name</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="employee_email"
+            >Employee Email ID <span class="required">*</span></label
+          >
+          <input type="email" id="employee_email" required />
+          <div class="helper-text">Email ID of the person filling the form</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="from_team_name"
+            >From Team Name <span class="required">*</span></label
+          >
+          <select id="from_team_name" required></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="recipient_team_name"
+            >Recipient Team Name <span class="required">*</span></label
+          >
+          <select id="recipient_team_name" required></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="project_name">Project Name</label>
+          <input type="text" id="project_name" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="project_code"
+            >Project Code <span class="required">*</span></label
+          >
+          <input type="text" id="project_code" required />
+          <div class="helper-text">
+            Refer this link to get the list of active PCODES
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="baseline_season"
+            >Baseline season</label
+          >
+          <select id="baseline_season"></select>
+        </div>
+
+        <!-- Type of Document Received from Lab -->
+        <div class="form-group">
+          <label class="form-label">Type of Document Received from Lab</label>
+          <div class="form-grid" id="lab_document_types_wrap">
+            <div class="form-col-choice">
+              <input
+                type="checkbox"
+                id="lab_dt_site_photos"
+                name="lab_document_types"
+                value="Site photos"
+              />
+              <label for="lab_dt_site_photos">Site photos</label>
+            </div>
+            <div class="form-col-choice">
+              <input
+                type="checkbox"
+                id="lab_dt_test_report"
+                name="lab_document_types"
+                value="Test report"
+              />
+              <label for="lab_dt_test_report">Test report</label>
+            </div>
+            <div class="form-col-choice">
+              <input
+                type="checkbox"
+                id="lab_dt_sampling_plan"
+                name="lab_document_types"
+                value="Sampling plan"
+              />
+              <label for="lab_dt_sampling_plan">Sampling plan</label>
+            </div>
+            <div class="form-col-choice">
+              <input
+                type="checkbox"
+                id="lab_dt_baseline_results"
+                name="lab_document_types"
+                value="Baseline results"
+              />
+              <label for="lab_dt_baseline_results">Baseline results</label>
+            </div>
+            <div class="form-col-choice">
+              <input
+                type="checkbox"
+                id="lab_dt_post_monitoring_ppt"
+                name="lab_document_types"
+                value="Post monitoring PPT"
+              />
+              <label for="lab_dt_post_monitoring_ppt"
+                >Post monitoring PPT</label
+              >
+            </div>
+            <div class="form-col-choice">
+              <input
+                type="checkbox"
+                id="lab_dt_others"
+                name="lab_document_types"
+                value="Others"
+              />
+              <label for="lab_dt_others">Others</label>
+            </div>
+          </div>
+          <div class="helper-text">You may select more than one option</div>
+          <div
+            id="lab_document_types_other_wrap"
+            style="display: none; margin-top: 10px"
+          >
+            <input
+              type="text"
+              id="lab_document_types_other"
+              placeholder="If others, pls specify"
+            />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="lab_documents_link"
+            >Link to Documents Received from Lab</label
+          >
+          <textarea id="lab_documents_link"></textarea>
+        </div>
+
+        <!-- Type of document as FAE Report or Expert Report -->
+        <div class="form-group">
+          <label class="form-label"
+            >Type of document as FAE Report or Expert Report</label
+          >
+          <div class="form-grid" id="fae_expert_document_types_wrap">
+            <div class="form-col-choice">
+              <input
+                type="checkbox"
+                id="fae_dt_conservation_plan"
+                name="fae_expert_document_types"
+                value="Conservation Plan"
+              />
+              <label for="fae_dt_conservation_plan">Conservation Plan</label>
+            </div>
+            <div class="form-col-choice">
+              <input
+                type="checkbox"
+                id="fae_dt_site_visit_report"
+                name="fae_expert_document_types"
+                value="Site visit report"
+              />
+              <label for="fae_dt_site_visit_report">Site visit report</label>
+            </div>
+            <div class="form-col-choice">
+              <input
+                type="checkbox"
+                id="fae_dt_seasonal_windrose"
+                name="fae_expert_document_types"
+                value="Seasonal Windrose"
+              />
+              <label for="fae_dt_seasonal_windrose">Seasonal Windrose</label>
+            </div>
+            <div class="form-col-choice">
+              <input
+                type="checkbox"
+                id="fae_dt_micro_met_windrose"
+                name="fae_expert_document_types"
+                value="Micro Met Windrose"
+              />
+              <label for="fae_dt_micro_met_windrose">Micro Met Windrose</label>
+            </div>
+            <div class="form-col-choice">
+              <input
+                type="checkbox"
+                id="fae_dt_sensitivity"
+                name="fae_expert_document_types"
+                value="Sensitivity"
+              />
+              <label for="fae_dt_sensitivity">Sensitivity</label>
+            </div>
+            <div class="form-col-choice">
+              <input
+                type="checkbox"
+                id="fae_dt_kml"
+                name="fae_expert_document_types"
+                value="KML"
+              />
+              <label for="fae_dt_kml">KML</label>
+            </div>
+            <div class="form-col-choice">
+              <input
+                type="checkbox"
+                id="fae_dt_other_maps"
+                name="fae_expert_document_types"
+                value="Other Maps"
+              />
+              <label for="fae_dt_other_maps">Other Maps</label>
+            </div>
+            <div class="form-col-choice">
+              <input
+                type="checkbox"
+                id="fae_dt_others"
+                name="fae_expert_document_types"
+                value="Others"
+              />
+              <label for="fae_dt_others">Others</label>
+            </div>
+          </div>
+          <div class="helper-text">You may select more than one option</div>
+          <div
+            id="fae_expert_document_types_other_wrap"
+            style="display: none; margin-top: 10px"
+          >
+            <input
+              type="text"
+              id="fae_expert_document_types_other"
+              placeholder="If any others, please specify"
+            />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="fae_expert_reports_link"
+            >Link to FAE &amp; Expert Reports</label
+          >
+          <textarea id="fae_expert_reports_link"></textarea>
+        </div>
+
+        <!-- Type of document from NOC Team -->
+        <div class="form-group">
+          <label class="form-label">Type of document from NOC Team</label>
+          <div class="form-grid" id="noc_document_types_wrap">
+            <div class="form-col-choice">
+              <input
+                type="checkbox"
+                id="noc_dt_compliance_report"
+                name="noc_document_types"
+                value="Compliance report"
+              />
+              <label for="noc_dt_compliance_report">Compliance report</label>
+            </div>
+            <div class="form-col-choice">
+              <input
+                type="checkbox"
+                id="noc_dt_certified_compliance"
+                name="noc_document_types"
+                value="Certified compliance"
+              />
+              <label for="noc_dt_certified_compliance"
+                >Certified compliance</label
+              >
+            </div>
+            <div class="form-col-choice">
+              <input
+                type="checkbox"
+                id="noc_dt_cto"
+                name="noc_document_types"
+                value="CTO"
+              />
+              <label for="noc_dt_cto">CTO</label>
+            </div>
+            <div class="form-col-choice">
+              <input
+                type="checkbox"
+                id="noc_dt_cte"
+                name="noc_document_types"
+                value="CTE"
+              />
+              <label for="noc_dt_cte">CTE</label>
+            </div>
+            <div class="form-col-choice">
+              <input
+                type="checkbox"
+                id="noc_dt_audit_report_details"
+                name="noc_document_types"
+                value="Audit report details"
+              />
+              <label for="noc_dt_audit_report_details"
+                >Audit report details</label
+              >
+            </div>
+            <div class="form-col-choice">
+              <input
+                type="checkbox"
+                id="noc_dt_any_relevant_receipts"
+                name="noc_document_types"
+                value="Any relevant receipts"
+              />
+              <label for="noc_dt_any_relevant_receipts"
+                >Any relevant receipts</label
+              >
+            </div>
+            <div class="form-col-choice">
+              <input
+                type="checkbox"
+                id="noc_dt_others"
+                name="noc_document_types"
+                value="Others"
+              />
+              <label for="noc_dt_others">Others</label>
+            </div>
+          </div>
+          <div class="helper-text">You may select more than one option</div>
+          <div
+            id="noc_document_types_other_wrap"
+            style="display: none; margin-top: 10px"
+          >
+            <input
+              type="text"
+              id="noc_document_types_other"
+              placeholder="If any others, please specify"
+            />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="reservoir_document_link"
+            >Link to Document from Reservoir Team</label
+          >
+          <textarea id="reservoir_document_link"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="remarks">Remarks if any</label>
+          <textarea id="remarks"></textarea>
+        </div>
+      </div>
+
+      <button
+        class="btn-primary"
+        type="button"
+        onclick="submitTF09()"
+        id="submitBtn"
+      >
+        Submit
+      </button>
+    </div>
+
+    <script>
+      window.addEventListener("DOMContentLoaded", function () {
+        populateDropdowns();
+        bindEvents();
+      });
+
+      function populateDropdowns() {
+        google.script.run
+          .withSuccessHandler(function (data) {
+            data = data || {};
+            fillSelect(
+              document.getElementById("from_team_name"),
+              data.team || [],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("recipient_team_name"),
+              data.team || [],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("baseline_season"),
+              data.baselineSeason || [],
+              "Select",
+            );
+          })
+          .getDropdownData();
+      }
+
+      function fillSelect(select, items, placeholder) {
+        if (!select) return;
+        select.innerHTML = "";
+        const first = document.createElement("option");
+        first.value = "";
+        first.textContent = placeholder || "Select";
+        select.appendChild(first);
+
+        (items || []).forEach(function (item) {
+          const option = document.createElement("option");
+          option.value = item;
+          option.textContent = item;
+          select.appendChild(option);
+        });
+      }
+
+      // Shows the "specify" field only when the "Others" box in a checkbox
+      // group is ticked, and clears it when the group no longer has "Others".
+      function bindCheckboxOther(groupName, wrapId, inputId) {
+        const boxes = document.querySelectorAll(`input[name="${groupName}"]`);
+        const wrap = document.getElementById(wrapId);
+        const input = document.getElementById(inputId);
+
+        function sync() {
+          const show = Array.from(boxes).some(function (b) {
+            return b.checked && b.value === "Others";
+          });
+          wrap.style.display = show ? "block" : "none";
+          if (!show) input.value = "";
+        }
+
+        boxes.forEach(function (b) {
+          b.addEventListener("change", sync);
+        });
+        sync();
+      }
+
+      function bindEvents() {
+        bindCheckboxOther(
+          "lab_document_types",
+          "lab_document_types_other_wrap",
+          "lab_document_types_other",
+        );
+        bindCheckboxOther(
+          "fae_expert_document_types",
+          "fae_expert_document_types_other_wrap",
+          "fae_expert_document_types_other",
+        );
+        bindCheckboxOther(
+          "noc_document_types",
+          "noc_document_types_other_wrap",
+          "noc_document_types_other",
+        );
+      }
+
+      function getCheckedValues(name) {
+        return Array.from(
+          document.querySelectorAll(`input[name="${name}"]:checked`),
+        )
+          .map(function (el) {
+            return el.value;
+          })
+          .join(", ");
+      }
+
+      function hasOther(checkedString) {
+        return String(checkedString || "")
+          .split(",")
+          .map(function (s) {
+            return s.trim();
+          })
+          .includes("Others");
+      }
+
+      function validateTF09(p) {
+        const missing = [];
+        if (!p.employee_email) missing.push("Employee Email ID");
+        if (!p.from_team_name) missing.push("From Team Name");
+        if (!p.recipient_team_name) missing.push("Recipient Team Name");
+        if (!p.project_code) missing.push("Project Code");
+
+        if (hasOther(p.lab_document_types) && !p.lab_document_types_other) {
+          missing.push(
+            "Type of Document Received from Lab - If others, specify",
+          );
+        }
+        if (
+          hasOther(p.fae_expert_document_types) &&
+          !p.fae_expert_document_types_other
+        ) {
+          missing.push(
+            "Type of document as FAE Report or Expert Report - If others, specify",
+          );
+        }
+        if (hasOther(p.noc_document_types) && !p.noc_document_types_other) {
+          missing.push("Type of document from NOC Team - If others, specify");
+        }
+
+        if (missing.length) {
+          alert("Please fill:\n\n" + missing.join("\n"));
+          return false;
+        }
+        return true;
+      }
+
+      let isSubmitting = false;
+
+      function submitTF09() {
+        if (isSubmitting) return; // blocks double-clicks instantly
+        isSubmitting = true;
+        const submitBtn = document.getElementById("submitBtn");
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Submitting...";
+
+        const payload = {
+          date: document.getElementById("date").value,
+          employee_first_name: document.getElementById("employee_first_name")
+            .value,
+          employee_last_name:
+            document.getElementById("employee_last_name").value,
+          employee_email: document.getElementById("employee_email").value,
+          from_team_name: document.getElementById("from_team_name").value,
+          recipient_team_name: document.getElementById("recipient_team_name")
+            .value,
+          project_name: document.getElementById("project_name").value,
+          project_code: document.getElementById("project_code").value,
+          baseline_season: document.getElementById("baseline_season").value,
+          lab_document_types: getCheckedValues("lab_document_types"),
+          lab_document_types_other: document.getElementById(
+            "lab_document_types_other",
+          ).value,
+          lab_documents_link:
+            document.getElementById("lab_documents_link").value,
+          fae_expert_document_types: getCheckedValues(
+            "fae_expert_document_types",
+          ),
+          fae_expert_document_types_other: document.getElementById(
+            "fae_expert_document_types_other",
+          ).value,
+          fae_expert_reports_link: document.getElementById(
+            "fae_expert_reports_link",
+          ).value,
+          noc_document_types: getCheckedValues("noc_document_types"),
+          noc_document_types_other: document.getElementById(
+            "noc_document_types_other",
+          ).value,
+          reservoir_document_link: document.getElementById(
+            "reservoir_document_link",
+          ).value,
+          remarks: document.getElementById("remarks").value,
+        };
+
+        if (!validateTF09(payload)) {
+          isSubmitting = false;
+          submitBtn.disabled = false;
+          submitBtn.innerText = "Submit";
+          return;
+        }
+
+        google.script.run
+          .withSuccessHandler(function (res) {
+            document.body.innerHTML = res.thankYouHtml;
+          })
+          .withFailureHandler(function (err) {
+            alert("Submission failed: " + err.message);
+            isSubmitting = false;
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Submit";
+          })
+          .submitTF09(payload);
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,609 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <base target="_top" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BD-02</title>
+    <?!= HtmlService.createHtmlOutputFromFile('shared-styles').getContent(); ?>
+  </head>
+  <body>
+    <div class="form-wrapper">
+      <div class="form-title">BD-02</div>
+      <div class="form-subtitle">
+        To be filled when Proposal is accepted and Sales order is Generated
+      </div>
+
+      <div class="form-section">
+        <div class="form-group">
+          <label class="form-label" for="lead-date"
+            >Date of Client's Mail/ Lead Generation
+            <span class="required">*</span></label
+          >
+          <input type="date" id="lead-date" required />
+          <div class="helper-text">dd-MMM-yyyy</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Name of Form Filler</label>
+          <div class="form-row">
+            <div class="form-col">
+              <input
+                type="text"
+                id="form-filler-first-name"
+                placeholder="First Name"
+              />
+              <div class="helper-text">First Name</div>
+            </div>
+            <div class="form-col">
+              <input
+                type="text"
+                id="form-filler-last-name"
+                placeholder="Last Name"
+              />
+              <div class="helper-text">Last Name</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="official-email"
+            >Official Email ID <span class="required">*</span></label
+          >
+          <input type="email" id="official-email" required />
+        </div>
+
+        <h4>Customer Details</h4>
+
+        <div class="form-group">
+          <label class="form-label" for="customer-company"
+            >Customer's Company Legal Name
+            <span class="required">*</span></label
+          >
+          <input type="text" id="customer-company" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Customer Name</label>
+          <div class="form-row">
+            <div class="form-col">
+              <input
+                type="text"
+                id="customer-first-name"
+                placeholder="First Name"
+              />
+              <div class="helper-text">First Name</div>
+            </div>
+            <div class="form-col">
+              <input
+                type="text"
+                id="customer-last-name"
+                placeholder="Last Name"
+              />
+              <div class="helper-text">Last Name</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Customer Contact Number</label>
+          <div class="form-row">
+            <div class="form-col" style="max-width: 120px">
+              <input
+                type="text"
+                id="customer-contact-code"
+                value="+91"
+                placeholder="Code"
+              />
+              <div class="helper-text">Code</div>
+            </div>
+            <div class="form-col">
+              <input
+                type="text"
+                id="customer-contact-number"
+                placeholder="Number"
+              />
+              <div class="helper-text">Number</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="customer-email">Customer Email</label>
+          <input type="email" id="customer-email" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">GST no. available?</label>
+          <div class="form-row">
+            <div class="form-col-choice">
+              <input
+                type="radio"
+                id="gst-yes"
+                name="gst-available"
+                value="YES"
+              />
+              <label for="gst-yes">YES</label>
+            </div>
+            <div class="form-col-choice">
+              <input type="radio" id="gst-no" name="gst-available" value="NO" />
+              <label for="gst-no">NO</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group" id="gst-number-wrap" style="display: none">
+          <label class="form-label" for="gst-number"
+            >GST number <span class="required">*</span></label
+          >
+          <input type="text" id="gst-number" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">PAN no. available?</label>
+          <div class="form-row">
+            <div class="form-col-choice">
+              <input
+                type="radio"
+                id="pan-yes"
+                name="pan-available"
+                value="YES"
+              />
+              <label for="pan-yes">YES</label>
+            </div>
+            <div class="form-col-choice">
+              <input type="radio" id="pan-no" name="pan-available" value="NO" />
+              <label for="pan-no">NO</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group" id="pan-number-wrap" style="display: none">
+          <label class="form-label" for="pan-number"
+            >PAN number <span class="required">*</span></label
+          >
+          <input type="text" id="pan-number" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">TAN no. available?</label>
+          <div class="form-row">
+            <div class="form-col-choice">
+              <input
+                type="radio"
+                id="tan-yes"
+                name="tan-available"
+                value="YES"
+              />
+              <label for="tan-yes">YES</label>
+            </div>
+            <div class="form-col-choice">
+              <input type="radio" id="tan-no" name="tan-available" value="NO" />
+              <label for="tan-no">NO</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group" id="tan-number-wrap" style="display: none">
+          <label class="form-label" for="tan-number"
+            >TAN number <span class="required">*</span></label
+          >
+          <input type="text" id="tan-number" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="project-name"
+            >Project Name <span class="required">*</span></label
+          >
+          <input type="text" id="project-name" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="project-location"
+            >Project Location <span class="required">*</span></label
+          >
+          <input type="text" id="project-location" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="proposal-id">Proposal ID</label>
+          <input type="text" id="proposal-id" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="pcode"
+            >P CODE <span class="required">*</span></label
+          >
+          <input type="text" id="pcode" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="date-proposal-sent"
+            >Date of Proposal Sent</label
+          >
+          <input type="date" id="date-proposal-sent" />
+          <div class="helper-text">dd-MMM-yyyy</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="gst-treatment">GST Treatment</label>
+          <select id="gst-treatment"></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="proposal-trends-summary-link"
+            >Link of Proposal Trends/Summary</label
+          >
+          <input
+            type="url"
+            id="proposal-trends-summary-link"
+            placeholder="Paste link here"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="date-proposal-won"
+            >Date of Proposal Won</label
+          >
+          <input type="date" id="date-proposal-won" />
+          <div class="helper-text">dd-MMM-yyyy</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="work-order-link"
+            >Link to Work Order</label
+          >
+          <input
+            type="url"
+            id="work-order-link"
+            placeholder="Paste link here"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="sales-order-link"
+            >Link to sales order <span class="required">*</span></label
+          >
+          <input type="url" id="sales-order-link" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="cost-computer-link"
+            >Link to Cost Computer <span class="required">*</span></label
+          >
+          <input type="url" id="cost-computer-link" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="final-proposal-link"
+            >Link to final proposal <span class="required">*</span></label
+          >
+          <input type="url" id="final-proposal-link" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="pr-r">PR.R</label>
+          <input type="text" id="pr-r" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="pr-b">PR.B</label>
+          <input type="text" id="pr-b" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="travelling-expenses-in-scope"
+            >Travelling Expenses in Perfact Group's scope</label
+          >
+          <select id="travelling-expenses-in-scope">
+            <option value="">-Select-</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="overhead-costs">Overhead Costs</label>
+          <input type="number" id="overhead-costs" step="0.01" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="testing-charges"
+            >Testing charges</label
+          >
+          <input type="number" id="testing-charges" step="0.01" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="admin-expenses">Admin Expenses</label>
+          <input type="number" id="admin-expenses" step="0.01" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="manpower-costs">Manpower costs</label>
+          <input type="number" id="manpower-costs" step="0.01" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="outsourcing-costs"
+            >Outsourcing costs</label
+          >
+          <input type="number" id="outsourcing-costs" step="0.01" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="commissions">Comissions</label>
+          <input type="number" id="commissions" step="0.01" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="outsourced-manpower"
+            >Outsourced Manpower</label
+          >
+          <input type="number" id="outsourced-manpower" step="0.01" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="secondary-data-costs"
+            >Secondary data costs</label
+          >
+          <input type="number" id="secondary-data-costs" step="0.01" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="contingency-costs"
+            >Contingency costs</label
+          >
+          <input type="number" id="contingency-costs" step="0.01" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="site-visit-costs"
+            >Site visit costs</label
+          >
+          <input type="number" id="site-visit-costs" step="0.01" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="project-base-level-cost"
+            >Project Base Level cost (PBL)- (in Lacs)</label
+          >
+          <input type="number" id="project-base-level-cost" step="0.01" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="final-quote-value"
+            >Final quote value (PBL10)- (in Lacs)</label
+          >
+          <input type="number" id="final-quote-value" step="0.01" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="percentage-margin"
+            >Percentage Margin</label
+          >
+          <input type="number" id="percentage-margin" step="0.01" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="pr-mode">PR Mode</label>
+          <select id="pr-mode"></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="remarks">Remarks</label>
+          <textarea id="remarks"></textarea>
+        </div>
+      </div>
+
+      <button
+        class="btn-primary"
+        type="button"
+        onclick="submitBD02()"
+        id="submitBtn"
+      >
+        Submit
+      </button>
+    </div>
+
+    <script>
+      window.addEventListener("DOMContentLoaded", function () {
+        populateDropdowns();
+        bindConditionalBlocks();
+      });
+
+      function populateDropdowns() {
+        google.script.run
+          .withSuccessHandler(function (data) {
+            data = data || {};
+            fillSelect(
+              document.getElementById("gst-treatment"),
+              data.gstTreatment || [],
+              "-Select-",
+            );
+            fillSelect(
+              document.getElementById("pr-mode"),
+              data.prMode || [],
+              "-Select-",
+            );
+          })
+          .getDropdownData();
+      }
+
+      function fillSelect(select, items, placeholder) {
+        if (!select) return;
+        select.innerHTML = "";
+
+        const first = document.createElement("option");
+        first.value = "";
+        first.textContent = placeholder || "-Select-";
+        select.appendChild(first);
+
+        (items || []).forEach(function (item) {
+          const option = document.createElement("option");
+          option.value = item;
+          option.textContent = item;
+          select.appendChild(option);
+        });
+      }
+
+      function getRadioValue(name) {
+        const checked = document.querySelector(`input[name="${name}"]:checked`);
+        return checked ? checked.value : "";
+      }
+
+      function bindConditionalBlocks() {
+        bindYesNoBlock("gst-available", "gst-number-wrap", "gst-number");
+        bindYesNoBlock("pan-available", "pan-number-wrap", "pan-number");
+        bindYesNoBlock("tan-available", "tan-number-wrap", "tan-number");
+      }
+
+      function bindYesNoBlock(radioName, wrapId, inputId) {
+        const radios = document.querySelectorAll(`input[name="${radioName}"]`);
+        const wrap = document.getElementById(wrapId);
+        const input = document.getElementById(inputId);
+
+        function sync() {
+          const value = getRadioValue(radioName);
+          const show = value === "YES";
+          wrap.style.display = show ? "block" : "none";
+          if (!show) input.value = "";
+        }
+
+        radios.forEach(function (radio) {
+          radio.addEventListener("change", sync);
+        });
+
+        sync();
+      }
+
+      function readNumber(id) {
+        const value = document.getElementById(id).value;
+        return value === "" ? "" : Number(value);
+      }
+
+      function validateBD02(payload) {
+        const missing = [];
+
+        if (!payload.leadDate)
+          missing.push("Date of Client's Mail/ Lead Generation");
+        if (!payload.officialEmail) missing.push("Official Email ID");
+        if (!payload.customerCompany)
+          missing.push("Customer's Company Legal Name");
+        if (!payload.projectName) missing.push("Project Name");
+        if (!payload.projectLocation) missing.push("Project Location");
+        if (!payload.pcode) missing.push("P CODE");
+        if (!payload.salesOrderLink) missing.push("Link to sales order");
+        if (!payload.costComputerLink) missing.push("Link to Cost Computer");
+        if (!payload.finalProposalLink) missing.push("Link to final proposal");
+
+        if (payload.gstAvailable === "YES" && !payload.gstNumber)
+          missing.push("GST number");
+        if (payload.panAvailable === "YES" && !payload.panNumber)
+          missing.push("PAN number");
+        if (payload.tanAvailable === "YES" && !payload.tanNumber)
+          missing.push("TAN number");
+
+        if (missing.length) {
+          alert("Please fill:\n\n" + missing.join("\n"));
+          return false;
+        }
+
+        return true;
+      }
+
+      let isSubmitting = false;
+
+      function submitBD02() {
+        if (isSubmitting) return; // blocks double-clicks instantly
+        isSubmitting = true;
+        const submitBtn = document.getElementById("submitBtn");
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Submitting...";
+
+        const payload = {
+          leadDate: document.getElementById("lead-date").value,
+          formFillerFirstName: document.getElementById("form-filler-first-name")
+            .value,
+          formFillerLastName: document.getElementById("form-filler-last-name")
+            .value,
+          officialEmail: document.getElementById("official-email").value,
+          customerCompany: document.getElementById("customer-company").value,
+          customerFirstName: document.getElementById("customer-first-name")
+            .value,
+          customerLastName: document.getElementById("customer-last-name").value,
+          customerContactCode: document.getElementById("customer-contact-code")
+            .value,
+          customerContactNumber: document.getElementById(
+            "customer-contact-number",
+          ).value,
+          customerEmail: document.getElementById("customer-email").value,
+
+          gstAvailable: getRadioValue("gst-available"),
+          gstNumber: document.getElementById("gst-number").value,
+          panAvailable: getRadioValue("pan-available"),
+          panNumber: document.getElementById("pan-number").value,
+          tanAvailable: getRadioValue("tan-available"),
+          tanNumber: document.getElementById("tan-number").value,
+
+          projectName: document.getElementById("project-name").value,
+          projectLocation: document.getElementById("project-location").value,
+          proposalId: document.getElementById("proposal-id").value,
+          pcode: document.getElementById("pcode").value,
+          dateProposalSent: document.getElementById("date-proposal-sent").value,
+          gstTreatment: document.getElementById("gst-treatment").value,
+          proposalTrendsSummaryLink: document.getElementById(
+            "proposal-trends-summary-link",
+          ).value,
+          dateProposalWon: document.getElementById("date-proposal-won").value,
+          workOrderLink: document.getElementById("work-order-link").value,
+          salesOrderLink: document.getElementById("sales-order-link").value,
+          costComputerLink: document.getElementById("cost-computer-link").value,
+          finalProposalLink: document.getElementById("final-proposal-link")
+            .value,
+          prR: document.getElementById("pr-r").value,
+          prB: document.getElementById("pr-b").value,
+          travellingExpensesInScope: document.getElementById(
+            "travelling-expenses-in-scope",
+          ).value,
+
+          overheadCosts: readNumber("overhead-costs"),
+          testingCharges: readNumber("testing-charges"),
+          adminExpenses: readNumber("admin-expenses"),
+          manpowerCosts: readNumber("manpower-costs"),
+          outsourcingCosts: readNumber("outsourcing-costs"),
+          commissions: readNumber("commissions"),
+          outsourcedManpower: readNumber("outsourced-manpower"),
+          secondaryDataCosts: readNumber("secondary-data-costs"),
+          contingencyCosts: readNumber("contingency-costs"),
+          siteVisitCosts: readNumber("site-visit-costs"),
+          projectBaseLevelCost: readNumber("project-base-level-cost"),
+          finalQuoteValue: readNumber("final-quote-value"),
+          percentageMargin: readNumber("percentage-margin"),
+          prMode: document.getElementById("pr-mode").value,
+          remarks: document.getElementById("remarks").value,
+        };
+
+        if (!validateBD02(payload)) {
+          isSubmitting = false;
+          submitBtn.disabled = false;
+          submitBtn.innerText = "Submit";
+          return;
+        }
+
+        google.script.run
+          .withSuccessHandler(function (res) {
+            console.log("SUCCESS HANDLER RUNNING"); // 👈 debug
+            document.body.innerHTML = res.thankYouHtml;
+          })
+          .withFailureHandler(function (err) {
+            alert("Submission failed: " + err.message);
+            isSubmitting = false;
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Submit";
+          })
+          .submitBD02(payload);
+      }
+    </script>
+  </body>
+</html>

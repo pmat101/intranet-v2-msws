@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <base target="_top" />
+    <title>BD-01(B) - Project Proposal Value Finalization</title>
+    <?!= HtmlService.createHtmlOutputFromFile('sharedStyles').getContent(); ?>
+    <?!= HtmlService.createHtmlOutputFromFile('sharedComponents').getContent(); ?>
+  </head>
+  <body>
+    <div class="form-wrapper">
+      <div class="form-title">BD-01(B) - Project Proposal Value Finalization by Top Management</div>
+      <div class="form-subtitle">Capture project and proposal details for finalization</div>
+
+      <div id="f_fields"></div>
+
+      <div style="margin-top: 20px">
+        <button class="btn-primary" id="submitBtn">Submit</button>
+        <span id="status" class="text-muted" style="margin-left: 12px"></span>
+      </div>
+    </div>
+
+    <script>
+      const FORM_CODE = "bd01b";
+      const c = document.getElementById("f_fields");
+
+      // Basic Info
+      renderField(c, { label: "Date of Client's Mail/Lead Generation *", id: "mail_date", type: "date", placeholder: "dd-MMM-yyyy" });
+      renderField(c, { label: "First Name of Form Filler", id: "filler_first_name" });
+      renderField(c, { label: "Last Name of Form Filler", id: "filler_last_name" });
+      renderField(c, { label: "Official Email ID *", id: "filler_email", type: "email" });
+
+      // Customer Details
+      renderField(c, { label: "Customer's Company Legal Name *", id: "customer_company" });
+      renderField(c, { label: "Customer First Name", id: "customer_first_name" });
+      renderField(c, { label: "Customer Last Name", id: "customer_last_name" });
+      renderField(c, { label: "Customer Contact Number", id: "customer_contact", placeholder: "+91" });
+      renderField(c, { label: "Customer Email", id: "customer_email", type: "email" });
+
+      // Project Details
+      renderField(c, { label: "Group Name", id: "group_name" });
+      renderField(c, { label: "Project Name", id: "project_name" });
+      renderField(c, { label: "Project Location", id: "project_location" });
+      renderField(c, { label: "Proposal ID", id: "proposal_id" });
+      renderField(c, { label: "Project Description", id: "project_description", type: "textarea" });
+      renderField(c, { label: "Lead Source", id: "lead_source" });
+
+      // Financials
+      renderField(c, { label: "Link to Budget Calculation", id: "budget_link", type: "url" });
+      renderField(c, { label: "Project Base Level Cost (PBL) - in lacs INR", id: "pbl_base", type: "number", placeholder: "₹" });
+      renderField(c, { label: "Minimum Quote Value (PBL 2) - in lacs INR", id: "pbl_min", type: "number", placeholder: "₹" });
+      renderField(c, { label: "First Quote Value (PBL 3) - in lacs INR", id: "pbl_first", type: "number", placeholder: "₹" });
+
+      // Remarks
+      renderField(c, { label: "Remarks", id: "remarks", type: "textarea" });
+
+      // Submit Handler
+      document.getElementById("submitBtn").addEventListener("click", function () {
+        const payload = {
+          mail_date: document.getElementById("mail_date")?.value || "",
+          filler_first_name: document.getElementById("filler_first_name")?.value || "",
+          filler_last_name: document.getElementById("filler_last_name")?.value || "",
+          filler_email: document.getElementById("filler_email")?.value || "",
+          customer_company: document.getElementById("customer_company")?.value || "",
+          customer_first_name: document.getElementById("customer_first_name")?.value || "",
+          customer_last_name: document.getElementById("customer_last_name")?.value || "",
+          customer_contact: document.getElementById("customer_contact")?.value || "",
+          customer_email: document.getElementById("customer_email")?.value || "",
+          group_name: document.getElementById("group_name")?.value || "",
+          project_name: document.getElementById("project_name")?.value || "",
+          project_location: document.getElementById("project_location")?.value || "",
+          proposal_id: document.getElementById("proposal_id")?.value || "",
+          project_description: document.getElementById("project_description")?.value || "",
+          lead_source: document.getElementById("lead_source")?.value || "",
+          budget_link: document.getElementById("budget_link")?.value || "",
+          pbl_base: document.getElementById("pbl_base")?.value || "",
+          pbl_min: document.getElementById("pbl_min")?.value || "",
+          pbl_first: document.getElementById("pbl_first")?.value || "",
+          remarks: document.getElementById("remarks")?.value || ""
+        };
+
+        google.script.run
+          .withSuccessHandler(res => {
+            document.getElementById("status").innerText = "Submitted: " + (res.submission_id || "OK");
+          })
+          .withFailureHandler(err => {
+            document.getElementById("status").innerText = "Submit failed: " + err.message;
+          })
+          .submitForm(FORM_CODE.toUpperCase(), payload);
+      });
+    </script>
+  </body>
+</html>

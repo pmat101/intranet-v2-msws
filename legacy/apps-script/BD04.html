@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <base target="_top" />
+    <title>BD-04 - Accounts Section Data Maintenance</title>
+    <?!= HtmlService.createHtmlOutputFromFile('sharedStyles').getContent(); ?>
+    <?!= HtmlService.createHtmlOutputFromFile('sharedComponents').getContent(); ?>
+  </head>
+  <body>
+    <div class="form-wrapper">
+      <div class="form-title">BD-04 - Accounts Section Data Maintenance</div>
+      <div class="form-subtitle">To be filled after release of Sales Order</div>
+
+      <div id="f_fields"></div>
+
+      <div style="margin-top: 20px">
+        <button class="btn-primary" id="submitBtn">Submit</button>
+        <span id="status" class="text-muted" style="margin-left: 12px"></span>
+      </div>
+    </div>
+
+    <script>
+      const FORM_CODE = "bd04";
+      const c = document.getElementById("f_fields");
+
+      // Main Project & Client Fields
+      renderField(c, { label: "Date of Client's Mail/ Lead Generation *", id: "mail_date", type: "date" });
+      renderField(c, { label: "First Name of Form Filler", id: "filler_first_name" });
+      renderField(c, { label: "Last Name of Form Filler", id: "filler_last_name" });
+      renderField(c, { label: "Official Email ID", id: "filler_email", type: "email" });
+
+      renderField(c, { label: "Customer's Company Legal Name *", id: "customer_company" });
+      renderField(c, { label: "Customer First Name", id: "customer_first" });
+      renderField(c, { label: "Customer Last Name", id: "customer_last" });
+      renderField(c, { label: "Customer Contact Number", id: "customer_contact", placeholder: "+91" });
+      renderField(c, { label: "Customer Email", id: "customer_email", type: "email" });
+
+      renderField(c, { label: "Project Name", id: "project_name" });
+      renderField(c, { label: "PCode", id: "pcode", placeholder: "Refer active PCODE list" });
+
+      renderField(c, { label: "Payment Terms", id: "payment_terms" });
+      renderField(c, { label: "Link to Work Order", id: "link_work_order", type: "url" });
+      renderField(c, { label: "Link to Sales Order", id: "link_sales_order", type: "url" });
+      renderField(c, { label: "Project Start Date", id: "project_start_date", type: "date" });
+      renderField(c, { label: "Project Status", id: "project_status" });
+
+      // PE Invoice Details
+      renderField(c, { label: "Total No. of PE Invoices", id: "pe_total_invoices", type: "number" });
+      renderField(c, { label: "Total No. of PE Sent Invoices", id: "pe_sent_invoices", type: "number" });
+      renderField(c, { label: "Total No. of PE Paid Invoices", id: "pe_paid_invoices", type: "number" });
+      renderField(c, { label: "Work Order Value (In Lakhs) INR", id: "pe_work_order_value", type: "number" });
+      renderField(c, { label: "Amount Received (In Lakhs) INR", id: "pe_amount_received", type: "number" });
+      renderField(c, { label: "Outstanding Amount (In Lakhs) INR", id: "pe_outstanding", type: "number" });
+      renderField(c, { label: "Credit Rating", id: "credit_rating" });
+      renderField(c, { label: "Remarks (if any)", id: "pe_remarks", type: "textarea" });
+
+      // PR Invoice Details
+      renderField(c, { label: "PR PCODE", id: "pr_pcode" });
+      renderField(c, { label: "PR Work Order Value (In Lakhs) INR", id: "pr_work_order_value", type: "number" });
+      renderField(c, { label: "Total No. of PR Invoices", id: "pr_total_invoices", type: "number" });
+      renderField(c, { label: "Total No. of PR Sent Invoices", id: "pr_sent_invoices", type: "number" });
+      renderField(c, { label: "Total No. of PR Paid Invoices", id: "pr_paid_invoices", type: "number" });
+
+      // PS Invoice Details
+      renderField(c, { label: "PS PCODE", id: "ps_pcode" });
+      renderField(c, { label: "PS Work Order Value (In Lakhs) INR", id: "ps_work_order_value", type: "number" });
+      renderField(c, { label: "Work Order Validity", id: "ps_work_order_validity", type: "text" });
+      renderField(c, { label: "Total No. of PS Invoices", id: "ps_total_invoices", type: "number" });
+      renderField(c, { label: "Total No. of PS Sent Invoices", id: "ps_sent_invoices", type: "number" });
+      renderField(c, { label: "Total No. of PS Paid Invoices", id: "ps_paid_invoices", type: "number" });
+      renderField(c, { label: "Remarks", id: "ps_remarks", type: "textarea" });
+
+      // Submit Handler
+      document.getElementById("submitBtn").addEventListener("click", function () {
+        const payload = {};
+        Array.from(c.querySelectorAll("input, select, textarea")).forEach(field => {
+          payload[field.id] = field.value || "";
+        });
+
+        google.script.run
+          .withSuccessHandler(res => {
+            document.getElementById("status").innerText = "Submitted: " + (res.submission_id || "OK");
+          })
+          .withFailureHandler(err => {
+            document.getElementById("status").innerText = "Submit failed: " + err.message;
+          })
+          .submitForm(FORM_CODE.toUpperCase(), payload);
+      });
+    </script>
+  </body>
+</html>

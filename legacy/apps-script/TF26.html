@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <base target="_top" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TF26</title>
+    <?!= HtmlService.createHtmlOutputFromFile('shared-styles').getContent(); ?>
+  </head>
+  <body>
+    <div class="form-wrapper">
+      <div class="form-title">TF26</div>
+      <div class="form-subtitle">Plagiarism Check</div>
+
+      <div class="form-section">
+        <div class="form-group">
+          <label class="form-label">Name of Requestor</label>
+          <div class="form-row">
+            <div class="form-col">
+              <input
+                type="text"
+                id="requestor_first_name"
+                placeholder="First Name"
+              />
+              <div class="helper-text">First Name</div>
+            </div>
+            <div class="form-col">
+              <input
+                type="text"
+                id="requestor_last_name"
+                placeholder="Last Name"
+              />
+              <div class="helper-text">Last Name</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="requestor_email"
+            >Official Email ID of Requestor
+            <span class="required">*</span></label
+          >
+          <input type="email" id="requestor_email" required />
+          <div class="helper-text">Email ID of the person filling the form</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="team_name"
+            >Team Name <span class="required">*</span></label
+          >
+          <select id="team_name" required></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="company_name">Company Name</label>
+          <input type="text" id="company_name" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="project_name"
+            >Name of the Project <span class="required">*</span></label
+          >
+          <input type="text" id="project_name" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="project_code"
+            >PCODE <span class="required">*</span></label
+          >
+          <input type="text" id="project_code" required />
+          <div class="helper-text">
+            Refer the active PCODE list in your project sheet
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="category"
+            >Category <span class="required">*</span></label
+          >
+          <select id="category" required></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="sector"
+            >Sector <span class="required">*</span></label
+          >
+          <select id="sector" multiple required></select>
+          <div class="subtle-note">
+            Use Ctrl/Cmd to select multiple sectors.
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="eac_name"
+            >EAC Name <span class="required">*</span></label
+          >
+          <select id="eac_name" required></select>
+        </div>
+
+        <div class="section-heading">EIA Document Links</div>
+
+        <div class="form-group">
+          <label class="form-label" for="eia_word_link"
+            >Link to EIA MS Word file <span class="required">*</span></label
+          >
+          <input
+            type="url"
+            id="eia_word_link"
+            placeholder="Paste link to .docx file"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="eia_gdoc_link"
+            >Link to EIA Google Doc file <span class="required">*</span></label
+          >
+          <input
+            type="url"
+            id="eia_gdoc_link"
+            placeholder="Paste Google Doc link"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="eia_pdf_link"
+            >Link to EIA PDF file <span class="required">*</span></label
+          >
+          <input
+            type="url"
+            id="eia_pdf_link"
+            placeholder="Paste link to .pdf file"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="eia_single_file_with_annexure_link"
+            >Link to EIA Single File with Annexure
+            <span class="required">*</span></label
+          >
+          <input
+            type="url"
+            id="eia_single_file_with_annexure_link"
+            placeholder="Paste link to consolidated file (EIA + annexures)"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="remarks">Remarks</label>
+          <textarea id="remarks" placeholder="if any"></textarea>
+        </div>
+      </div>
+
+      <button
+        class="btn-primary"
+        type="button"
+        id="submitBtn"
+        onclick="submitTF26()"
+      >
+        Submit
+      </button>
+    </div>
+
+    <script>
+      window.addEventListener("DOMContentLoaded", function () {
+        populateDropdowns();
+      });
+
+      function populateDropdowns() {
+        google.script.run
+          .withSuccessHandler(function (data) {
+            data = data || {};
+            fillSelect(
+              document.getElementById("team_name"),
+              data.team || [],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("category"),
+              data.category || [],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("eac_name"),
+              data.eac || [],
+              "Select",
+            );
+
+            // Sector is a multi-select; no leading placeholder option
+            fillMultiSelect(
+              document.getElementById("sector"),
+              data.sector || [],
+            );
+          })
+          .getDropdownData();
+      }
+
+      function fillSelect(select, items, placeholder) {
+        if (!select) return;
+        select.innerHTML = "";
+        const first = document.createElement("option");
+        first.value = "";
+        first.textContent = placeholder || "Select";
+        select.appendChild(first);
+
+        (items || []).forEach(function (item) {
+          const option = document.createElement("option");
+          option.value = item;
+          option.textContent = item;
+          select.appendChild(option);
+        });
+      }
+
+      function fillMultiSelect(select, items) {
+        if (!select) return;
+        select.innerHTML = "";
+        (items || []).forEach(function (item) {
+          const option = document.createElement("option");
+          option.value = item;
+          option.textContent = item;
+          select.appendChild(option);
+        });
+      }
+
+      function validateTF26(p) {
+        const missing = [];
+        if (!p.requestor_email) missing.push("Official Email ID of Requestor");
+        if (!p.team_name) missing.push("Team Name");
+        if (!p.project_name) missing.push("Name of the Project");
+        if (!p.project_code) missing.push("PCODE");
+        if (!p.category) missing.push("Category");
+        if (!p.sector) missing.push("Sector");
+        if (!p.eac_name) missing.push("EAC Name");
+        if (!p.eia_word_link) missing.push("Link to EIA MS Word file");
+        if (!p.eia_gdoc_link) missing.push("Link to EIA Google Doc file");
+        if (!p.eia_pdf_link) missing.push("Link to EIA PDF file");
+        if (!p.eia_single_file_with_annexure_link)
+          missing.push("Link to EIA Single File with Annexure");
+
+        if (missing.length) {
+          alert("Please fill:\n\n" + missing.join("\n"));
+          return false;
+        }
+        return true;
+      }
+
+      let isSubmitting = false;
+
+      function submitTF26() {
+        if (isSubmitting) return; // blocks double-clicks instantly
+        isSubmitting = true;
+        const submitBtn = document.getElementById("submitBtn");
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Submitting...";
+
+        const payload = {
+          requestor_first_name: document.getElementById("requestor_first_name")
+            .value,
+          requestor_last_name: document.getElementById("requestor_last_name")
+            .value,
+          requestor_email: document.getElementById("requestor_email").value,
+          team_name: document.getElementById("team_name").value,
+          company_name: document.getElementById("company_name").value,
+          project_name: document.getElementById("project_name").value,
+          project_code: document.getElementById("project_code").value,
+          category: document.getElementById("category").value,
+          sector: Array.from(document.getElementById("sector").selectedOptions)
+            .map((o) => o.value)
+            .join(", "),
+          eac_name: document.getElementById("eac_name").value,
+          eia_word_link: document.getElementById("eia_word_link").value,
+          eia_gdoc_link: document.getElementById("eia_gdoc_link").value,
+          eia_pdf_link: document.getElementById("eia_pdf_link").value,
+          eia_single_file_with_annexure_link: document.getElementById(
+            "eia_single_file_with_annexure_link",
+          ).value,
+          remarks: document.getElementById("remarks").value,
+        };
+
+        if (!validateTF26(payload)) {
+          isSubmitting = false;
+          submitBtn.disabled = false;
+          submitBtn.innerText = "Submit";
+          return;
+        }
+
+        google.script.run
+          .withSuccessHandler(function (res) {
+            console.log("SUCCESS HANDLER RUNNING");
+            document.body.innerHTML = res.thankYouHtml;
+          })
+          .withFailureHandler(function (err) {
+            alert("Submission failed: " + err.message);
+            isSubmitting = false;
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Submit";
+          })
+          .submitTF26(payload);
+      }
+    </script>
+  </body>
+</html>

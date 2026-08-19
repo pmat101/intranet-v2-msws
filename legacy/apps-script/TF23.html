@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <base target="_top" />
+  <title>TF – Government Fee</title>
+
+  <?!= HtmlService.createHtmlOutputFromFile('sharedStyles').getContent(); ?>
+  <?!= HtmlService.createHtmlOutputFromFile('sharedComponents').getContent(); ?>
+</head>
+
+<body>
+<div class="form-wrapper">
+  <div class="form-title">TF – Government Fee</div>
+  <div class="form-subtitle">Technical Format for Government Fee</div>
+
+  <div id="prefill-area"></div>
+  <div id="f_selects"></div>
+  <div id="f_fields"></div>
+
+  <div style="margin-top:20px">
+    <button class="btn-primary" id="submitBtn">Submit</button>
+    <span id="status" class="text-muted" style="margin-left:12px"></span>
+  </div>
+</div>
+
+<script>
+const FORM_CODE = "TF_GOVT_FEE";
+const c = document.getElementById("f_fields");
+
+/* ================= DATE ================= */
+renderField(c,{
+  label:"Date",
+  id:"date",
+  type:"date",
+  required:true
+});
+
+/* ================= REQUESTOR DETAILS ================= */
+renderField(c,{ label:"Requestor First Name", id:"req_first_name" });
+renderField(c,{ label:"Requestor Last Name", id:"req_last_name" });
+
+renderField(c,{
+  label:"Official Email ID of Requestor",
+  id:"req_email",
+  type:"email",
+  required:true
+});
+
+renderField(c,{ label:"Team Name", id:"team_name" });
+
+renderField(c,{
+  label:"Team Email ID",
+  id:"team_email",
+  type:"email",
+  required:true
+});
+
+/* ================= TEAM HEAD ================= */
+renderField(c,{ label:"Team Head First Name", id:"team_head_first" });
+renderField(c,{ label:"Team Head Last Name", id:"team_head_last" });
+
+renderField(c,{
+  label:"Team Head Email ID",
+  id:"team_head_email",
+  type:"email",
+  required:true
+});
+
+/* ================= BH DETAILS ================= */
+renderField(c,{ label:"BH Name", id:"bh_name" });
+
+/* ================= COMPANY / CLIENT ================= */
+renderField(c,{
+  label:"Company Name",
+  id:"company_name",
+  required:true
+});
+
+renderField(c,{ label:"Client First Name", id:"client_first_name" });
+renderField(c,{ label:"Client Last Name", id:"client_last_name" });
+
+/* ================= PROJECT ================= */
+renderField(c,{
+  label:"Project Name",
+  id:"project_name",
+  required:true
+});
+
+renderField(c,{
+  label:"PCODE",
+  id:"pcode",
+  required:true,
+  placeholder:"Enter PCODE"
+});
+
+/* ================= GOVERNMENT DETAILS ================= */
+renderField(c,{
+  label:"State Pollution Control Board",
+  id:"spcb",
+  required:true
+});
+
+renderField(c,{
+  label:"Application Type",
+  id:"application_type"
+});
+
+renderField(c,{
+  label:"Amount",
+  id:"amount",
+  type:"number",
+  required:true
+});
+
+renderField(c,{
+  label:"Timeline",
+  id:"timeline"
+});
+
+/* ================= EXPENSES ================= */
+renderField(c,{
+  label:"Expenses borne by",
+  id:"expenses_borne_by",
+  type:"radio",
+  options:["Client","Perfact"],
+  required:true
+});
+
+/* ================= REMARKS ================= */
+renderField(c,{
+  label:"Remarks",
+  id:"remarks",
+  type:"textarea"
+});
+
+/* ================= SUBMIT ================= */
+document.getElementById("submitBtn").addEventListener("click",function(){
+  const payload = {};
+  document.querySelectorAll("input, textarea, select").forEach(el=>{
+    if(el.id && el.type !== "file"){
+      payload[el.id] = el.value;
+    }
+  });
+
+  google.script.run
+    .withSuccessHandler(function(){
+      document.getElementById("status").innerText =
+        "Form submitted successfully";
+    })
+    .withFailureHandler(function(err){
+      document.getElementById("status").innerText =
+        "Submit failed: " + err.message;
+    })
+    .submitForm(FORM_CODE, payload);
+});
+</script>
+</body>
+</html>

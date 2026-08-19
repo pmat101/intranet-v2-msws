@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <base target="_top" />
+    <title>HR02</title>
+
+    <?!= HtmlService.createHtmlOutputFromFile('sharedStyles').getContent(); ?>
+    <?!= HtmlService.createHtmlOutputFromFile('sharedComponents').getContent(); ?>
+  </head>
+
+  <body>
+    <div class="form-wrapper">
+      <div class="form-title">HR02</div>
+      <div class="form-subtitle">
+        PG Exit Interview Form
+      </div>
+
+      <div id="prefill-area"></div>
+      <div id="f_selects"></div>
+      <div id="f_fields"></div>
+
+      <div style="margin-top: 20px">
+        <button class="btn-primary" id="submitBtn">Submit</button>
+        <span id="status" class="text-muted" style="margin-left: 12px"></span>
+      </div>
+    </div>
+
+    <script>
+      const FORM_CODE = "hr02";
+
+      const c = document.getElementById("f_fields");
+      const selContainer = document.getElementById("f_selects");
+
+      // =========================
+      // BASIC DETAILS
+      // =========================
+
+      renderField(c, { label: "Name *Required", id: "emp_name" });
+
+      renderField(c, { label: "First Name", id: "first_name" });
+
+      renderField(c, { label: "Last Name", id: "last_name" });
+
+      renderField(c, { label: "Emp Code *Required", id: "emp_code" });
+
+      renderField(c, { label: "Designation", id: "designation" });
+
+      renderField(c, {
+        label: "Date of Joining *Required",
+        id: "date_of_joining",
+        type: "date",
+      });
+
+      renderField(c, {
+        label: "Date of Resignation *Required",
+        id: "date_of_resignation",
+        type: "date",
+      });
+
+      renderField(c, {
+        label: "Date of Relieving",
+        id: "date_of_relieving",
+        type: "date",
+      });
+
+      // =========================
+      // EXIT QUESTIONS
+      // =========================
+
+      renderField(c, {
+        label: "What is your main reason of Leaving?",
+        id: "reason_leaving",
+        type: "textarea",
+      });
+
+      renderField(c, {
+        label:
+          "What were your expectations when you joined the organization? Were they Fulfilled?",
+        id: "expectations_feedback",
+        type: "textarea",
+      });
+
+      renderField(c, {
+        label: "Were you clear with your Roles and Responsibilities?",
+        id: "role_clarity",
+        type: "textarea",
+      });
+
+      renderField(c, {
+        label:
+          "What training would you have liked or needed that you did not get, and what effect would this have had?",
+        id: "training_feedback",
+        type: "textarea",
+      });
+
+      renderField(c, {
+        label:
+          "Were you ever appreciated or recognized by your supervisor? If Yes, When and Why?",
+        id: "recognition_feedback",
+        type: "textarea",
+      });
+
+      renderField(c, {
+        label:
+          "What can you say about the way your performance was measured, and the feedback of your performance results?",
+        id: "performance_feedback",
+        type: "textarea",
+      });
+
+      renderField(c, {
+        label:
+          "What could you say about communications and relations between departments, and how these could be improved?",
+        id: "department_communication",
+        type: "textarea",
+      });
+
+      renderField(c, {
+        label:
+          "What has been good/enjoyable/satisfying for you in the time you spent with us?",
+        id: "positive_experience",
+        type: "textarea",
+      });
+
+      renderField(c, {
+        label:
+          "Do you have any best friend(s) at work, if yes, please give their names.",
+        id: "best_friends",
+        type: "textarea",
+      });
+
+      // =========================
+      // REJOIN OPTION
+      // =========================
+
+      const rejoinSelect = renderField(selContainer, {
+        label: "Would you like to Rejoin Perfact Group again?",
+        id: "rejoin_option",
+        type: "select",
+      });
+
+      rejoinSelect.appendChild(new Option("Select", ""));
+      rejoinSelect.appendChild(new Option("Yes", "Yes"));
+      rejoinSelect.appendChild(new Option("No", "No"));
+
+      // =========================
+      // DEPARTMENT RATINGS
+      // =========================
+
+      function addRatingField(label, id) {
+        const rating = renderField(selContainer, {
+          label: label,
+          id: id,
+          type: "select",
+        });
+
+        rating.appendChild(new Option("Select Rating", ""));
+        rating.appendChild(new Option("1 - Poor", "1"));
+        rating.appendChild(new Option("2 - Fair", "2"));
+        rating.appendChild(new Option("3 - Good", "3"));
+        rating.appendChild(new Option("4 - Very Good", "4"));
+        rating.appendChild(new Option("5 - Excellent", "5"));
+      }
+
+      addRatingField("Admin Department", "rating_admin");
+      addRatingField("IT services provided by Perfact", "rating_it");
+      addRatingField("HR Department", "rating_hr");
+      addRatingField("Accounts Department", "rating_accounts");
+      addRatingField("Housekeeping", "rating_housekeeping");
+
+      renderField(c, {
+        label: "Remarks / Suggestions, if any",
+        id: "remarks",
+        type: "textarea",
+      });
+
+      // =========================
+      // SUBMIT
+      // =========================
+
+      document
+        .getElementById("submitBtn")
+        .addEventListener("click", function () {
+          const payload = {};
+
+          document
+            .querySelectorAll("#f_fields input, #f_fields textarea, #f_selects select")
+            .forEach((el) => {
+              payload[el.id] = el.value || "";
+            });
+
+          google.script.run
+            .withSuccessHandler(function (res) {
+              document.getElementById("status").innerText =
+                "Submitted: " + (res.submission_id || "OK");
+            })
+            .withFailureHandler(function (err) {
+              document.getElementById("status").innerText =
+                "Submit failed: " + err.message;
+            })
+            .submitForm(FORM_CODE.toUpperCase(), payload);
+        });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,999 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <base target="_top" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TF06</title>
+    <?!= HtmlService.createHtmlOutputFromFile('shared-styles').getContent(); ?>
+    <style>
+      .subtle-note {
+        font-size: 12px;
+        color: #667085;
+        margin-top: 6px;
+      }
+      .section-divider {
+        margin: 22px 0 14px;
+        padding-top: 8px;
+        border-top: 1px solid #e5e7eb;
+        font-weight: 700;
+        font-size: 18px;
+      }
+      .inline-checks {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 10px 14px;
+      }
+      .inline-check {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 10px;
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        background: #fff;
+      }
+      .small-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="form-wrapper">
+      <div class="form-title">TF06</div>
+      <div class="form-subtitle">
+        Technical Format for Handover Uploading documents
+      </div>
+
+      <div class="form-section">
+        <div class="form-group">
+          <label class="form-label" for="date">Date</label>
+          <input type="date" id="date" />
+          <div class="helper-text">dd-MMM-yyyy</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Name</label>
+          <div class="form-row">
+            <div class="form-col">
+              <input
+                type="text"
+                id="requestor_first_name"
+                placeholder="First Name"
+              />
+              <div class="helper-text">First Name</div>
+            </div>
+            <div class="form-col">
+              <input
+                type="text"
+                id="requestor_last_name"
+                placeholder="Last Name"
+              />
+              <div class="helper-text">Last Name</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="official_email"
+            >Employee Email ID <span class="required">*</span></label
+          >
+          <input type="email" id="official_email" required />
+          <div class="helper-text">Email ID of the person filling the form</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="team_name"
+            >Team Name <span class="required">*</span></label
+          >
+          <select id="team_name" required></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="eia_coordinator_name"
+            >EIA Coordinator Name <span class="required">*</span></label
+          >
+          <select id="eia_coordinator_name" required></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label"
+            >QCC Reviewer name <span class="required">*</span></label
+          >
+          <div id="qcc-reviewers-wrap" class="form-grid"></div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label"
+            >C- Level Officer Name <span class="required">*</span></label
+          >
+          <select id="c_level_officer_name" required></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="project_name">Project Name</label>
+          <input type="text" id="project_name" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Project Proponent Name</label>
+          <div class="form-row">
+            <div class="form-col">
+              <input
+                type="text"
+                id="project_proponent_first_name"
+                placeholder="First Name"
+              />
+              <div class="helper-text">First Name</div>
+            </div>
+            <div class="form-col">
+              <input
+                type="text"
+                id="project_proponent_last_name"
+                placeholder="Last Name"
+              />
+              <div class="helper-text">Last Name</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="project_code"
+            >Project Code <span class="required">*</span></label
+          >
+          <input type="text" id="project_code" required />
+          <div class="helper-text">
+            Refer the active PCODE list used in your database
+          </div>
+        </div>
+
+        <div class="small-grid">
+          <div class="form-group">
+            <label class="form-label" for="proposed_project_cost_lacs"
+              >Proposed Project Cost (in lacs)</label
+            >
+            <input type="number" id="proposed_project_cost_lacs" step="0.01" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="existing_project_cost_lacs"
+              >Exisiting Project Cost (in lacs)</label
+            >
+            <input type="number" id="existing_project_cost_lacs" step="0.01" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="project_cost_after_proposed_ec_lacs"
+              >Project Cost after getting proposed EC (in lacs)</label
+            >
+            <input
+              type="number"
+              id="project_cost_after_proposed_ec_lacs"
+              step="0.01"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="cer_budget_lacs"
+              >CER Budget (in lacs)</label
+            >
+            <input type="number" id="cer_budget_lacs" step="0.01" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="project_location"
+            >Project Location</label
+          >
+          <input type="text" id="project_location" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Location Type</label>
+          <div class="form-row">
+            <div class="form-col-choice">
+              <input
+                type="radio"
+                id="location_greenfield"
+                name="location_type"
+                value="Greenfield"
+              />
+              <label for="location_greenfield">Greenfield</label>
+            </div>
+            <div class="form-col-choice">
+              <input
+                type="radio"
+                id="location_brownfield"
+                name="location_type"
+                value="Brownfield"
+              />
+              <label for="location_brownfield">Brownfield</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="small-grid">
+          <div class="form-group">
+            <label class="form-label" for="plot_area_sq_m">Plot Area</label>
+            <input type="text" id="plot_area_sq_m" />
+            <div class="helper-text">in Square Meter</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="built_up_area_sq_m"
+              >Built Up area</label
+            >
+            <input type="text" id="built_up_area_sq_m" />
+            <div class="helper-text">in Square Meter</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="capacity">Capacity</label>
+            <input type="text" id="capacity" />
+            <div class="helper-text">
+              For Industry cases- mention capacity in TPA/ TPM. For Mining
+              cases- mention capacity in ML
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="emp_cost_capital_lacs"
+              >EMP Cost (in Lacs)- Capital</label
+            >
+            <input type="number" id="emp_cost_capital_lacs" step="0.01" />
+          </div>
+        </div>
+
+        <div class="small-grid">
+          <div class="form-group">
+            <label class="form-label" for="category">Category</label>
+            <select id="category"></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="activity">Activity</label>
+            <input type="text" id="activity" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="major_sector">Major sector</label>
+            <select id="major_sector"></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="minor_sector">Minor sector</label>
+            <select id="minor_sector"></select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label"
+            >PH Applicable <span class="required">*</span></label
+          >
+          <div class="form-row">
+            <div class="form-col-choice">
+              <input
+                type="radio"
+                id="ph_yes"
+                name="ph_applicable"
+                value="Yes"
+              />
+              <label for="ph_yes">Yes</label>
+            </div>
+            <div class="form-col-choice">
+              <input type="radio" id="ph_no" name="ph_applicable" value="No" />
+              <label for="ph_no">No</label>
+            </div>
+          </div>
+        </div>
+
+        <div id="ph-block" style="display: none">
+          <div class="small-grid">
+            <div class="form-group">
+              <label class="form-label" for="ph_mom_english_url"
+                >PH MoM (english) <span class="required">*</span></label
+              >
+              <input
+                type="url"
+                id="ph_mom_english_url"
+                placeholder="Paste link here"
+              />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="ph_mom_local_language_url"
+                >PH MoM (local language) <span class="required">*</span></label
+              >
+              <input
+                type="url"
+                id="ph_mom_local_language_url"
+                placeholder="Paste link here"
+              />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="summary_of_ph_mom_url"
+                >Summary of PH MoM <span class="required">*</span></label
+              >
+              <input
+                type="url"
+                id="summary_of_ph_mom_url"
+                placeholder="Paste link here"
+              />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="compliance_of_ph_url"
+                >Compliance of PH <span class="required">*</span></label
+              >
+              <input
+                type="url"
+                id="compliance_of_ph_url"
+                placeholder="Paste link here"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div class="small-grid">
+          <div class="form-group">
+            <label class="form-label" for="link_to_registration_details_pdf"
+              >Link to Registration Details - PDF</label
+            >
+            <input
+              type="url"
+              id="link_to_registration_details_pdf"
+              placeholder="Paste link here"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="parivesh_login_details"
+              >Parivesh Login Details</label
+            >
+            <textarea id="parivesh_login_details"></textarea>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="type_of_uploading"
+            >Type of Uploading</label
+          >
+          <select id="type_of_uploading"></select>
+          <div
+            id="type_of_uploading_other_wrap"
+            style="display: none; margin-top: 10px"
+          >
+            <input
+              type="text"
+              id="type_of_uploading_other"
+              placeholder="If Others, Pls Specify"
+            />
+          </div>
+        </div>
+
+        <div class="small-grid">
+          <div class="form-group">
+            <label class="form-label" for="eac_committee">EAC Committee</label>
+            <input type="text" id="eac_committee" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="proposal_no">Proposal No.</label>
+            <input type="text" id="proposal_no" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="final_fae_list_url"
+              >Final FAE list</label
+            >
+            <input
+              type="url"
+              id="final_fae_list_url"
+              placeholder="Paste link here"
+            />
+          </div>
+        </div>
+
+        <div class="section-divider">Attachments</div>
+
+        <div id="attachment-fields"></div>
+
+        <div class="form-group">
+          <label class="form-label" for="baseline_season"
+            >Baseline Season <span class="required">*</span></label
+          >
+          <select id="baseline_season" required></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="issues_in_uploading_or_pendency"
+            >Issues in uploading or pendency/ any deliberate compromise during
+            the uploading</label
+          >
+          <textarea id="issues_in_uploading_or_pendency"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="remarks">Remarks. if any</label>
+          <textarea id="remarks"></textarea>
+        </div>
+      </div>
+
+      <button
+        class="btn-primary"
+        type="button"
+        id="submitBtn"
+        onclick="submitTF06()"
+      >
+        Submit
+      </button>
+    </div>
+
+    <script>
+      const attachmentFields = [
+        ["kml_with_project_boundary_url", "KML with project boundary", true],
+        ["emp_slides_url", "EMP Slides", false],
+        ["draft_form_i_part_a_pdf_url", "Draft Form-I (part A)- PDF", false],
+        [
+          "draft_form_i_part_a_docx_link",
+          "Link to Draft Form-I (part A)- Docx",
+          false,
+        ],
+        ["draft_form_i_part_b_pdf_url", "Draft Form-I (part B)- PDF", false],
+        [
+          "draft_form_i_part_b_docx_link",
+          "Link to Draft Form-I (part B)- Docx",
+          false,
+        ],
+        ["draft_form_i_part_c_pdf_url", "Draft Form-I (part C)- PDF", false],
+        [
+          "draft_form_i_part_c_docx_link",
+          "Link to Draft Form-I (part C)- Docx",
+          false,
+        ],
+        ["life_cycle_assessment_pdf_url", "Life Cycle Assessment- PDF", true],
+        [
+          "life_cycle_assessment_pptx_link",
+          "Link to Life Cycle Assessment- PPTX",
+          true,
+        ],
+        ["wlcp_url", "WildLife Conservation Plan (WLCP)", false],
+        ["distance_certification_url", "Distance certification", false],
+        ["nbwl_url", "National Board for Wildlife (NBWL)", false],
+        ["forest_clearance_url", "Forest Clearance", false],
+        ["water_balance_pdf_url", "Water Balance- PDF", true],
+        [
+          "waste_tables_pdf_url",
+          "Hazardous waste, Non-hazardous waste and other waste tables- PDF",
+          true,
+        ],
+        ["process_emissions_pdf_url", "Process emissions with APCM- PDF", true],
+        ["utility_emissions_pdf_url", "Utility emissions with APCM- PDF", true],
+        [
+          "baseline_location_maps_url",
+          "Baseline location Maps with sampling details",
+          true,
+        ],
+        ["master_ppt_pdf_url", "Master PPT- PDF", true],
+        ["master_ppt_link", "Link to Master PPT", true],
+        ["cover_letter_pdf_url", "Cover Letter- PDF", false],
+        ["cover_letter_docx_link", "Link to Cover Letter- Docx", false],
+        ["plans_annexure_pdf_url", "Plans Annexure- PDF", false],
+        ["plans_annexure_docx_link", "Link to Plans Annexure- Docx", false],
+        ["annexure_pdf_url", "Annexure - PDF", false],
+        ["risk_assessment_pdf_url", "Risk Assessment- PDF", false],
+        ["risk_assessment_docx_link", "Link to Risk Assessment- Docx", false],
+        [
+          "signed_copy_initial_pages_url",
+          "Signed Copy of Initial Pages",
+          false,
+        ],
+        [
+          "emp_eia_single_file_before_annexure_pdf_url",
+          "EMP/EIA (Single File Before Annexure)- PDF",
+          false,
+        ],
+        [
+          "emp_eia_single_file_before_annexure_docx_link",
+          "Link to EMP/EIA (Single File Before Annexure)- Docx",
+          false,
+        ],
+        ["conceptual_plan_pfr_pdf_url", "Conceptual Plan/ PFR- PDF", false],
+        [
+          "conceptual_plan_pfr_docx_link",
+          "Link to Conceptual Plan/ PFR- DOCX",
+          false,
+        ],
+        ["layout_pdf_url", "Layout - PDF", false],
+        ["additional_files_pdf_url", "Additional Files- PDF", false],
+        ["additional_files_docx_link", "Link to Additional Files- Docx", false],
+        ["board_resolution_pdf_url", "Board Resolution- PDF", false],
+        ["board_resolution_docx_link", "Link to Board Resolution- Docx", false],
+        ["uploading_folder_pdf_link", "Link to Uploading Folder- PDF", false],
+        ["uploading_folder_docx_link", "Link to Uploading Folder- DOCX", false],
+        ["single_file_pdf_url", "Single File- PDF", false],
+        ["single_file_docx_link", "Link to Single File- Docx", false],
+        [
+          "additional_critical_files_pdf_link",
+          "Link to Additional Critical Files- PDF",
+          false,
+        ],
+        [
+          "additional_critical_files_docx_link",
+          "Link to Additional Critical Files- DOCX",
+          false,
+        ],
+        [
+          "authorisation_board_resolution_pdf_url",
+          "Authorisation of the Concerned person making application (Board resolution)- PDF",
+          false,
+        ],
+        [
+          "authorisation_board_resolution_docx_link",
+          "Link to Authorisation of the Concerned person making application (Board resolution)- DOCX",
+          false,
+        ],
+      ];
+
+      window.addEventListener("DOMContentLoaded", function () {
+        populateDropdowns();
+        renderAttachmentFields();
+        bindEvents();
+      });
+
+      function populateDropdowns() {
+        google.script.run
+          .withSuccessHandler(function (data) {
+            data = data || {};
+            fillSelect(
+              document.getElementById("team_name"),
+              data.team || [],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("eia_coordinator_name"),
+              data.eiaCoordinator || [],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("c_level_officer_name"),
+              data.csuite || [],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("category"),
+              data.category || [],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("major_sector"),
+              data.sector || [],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("minor_sector"),
+              data.sector || [],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("type_of_uploading"),
+              data.tf06TypeOfUploading || [
+                "EC",
+                "TOR",
+                "EIA",
+                "ADS",
+                "EDS",
+                "Others",
+              ],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("baseline_season"),
+              data.baselineSeason || [],
+              "Select",
+            );
+            renderQccReviewers(data.qccReviewer || []);
+          })
+          .getDropdownData();
+      }
+
+      function renderQccReviewers(items) {
+        const wrap = document.getElementById("qcc-reviewers-wrap");
+        if (!wrap) return;
+
+        wrap.innerHTML = "";
+        (items || []).forEach(function (name, i) {
+          const id = "qcc_" + i;
+          const item = document.createElement("div");
+          item.className = "form-col-choice";
+          item.innerHTML = `
+            <input type="checkbox" id="${id}" name="qcc-reviewer" value="${name}">
+            <label for="${id}">${name}</label>
+          `;
+          wrap.appendChild(item);
+        });
+      }
+
+      function fillSelect(select, items, placeholder) {
+        if (!select) return;
+        select.innerHTML = "";
+        const first = document.createElement("option");
+        first.value = "";
+        first.textContent = placeholder || "Select";
+        select.appendChild(first);
+
+        (items || []).forEach(function (item) {
+          const option = document.createElement("option");
+          option.value = item;
+          option.textContent = item;
+          select.appendChild(option);
+        });
+      }
+
+      function renderAttachmentFields() {
+        const wrap = document.getElementById("attachment-fields");
+        wrap.innerHTML = "";
+
+        attachmentFields.forEach(function ([id, label, required]) {
+          const div = document.createElement("div");
+          div.className = "form-group";
+          div.innerHTML = `
+            <label class="form-label" for="${id}">
+              ${label}${required ? ' <span class="required">*</span>' : ""}
+            </label>
+            <input type="url" id="${id}" placeholder="Paste link here" ${required ? "required" : ""} />
+          `;
+          wrap.appendChild(div);
+        });
+      }
+
+      function getRadioValue(name) {
+        const checked = document.querySelector(`input[name="${name}"]:checked`);
+        return checked ? checked.value : "";
+      }
+
+      function bindOther(selectId, wrapId, inputId) {
+        const select = document.getElementById(selectId);
+        const wrap = document.getElementById(wrapId);
+        const input = document.getElementById(inputId);
+
+        function sync() {
+          const show = ["other", "others"].includes(
+            String(select.value || "").toLowerCase(),
+          );
+          wrap.style.display = show ? "block" : "none";
+          if (!show) input.value = "";
+        }
+
+        select.addEventListener("change", sync);
+        sync();
+      }
+
+      function bindEvents() {
+        bindOther(
+          "type_of_uploading",
+          "type_of_uploading_other_wrap",
+          "type_of_uploading_other",
+        );
+
+        document
+          .querySelectorAll('input[name="ph_applicable"]')
+          .forEach(function (radio) {
+            radio.addEventListener("change", syncPhBlock);
+          });
+
+        syncPhBlock();
+      }
+
+      function syncPhBlock() {
+        const show = getRadioValue("ph_applicable") === "Yes";
+        const block = document.getElementById("ph-block");
+        block.style.display = show ? "block" : "none";
+
+        if (!show) {
+          document.getElementById("ph_mom_english_url").value = "";
+          document.getElementById("ph_mom_local_language_url").value = "";
+          document.getElementById("summary_of_ph_mom_url").value = "";
+          document.getElementById("compliance_of_ph_url").value = "";
+        }
+      }
+
+      function getCheckedValues(name) {
+        return Array.from(
+          document.querySelectorAll(`input[name="${name}"]:checked`),
+        )
+          .map(function (el) {
+            return el.value;
+          })
+          .join(", ");
+      }
+
+      function validateTF06(p) {
+        const missing = [];
+
+        if (!p.official_email) missing.push("Employee Email ID");
+        if (!p.team_name) missing.push("Team Name");
+        if (!p.eia_coordinator_name) missing.push("EIA Coordinator Name");
+        if (!p.c_level_officer_name) missing.push("C-Level Officer Name");
+        if (!p.project_code) missing.push("Project Code");
+        if (!p.ph_applicable) missing.push("PH Applicable");
+        if (!p.type_of_uploading) missing.push("Type of Uploading");
+        if (!p.eac_committee) missing.push("EAC Committee");
+        if (!p.proposal_no) missing.push("Proposal No.");
+        if (!p.link_to_registration_details_pdf)
+          missing.push("Link to Registration Details - PDF");
+        if (!p.final_fae_list_url) missing.push("Final FAE list");
+        if (!p.baseline_season) missing.push("Baseline Season");
+        if (!p.master_ppt_pdf_url) missing.push("Master PPT- PDF");
+
+        if (
+          p.type_of_uploading &&
+          ["other", "others"].includes(
+            String(p.type_of_uploading).toLowerCase(),
+          ) &&
+          !p.type_of_uploading_other
+        ) {
+          missing.push("If Others, Pls Specify");
+        }
+
+        if (p.ph_applicable === "Yes") {
+          [
+            ["ph_mom_english_url", "PH MoM (english)"],
+            ["ph_mom_local_language_url", "PH MoM (local language)"],
+            ["summary_of_ph_mom_url", "Summary of PH MoM"],
+            ["compliance_of_ph_url", "Compliance of PH"],
+          ].forEach(function ([key, label]) {
+            if (!p[key]) missing.push(label);
+          });
+        }
+
+        [
+          ["kml_with_project_boundary_url", "KML with project boundary"],
+          ["life_cycle_assessment_pdf_url", "Life Cycle Assessment- PDF"],
+          [
+            "life_cycle_assessment_pptx_link",
+            "Link to Life Cycle Assessment- PPTX",
+          ],
+          ["water_balance_pdf_url", "Water Balance- PDF"],
+          [
+            "waste_tables_pdf_url",
+            "Hazardous waste, Non-hazardous waste and other waste tables- PDF",
+          ],
+          ["process_emissions_pdf_url", "Process emissions with APCM- PDF"],
+          ["utility_emissions_pdf_url", "Utility emissions with APCM- PDF"],
+          [
+            "baseline_location_maps_url",
+            "Baseline location Maps with sampling details",
+          ],
+          ["master_ppt_pdf_url", "Master PPT- PDF"],
+        ].forEach(function ([key, label]) {
+          if (!p[key]) missing.push(label);
+        });
+
+        if (missing.length) {
+          alert("Please fill:\n\n" + missing.join("\n"));
+          return false;
+        }
+
+        return true;
+      }
+
+      let isSubmitting = false;
+
+      function submitTF06() {
+        if (isSubmitting) return; // blocks double-clicks instantly
+        isSubmitting = true;
+        const submitBtn = document.getElementById("submitBtn");
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Submitting...";
+
+        const payload = {
+          date: document.getElementById("date").value,
+          requestor_first_name: document.getElementById("requestor_first_name")
+            .value,
+          requestor_last_name: document.getElementById("requestor_last_name")
+            .value,
+          official_email: document.getElementById("official_email").value,
+          team_name: document.getElementById("team_name").value,
+          eia_coordinator_name: document.getElementById("eia_coordinator_name")
+            .value,
+          qcc_reviewers: getCheckedValues("qcc-reviewer"),
+          c_level_officer_name: document.getElementById("c_level_officer_name")
+            .value,
+          project_name: document.getElementById("project_name").value,
+          project_proponent_first_name: document.getElementById(
+            "project_proponent_first_name",
+          ).value,
+          project_proponent_last_name: document.getElementById(
+            "project_proponent_last_name",
+          ).value,
+          project_code: document.getElementById("project_code").value,
+          proposed_project_cost_lacs: document.getElementById(
+            "proposed_project_cost_lacs",
+          ).value,
+          existing_project_cost_lacs: document.getElementById(
+            "existing_project_cost_lacs",
+          ).value,
+          project_cost_after_proposed_ec_lacs: document.getElementById(
+            "project_cost_after_proposed_ec_lacs",
+          ).value,
+          cer_budget_lacs: document.getElementById("cer_budget_lacs").value,
+          project_location: document.getElementById("project_location").value,
+          location_type: getRadioValue("location_type"),
+          plot_area_sq_m: document.getElementById("plot_area_sq_m").value,
+          built_up_area_sq_m:
+            document.getElementById("built_up_area_sq_m").value,
+          capacity: document.getElementById("capacity").value,
+          kml_with_project_boundary_url: document.getElementById(
+            "kml_with_project_boundary_url",
+          ).value,
+          emp_cost_capital_lacs: document.getElementById(
+            "emp_cost_capital_lacs",
+          ).value,
+          emp_slides_url: document.getElementById("emp_slides_url").value,
+          category: document.getElementById("category").value,
+          activity: document.getElementById("activity").value,
+          major_sector: document.getElementById("major_sector").value,
+          minor_sector: document.getElementById("minor_sector").value,
+          ph_applicable: getRadioValue("ph_applicable"),
+          ph_mom_english_url:
+            document.getElementById("ph_mom_english_url").value,
+          ph_mom_local_language_url: document.getElementById(
+            "ph_mom_local_language_url",
+          ).value,
+          summary_of_ph_mom_url: document.getElementById(
+            "summary_of_ph_mom_url",
+          ).value,
+          compliance_of_ph_url: document.getElementById("compliance_of_ph_url")
+            .value,
+          link_to_registration_details_pdf: document.getElementById(
+            "link_to_registration_details_pdf",
+          ).value,
+          parivesh_login_details: document.getElementById(
+            "parivesh_login_details",
+          ).value,
+          type_of_uploading: document.getElementById("type_of_uploading").value,
+          type_of_uploading_other: document.getElementById(
+            "type_of_uploading_other",
+          ).value,
+          eac_committee: document.getElementById("eac_committee").value,
+          proposal_no: document.getElementById("proposal_no").value,
+          final_fae_list_url:
+            document.getElementById("final_fae_list_url").value,
+
+          draft_form_i_part_a_pdf_url: document.getElementById(
+            "draft_form_i_part_a_pdf_url",
+          ).value,
+          draft_form_i_part_a_docx_link: document.getElementById(
+            "draft_form_i_part_a_docx_link",
+          ).value,
+          draft_form_i_part_b_pdf_url: document.getElementById(
+            "draft_form_i_part_b_pdf_url",
+          ).value,
+          draft_form_i_part_b_docx_link: document.getElementById(
+            "draft_form_i_part_b_docx_link",
+          ).value,
+          draft_form_i_part_c_pdf_url: document.getElementById(
+            "draft_form_i_part_c_pdf_url",
+          ).value,
+          draft_form_i_part_c_docx_link: document.getElementById(
+            "draft_form_i_part_c_docx_link",
+          ).value,
+          life_cycle_assessment_pdf_url: document.getElementById(
+            "life_cycle_assessment_pdf_url",
+          ).value,
+          life_cycle_assessment_pptx_link: document.getElementById(
+            "life_cycle_assessment_pptx_link",
+          ).value,
+          wlcp_url: document.getElementById("wlcp_url").value,
+          distance_certification_url: document.getElementById(
+            "distance_certification_url",
+          ).value,
+          nbwl_url: document.getElementById("nbwl_url").value,
+          forest_clearance_url: document.getElementById("forest_clearance_url")
+            .value,
+          water_balance_pdf_url: document.getElementById(
+            "water_balance_pdf_url",
+          ).value,
+          waste_tables_pdf_url: document.getElementById("waste_tables_pdf_url")
+            .value,
+          process_emissions_pdf_url: document.getElementById(
+            "process_emissions_pdf_url",
+          ).value,
+          utility_emissions_pdf_url: document.getElementById(
+            "utility_emissions_pdf_url",
+          ).value,
+          baseline_season: document.getElementById("baseline_season").value,
+          baseline_location_maps_url: document.getElementById(
+            "baseline_location_maps_url",
+          ).value,
+          master_ppt_pdf_url:
+            document.getElementById("master_ppt_pdf_url").value,
+          master_ppt_link: document.getElementById("master_ppt_link").value,
+          cover_letter_pdf_url: document.getElementById("cover_letter_pdf_url")
+            .value,
+          cover_letter_docx_link: document.getElementById(
+            "cover_letter_docx_link",
+          ).value,
+          plans_annexure_pdf_url: document.getElementById(
+            "plans_annexure_pdf_url",
+          ).value,
+          plans_annexure_docx_link: document.getElementById(
+            "plans_annexure_docx_link",
+          ).value,
+          annexure_pdf_url: document.getElementById("annexure_pdf_url").value,
+          risk_assessment_pdf_url: document.getElementById(
+            "risk_assessment_pdf_url",
+          ).value,
+          risk_assessment_docx_link: document.getElementById(
+            "risk_assessment_docx_link",
+          ).value,
+          signed_copy_initial_pages_url: document.getElementById(
+            "signed_copy_initial_pages_url",
+          ).value,
+          emp_eia_single_file_before_annexure_pdf_url: document.getElementById(
+            "emp_eia_single_file_before_annexure_pdf_url",
+          ).value,
+          emp_eia_single_file_before_annexure_docx_link:
+            document.getElementById(
+              "emp_eia_single_file_before_annexure_docx_link",
+            ).value,
+          conceptual_plan_pfr_pdf_url: document.getElementById(
+            "conceptual_plan_pfr_pdf_url",
+          ).value,
+          conceptual_plan_pfr_docx_link: document.getElementById(
+            "conceptual_plan_pfr_docx_link",
+          ).value,
+          layout_pdf_url: document.getElementById("layout_pdf_url").value,
+          additional_files_pdf_url: document.getElementById(
+            "additional_files_pdf_url",
+          ).value,
+          additional_files_docx_link: document.getElementById(
+            "additional_files_docx_link",
+          ).value,
+          board_resolution_pdf_url: document.getElementById(
+            "board_resolution_pdf_url",
+          ).value,
+          board_resolution_docx_link: document.getElementById(
+            "board_resolution_docx_link",
+          ).value,
+          uploading_folder_pdf_link: document.getElementById(
+            "uploading_folder_pdf_link",
+          ).value,
+          uploading_folder_docx_link: document.getElementById(
+            "uploading_folder_docx_link",
+          ).value,
+          single_file_pdf_url: document.getElementById("single_file_pdf_url")
+            .value,
+          single_file_docx_link: document.getElementById(
+            "single_file_docx_link",
+          ).value,
+          additional_critical_files_pdf_link: document.getElementById(
+            "additional_critical_files_pdf_link",
+          ).value,
+          additional_critical_files_docx_link: document.getElementById(
+            "additional_critical_files_docx_link",
+          ).value,
+          authorisation_board_resolution_pdf_url: document.getElementById(
+            "authorisation_board_resolution_pdf_url",
+          ).value,
+          authorisation_board_resolution_docx_link: document.getElementById(
+            "authorisation_board_resolution_docx_link",
+          ).value,
+          issues_in_uploading_or_pendency: document.getElementById(
+            "issues_in_uploading_or_pendency",
+          ).value,
+          remarks: document.getElementById("remarks").value,
+        };
+
+        if (!validateTF06(payload)) {
+          isSubmitting = false;
+          submitBtn.disabled = false;
+          submitBtn.innerText = "Submit";
+          return;
+        }
+
+        google.script.run
+          .withSuccessHandler(function (res) {
+            console.log("SUCCESS HANDLER RUNNING"); // 👈 debug
+            document.body.innerHTML = res.thankYouHtml;
+          })
+          .withFailureHandler(function (err) {
+            alert("Submission failed: " + err.message);
+            isSubmitting = false;
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Submit";
+          })
+          .submitTF06(payload);
+      }
+    </script>
+  </body>
+</html>

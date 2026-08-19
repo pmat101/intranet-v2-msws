@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <base target="_top" />
+  <title>TF21 – Accounts / Team Information</title>
+
+  <?!= HtmlService.createHtmlOutputFromFile('sharedStyles').getContent(); ?>
+  <?!= HtmlService.createHtmlOutputFromFile('sharedComponents').getContent(); ?>
+</head>
+
+<body>
+<div class="form-wrapper">
+  <div class="form-title">TF21</div>
+  <div class="form-subtitle">Accounts / Team Information</div>
+
+  <div id="prefill-area"></div>
+  <div id="f_selects"></div>
+  <div id="f_fields"></div>
+
+  <div style="margin-top:20px">
+    <button class="btn-primary" id="submitBtn">Submit</button>
+    <span id="status" class="text-muted" style="margin-left:12px"></span>
+  </div>
+</div>
+
+<script>
+const FORM_CODE = "TF21";
+
+const c = document.getElementById("f_fields");
+
+/* ================= BASIC DETAILS ================= */
+
+renderField(c,{label:"Date",id:"date",type:"date",required:true});
+
+renderField(c,{label:"First Name",id:"first_name"});
+renderField(c,{label:"Last Name",id:"last_name"});
+renderField(c,{
+  label:"Employee Email ID",
+  id:"employee_email",
+  type:"email",
+  required:true
+});
+
+/* ================= TEAM HEAD ================= */
+
+renderField(c,{label:"Team Head First Name",id:"team_head_first"});
+renderField(c,{label:"Team Head Last Name",id:"team_head_last"});
+renderField(c,{
+  label:"Team Head Email ID",
+  id:"team_head_email",
+  type:"email",
+  required:true
+});
+
+/* ================= PROJECT ================= */
+
+renderField(c,{label:"Project Name",id:"project_name"});
+
+renderField(c,{
+  label:"Project Code",
+  id:"pcode",
+  required:true,
+  placeholder:"Enter PCODE"
+});
+
+/* ================= WORK TYPE ================= */
+
+renderField(c,{
+  label:"Type of Work",
+  id:"type_of_work"
+});
+
+renderField(c,{
+  label:"If Others, please specify",
+  id:"type_of_work_other"
+});
+
+/* ================= DOCUMENTS ================= */
+
+renderField(c,{
+  label:"Documents shared with Team",
+  id:"documents_shared",
+  required:true,
+  type:"textarea"
+});
+
+renderField(c,{
+  label:"Name of the Team with whom document is shared",
+  id:"shared_team_name"
+});
+
+/* ================= MILESTONE ================= */
+
+renderField(c,{
+  label:"Date of Milestone Achieved",
+  id:"milestone_date",
+  type:"date"
+});
+
+renderField(c,{
+  label:"Milestone Achieved",
+  id:"milestone_achieved"
+});
+
+renderField(c,{
+  label:"If others, please specify",
+  id:"milestone_other"
+});
+
+/* ================= LINKS & REMARKS ================= */
+
+renderField(c,{
+  label:"Link of documents shared / Milestone achieved",
+  id:"documents_link"
+});
+
+renderField(c,{
+  label:"Remarks (if any)",
+  id:"remarks",
+  type:"textarea"
+});
+
+/* ================= SUBMIT ================= */
+
+document.getElementById("submitBtn").addEventListener("click",function(){
+  const payload = {};
+  document.querySelectorAll("input, textarea, select").forEach(el=>{
+    if(el.id && el.type!=="file"){
+      payload[el.id] = el.value;
+    }
+  });
+
+  google.script.run
+    .withSuccessHandler(function(res){
+      document.getElementById("status").innerText =
+        "TF21 submitted successfully";
+    })
+    .withFailureHandler(function(err){
+      document.getElementById("status").innerText =
+        "Submit failed: " + err.message;
+    })
+    .submitForm(FORM_CODE,payload);
+});
+</script>
+</body>
+</html>

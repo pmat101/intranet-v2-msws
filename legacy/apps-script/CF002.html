@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <base target="_top" />
+    <title>CF002</title>
+
+    <?!= HtmlService.createHtmlOutputFromFile('sharedStyles').getContent(); ?>
+    <?!= HtmlService.createHtmlOutputFromFile('sharedComponents').getContent(); ?>
+  </head>
+
+  <body>
+    <div class="form-wrapper">
+      <div class="form-title">CF002</div>
+      <div class="form-subtitle">
+        Half Yearly Council Performance Reporting
+      </div>
+
+      <div id="prefill-area"></div>
+      <div id="f_selects"></div>
+      <div id="f_fields"></div>
+
+      <!-- ================= KRA SECTION ================= -->
+      <div class="form-section">
+        <div class="section-heading">KRA-wise Status</div>
+        <div id="kraBody"></div>
+        <button type="button" class="btn-secondary" id="addKraBtn">
+          + Add KRA
+        </button>
+      </div>
+
+      <!-- ================= WORKING GROUP SECTION ================= -->
+      <div class="form-section">
+        <div class="section-heading">Working Groups Overview</div>
+        <div id="wgBody"></div>
+        <button type="button" class="btn-secondary" id="addWgBtn">
+          + Add Working Group
+        </button>
+      </div>
+
+      <!-- ================= SUBMIT ================= -->
+      <div style="margin-top: 20px">
+        <button class="btn-primary" id="submitBtn">Submit</button>
+        <span id="status" class="text-muted" style="margin-left: 12px"></span>
+      </div>
+    </div>
+
+    <script>
+      const FORM_CODE = "cf002";
+
+      const c = document.getElementById("f_fields");
+
+      // =========================
+      // BASIC DETAILS
+      // =========================
+
+      renderField(c, {
+        label: "Council Name *Required",
+        id: "council_name",
+      });
+
+      renderField(c, {
+        label: "Reporting Period - From (MMM-yyyy)",
+        id: "report_from",
+        type: "month",
+      });
+
+      renderField(c, {
+        label: "Reporting Period - To (MMM-yyyy)",
+        id: "report_to",
+        type: "month",
+      });
+
+      renderField(c, {
+        label: "No. of Meetings Held",
+        id: "meetings_held",
+        type: "number",
+      });
+
+      // =========================
+      // KRA SECTION (MULTIPLE)
+      // =========================
+
+      document.getElementById("addKraBtn").addEventListener("click", function () {
+        const div = document.createElement("div");
+        div.className = "subform-row";
+
+        div.innerHTML = `
+          <input class="kra_title" placeholder="Title" />
+          <textarea class="kra_status" placeholder="Status / Action Taken"></textarea>
+          <textarea class="kra_achievements" placeholder="Achievements"></textarea>
+          <textarea class="kra_challenges" placeholder="Challenges Faced"></textarea>
+          <textarea class="kra_remarks" placeholder="Remarks"></textarea>
+          <button type="button" onclick="this.parentElement.remove()">Remove</button>
+        `;
+
+        document.getElementById("kraBody").appendChild(div);
+      });
+
+      function collectKra() {
+        return Array.from(document.querySelectorAll("#kraBody .subform-row"))
+          .map((row) => ({
+            title: row.querySelector(".kra_title")?.value || "",
+            status: row.querySelector(".kra_status")?.value || "",
+            achievements: row.querySelector(".kra_achievements")?.value || "",
+            challenges: row.querySelector(".kra_challenges")?.value || "",
+            remarks: row.querySelector(".kra_remarks")?.value || "",
+          }))
+          .filter((k) => k.title);
+      }
+
+      // =========================
+      // WORKING GROUP SECTION (MULTIPLE)
+      // =========================
+
+      document.getElementById("addWgBtn").addEventListener("click", function () {
+        const div = document.createElement("div");
+        div.className = "subform-row";
+
+        div.innerHTML = `
+          <input class="wg_name" placeholder="WG Name" />
+          <textarea class="wg_work" placeholder="Work Done in Reporting Period"></textarea>
+          <textarea class="wg_outcome" placeholder="Outcome or Deliverables"></textarea>
+          <textarea class="wg_challenges" placeholder="Challenges Faced"></textarea>
+          <textarea class="wg_remarks" placeholder="Remarks"></textarea>
+          <button type="button" onclick="this.parentElement.remove()">Remove</button>
+        `;
+
+        document.getElementById("wgBody").appendChild(div);
+      });
+
+      function collectWorkingGroups() {
+        return Array.from(document.querySelectorAll("#wgBody .subform-row"))
+          .map((row) => ({
+            name: row.querySelector(".wg_name")?.value || "",
+            work_done: row.querySelector(".wg_work")?.value || "",
+            outcome: row.querySelector(".wg_outcome")?.value || "",
+            challenges: row.querySelector(".wg_challenges")?.value || "",
+            remarks: row.querySelector(".wg_remarks")?.value || "",
+          }))
+          .filter((w) => w.name);
+      }
+
+      // =========================
+      // SELF ASSESSMENT
+      // =========================
+
+      renderField(c, {
+        label: "Self Assessment Rating",
+        id: "self_rating",
+      });
+
+      renderField(c, {
+        label: "Highlights",
+        id: "highlights",
+        type: "textarea",
+      });
+
+      renderField(c, {
+        label: "Lowlights",
+        id: "lowlights",
+        type: "textarea",
+      });
+
+      renderField(c, {
+        label: "Remarks / Suggestions to GC",
+        id: "gc_remarks",
+        type: "textarea",
+      });
+
+      // =========================
+      // SUBMIT
+      // =========================
+
+      document.getElementById("submitBtn").addEventListener("click", function () {
+        const payload = {};
+
+        document
+          .querySelectorAll("#f_fields input, #f_fields textarea")
+          .forEach((el) => {
+            payload[el.id] = el.value || "";
+          });
+
+        payload.kra_list = collectKra();
+        payload.working_groups = collectWorkingGroups();
+
+        google.script.run
+          .withSuccessHandler(function (res) {
+            document.getElementById("status").innerText =
+              "Submitted: " + (res.submission_id || "OK");
+          })
+          .withFailureHandler(function (err) {
+            document.getElementById("status").innerText =
+              "Submit failed: " + err.message;
+          })
+          .submitForm(FORM_CODE.toUpperCase(), payload);
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <base target="_top" />
+  <title>WPF02</title>
+
+  <?!= HtmlService.createHtmlOutputFromFile('sharedStyles').getContent(); ?>
+  <?!= HtmlService.createHtmlOutputFromFile('sharedComponents').getContent(); ?>
+</head>
+
+<body>
+<div class="form-wrapper">
+  <div class="form-title">WPF02</div>
+  <div class="form-subtitle">WPF - Lakes</div>
+
+  <div id="prefill-area"></div>
+  <div id="f_selects"></div>
+  <div id="f_fields"></div>
+
+  <div style="margin-top:20px">
+    <button class="btn-primary" id="submitBtn">Submit</button>
+    <span id="status" class="text-muted" style="margin-left:12px"></span>
+  </div>
+</div>
+
+<script>
+
+const FORM_CODE = "wpf02";
+const c = document.getElementById("f_fields");
+
+/* ================= BASIC DETAILS ================= */
+
+renderField(c,{
+  label:"Week Start Date *Required",
+  id:"week_start",
+  type:"date"
+});
+
+renderField(c,{
+  label:"Week End Date *Required",
+  id:"week_end",
+  type:"date"
+});
+
+/* ================= PROJECT DETAILS ================= */
+
+renderField(c,{
+  label:"LCA and CFP Projects Completed",
+  id:"projects_completed",
+  type:"textarea"
+});
+
+renderField(c,{
+  label:"LCA and CFP Projects Undergoing",
+  id:"projects_undergoing",
+  type:"textarea"
+});
+
+renderField(c,{
+  label:"Any Other R&D based tasks",
+  id:"rnd_tasks",
+  type:"textarea"
+});
+
+renderField(c,{
+  label:"Miscellaneous",
+  id:"miscellaneous",
+  type:"textarea"
+});
+
+/* ================= TARGETS ================= */
+
+renderField(c,{
+  label:"Targets planned this week",
+  id:"targets_planned",
+  type:"textarea"
+});
+
+renderField(c,{
+  label:"Targets achieved this week",
+  id:"targets_achieved",
+  type:"textarea"
+});
+
+renderField(c,{
+  label:"Projected targets for next week",
+  id:"projected_targets",
+  type:"textarea"
+});
+
+/* ================= PERFORMANCE ================= */
+
+renderField(c,{
+  label:"Highlights",
+  id:"highlights",
+  type:"textarea"
+});
+
+renderField(c,{
+  label:"Low Points",
+  id:"low_points",
+  type:"textarea"
+});
+
+renderField(c,{
+  label:"Challenges faced",
+  id:"challenges",
+  type:"textarea"
+});
+
+/* ================= FILE UPLOAD ================= */
+
+const fileWrapper = document.createElement("div");
+fileWrapper.className = "form-group";
+
+fileWrapper.innerHTML = `
+  <label>Upload Weekly PPT *Required</label>
+  <input type="file" id="weekly_ppt" accept=".ppt,.pptx,.pdf" />
+`;
+
+c.appendChild(fileWrapper);
+
+
+/* ================= SUBMIT ================= */
+
+document.getElementById("submitBtn").onclick = function(){
+
+  const payload = {};
+
+  document.querySelectorAll("#f_fields input, #f_fields textarea")
+  .forEach(el=>{
+    if(el.type !== "file"){
+      payload[el.id] = el.value || "";
+    }
+  });
+
+  const fileInput = document.getElementById("weekly_ppt");
+  payload.weekly_ppt_name = fileInput.files[0] ? fileInput.files[0].name : "";
+
+  google.script.run
+    .withSuccessHandler(res=>{
+      document.getElementById("status").innerText =
+        "Submitted: " + (res.submission_id || "OK");
+    })
+    .withFailureHandler(err=>{
+      document.getElementById("status").innerText =
+        "Submit failed: " + err.message;
+    })
+    .submitForm(FORM_CODE.toUpperCase(), payload);
+};
+
+</script>
+</body>
+</html>

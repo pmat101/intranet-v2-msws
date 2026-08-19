@@ -1,0 +1,724 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <base target="_top" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ADM05</title>
+    <?!= HtmlService.createHtmlOutputFromFile('shared-styles').getContent(); ?>
+    <style>
+      .section-divider {
+        margin: 22px 0 14px;
+        padding-top: 8px;
+        border-top: 1px solid #e5e7eb;
+        font-weight: 700;
+        font-size: 18px;
+      }
+      .subform-card {
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 14px;
+        background: #fff;
+        margin-bottom: 14px;
+      }
+      .subtle-note {
+        font-size: 12px;
+        color: #6b7280;
+        margin-top: 6px;
+      }
+      .conditional-block {
+        display: none;
+        margin-top: 12px;
+        padding-top: 12px;
+        border-top: 1px dashed #d1d5db;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="form-wrapper">
+      <div class="form-title">ADM05</div>
+      <div class="form-subtitle">Travel Booking Requisition form</div>
+
+      <div class="form-section">
+        <div class="form-group">
+          <label class="form-label" for="date">Date</label>
+          <input type="date" id="date" />
+          <div class="helper-text">dd-MMM-yyyy</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Name of the requestor</label>
+          <div class="form-row">
+            <div class="form-col">
+              <input
+                type="text"
+                id="requestor_first_name"
+                placeholder="First Name"
+              />
+              <div class="helper-text">First Name</div>
+            </div>
+            <div class="form-col">
+              <input
+                type="text"
+                id="requestor_last_name"
+                placeholder="Last Name"
+              />
+              <div class="helper-text">Last Name</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="requestor_email"
+            >Email Id of the requestor <span class="required">*</span></label
+          >
+          <input type="email" id="requestor_email" required />
+          <div class="helper-text">Email ID of the person filling the form</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="team_name"
+            >Team Name <span class="required">*</span></label
+          >
+          <select id="team_name" required></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="project_name"
+            >Project Name <span class="required">*</span></label
+          >
+          <input type="text" id="project_name" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="pcode"
+            >Project Code <span class="required">*</span></label
+          >
+          <input type="text" id="pcode" required />
+          <div class="helper-text">
+            Refer the active PCODE list in your project sheet
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="purpose_of_travel"
+            >Purpose of travel <span class="required">*</span></label
+          >
+          <select id="purpose_of_travel" required>
+            <option value="">Select</option>
+            <option value="Client meeting/ Site visit">
+              Client meeting/ Site visit
+            </option>
+            <option value="EAC meeting">EAC meeting</option>
+            <option value="Monitoring">Monitoring</option>
+            <option value="Public Hearing">Public Hearing</option>
+            <option value="SEAC meeting">SEAC meeting</option>
+            <option value="Others">Others</option>
+          </select>
+        </div>
+
+        <div class="form-group" id="purpose_other_wrap" style="display: none">
+          <label class="form-label" for="purpose_of_travel_other"
+            >If Others (Pls specify)</label
+          >
+          <input type="text" id="purpose_of_travel_other" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="trip_type"
+            >Trip Type <span class="required">*</span></label
+          >
+          <select id="trip_type" required>
+            <option value="">Select</option>
+            <option value="Round trip">Round trip (To &amp; Fro)</option>
+            <option value="One way">One way</option>
+          </select>
+          <div class="helper-text">
+            Select "One way" only if a return booking is not required (e.g.
+            client is arranging return, or return is by road with another team
+            member).
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-col">
+            <label class="form-label" for="visit_start_date"
+              >Visit Start Date <span class="required">*</span></label
+            >
+            <input type="date" id="visit_start_date" required />
+          </div>
+          <div class="form-col">
+            <label class="form-label" for="visit_end_date"
+              >Visit End Date</label
+            >
+            <input type="date" id="visit_end_date" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-col">
+            <label class="form-label" for="travel_in_scope_of"
+              >Travel in scope of <span class="required">*</span></label
+            >
+            <select id="travel_in_scope_of" required>
+              <option value="">Select</option>
+              <option value="Perfact Group">Perfact Group</option>
+              <option value="Reimbursement from Client">
+                Reimbursement from Client
+              </option>
+            </select>
+          </div>
+          <div class="form-col">
+            <label
+              class="form-label"
+              for="total_ticket_amount"
+              id="total_ticket_amount_label"
+              >Total Amount for ticket booking (To &amp; Fro)
+              <span class="required">*</span></label
+            >
+            <input
+              type="number"
+              id="total_ticket_amount"
+              step="0.01"
+              required
+            />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-col">
+            <label class="form-label" for="lodging_food_in_scope_of"
+              >Lodging/ Food in scope of <span class="required">*</span></label
+            >
+            <select id="lodging_food_in_scope_of" required>
+              <option value="">Select</option>
+              <option value="Perfact Group">Perfact Group</option>
+              <option value="Reimbursement from Client">
+                Reimbursement from Client
+              </option>
+            </select>
+          </div>
+          <div class="form-col">
+            <label class="form-label" for="total_hotel_amount"
+              >Total amount for Hotel booking</label
+            >
+            <input type="number" id="total_hotel_amount" step="0.01" />
+          </div>
+        </div>
+
+        <div class="section-divider">Travel booking details - Onward</div>
+        <div id="onward-section" class="subform-card"></div>
+
+        <div id="return-wrapper">
+          <div class="section-divider">Travel booking details - Return</div>
+          <div id="return-section" class="subform-card"></div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="remarks">Remarks if any</label>
+          <textarea id="remarks"></textarea>
+        </div>
+      </div>
+
+      <button
+        class="btn-primary"
+        type="button"
+        id="submitBtn"
+        onclick="submitADM05()"
+      >
+        Submit
+      </button>
+    </div>
+
+    <script>
+      let isSubmitting = false;
+
+      const PURPOSE_OTHER_VALUE = "Others";
+
+      window.addEventListener("DOMContentLoaded", function () {
+        populateDropdowns();
+        renderLegSection("onward");
+        renderLegSection("return");
+        bindPurposeOther();
+        bindTripType();
+      });
+
+      function populateDropdowns() {
+        google.script.run
+          .withSuccessHandler(function (data) {
+            data = data || {};
+            fillSelect(
+              document.getElementById("team_name"),
+              data.team || [],
+              "Select",
+            );
+          })
+          .getDropdownData();
+      }
+
+      function fillSelect(select, items, placeholder) {
+        if (!select) return;
+        select.innerHTML = "";
+        const first = document.createElement("option");
+        first.value = "";
+        first.textContent = placeholder || "Select";
+        select.appendChild(first);
+
+        (items || []).forEach(function (item) {
+          const option = document.createElement("option");
+          option.value = item;
+          option.textContent = item;
+          select.appendChild(option);
+        });
+      }
+
+      function bindPurposeOther() {
+        const purpose = document.getElementById("purpose_of_travel");
+        const wrap = document.getElementById("purpose_other_wrap");
+        const input = document.getElementById("purpose_of_travel_other");
+
+        function sync() {
+          const show = String(purpose.value || "").toLowerCase() === "others";
+          wrap.style.display = show ? "block" : "none";
+          if (!show) input.value = "";
+        }
+
+        purpose.addEventListener("change", sync);
+        sync();
+      }
+
+      function bindTripType() {
+        const tripType = document.getElementById("trip_type");
+        const returnWrap = document.getElementById("return-wrapper");
+        const ticketLabel = document.getElementById(
+          "total_ticket_amount_label",
+        );
+
+        function sync() {
+          const isOneWay = String(tripType.value || "") === "One way";
+          returnWrap.style.display = isOneWay ? "none" : "block";
+
+          if (ticketLabel) {
+            ticketLabel.innerHTML = isOneWay
+              ? 'Total Amount for ticket booking (One way) <span class="required">*</span>'
+              : 'Total Amount for ticket booking (To &amp; Fro) <span class="required">*</span>';
+          }
+        }
+
+        tripType.addEventListener("change", sync);
+        sync();
+      }
+
+      function renderLegSection(legKey) {
+        const wrap = document.getElementById(`${legKey}-section`);
+        wrap.innerHTML = `
+          <div class="form-group">
+            <label class="form-label" for="${legKey}_date_of_travel">Date of travel <span class="required">*</span></label>
+            <input type="date" id="${legKey}_date_of_travel" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="${legKey}_person_name">Name of person travelling <span class="required">*</span></label>
+            <input type="text" id="${legKey}_person_name" />
+          </div>
+
+          <div class="form-row">
+            <div class="form-col">
+              <label class="form-label" for="${legKey}_source_city">Source city name <span class="required">*</span></label>
+              <input type="text" id="${legKey}_source_city" />
+            </div>
+            <div class="form-col">
+              <label class="form-label" for="${legKey}_destination_city">Destination city name <span class="required">*</span></label>
+              <input type="text" id="${legKey}_destination_city" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="${legKey}_mode">Mode of travel <span class="required">*</span></label>
+            <select id="${legKey}_mode">
+              <option value="">Select</option>
+              <option value="air">Air</option>
+              <option value="bus">Bus</option>
+              <option value="train">Train</option>
+            </select>
+          </div>
+
+          <div id="${legKey}_air_block" class="conditional-block">
+            <div class="form-group"><label class="form-label">Airline name <span class="required">*</span></label><input type="text" id="${legKey}_airline_name" /></div>
+            <div class="form-group"><label class="form-label">Flight number <span class="required">*</span></label><input type="text" id="${legKey}_flight_number" /></div>
+            <div class="form-group"><label class="form-label">Departure terminal <span class="required">*</span></label><input type="text" id="${legKey}_departure_terminal" /></div>
+            <div class="form-row">
+              <div class="form-col"><label class="form-label">Departure time <span class="required">*</span></label><input type="time" id="${legKey}_departure_time" /></div>
+              <div class="form-col"><label class="form-label">Arrival time <span class="required">*</span></label><input type="time" id="${legKey}_arrival_time" /></div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Whether excess baggage required <span class="required">*</span></label>
+              <select id="${legKey}_excess_baggage_required">
+                <option value="">Select</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+            <div class="form-group"><label class="form-label">Ticket price per person <span class="required">*</span></label><input type="number" id="${legKey}_air_ticket_price" step="0.01" /></div>
+          </div>
+
+          <div id="${legKey}_train_block" class="conditional-block">
+            <div class="form-group"><label class="form-label">Train name and number <span class="required">*</span></label><input type="text" id="${legKey}_train_name_and_number" /></div>
+            <div class="form-group"><label class="form-label">Departure railway station name and code <span class="required">*</span></label><input type="text" id="${legKey}_departure_station" /></div>
+            <div class="form-group"><label class="form-label">Arrival railway station and code <span class="required">*</span></label><input type="text" id="${legKey}_arrival_station" /></div>
+            <div class="form-row">
+              <div class="form-col"><label class="form-label">Departure time <span class="required">*</span></label><input type="time" id="${legKey}_train_departure_time" /></div>
+              <div class="form-col"><label class="form-label">Arrival time <span class="required">*</span></label><input type="time" id="${legKey}_train_arrival_time" /></div>
+            </div>
+            <div class="form-group"><label class="form-label">Ticket price per person <span class="required">*</span></label><input type="number" id="${legKey}_train_ticket_price" step="0.01" /></div>
+          </div>
+
+          <div id="${legKey}_bus_block" class="conditional-block">
+            <div class="form-group"><label class="form-label">Bus service provider name <span class="required">*</span></label><input type="text" id="${legKey}_bus_provider_name" /></div>
+            <div class="form-group"><label class="form-label">Departure point <span class="required">*</span></label><input type="text" id="${legKey}_bus_departure_point" /></div>
+            <div class="form-row">
+              <div class="form-col"><label class="form-label">Departure time <span class="required">*</span></label><input type="time" id="${legKey}_bus_departure_time" /></div>
+              <div class="form-col"><label class="form-label">Arrival time <span class="required">*</span></label><input type="time" id="${legKey}_bus_arrival_time" /></div>
+            </div>
+            <div class="form-group"><label class="form-label">Per person ticket price <span class="required">*</span></label><input type="number" id="${legKey}_bus_ticket_price" step="0.01" /></div>
+          </div>
+          ${
+            legKey === "onward"
+              ? `
+  <div class="form-group" style="margin-top:12px;">
+    <label class="form-label" for="${legKey}_hotel_required">Hotel booking required</label>
+    <select id="${legKey}_hotel_required">
+      <option value="">Select</option>
+      <option value="Yes">Yes</option>
+      <option value="No">No</option>
+    </select>
+  </div>
+
+  <div id="${legKey}_hotel_block" class="conditional-block">
+    <div class="form-row">
+      <div class="form-col">
+        <label class="form-label">Check-in date <span class="required">*</span></label>
+        <input type="date" id="${legKey}_check_in_date" />
+      </div>
+
+      <div class="form-col">
+        <label class="form-label">Check-out date <span class="required">*</span></label>
+        <input type="date" id="${legKey}_check_out_date" />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Occupancy <span class="required">*</span></label>
+      <select id="${legKey}_occupancy">
+        <option value="">Select</option>
+        <option value="Single">Single</option>
+        <option value="Double">Double</option>
+        <option value="Triple">Triple</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Preferred hotel name <span class="required">*</span></label>
+      <input type="text" id="${legKey}_preferred_hotel_name" />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Tariff per night <span class="required">*</span></label>
+      <input type="number" id="${legKey}_tariff_per_night" step="0.01" />
+    </div>
+  </div>
+`
+              : ``
+          }
+        `;
+
+        const mode = document.getElementById(`${legKey}_mode`);
+        function syncMode() {
+          const value = String(mode.value || "").toLowerCase();
+          document.getElementById(`${legKey}_air_block`).style.display =
+            value === "air" ? "block" : "none";
+          document.getElementById(`${legKey}_train_block`).style.display =
+            value === "train" ? "block" : "none";
+          document.getElementById(`${legKey}_bus_block`).style.display =
+            value === "bus" ? "block" : "none";
+        }
+        mode.addEventListener("change", syncMode);
+        syncMode();
+        if (legKey === "onward") {
+          const hotel = document.getElementById(`${legKey}_hotel_required`);
+
+          function syncHotel() {
+            const show = String(hotel.value || "").toLowerCase() === "yes";
+
+            document.getElementById(`${legKey}_hotel_block`).style.display =
+              show ? "block" : "none";
+
+            if (!show) {
+              [
+                "check_in_date",
+                "check_out_date",
+                "occupancy",
+                "preferred_hotel_name",
+                "tariff_per_night",
+              ].forEach(function (k) {
+                const el = document.getElementById(`${legKey}_${k}`);
+                if (el) el.value = "";
+              });
+            }
+          }
+
+          hotel.addEventListener("change", syncHotel);
+          syncHotel();
+        }
+      }
+
+      function getLegData(legKey) {
+        const mode = (
+          document.getElementById(`${legKey}_mode`).value || ""
+        ).toLowerCase();
+        const ticketPriceId =
+          mode === "train"
+            ? `${legKey}_train_ticket_price`
+            : `${legKey}_air_ticket_price`;
+
+        return {
+          date_of_travel: document.getElementById(`${legKey}_date_of_travel`)
+            .value,
+          name_of_person_travelling: document.getElementById(
+            `${legKey}_person_name`,
+          ).value,
+          source_city_name: document.getElementById(`${legKey}_source_city`)
+            .value,
+          destination_city_name: document.getElementById(
+            `${legKey}_destination_city`,
+          ).value,
+          mode_of_travel: document.getElementById(`${legKey}_mode`).value,
+          airline_name: document.getElementById(`${legKey}_airline_name`).value,
+          flight_number: document.getElementById(`${legKey}_flight_number`)
+            .value,
+          departure_terminal: document.getElementById(
+            `${legKey}_departure_terminal`,
+          ).value,
+          departure_time: document.getElementById(`${legKey}_departure_time`)
+            .value,
+          arrival_time: document.getElementById(`${legKey}_arrival_time`).value,
+          excess_baggage_required: document.getElementById(
+            `${legKey}_excess_baggage_required`,
+          ).value,
+          ticket_price_per_person: document.getElementById(ticketPriceId).value,
+          train_name_and_number: document.getElementById(
+            `${legKey}_train_name_and_number`,
+          ).value,
+          departure_railway_station_name_and_code: document.getElementById(
+            `${legKey}_departure_station`,
+          ).value,
+          arrival_railway_station_name_and_code: document.getElementById(
+            `${legKey}_arrival_station`,
+          ).value,
+          train_departure_time: document.getElementById(
+            `${legKey}_train_departure_time`,
+          ).value,
+          train_arrival_time: document.getElementById(
+            `${legKey}_train_arrival_time`,
+          ).value,
+          bus_service_provider_name: document.getElementById(
+            `${legKey}_bus_provider_name`,
+          ).value,
+          bus_departure_point: document.getElementById(
+            `${legKey}_bus_departure_point`,
+          ).value,
+          bus_departure_time: document.getElementById(
+            `${legKey}_bus_departure_time`,
+          ).value,
+          bus_arrival_time: document.getElementById(
+            `${legKey}_bus_arrival_time`,
+          ).value,
+          bus_ticket_price_per_person: document.getElementById(
+            `${legKey}_bus_ticket_price`,
+          ).value,
+          hotel_booking_required:
+            document.getElementById(`${legKey}_hotel_required`)?.value || "",
+          check_in_date:
+            document.getElementById(`${legKey}_check_in_date`)?.value || "",
+          check_out_date:
+            document.getElementById(`${legKey}_check_out_date`)?.value || "",
+          occupancy:
+            document.getElementById(`${legKey}_occupancy`)?.value || "",
+          preferred_hotel_name:
+            document.getElementById(`${legKey}_preferred_hotel_name`)?.value ||
+            "",
+          tariff_per_night:
+            document.getElementById(`${legKey}_tariff_per_night`)?.value || "",
+        };
+      }
+
+      function validateLeg(label, leg) {
+        const missing = [];
+        if (!leg.date_of_travel) missing.push(`${label} - Date of travel`);
+        if (!leg.name_of_person_travelling)
+          missing.push(`${label} - Name of person travelling`);
+        if (!leg.source_city_name) missing.push(`${label} - Source city name`);
+        if (!leg.destination_city_name)
+          missing.push(`${label} - Destination city name`);
+        if (!leg.mode_of_travel) missing.push(`${label} - Mode of travel`);
+
+        const mode = String(leg.mode_of_travel || "").toLowerCase();
+        if (mode === "air") {
+          if (!leg.airline_name) missing.push(`${label} - Airline name`);
+          if (!leg.flight_number) missing.push(`${label} - Flight number`);
+          if (!leg.departure_terminal)
+            missing.push(`${label} - Departure terminal`);
+          if (!leg.departure_time) missing.push(`${label} - Departure time`);
+          if (!leg.arrival_time) missing.push(`${label} - Arrival time`);
+          if (!leg.excess_baggage_required)
+            missing.push(`${label} - Whether excess baggage required`);
+          if (!leg.ticket_price_per_person)
+            missing.push(`${label} - Ticket price per person`);
+        }
+        if (mode === "train") {
+          if (!leg.train_name_and_number)
+            missing.push(`${label} - Train name and number`);
+          if (!leg.departure_railway_station_name_and_code)
+            missing.push(`${label} - Departure railway station name and code`);
+          if (!leg.arrival_railway_station_name_and_code)
+            missing.push(`${label} - Arrival railway station and code`);
+          if (!leg.train_departure_time)
+            missing.push(`${label} - Departure time`);
+          if (!leg.train_arrival_time) missing.push(`${label} - Arrival time`);
+          if (!leg.ticket_price_per_person)
+            missing.push(`${label} - Ticket price per person`);
+        }
+        if (mode === "bus") {
+          if (!leg.bus_service_provider_name)
+            missing.push(`${label} - Bus service provider name`);
+          if (!leg.bus_departure_point)
+            missing.push(`${label} - Departure point`);
+          if (!leg.bus_departure_time)
+            missing.push(`${label} - Departure time`);
+          if (!leg.bus_arrival_time) missing.push(`${label} - Arrival time`);
+          if (!leg.bus_ticket_price_per_person)
+            missing.push(`${label} - Per person ticket price`);
+        }
+
+        if (
+          label.includes("Onward") &&
+          String(leg.hotel_booking_required || "").toLowerCase() === "yes"
+        ) {
+          if (!leg.check_in_date) missing.push(`${label} - Check-in date`);
+          if (!leg.check_out_date) missing.push(`${label} - Check-out date`);
+          if (!leg.occupancy) missing.push(`${label} - Occupancy`);
+          if (!leg.preferred_hotel_name)
+            missing.push(`${label} - Preferred hotel name`);
+          if (!leg.tariff_per_night)
+            missing.push(`${label} - Tariff per night`);
+        }
+        return missing;
+      }
+
+      function validateADM05(payload) {
+        const missing = [];
+
+        if (!payload.requestor_email) missing.push("Email Id of the requestor");
+        if (!payload.team_name) missing.push("Team Name");
+        if (!payload.project_name) missing.push("Project Name");
+        if (!payload.pcode) missing.push("Project Code");
+        if (!payload.purpose_of_travel) missing.push("Purpose of travel");
+        if (!payload.trip_type) missing.push("Trip Type");
+        if (!payload.visit_start_date) missing.push("Visit Start Date");
+        if (!payload.travel_in_scope_of) missing.push("Travel in scope of");
+        if (!payload.total_ticket_amount)
+          missing.push(
+            payload.trip_type === "One way"
+              ? "Total Amount for ticket booking (One way)"
+              : "Total Amount for ticket booking (To & Fro)",
+          );
+        if (!payload.lodging_food_in_scope_of)
+          missing.push("Lodging/ Food in scope of");
+
+        if (
+          String(payload.purpose_of_travel || "") === "Others" &&
+          !payload.purpose_of_travel_other
+        ) {
+          missing.push("If Others (Pls specify)");
+        }
+
+        missing.push(
+          ...validateLeg("Travel booking details - Onward", payload.onward),
+        );
+
+        if (payload.trip_type !== "One way") {
+          missing.push(
+            ...validateLeg("Travel booking details - Return", payload.return),
+          );
+        }
+
+        if (missing.length) {
+          alert("Please fill:\n\n" + missing.join("\n"));
+          return false;
+        }
+        return true;
+      }
+
+      function submitADM05() {
+        if (isSubmitting) return; // blocks double-clicks instantly
+        isSubmitting = true;
+        const submitBtn = document.getElementById("submitBtn");
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Submitting...";
+
+        const tripType = document.getElementById("trip_type").value;
+
+        const payload = {
+          date: document.getElementById("date").value,
+          requestor_first_name: document.getElementById("requestor_first_name")
+            .value,
+          requestor_last_name: document.getElementById("requestor_last_name")
+            .value,
+          requestor_email: document.getElementById("requestor_email").value,
+          team_name: document.getElementById("team_name").value,
+          project_name: document.getElementById("project_name").value,
+          pcode: document.getElementById("pcode").value,
+          purpose_of_travel: document.getElementById("purpose_of_travel").value,
+          purpose_of_travel_other: document.getElementById(
+            "purpose_of_travel_other",
+          ).value,
+          trip_type: tripType,
+          visit_start_date: document.getElementById("visit_start_date").value,
+          visit_end_date: document.getElementById("visit_end_date").value,
+          travel_in_scope_of:
+            document.getElementById("travel_in_scope_of").value,
+          total_ticket_amount: document.getElementById("total_ticket_amount")
+            .value,
+          lodging_food_in_scope_of: document.getElementById(
+            "lodging_food_in_scope_of",
+          ).value,
+          total_hotel_amount:
+            document.getElementById("total_hotel_amount").value,
+          onward: getLegData("onward"),
+          return: tripType === "One way" ? null : getLegData("return"),
+          remarks: document.getElementById("remarks").value,
+        };
+
+        if (!validateADM05(payload)) {
+          isSubmitting = false;
+          submitBtn.disabled = false;
+          submitBtn.innerText = "Submit";
+          return;
+        }
+
+        google.script.run
+          .withSuccessHandler(function (res) {
+            console.log("SUCCESS HANDLER RUNNING"); // 👈 debug
+            document.body.innerHTML = res.thankYouHtml;
+          })
+          .withFailureHandler(function (err) {
+            alert("Submission failed: " + err.message);
+            isSubmitting = false;
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Submit";
+          })
+          .submitADM05(payload);
+      }
+    </script>
+  </body>
+</html>

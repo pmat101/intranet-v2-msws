@@ -1,0 +1,195 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <base target="_top" />
+  <title>WPF05</title>
+
+  <?!= HtmlService.createHtmlOutputFromFile('sharedStyles').getContent(); ?>
+  <?!= HtmlService.createHtmlOutputFromFile('sharedComponents').getContent(); ?>
+</head>
+
+<body>
+<div class="form-wrapper">
+
+  <div class="form-title">WPF05</div>
+  <div class="form-subtitle">WPF - Arctic</div>
+
+  <div id="f_fields"></div>
+
+  <div style="margin-top:20px">
+    <button class="btn-primary" id="submitBtn">Submit</button>
+    <span id="status" style="margin-left:10px"></span>
+  </div>
+
+</div>
+
+<script>
+
+const FORM_CODE = "wpf05";
+const c = document.getElementById("f_fields");
+
+/* ================= WEEK DETAILS ================= */
+
+renderField(c,{label:"Week Start Date *Required",id:"week_start",type:"date"});
+renderField(c,{label:"Week End Date *Required",id:"week_end",type:"date"});
+
+/* ================= COMPANY LIST ================= */
+
+const companies = [
+  "Perfact Envirosolutions Pvt Ltd",
+  "Perfact Researchers Pvt Ltd",
+  "Perfact Solutions",
+  "Perfact Waste Management Pvt Ltd",
+  "Perfact Advanced Water Solutions Pvt Ltd"
+];
+
+/* ================= SECTION FUNCTION ================= */
+
+function renderCompanyAmountSection(title,prefix,extraFields=[]){
+  const div=document.createElement("div");
+  div.className="form-section";
+  div.innerHTML=`<div class="section-heading">${title}</div>`;
+  c.appendChild(div);
+
+  companies.forEach((name,i)=>{
+    renderField(div,{
+      label:name+" *Required",
+      id:prefix+"_company_"+i,
+      type:"number"
+    });
+  });
+
+  extraFields.forEach(field=>{
+    renderField(div,{
+      label:field.label,
+      id:prefix+"_"+field.id,
+      type:"number"
+    });
+  });
+}
+
+/* ================= TAX INVOICE ================= */
+
+renderCompanyAmountSection(
+  "Tax Invoice Raised *",
+  "tax_invoice",
+  [{label:"Amount *Required",id:"amount"}]
+);
+
+/* ================= PI RAISED ================= */
+
+renderCompanyAmountSection(
+  "PI Raised *",
+  "pi_raised",
+  [{label:"Amount *Required",id:"amount"}]
+);
+
+/* ================= PAYMENT RECEIVED ================= */
+
+renderCompanyAmountSection(
+  "Payment Received *",
+  "payment_received",
+  [
+    {label:"Internal *Required",id:"internal"},
+    {label:"External *Required",id:"external"},
+    {label:"OD *Required",id:"od"}
+  ]
+);
+
+/* ================= PAYMENT MADE ================= */
+
+renderCompanyAmountSection(
+  "Payment Made *",
+  "payment_made",
+  [
+    {label:"Internal *Required",id:"internal"},
+    {label:"External *Required",id:"external"},
+    {label:"OD *Required",id:"od"}
+  ]
+);
+
+/* ================= SALE COMPARISON DATE ================= */
+
+renderField(c,{
+  label:"Sale Comparison Date Range",
+  id:"sale_date_range",
+  type:"text"
+});
+
+/* ================= SALE COMPARISON ================= */
+
+renderCompanyAmountSection(
+  "Sale Comparison *",
+  "sale_compare",
+  [
+    {label:"Last Year (₹) *Required",id:"last_year"},
+    {label:"This Year (₹) *Required",id:"this_year"}
+  ]
+);
+
+/* ================= STATUTORY DUES ================= */
+
+renderCompanyAmountSection(
+  "Statutory Dues *",
+  "statutory",
+  [
+    {label:"GST (₹) *Required",id:"gst"},
+    {label:"TDS (₹) *Required",id:"tds"},
+    {label:"ESI PF (₹) *Required",id:"esi_pf"}
+  ]
+);
+
+/* ================= PERFORMANCE ================= */
+
+renderField(c,{
+  label:"Highlights *Required",
+  id:"highlights",
+  type:"textarea"
+});
+
+renderField(c,{
+  label:"Low Points / Challenges faced *Required",
+  id:"low_points",
+  type:"textarea"
+});
+
+/* ================= FILE UPLOAD ================= */
+
+const fileDiv=document.createElement("div");
+fileDiv.className="form-group";
+fileDiv.innerHTML=`
+  <label>Upload Weekly PPT *Required</label>
+  <input type="file" id="weekly_ppt" accept=".ppt,.pptx,.pdf">
+`;
+c.appendChild(fileDiv);
+
+/* ================= SUBMIT ================= */
+
+document.getElementById("submitBtn").onclick=function(){
+
+  const payload={};
+
+  document.querySelectorAll("#f_fields input, #f_fields textarea")
+  .forEach(el=>{
+    if(el.type!=="file"){
+      payload[el.id]=el.value||"";
+    }
+  });
+
+  const file=document.getElementById("weekly_ppt");
+  payload.weekly_ppt_name=file.files[0]?file.files[0].name:"";
+
+  google.script.run
+    .withSuccessHandler(res=>{
+      document.getElementById("status").innerText="Submitted: "+(res.submission_id||"OK");
+    })
+    .withFailureHandler(err=>{
+      document.getElementById("status").innerText="Submit failed: "+err.message;
+    })
+    .submitForm(FORM_CODE.toUpperCase(),payload);
+};
+
+</script>
+</body>
+</html>

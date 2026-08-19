@@ -1,0 +1,572 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <base target="_top" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FQ04</title>
+    <?!= HtmlService.createHtmlOutputFromFile('shared-styles').getContent(); ?>
+    <style>
+      .section-divider {
+        margin: 22px 0 14px;
+        padding-top: 8px;
+        border-top: 1px solid #e5e7eb;
+        font-weight: 700;
+        font-size: 18px;
+      }
+      .attachment-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="form-wrapper">
+      <div class="form-title">FQ04</div>
+      <div class="form-subtitle">FAE reports Questionnaire - QRA</div>
+
+      <div class="form-section">
+        <div class="form-group">
+          <label class="form-label" for="date">Date</label>
+          <input type="date" id="date" />
+          <div class="helper-text">dd-MMM-yyyy</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Name of Requestor</label>
+          <div class="form-row">
+            <div class="form-col">
+              <input
+                type="text"
+                id="requestor_first_name"
+                placeholder="First Name"
+              />
+              <div class="helper-text">First Name</div>
+            </div>
+            <div class="form-col">
+              <input
+                type="text"
+                id="requestor_last_name"
+                placeholder="Last Name"
+              />
+              <div class="helper-text">Last Name</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="requestor_email"
+            >Official Email ID of Requestor
+            <span class="required">*</span></label
+          >
+          <input type="email" id="requestor_email" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="team_name"
+            >Team Name <span class="required">*</span></label
+          >
+          <select id="team_name" required></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="company_name"
+            >Company Name <span class="required">*</span></label
+          >
+          <input type="text" id="company_name" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="project_name"
+            >Name of the project <span class="required">*</span></label
+          >
+          <input type="text" id="project_name" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="pcode"
+            >PCODE <span class="required">*</span></label
+          >
+          <input type="text" id="pcode" required />
+          <div class="helper-text">
+            Refer the active PCODE list in your database
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="category">Category</label>
+          <select id="category"></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="sector">Sector</label>
+          <select id="sector" multiple size="8"></select>
+          <div class="helper-text">Hold Ctrl/Cmd to select multiple</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="eac_name">EAC Name</label>
+          <select id="eac_name"></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="type_of_project"
+            >Type of Project <span class="required">*</span></label
+          >
+          <select id="type_of_project" required>
+            <option value="">Select</option>
+            <option value="New">New</option>
+            <option value="Expansion">Expansion</option>
+            <option value="Product Mix">Product Mix</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="type_of_industry"
+            >Type of Industry (Chemical/Pharma/etc.)
+            <span class="required">*</span></label
+          >
+          <input type="text" id="type_of_industry" required />
+        </div>
+
+        <div class="section-divider">Address</div>
+
+        <div class="form-group">
+          <label class="form-label" for="address_line1">Street Address</label>
+          <input type="text" id="address_line1" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="address_line2">Address Line 2</label>
+          <input type="text" id="address_line2" />
+        </div>
+
+        <div class="form-row">
+          <div class="form-col">
+            <label class="form-label" for="city">City</label>
+            <input type="text" id="city" />
+          </div>
+          <div class="form-col">
+            <label class="form-label" for="state">State/Region/Province</label>
+            <input type="text" id="state" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-col">
+            <label class="form-label" for="postal_code"
+              >Postal / Zip Code</label
+            >
+            <input type="text" id="postal_code" />
+          </div>
+          <div class="form-col">
+            <label class="form-label" for="country">Country</label>
+            <select id="country"></select>
+          </div>
+        </div>
+
+        <div class="section-divider">Area Details</div>
+
+        <div class="form-group">
+          <label class="form-label" for="total_land_area_m2"
+            >Total Land Area</label
+          >
+          <input type="number" id="total_land_area_m2" step="0.01" />
+          <div class="helper-text">in ㎡</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="green_belt_area_m2"
+            >Green Belt Area</label
+          >
+          <input type="number" id="green_belt_area_m2" step="0.01" />
+          <div class="helper-text">in ㎡</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="existing_storage_area_m2"
+            >Existing Storage Area</label
+          >
+          <input type="number" id="existing_storage_area_m2" step="0.01" />
+          <div class="helper-text">in ㎡</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="proposed_storage_area_m2"
+            >Proposed Storage Area</label
+          >
+          <input type="number" id="proposed_storage_area_m2" step="0.01" />
+          <div class="helper-text">in ㎡</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="manpower_details"
+            >Manpower Details</label
+          >
+          <textarea id="manpower_details"></textarea>
+        </div>
+
+        <div class="section-divider">Uploads / Links</div>
+
+        <div class="attachment-grid">
+          <div class="form-group">
+            <label class="form-label" for="pfr_or_eia_report_url"
+              >PFR Report/EIA report <span class="required">*</span></label
+            ><input
+              type="url"
+              id="pfr_or_eia_report_url"
+              required
+              placeholder="Paste file URL here"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="kml_file_url"
+              >KML file <span class="required">*</span></label
+            ><input
+              type="url"
+              id="kml_file_url"
+              required
+              placeholder="Paste file URL here"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="msds_safety_datasheet_url"
+              >MSDS/safety datasheet of Hazardous chemical
+              <span class="required">*</span></label
+            ><input
+              type="url"
+              id="msds_safety_datasheet_url"
+              required
+              placeholder="Paste file URL here"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="applicable_tor_details_url"
+              >Applicable TOR Details <span class="required">*</span></label
+            ><input
+              type="url"
+              id="applicable_tor_details_url"
+              required
+              placeholder="Paste file URL here"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="manufacturing_process_details_url"
+              >Mnaufacturing/Process details
+              <span class="required">*</span></label
+            ><input
+              type="url"
+              id="manufacturing_process_details_url"
+              required
+              placeholder="Paste file URL here"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="process_flow_charts_pid_url"
+              >Process Flow charts/ P&IDs <span class="required">*</span></label
+            ><input
+              type="url"
+              id="process_flow_charts_pid_url"
+              required
+              placeholder="Paste file URL here"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="layout_of_plant_url"
+              >Layout of the Plant <span class="required">*</span></label
+            ><input
+              type="url"
+              id="layout_of_plant_url"
+              required
+              placeholder="Paste file URL here"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="layout_of_storage_area_url"
+              >Layout of Storage Area</label
+            ><input
+              type="url"
+              id="layout_of_storage_area_url"
+              placeholder="Paste file URL here"
+            />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="list_of_hazardous_chemical_handled"
+            >List of Hazardous Chemical handled
+            <span class="required">*</span></label
+          >
+          <textarea id="list_of_hazardous_chemical_handled" required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="list_of_solvents_handled"
+            >List of Solvents handled <span class="required">*</span></label
+          >
+          <textarea id="list_of_solvents_handled" required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="project_sheet_url"
+            >Link to Project Sheet <span class="required">*</span></label
+          >
+          <input type="url" id="project_sheet_url" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="existing_hazop_report"
+            >Existing HAZOP Report</label
+          >
+          <input type="text" id="existing_hazop_report" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="existing_qra_report"
+            >Existing QRA Report</label
+          >
+          <input type="text" id="existing_qra_report" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="existing_fire_fighting_system_details"
+            >Existing Fire Fighting System Details</label
+          >
+          <textarea id="existing_fire_fighting_system_details"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="remarks">Remarks</label>
+          <textarea id="remarks"></textarea>
+        </div>
+      </div>
+
+      <button
+        class="btn-primary"
+        type="button"
+        id="submitBtn"
+        onclick="submitFQ04()"
+      >
+        Submit
+      </button>
+    </div>
+
+    <script>
+      let isSubmitting = false;
+
+      window.addEventListener("DOMContentLoaded", function () {
+        populateDropdowns();
+      });
+
+      function populateDropdowns() {
+        google.script.run
+          .withSuccessHandler(function (data) {
+            data = data || {};
+            fillSelect(
+              document.getElementById("team_name"),
+              data.team || [],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("category"),
+              data.category || ["A", "B1", "B2"],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("eac_name"),
+              data.eac || [],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("type_of_project"),
+              data.fq04TypeOfProject || ["New", "Expansion", "Product Mix"],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("country"),
+              data.country || ["India"],
+              "Select",
+            );
+            fillMultiSelect(
+              document.getElementById("sector"),
+              data.sector || [],
+            );
+          })
+          .getDropdownData();
+      }
+
+      function fillSelect(select, items, placeholder) {
+        if (!select) return;
+        select.innerHTML = "";
+        const first = document.createElement("option");
+        first.value = "";
+        first.textContent = placeholder || "Select";
+        select.appendChild(first);
+
+        (items || []).forEach(function (item) {
+          const option = document.createElement("option");
+          option.value = item;
+          option.textContent = item;
+          select.appendChild(option);
+        });
+      }
+
+      function fillMultiSelect(select, items) {
+        if (!select) return;
+        select.innerHTML = "";
+        (items || []).forEach(function (item) {
+          const option = document.createElement("option");
+          option.value = item;
+          option.textContent = item;
+          select.appendChild(option);
+        });
+      }
+
+      function getSelectedMultiValues(id) {
+        const el = document.getElementById(id);
+        return Array.from(el.selectedOptions)
+          .map((opt) => opt.value)
+          .join(", ");
+      }
+
+      function validateFQ04(p) {
+        const missing = [];
+
+        if (!p.requestor_email) missing.push("Official Email ID of Requestor");
+        if (!p.team_name) missing.push("Team Name");
+        if (!p.company_name) missing.push("Company Name");
+        if (!p.project_name) missing.push("Name of the project");
+        if (!p.pcode) missing.push("PCODE");
+        if (!p.type_of_project) missing.push("Type of Project");
+        if (!p.type_of_industry) missing.push("Type of Industry");
+        if (!p.total_land_area_m2) missing.push("Total Land Area");
+        if (!p.green_belt_area_m2) missing.push("Green Belt Area");
+        if (!p.existing_storage_area_m2) missing.push("Existing Storage Area");
+        if (!p.proposed_storage_area_m2) missing.push("Proposed Storage Area");
+        if (!p.pfr_or_eia_report_url) missing.push("PFR Report/EIA report");
+        if (!p.kml_file_url) missing.push("KML file");
+        if (!p.msds_safety_datasheet_url)
+          missing.push("MSDS/safety datasheet of Hazardous chemical");
+        if (!p.applicable_tor_details_url)
+          missing.push("Applicable TOR Details");
+        if (!p.manufacturing_process_details_url)
+          missing.push("Mnaufacturing/Process details");
+        if (!p.process_flow_charts_pid_url)
+          missing.push("Process Flow charts/ P&IDs");
+        if (!p.layout_of_plant_url) missing.push("Layout of the Plant");
+        if (!p.list_of_hazardous_chemical_handled)
+          missing.push("List of Hazardous Chemical handled");
+        if (!p.list_of_solvents_handled)
+          missing.push("List of Solvents handled");
+        if (!p.project_sheet_url) missing.push("Link to Project Sheet");
+
+        if (missing.length) {
+          alert("Please fill:\n\n" + missing.join("\n"));
+          return false;
+        }
+        return true;
+      }
+
+      function submitFQ04() {
+        if (isSubmitting) return; // blocks double-clicks instantly
+        isSubmitting = true;
+        const submitBtn = document.getElementById("submitBtn");
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Submitting...";
+
+        const payload = {
+          date: document.getElementById("date").value,
+          requestor_first_name: document.getElementById("requestor_first_name")
+            .value,
+          requestor_last_name: document.getElementById("requestor_last_name")
+            .value,
+          requestor_email: document.getElementById("requestor_email").value,
+          team_name: document.getElementById("team_name").value,
+          company_name: document.getElementById("company_name").value,
+          project_name: document.getElementById("project_name").value,
+          pcode: document.getElementById("pcode").value,
+          category: document.getElementById("category").value,
+          sector: getSelectedMultiValues("sector"),
+          eac_name: document.getElementById("eac_name").value,
+          type_of_project: document.getElementById("type_of_project").value,
+          type_of_industry: document.getElementById("type_of_industry").value,
+          address_line1: document.getElementById("address_line1").value,
+          address_line2: document.getElementById("address_line2").value,
+          city: document.getElementById("city").value,
+          state: document.getElementById("state").value,
+          postal_code: document.getElementById("postal_code").value,
+          country: document.getElementById("country").value,
+          total_land_area_m2:
+            document.getElementById("total_land_area_m2").value,
+          green_belt_area_m2:
+            document.getElementById("green_belt_area_m2").value,
+          existing_storage_area_m2: document.getElementById(
+            "existing_storage_area_m2",
+          ).value,
+          proposed_storage_area_m2: document.getElementById(
+            "proposed_storage_area_m2",
+          ).value,
+          manpower_details: document.getElementById("manpower_details").value,
+          pfr_or_eia_report_url: document.getElementById(
+            "pfr_or_eia_report_url",
+          ).value,
+          kml_file_url: document.getElementById("kml_file_url").value,
+          msds_safety_datasheet_url: document.getElementById(
+            "msds_safety_datasheet_url",
+          ).value,
+          applicable_tor_details_url: document.getElementById(
+            "applicable_tor_details_url",
+          ).value,
+          manufacturing_process_details_url: document.getElementById(
+            "manufacturing_process_details_url",
+          ).value,
+          process_flow_charts_pid_url: document.getElementById(
+            "process_flow_charts_pid_url",
+          ).value,
+          layout_of_plant_url: document.getElementById("layout_of_plant_url")
+            .value,
+          layout_of_storage_area_url: document.getElementById(
+            "layout_of_storage_area_url",
+          ).value,
+          list_of_hazardous_chemical_handled: document.getElementById(
+            "list_of_hazardous_chemical_handled",
+          ).value,
+          list_of_solvents_handled: document.getElementById(
+            "list_of_solvents_handled",
+          ).value,
+          project_sheet_url: document.getElementById("project_sheet_url").value,
+          existing_hazop_report: document.getElementById(
+            "existing_hazop_report",
+          ).value,
+          existing_qra_report: document.getElementById("existing_qra_report")
+            .value,
+          existing_fire_fighting_system_details: document.getElementById(
+            "existing_fire_fighting_system_details",
+          ).value,
+          remarks: document.getElementById("remarks").value,
+        };
+
+        if (!validateFQ04(payload)) {
+          isSubmitting = false;
+          submitBtn.disabled = false;
+          submitBtn.innerText = "Submit";
+          return;
+        }
+
+        google.script.run
+          .withSuccessHandler(function (res) {
+            console.log("SUCCESS HANDLER RUNNING"); // 👈 debug
+            document.body.innerHTML = res.thankYouHtml;
+          })
+          .withFailureHandler(function (err) {
+            alert("Submission failed: " + err.message);
+            isSubmitting = false;
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Submit";
+          })
+          .submitFQ04(payload);
+      }
+    </script>
+  </body>
+</html>

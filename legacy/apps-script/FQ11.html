@@ -1,0 +1,440 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <base target="_top" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FQ11</title>
+    <?!= HtmlService.createHtmlOutputFromFile('shared-styles').getContent(); ?>
+    <style>
+      .section-divider {
+        margin: 22px 0 14px;
+        padding-top: 8px;
+        border-top: 1px solid #e5e7eb;
+        font-weight: 700;
+        font-size: 18px;
+      }
+      .subtle-note {
+        font-size: 12px;
+        color: #6b7280;
+        margin-top: 6px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="form-wrapper">
+      <div class="form-title">FQ11</div>
+      <div class="form-subtitle">FAE reports Questionnaire - Traffic</div>
+
+      <div class="form-section">
+        <div class="form-group">
+          <label class="form-label" for="date">Date</label>
+          <input type="date" id="date" />
+          <div class="helper-text">dd-MMM-yyyy</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Name of Requestor</label>
+          <div class="form-row">
+            <div class="form-col">
+              <input
+                type="text"
+                id="requestor_first_name"
+                placeholder="First Name"
+              />
+              <div class="helper-text">First Name</div>
+            </div>
+            <div class="form-col">
+              <input
+                type="text"
+                id="requestor_last_name"
+                placeholder="Last Name"
+              />
+              <div class="helper-text">Last Name</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="requestor_email"
+            >Official Email ID of Requestor
+            <span class="required">*</span></label
+          >
+          <input type="email" id="requestor_email" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="team_name"
+            >Team Name <span class="required">*</span></label
+          >
+          <select id="team_name" required></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="company_name">Company Name</label>
+          <input type="text" id="company_name" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="project_name"
+            >Name of the project <span class="required">*</span></label
+          >
+          <input type="text" id="project_name" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="pcode"
+            >PCODE <span class="required">*</span></label
+          >
+          <input type="text" id="pcode" required />
+          <div class="helper-text">
+            Refer the active PCODE list in your database
+          </div>
+        </div>
+
+        <div class="section-divider">Address of the project</div>
+
+        <div class="form-group">
+          <input type="text" id="address_line1" placeholder="Street Address" />
+        </div>
+        <div class="form-group">
+          <input type="text" id="address_line2" placeholder="Address Line 2" />
+        </div>
+        <div class="form-row">
+          <div class="form-col">
+            <input type="text" id="city" placeholder="City" />
+          </div>
+          <div class="form-col">
+            <input type="text" id="state" placeholder="State/Region/Province" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-col">
+            <input
+              type="text"
+              id="postal_code"
+              placeholder="Postal / Zip Code"
+            />
+          </div>
+          <div class="form-col">
+            <select id="country"></select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="category"
+            >Category <span class="required">*</span></label
+          >
+          <select id="category" required></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="sector"
+            >Sector <span class="required">*</span></label
+          >
+          <select id="sector" multiple size="8" required></select>
+          <div class="helper-text">Hold Ctrl/Cmd to select multiple</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="eac_name"
+            >EAC Name <span class="required">*</span></label
+          >
+          <select id="eac_name" required></select>
+        </div>
+
+        <div class="section-divider">Road / Traffic Details</div>
+
+        <div class="form-group">
+          <label class="form-label" for="road_network_residential_localities"
+            >Road Network & Residential Localities Within 2 km of Project</label
+          >
+          <textarea id="road_network_residential_localities"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="road_width_m">Road Width (m)</label>
+          <input type="text" id="road_width_m" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="road_lane">Road Lane</label>
+          <input type="text" id="road_lane" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="type_of_road">Type of Road</label>
+          <select id="type_of_road"></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="road_linkage_from"
+            >Road Linkage From</label
+          >
+          <input type="text" id="road_linkage_from" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="road_linkage_to"
+            >Road Linkage To</label
+          >
+          <input type="text" id="road_linkage_to" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="parking_requirement"
+            >Parking requirement of the Project</label
+          >
+          <textarea id="parking_requirement"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="parking_provision_at_site"
+            >Parking Provision at Site</label
+          >
+          <input type="text" id="parking_provision_at_site" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="traffic_circulation_plan"
+            >Traffic Circulation Plan</label
+          >
+          <input type="text" id="traffic_circulation_plan" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="details_of_entry_exit_gates"
+            >Details of Entry and Exit Gates</label
+          >
+          <textarea id="details_of_entry_exit_gates"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="parking_photos_url"
+            >Photographs of the Parking provision at Site and nearby area</label
+          >
+          <input
+            type="url"
+            id="parking_photos_url"
+            placeholder="Paste file URL here"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="traffic_volume_survey_of_roads"
+            >Traffic Volume Survey of Roads</label
+          >
+          <input type="text" id="traffic_volume_survey_of_roads" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="incremental_traffic_from_project_site"
+            >Incremental traffic from Project Site</label
+          >
+          <input type="text" id="incremental_traffic_from_project_site" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="kml_file_url"
+            >KML file of Project <span class="required">*</span></label
+          >
+          <input
+            type="url"
+            id="kml_file_url"
+            required
+            placeholder="Paste file URL here"
+          />
+        </div>
+      </div>
+
+      <button
+        class="btn-primary"
+        type="button"
+        id="submitBtn"
+        onclick="submitFQ11()"
+      >
+        Submit
+      </button>
+    </div>
+
+    <script>
+      let isSubmitting = false;
+
+      window.addEventListener("DOMContentLoaded", function () {
+        populateDropdowns();
+      });
+
+      function populateDropdowns() {
+        google.script.run
+          .withSuccessHandler(function (data) {
+            data = data || {};
+            fillSelect(
+              document.getElementById("team_name"),
+              data.team || [],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("category"),
+              data.category || ["A", "B1", "B2"],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("eac_name"),
+              data.eac || [],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("country"),
+              data.country || ["India"],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("type_of_road"),
+              data.fq11TypeOfRoad || [
+                "National Highway",
+                "State Highway",
+                "Village Road",
+              ],
+              "Select",
+            );
+            fillMultiSelect(
+              document.getElementById("sector"),
+              data.sector || [],
+            );
+          })
+          .getDropdownData();
+      }
+
+      function fillSelect(select, items, placeholder) {
+        if (!select) return;
+        select.innerHTML = "";
+        const first = document.createElement("option");
+        first.value = "";
+        first.textContent = placeholder || "Select";
+        select.appendChild(first);
+
+        (items || []).forEach(function (item) {
+          const option = document.createElement("option");
+          option.value = item;
+          option.textContent = item;
+          select.appendChild(option);
+        });
+      }
+
+      function fillMultiSelect(select, items) {
+        if (!select) return;
+        select.innerHTML = "";
+        (items || []).forEach(function (item) {
+          const option = document.createElement("option");
+          option.value = item;
+          option.textContent = item;
+          select.appendChild(option);
+        });
+      }
+
+      function getSelectedMultiValues(id) {
+        const el = document.getElementById(id);
+        return Array.from(el.selectedOptions)
+          .map((opt) => opt.value)
+          .join(", ");
+      }
+
+      function validateFQ11(p) {
+        const missing = [];
+
+        if (!p.requestor_email) missing.push("Official Email ID of Requestor");
+        if (!p.team_name) missing.push("Team Name");
+        if (!p.project_name) missing.push("Name of the project");
+        if (!p.pcode) missing.push("PCODE");
+        if (!p.category) missing.push("Category");
+        if (!p.sector) missing.push("Sector");
+        if (!p.eac_name) missing.push("EAC Name");
+        if (!p.kml_file_url) missing.push("KML file of Project");
+
+        if (missing.length) {
+          alert("Please fill:\n\n" + missing.join("\n"));
+          return false;
+        }
+        return true;
+      }
+
+      function submitFQ11() {
+        if (isSubmitting) return; // blocks double-clicks instantly
+        isSubmitting = true;
+        const submitBtn = document.getElementById("submitBtn");
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Submitting...";
+
+        const payload = {
+          date: document.getElementById("date").value,
+          requestor_first_name: document.getElementById("requestor_first_name")
+            .value,
+          requestor_last_name: document.getElementById("requestor_last_name")
+            .value,
+          requestor_email: document.getElementById("requestor_email").value,
+          team_name: document.getElementById("team_name").value,
+          company_name: document.getElementById("company_name").value,
+          project_name: document.getElementById("project_name").value,
+          pcode: document.getElementById("pcode").value,
+          category: document.getElementById("category").value,
+          sector: getSelectedMultiValues("sector"),
+          eac_name: document.getElementById("eac_name").value,
+          address_line1: document.getElementById("address_line1").value,
+          address_line2: document.getElementById("address_line2").value,
+          city: document.getElementById("city").value,
+          state: document.getElementById("state").value,
+          postal_code: document.getElementById("postal_code").value,
+          country: document.getElementById("country").value,
+          road_network_residential_localities: document.getElementById(
+            "road_network_residential_localities",
+          ).value,
+          road_width_m: document.getElementById("road_width_m").value,
+          road_lane: document.getElementById("road_lane").value,
+          type_of_road: document.getElementById("type_of_road").value,
+          road_linkage_from: document.getElementById("road_linkage_from").value,
+          road_linkage_to: document.getElementById("road_linkage_to").value,
+          parking_requirement: document.getElementById("parking_requirement")
+            .value,
+          parking_provision_at_site: document.getElementById(
+            "parking_provision_at_site",
+          ).value,
+          traffic_circulation_plan: document.getElementById(
+            "traffic_circulation_plan",
+          ).value,
+          details_of_entry_exit_gates: document.getElementById(
+            "details_of_entry_exit_gates",
+          ).value,
+          parking_photos_url:
+            document.getElementById("parking_photos_url").value,
+          traffic_volume_survey_of_roads: document.getElementById(
+            "traffic_volume_survey_of_roads",
+          ).value,
+          incremental_traffic_from_project_site: document.getElementById(
+            "incremental_traffic_from_project_site",
+          ).value,
+          kml_file_url: document.getElementById("kml_file_url").value,
+        };
+
+        if (!validateFQ11(payload)) {
+          isSubmitting = false;
+          submitBtn.disabled = false;
+          submitBtn.innerText = "Submit";
+          return;
+        }
+
+        google.script.run
+          .withSuccessHandler(function (res) {
+            console.log("SUCCESS HANDLER RUNNING"); // 👈 debug
+            document.body.innerHTML = res.thankYouHtml;
+          })
+          .withFailureHandler(function (err) {
+            alert("Submission failed: " + err.message);
+            isSubmitting = false;
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Submit";
+          })
+          .submitFQ11(payload);
+      }
+    </script>
+  </body>
+</html>

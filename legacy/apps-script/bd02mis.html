@@ -1,0 +1,1190 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BD02 — Projects Won MIS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <style>
+      :root {
+        --bg-page: #f3f5f8;
+        --bg-card: #ffffff;
+        --bg-sub: #eef1f5;
+        --primary: #3f8f7b;
+        --primary-hover: #357a69;
+        --primary-soft: #e6f1ee;
+        --accent: #b5852f;
+        --accent-soft: #f6edda;
+        --border: #d9dee5;
+        --text-main: #1f2937;
+        --text-muted: #6b7280;
+        --radius: 12px;
+        --radius-sm: 8px;
+        --shadow: 0 6px 24px rgba(0, 0, 0, 0.06);
+        --pe: #2f6f8f;
+        --ps: #8a5a9e;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg-page);
+        color: var(--text-main);
+        font-family: "Inter", "Segoe UI", Roboto, Arial, sans-serif;
+        font-size: 14px;
+        line-height: 1.5;
+      }
+      a {
+        color: var(--primary);
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+      .wrap {
+        max-width: 1320px;
+        margin: 0 auto;
+        padding: 28px 22px 60px;
+      }
+
+      /* header */
+      .head {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        gap: 20px;
+        flex-wrap: wrap;
+        margin-bottom: 22px;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+      .logo {
+        width: 46px;
+        height: 46px;
+        border-radius: 11px;
+        background: var(--primary);
+        display: grid;
+        place-items: center;
+        color: #fff;
+        font-weight: 700;
+        font-size: 19px;
+        letter-spacing: 0.5px;
+        flex: none;
+      }
+      .title h1 {
+        margin: 0;
+        font-size: 23px;
+        font-weight: 700;
+        letter-spacing: -0.2px;
+      }
+      .title p {
+        margin: 2px 0 0;
+        color: var(--text-muted);
+        font-size: 13px;
+      }
+      .fy-pill {
+        background: var(--primary-soft);
+        color: var(--primary-hover);
+        font-weight: 600;
+        padding: 3px 10px;
+        border-radius: 999px;
+        font-size: 12px;
+      }
+
+      /* controls */
+      .controls {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 16px 18px;
+        box-shadow: var(--shadow);
+        margin-bottom: 20px;
+      }
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+      .field label {
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--text-muted);
+      }
+      .field select,
+      .field input {
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 9px 11px;
+        font: inherit;
+        background: #fff;
+        min-width: 150px;
+        color: var(--text-main);
+      }
+      .field input {
+        min-width: 230px;
+      }
+      .field select:focus,
+      .field input:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px var(--primary-soft);
+      }
+      .spacer {
+        flex: 1;
+      }
+      .btn {
+        border: 1px solid var(--border);
+        background: #fff;
+        border-radius: var(--radius-sm);
+        padding: 9px 15px;
+        font: inherit;
+        font-weight: 600;
+        cursor: pointer;
+        color: var(--text-main);
+      }
+      .btn:hover {
+        background: var(--bg-sub);
+      }
+      .btn.primary {
+        background: var(--primary);
+        border-color: var(--primary);
+        color: #fff;
+      }
+      .btn.primary:hover {
+        background: var(--primary-hover);
+      }
+
+      /* kpi */
+      .kpis {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        margin-bottom: 20px;
+      }
+      .kpi {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 18px 20px;
+        box-shadow: var(--shadow);
+      }
+      .kpi .k-label {
+        font-size: 12px;
+        color: var(--text-muted);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .kpi .k-val {
+        font-size: 28px;
+        font-weight: 700;
+        margin-top: 6px;
+        letter-spacing: -0.5px;
+      }
+      .kpi .k-sub {
+        font-size: 12px;
+        color: var(--text-muted);
+        margin-top: 3px;
+      }
+      .kpi.hl {
+        background: linear-gradient(
+          135deg,
+          var(--primary),
+          var(--primary-hover)
+        );
+        color: #fff;
+        border: none;
+      }
+      .kpi.hl .k-label,
+      .kpi.hl .k-sub {
+        color: rgba(255, 255, 255, 0.85);
+      }
+
+      /* panels */
+      .panels {
+        display: grid;
+        grid-template-columns: 1.6fr 1fr;
+        gap: 16px;
+        margin-bottom: 20px;
+      }
+      .panel {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 18px 20px;
+        box-shadow: var(--shadow);
+      }
+      .panel h3 {
+        margin: 0 0 16px;
+        font-size: 14px;
+        font-weight: 700;
+      }
+      .bars {
+        display: flex;
+        align-items: flex-end;
+        gap: 8px;
+        height: 170px;
+        padding-top: 6px;
+      }
+      .bar-col {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
+        justify-content: flex-end;
+        height: 100%;
+      }
+      .bar {
+        width: 100%;
+        max-width: 44px;
+        background: var(--primary);
+        border-radius: 5px 5px 0 0;
+        transition: height 0.4s ease;
+        min-height: 2px;
+      }
+      .bar-lbl {
+        font-size: 11px;
+        color: var(--text-muted);
+        white-space: nowrap;
+      }
+      .bar-val {
+        font-size: 10px;
+        font-weight: 600;
+        color: var(--text-main);
+      }
+      .ent-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 12px;
+      }
+      .ent-name {
+        width: 92px;
+        font-size: 12px;
+        font-weight: 600;
+        flex: none;
+      }
+      .ent-track {
+        flex: 1;
+        background: var(--bg-sub);
+        border-radius: 6px;
+        height: 22px;
+        overflow: hidden;
+      }
+      .ent-fill {
+        height: 100%;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        padding-right: 8px;
+        color: #fff;
+        font-size: 11px;
+        font-weight: 600;
+        min-width: 34px;
+      }
+      .ent-cnt {
+        width: 118px;
+        text-align: right;
+        font-size: 12px;
+        color: var(--text-muted);
+        flex: none;
+      }
+
+      /* table */
+      .tbl-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+      .tbl-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 20px;
+        border-bottom: 1px solid var(--border);
+      }
+      .tbl-head h3 {
+        margin: 0;
+        font-size: 14px;
+        font-weight: 700;
+      }
+      .tbl-wrap {
+        overflow-x: auto;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+      }
+      th {
+        background: var(--bg-sub);
+        text-align: left;
+        padding: 11px 14px;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+        color: var(--text-muted);
+        white-space: nowrap;
+        cursor: pointer;
+        user-select: none;
+        position: sticky;
+        top: 0;
+      }
+      th.num {
+        text-align: right;
+      }
+      th:hover {
+        color: var(--text-main);
+      }
+      th .arrow {
+        opacity: 0.4;
+        font-size: 10px;
+      }
+      td {
+        padding: 11px 14px;
+        border-top: 1px solid var(--border);
+        vertical-align: top;
+      }
+      td.num {
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+        white-space: nowrap;
+      }
+      tr:hover td {
+        background: #fafbfc;
+      }
+      .co {
+        font-weight: 600;
+      }
+      .proj {
+        color: var(--text-muted);
+        font-size: 12px;
+        margin-top: 2px;
+        max-width: 320px;
+      }
+      .loc {
+        color: var(--text-muted);
+        font-size: 11px;
+        margin-top: 2px;
+      }
+      .pid {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 11.5px;
+        color: var(--text-muted);
+      }
+      .tag {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 600;
+        white-space: nowrap;
+      }
+      .tag.pe {
+        background: #e5eff4;
+        color: var(--pe);
+      }
+      .tag.ps {
+        background: #f0e8f4;
+        color: var(--ps);
+      }
+      .tag.src-z {
+        background: var(--accent-soft);
+        color: var(--accent);
+      }
+      .tag.src-d {
+        background: var(--primary-soft);
+        color: var(--primary-hover);
+      }
+      .val {
+        font-weight: 700;
+      }
+      .links {
+        display: flex;
+        gap: 8px;
+        white-space: nowrap;
+      }
+      .lk {
+        font-size: 11px;
+        font-weight: 600;
+        padding: 2px 7px;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        color: var(--text-muted);
+      }
+      .lk.on {
+        color: var(--primary);
+        border-color: var(--primary-soft);
+        background: var(--primary-soft);
+      }
+      .lk.on:hover {
+        background: var(--primary);
+        color: #fff;
+        text-decoration: none;
+      }
+      .rmk {
+        cursor: help;
+        color: var(--accent);
+        font-weight: 700;
+      }
+      .note {
+        background: var(--accent-soft);
+        border: 1px solid #ecdcb6;
+        border-radius: var(--radius-sm);
+        padding: 11px 15px;
+        font-size: 12.5px;
+        color: #7a5a1e;
+        margin-bottom: 20px;
+      }
+      .foot {
+        margin-top: 22px;
+        color: var(--text-muted);
+        font-size: 12px;
+        text-align: center;
+        line-height: 1.7;
+      }
+      .empty {
+        padding: 40px;
+        text-align: center;
+        color: var(--text-muted);
+      }
+      .loadstate {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 16px 20px;
+        box-shadow: var(--shadow);
+        margin-bottom: 20px;
+        color: var(--text-muted);
+        font-weight: 600;
+      }
+      .loadstate.err {
+        background: #fdecec;
+        border-color: #f3c4c4;
+        color: #a12626;
+      }
+      .spinner {
+        width: 18px;
+        height: 18px;
+        border: 3px solid var(--border);
+        border-top-color: var(--primary);
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+        flex: none;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      @media (max-width: 960px) {
+        .kpis {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .panels {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="head">
+        <div class="brand">
+          <div class="logo">PG</div>
+          <div class="title">
+            <h1>
+              BD02 — Projects Won
+              <span class="fy-pill" id="fyPill">FY26-27</span>
+            </h1>
+            <p>
+              Business Development MIS · Perfact Group · projects secured this
+              financial year
+            </p>
+          </div>
+        </div>
+        <div class="title" style="text-align: right">
+          <p id="asof"></p>
+        </div>
+      </div>
+
+      <div id="loadState" class="loadstate">
+        <div class="spinner"></div>
+        <div id="loadMsg">Loading…</div>
+      </div>
+      <div id="dqNote" class="note"></div>
+
+      <div class="controls">
+        <div class="field">
+          <label>Financial Year</label>
+          <select id="fFY">
+            <option value="FY26-27">FY 2026-27</option>
+            <option value="FY25-26">FY 2025-26</option>
+            <option value="ALL">All years</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Billing Entity</label
+          ><select id="fEnt"></select>
+        </div>
+        <div class="field">
+          <label>PR Mode</label
+          ><select id="fPR"></select>
+        </div>
+        <div class="field">
+          <label>Source</label
+          ><select id="fSrc">
+            <option value="ALL">All</option>
+            <option>Intranet DB</option>
+            <option>Zoho (legacy)</option>
+          </select>
+        </div>
+        <div class="field" style="flex: 1">
+          <label>Search company / project / P-code</label
+          ><input id="fQ" type="text" placeholder="Type to filter…" />
+        </div>
+        <button class="btn" id="reset">Reset</button>
+        <button class="btn primary" id="csv">Export CSV</button>
+      </div>
+
+      <div class="kpis">
+        <div class="kpi hl">
+          <div class="k-label">Total Order Value</div>
+          <div class="k-val" id="kVal">—</div>
+          <div class="k-sub" id="kValSub"></div>
+        </div>
+        <div class="kpi">
+          <div class="k-label">Projects Won</div>
+          <div class="k-val" id="kCnt">—</div>
+          <div class="k-sub" id="kCntSub"></div>
+        </div>
+        <div class="kpi">
+          <div class="k-label">Average Deal Size</div>
+          <div class="k-val" id="kAvg">—</div>
+          <div class="k-sub">per project won</div>
+        </div>
+        <div class="kpi">
+          <div class="k-label">Won This Month</div>
+          <div class="k-val" id="kMon">—</div>
+          <div class="k-sub" id="kMonSub"></div>
+        </div>
+      </div>
+
+      <div class="panels">
+        <div class="panel">
+          <h3>Monthly value won (₹ lakh)</h3>
+          <div class="bars" id="bars"></div>
+        </div>
+        <div class="panel">
+          <h3>By billing entity</h3>
+          <div id="entities"></div>
+        </div>
+      </div>
+
+      <div class="tbl-card">
+        <div class="tbl-head">
+          <h3>
+            Projects won
+            <span
+              id="rowCount"
+              style="color: var(--text-muted); font-weight: 500"
+            ></span>
+          </h3>
+        </div>
+        <div class="tbl-wrap">
+          <table id="tbl">
+            <thead></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <div id="emptyState"></div>
+      </div>
+
+      <div class="foot">
+        <div>
+          <strong
+            >Draft dashboard — requires approval by Kushal before
+            circulation.</strong
+          >
+        </div>
+        <div>
+          Data source: <em>intranet_db_prod</em> (live) + one-time Zoho legacy
+          import · Values are order value (final quote), GST-exclusive ·
+          Prototype loaded with a static snapshot; production version reads live
+          data.
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let RAW = [];
+
+      /* ---- Indian currency formatting ---- */
+      function inr(n) {
+        n = Number(n) || 0;
+        if (n >= 1e7) return "₹" + (n / 1e7).toFixed(2) + " Cr";
+        if (n >= 1e5) return "₹" + (n / 1e5).toFixed(2) + " L";
+        return "₹" + n.toLocaleString("en-IN");
+      }
+      function lakh(n) {
+        return (Number(n) || 0) / 1e5;
+      }
+      function fyOf(d) {
+        if (!d) return null;
+        const [y, m] = d.split("-").map(Number);
+        const s = m >= 4 ? y : y - 1;
+        return (
+          "FY" +
+          String(s % 100).padStart(2, "0") +
+          "-" +
+          String((s + 1) % 100).padStart(2, "0")
+        );
+      }
+      function fmtDate(d) {
+        if (!d) return "—";
+        const [y, m, dd] = d.split("-");
+        const mon = [
+          "Jan",
+          "Feb",
+          "Mar",
+          "Apr",
+          "May",
+          "Jun",
+          "Jul",
+          "Aug",
+          "Sep",
+          "Oct",
+          "Nov",
+          "Dec",
+        ];
+        return dd + " " + mon[+m - 1] + " '" + y.slice(2);
+      }
+      function entClass(e) {
+        e = (e || "").toUpperCase();
+        if (e.startsWith("PE")) return "pe";
+        if (e.startsWith("PS")) return "ps";
+        return "";
+      }
+      function days(a, b) {
+        if (!a || !b) return null;
+        return Math.round((new Date(b) - new Date(a)) / 864e5);
+      }
+
+      function preprocess() {
+        RAW.forEach((r) => {
+          r._fy = fyOf(r.date_proposal_won);
+          r._val = Number(r.final_quote_value) || 0;
+          r._turn = days(r.date_proposal_sent, r.date_proposal_won);
+        });
+      }
+
+      let sortKey = "date_proposal_won",
+        sortDir = -1;
+
+      const el = (id) => document.getElementById(id);
+      const now = new Date();
+      el("asof").textContent =
+        "As of " +
+        now.toLocaleDateString("en-IN", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        });
+
+      /* data-quality note */
+      function buildNote() {
+        const ids = {};
+        let dupCount = 0;
+        RAW.forEach((r) => {
+          const k = (r.proposal_id || "").trim();
+          if (!k) return;
+          ids[k] = (ids[k] || 0) + 1;
+        });
+        Object.values(ids).forEach((c) => {
+          if (c > 1) dupCount += c - 1;
+        });
+        const prevFY = RAW.filter((r) => r._fy === "FY25-26").length;
+        el("dqNote").innerHTML =
+          "⚑ Data quality: " +
+          dupCount +
+          " duplicate proposal ID" +
+          (dupCount !== 1 ? "s" : "") +
+          " detected, and " +
+          prevFY +
+          " won-dates fall in FY25-26 (Mar 2026) — filtered out of FY26-27 by default. " +
+          "Verify duplicates against the source register before reporting figures upward.";
+      }
+
+      /* populate filter selects */
+      function fillSelect(id, vals, all) {
+        const s = el(id);
+        s.innerHTML =
+          '<option value="ALL">' +
+          all +
+          "</option>" +
+          [...new Set(vals)]
+            .filter(Boolean)
+            .sort()
+            .map((v) => "<option>" + v + "</option>")
+            .join("");
+      }
+      fillSelect(
+        "fEnt",
+        RAW.map((r) => r.gst_treatment),
+        "All entities",
+      );
+      fillSelect(
+        "fPR",
+        RAW.map((r) => r.pr_mode),
+        "All modes",
+      );
+
+      function current() {
+        const fy = el("fFY").value,
+          ent = el("fEnt").value,
+          pr = el("fPR").value,
+          src = el("fSrc").value,
+          q = el("fQ").value.trim().toLowerCase();
+        return RAW.filter((r) => {
+          if (fy !== "ALL" && r._fy !== fy) return false;
+          if (ent !== "ALL" && r.gst_treatment !== ent) return false;
+          if (pr !== "ALL" && r.pr_mode !== pr) return false;
+          if (src !== "ALL" && r.source !== src) return false;
+          if (q) {
+            const hay = (
+              r.customer_company +
+              " " +
+              r.project_name +
+              " " +
+              r.pcode +
+              " " +
+              r.customer_name
+            ).toLowerCase();
+            if (!hay.includes(q)) return false;
+          }
+          return true;
+        });
+      }
+
+      const COLS = [
+        {
+          k: "date_proposal_won",
+          t: "Won",
+          num: 0,
+          r: (d) => fmtDate(d.date_proposal_won),
+        },
+        {
+          k: "customer_company",
+          t: "Client & Project",
+          num: 0,
+          r: (d) =>
+            '<div class="co">' +
+            esc(d.customer_company) +
+            "</div>" +
+            '<div class="proj">' +
+            esc(d.project_name) +
+            "</div>" +
+            (d.project_location
+              ? '<div class="loc">' + esc(d.project_location) + "</div>"
+              : ""),
+        },
+        {
+          k: "proposal_id",
+          t: "Proposal ID",
+          num: 0,
+          r: (d) =>
+            '<span class="pid">' + esc(d.proposal_id || "—") + "</span>",
+        },
+        {
+          k: "gst_treatment",
+          t: "Entity",
+          num: 0,
+          r: (d) =>
+            '<span class="tag ' +
+            entClass(d.gst_treatment) +
+            '">' +
+            esc(d.gst_treatment || "—") +
+            "</span>",
+        },
+        {
+          k: "_val",
+          t: "Order Value",
+          num: 1,
+          r: (d) => '<span class="val">' + inr(d._val) + "</span>",
+        },
+        {
+          k: "_turn",
+          t: "Sent→Won",
+          num: 1,
+          r: (d) => (d._turn == null ? "—" : d._turn + "d"),
+        },
+        { k: "pr_mode", t: "PR", num: 0, r: (d) => esc(d.pr_mode || "—") },
+        {
+          k: "docs",
+          t: "Docs",
+          num: 0,
+          sort: 0,
+          r: (d) => {
+            const L = (u, t) =>
+              u
+                ? '<a class="lk on" href="' +
+                  esc(u) +
+                  '" target="_blank" rel="noopener">' +
+                  t +
+                  "</a>"
+                : '<span class="lk">' + t + "</span>";
+            const valid = (u) => u && /^https?:/i.test(u);
+            return (
+              '<div class="links">' +
+              L(valid(d.work_order_link) ? d.work_order_link : "", "WO") +
+              L(
+                valid(d.final_proposal_link) ? d.final_proposal_link : "",
+                "Prop",
+              ) +
+              "</div>" +
+              (d.remarks
+                ? ' <span class="rmk" title="' + esc(d.remarks) + '">✎</span>'
+                : "")
+            );
+          },
+        },
+        {
+          k: "source",
+          t: "Source",
+          num: 0,
+          r: (d) =>
+            '<span class="tag ' +
+            (d.source[0] === "Z" ? "src-z" : "src-d") +
+            '">' +
+            (d.source[0] === "Z" ? "Zoho" : "DB") +
+            "</span>",
+        },
+      ];
+      function esc(s) {
+        return String(s == null ? "" : s).replace(
+          /[&<>"]/g,
+          (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c],
+        );
+      }
+
+      function render() {
+        const rows = current();
+        // sort
+        rows.sort((a, b) => {
+          let x = a[sortKey],
+            y = b[sortKey];
+          if (typeof x === "string" || typeof y === "string") {
+            x = (x || "").toString().toLowerCase();
+            y = (y || "").toString().toLowerCase();
+          }
+          return (x > y ? 1 : x < y ? -1 : 0) * sortDir;
+        });
+        // KPIs
+        const total = rows.reduce((s, r) => s + r._val, 0);
+        el("kVal").textContent = inr(total);
+        el("kValSub").textContent =
+          rows.length + " projects · " + el("fFY").value;
+        el("kCnt").textContent = rows.length;
+        const ents = new Set(rows.map((r) => r.gst_treatment).filter(Boolean));
+        el("kCntSub").textContent = ents.size + " billing entities";
+        el("kAvg").textContent = rows.length ? inr(total / rows.length) : "—";
+        const ym =
+          now.getFullYear() + "-" + String(now.getMonth() + 1).padStart(2, "0");
+        const monR = rows.filter(
+          (r) => (r.date_proposal_won || "").slice(0, 7) === ym,
+        );
+        el("kMon").textContent = inr(monR.reduce((s, r) => s + r._val, 0));
+        el("kMonSub").textContent =
+          monR.length +
+          " won in " +
+          now.toLocaleDateString("en-IN", { month: "short" });
+        el("fyPill").textContent =
+          el("fFY").value === "ALL"
+            ? "All years"
+            : el("fFY").value.replace("FY", "FY ");
+
+        renderBars(rows);
+        renderEntities(rows);
+        renderTable(rows);
+        el("rowCount").textContent = "(" + rows.length + ")";
+      }
+
+      function renderBars(rows) {
+        const m = {};
+        const mon = [
+          "Apr",
+          "May",
+          "Jun",
+          "Jul",
+          "Aug",
+          "Sep",
+          "Oct",
+          "Nov",
+          "Dec",
+          "Jan",
+          "Feb",
+          "Mar",
+        ];
+        mon.forEach((x) => (m[x] = 0));
+        rows.forEach((r) => {
+          if (!r.date_proposal_won) return;
+          const mm = +r.date_proposal_won.split("-")[1];
+          const idx = mm >= 4 ? mm - 4 : mm + 8;
+          m[mon[idx]] += lakh(r._val);
+        });
+        const max = Math.max(1, ...Object.values(m));
+        el("bars").innerHTML = mon
+          .map((x) => {
+            const v = m[x];
+            const h = v > 0 ? Math.max(3, (v / max) * 140) : 2;
+            return (
+              '<div class="bar-col"><div class="bar-val">' +
+              (v > 0 ? v.toFixed(0) : "") +
+              "</div>" +
+              '<div class="bar" style="height:' +
+              h +
+              "px;" +
+              (v === 0 ? "background:var(--border)" : "") +
+              '"></div>' +
+              '<div class="bar-lbl">' +
+              x +
+              "</div></div>"
+            );
+          })
+          .join("");
+      }
+      function renderEntities(rows) {
+        const e = {};
+        rows.forEach((r) => {
+          const k = r.gst_treatment || "—";
+          if (!e[k]) e[k] = { v: 0, c: 0 };
+          e[k].v += r._val;
+          e[k].c++;
+        });
+        const arr = Object.entries(e).sort((a, b) => b[1].v - a[1].v);
+        const max = Math.max(1, ...arr.map((a) => a[1].v));
+        el("entities").innerHTML = arr.length
+          ? arr
+              .map(([k, o]) => {
+                const w = Math.max(12, (o.v / max) * 100);
+                const cls = entClass(k);
+                const col =
+                  cls === "pe"
+                    ? "var(--pe)"
+                    : cls === "ps"
+                      ? "var(--ps)"
+                      : "var(--primary)";
+                return (
+                  '<div class="ent-row"><div class="ent-name">' +
+                  esc(k) +
+                  "</div>" +
+                  '<div class="ent-track"><div class="ent-fill" style="width:' +
+                  w +
+                  "%;background:" +
+                  col +
+                  '">' +
+                  inr(o.v) +
+                  "</div></div>" +
+                  '<div class="ent-cnt">' +
+                  o.c +
+                  " project" +
+                  (o.c !== 1 ? "s" : "") +
+                  "</div></div>"
+                );
+              })
+              .join("")
+          : '<div class="empty">No data</div>';
+      }
+      function renderTable(rows) {
+        const thead = el("tbl").tHead,
+          tb = el("tbl").tBodies[0];
+        thead.innerHTML =
+          "<tr>" +
+          COLS.map(
+            (c) =>
+              '<th class="' +
+              (c.num ? "num" : "") +
+              '" data-k="' +
+              c.k +
+              '"' +
+              (c.sort === 0 ? ' style="cursor:default"' : "") +
+              ">" +
+              c.t +
+              (c.sort !== 0 && c.k === sortKey
+                ? ' <span class="arrow">' +
+                  (sortDir < 0 ? "▼" : "▲") +
+                  "</span>"
+                : c.sort !== 0
+                  ? ' <span class="arrow">↕</span>'
+                  : "") +
+              "</th>",
+          ).join("") +
+          "</tr>";
+        thead.querySelectorAll("th").forEach((th) => {
+          const k = th.dataset.k;
+          const col = COLS.find((c) => c.k === k);
+          if (col.sort === 0) return;
+          th.onclick = () => {
+            if (sortKey === k) sortDir *= -1;
+            else {
+              sortKey = k;
+              sortDir = col.num ? -1 : 1;
+            }
+            render();
+          };
+        });
+        if (!rows.length) {
+          tb.innerHTML = "";
+          el("emptyState").innerHTML =
+            '<div class="empty">No projects match these filters. Try Reset.</div>';
+          return;
+        }
+        el("emptyState").innerHTML = "";
+        tb.innerHTML = rows
+          .map(
+            (r) =>
+              "<tr>" +
+              COLS.map(
+                (c) =>
+                  '<td class="' +
+                  (c.num ? "num" : "") +
+                  '">' +
+                  c.r(r) +
+                  "</td>",
+              ).join("") +
+              "</tr>",
+          )
+          .join("");
+      }
+
+      /* CSV export */
+      el("csv").onclick = () => {
+        const rows = current();
+        const cols = [
+          "date_proposal_won",
+          "customer_company",
+          "customer_name",
+          "project_name",
+          "project_location",
+          "proposal_id",
+          "pcode",
+          "gst_treatment",
+          "date_proposal_sent",
+          "final_quote_value",
+          "pr_mode",
+          "source",
+        ];
+        const head = [
+          "Date Won",
+          "Client Company",
+          "Customer",
+          "Project",
+          "Location",
+          "Proposal ID",
+          "P Code",
+          "Billing Entity",
+          "Date Sent",
+          "Order Value (INR)",
+          "PR Mode",
+          "Source",
+        ];
+        const lines = [head.join(",")].concat(
+          rows.map((r) =>
+            cols
+              .map((k) => {
+                let v = r[k] == null ? "" : r[k];
+                v = String(v).replace(/"/g, '""');
+                return '"' + v + '"';
+              })
+              .join(","),
+          ),
+        );
+        const blob = new Blob([lines.join("\n")], { type: "text/csv" });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = "BD02_ProjectsWon_" + el("fFY").value + ".csv";
+        a.click();
+      };
+
+      ["fFY", "fEnt", "fPR", "fSrc", "fQ"].forEach((id) =>
+        el(id).addEventListener("input", render),
+      );
+      el("reset").onclick = () => {
+        el("fFY").value = "FY26-27";
+        el("fEnt").value = "ALL";
+        el("fPR").value = "ALL";
+        el("fSrc").value = "ALL";
+        el("fQ").value = "";
+        render();
+      };
+
+      /* ---- load live data from the Apps Script backend ---- */
+      function showLoad(msg, isErr) {
+        el("loadState").style.display = "flex";
+        el("loadState").className = "loadstate" + (isErr ? " err" : "");
+        el("loadMsg").textContent = msg;
+      }
+      function hideLoad() {
+        el("loadState").style.display = "none";
+      }
+      function onData(rows) {
+        RAW = rows || [];
+        preprocess();
+        fillSelect(
+          "fEnt",
+          RAW.map((r) => r.gst_treatment),
+          "All entities",
+        );
+        fillSelect(
+          "fPR",
+          RAW.map((r) => r.pr_mode),
+          "All modes",
+        );
+        buildNote();
+        hideLoad();
+        render();
+      }
+      function onErr(err) {
+        showLoad(
+          "Could not load data: " +
+            (err && err.message ? err.message : err) +
+            "  — check the BD02 sheet name and that getBD02MISData() is deployed.",
+          true,
+        );
+      }
+      function loadData() {
+        showLoad("Loading projects from intranet_db_prod…", false);
+        if (window.google && google.script && google.script.run) {
+          google.script.run
+            .withSuccessHandler(onData)
+            .withFailureHandler(onErr)
+            .getBD02MISData();
+        } else {
+          showLoad(
+            "Not running inside Apps Script — open this via the web-app URL (?page=bd02mis).",
+            true,
+          );
+        }
+      }
+      loadData();
+    </script>
+  </body>
+</html>

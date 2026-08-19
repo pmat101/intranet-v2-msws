@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <base target="_top" />
+    <title>SF02 – EB Project Checklist</title>
+
+    <?!= HtmlService.createHtmlOutputFromFile('sharedStyles').getContent(); ?>
+    <?!= HtmlService.createHtmlOutputFromFile('sharedComponents').getContent(); ?>
+  </head>
+  <body>
+    <div class="form-wrapper">
+      <div class="form-title">SF02 – EB Project Checklist</div>
+      <div class="form-subtitle">Checklist for Environmental Baseline (EB) Projects</div>
+
+      <div id="prefill-area"></div>
+      <div id="f_selects"></div>
+      <div id="f_fields"></div>
+
+      <!-- Vegetative Details using Belt Transect Method -->
+      <div class="form-section">
+        <div class="section-heading">Vegetative Details using Belt Transect Method</div>
+        <div id="beltTransectBody"></div>
+        <button type="button" class="btn-secondary" id="addBeltTransectBtn">+ Add Entry</button>
+      </div>
+
+      <!-- Study of Flora -->
+      <div class="form-section">
+        <div class="section-heading">Study of Flora</div>
+        <div id="floraBody"></div>
+        <button type="button" class="btn-secondary" id="addFloraBtn">+ Add Entry</button>
+      </div>
+
+      <!-- Team / Lines -->
+      <div class="form-section">
+        <div class="section-heading">Team / Lines</div>
+        <div id="teamBody"></div>
+        <button type="button" class="btn-secondary" id="addTeamBtn">+ Add row</button>
+      </div>
+
+      <div style="margin-top: 20px">
+        <button class="btn-primary" id="submitBtn">Submit</button>
+        <span id="status" class="text-muted" style="margin-left: 12px"></span>
+      </div>
+    </div>
+
+    <script>
+      const FORM_CODE = "SF02";
+
+      const c = document.getElementById("f_fields"); // general fields container
+      const selContainer = document.getElementById("f_selects"); // selects and grouped controls
+
+      function renderField(container, opts){
+        const input = document.createElement("input");
+        input.placeholder = opts.placeholder || opts.label;
+        input.id = opts.id;
+        if(opts.type) input.type = opts.type;
+        if(opts.required) input.required = true;
+        container.appendChild(input);
+        return input;
+      }
+
+      // ----------------- GENERAL FIELDS -----------------
+      const pcodeInput = renderField(c, {label:"PCODE", id:"pcode", placeholder:"Enter PCODE to auto-fill"});
+      renderField(c, {label:"Project Name", id:"project_name", placeholder:"Auto-filled"});
+      renderField(c, {label:"Client Name", id:"client_name", placeholder:"Auto-filled"});
+      renderField(c, {label:"First Name", id:"first_name"});
+      renderField(c, {label:"Last Name", id:"last_name"});
+      renderField(c, {label:"Email", id:"email", type:"email"});
+      renderField(c, {label:"EIA Coordinator", id:"eia_coordinator"});
+      renderField(c, {label:"FAE Cat-A", id:"fae_cat_a"});
+      renderField(c, {label:"FAE Cat-B", id:"fae_cat_b"});
+      renderField(c, {label:"Street Address", id:"street_address"});
+      renderField(c, {label:"Address Line 2", id:"address2"});
+      renderField(c, {label:"City", id:"city"});
+      renderField(c, {label:"State/Region/Province", id:"state"});
+      renderField(c, {label:"Postal / Zip Code", id:"postal"});
+      renderField(c, {label:"Country", id:"country"});
+      renderField(c, {label:"Survey Date", id:"survey_date", type:"date"});
+
+      // ----------------- STATE AND SECTOR DROPDOWNS -----------------
+      const stateSelect = renderField(selContainer, {label:"State / UT", id:"state_select", type:"select"});
+      const sectorSelect = renderField(selContainer, {label:"Sector", id:"sector_select", type:"select"});
+
+      google.script.run.withSuccessHandler(function(data){
+        stateSelect.innerHTML = "";
+        stateSelect.appendChild(new Option("Select state", ""));
+        (data.states||[]).forEach(s=>stateSelect.appendChild(new Option(s,s)));
+
+        sectorSelect.innerHTML = "";
+        sectorSelect.appendChild(new Option("Select sector",""));
+        (data.sectors||[]).forEach(s=>sectorSelect.appendChild(new Option(s,s)));
+      }).getDropdownData();
+
+      // ----------------- PREFILL FROM PCODE -----------------
+      pcodeInput.addEventListener("blur", function(){
+        const v = this.value && this.value.trim();
+        if(!v) return;
+        google.script.run.withSuccessHandler(function(project){
+          if(!project){document.getElementById("status").innerText="No project found"; return;}
+          Object.keys(project).forEach(function(key){
+            const field = document.getElementById(key);
+            if(!field) return;
+            if(field.tagName==="SELECT"){
+              const exists = Array.from(field.options).some(o=>o.value==project[key]);
+              if(exists) field.value = project[key];
+            } else field.value = project[key];
+          });
+          document.getElementById("status").innerText = "Prefilled from projects";
+        }).getProjectByPcode(v);
+      });
+
+      // ----------------- TEAM / LINES -----------------
+      document.getElementById("addTeamBtn").addEventListener("click", function(){
+        addSubformRow("teamBody", ["Coordinator","Team Lead","Deputy TL","Member","Intern"]);
+      });
+
+      function collectTeamRows(){
+        const rows = Array.from(document.querySelectorAll("#teamBody .subform-row"));
+        return rows.map(r=>({
+          name:(r.querySelector(".member_name")||{}).value||"",
+          role:(r.querySelector(".member_role")||{}).value||"",
+          email:(r.querySelector(".member_email")||{}).value||""
+        })).filter(x=>x.name||x.email);
+      }
+
+      // ----------------- VEGETATIVE DETAILS MULTIPLE ENTRY -----------------
+      const beltContainer = document.getElementById("beltTransectBody");
+      document.getElementById("addBeltTransectBtn").addEventListener("click", function(){
+        const row = document.createElement("div"); row.className="subform-row";
+        row.innerHTML = `
+          <input type="text" placeholder="Name of Species" class="belt_name" />
+          <input type="text" placeholder="Distance" class="belt_distance" />
+          <input type="text" placeholder="Height" class="belt_height" />
+          <input type="text" placeholder="Canopy" class="belt_canopy" />
+          <input type="text" placeholder="Circumference" class="belt_circumference" />
+          <button type="button" class="removeBtn">Remove</button>`;
+        beltContainer.appendChild(row);
+        row.querySelector(".removeBtn").addEventListener("click",()=>row.remove());
+      });
+
+      // ----------------- STUDY OF FLORA MULTIPLE ENTRY -----------------
+      const floraContainer = document.getElementById("floraBody");
+      document.getElementById("addFloraBtn").addEventListener("click", function(){
+        const row = document.createElement("div"); row.className="subform-row";
+        row.innerHTML = `
+          <input type="text" placeholder="Common Name of Species" class="flora_common" />
+          <input type="text" placeholder="Scientific Name" class="flora_scientific" />
+          <input type="text" placeholder="Tree/Herbs/Shrubs/Grasses/Climber" class="flora_type" />
+          <input type="number" placeholder="Number of Species" class="flora_number" />
+          <input type="text" placeholder="Height" class="flora_height" />
+          <input type="text" placeholder="Canopy" class="flora_canopy" />
+          <input type="text" placeholder="GBH" class="flora_gbh" />
+          <input type="text" placeholder="Found in Core Zone/Buffer Zone" class="flora_zone" />
+          <button type="button" class="removeBtn">Remove</button>`;
+        floraContainer.appendChild(row);
+        row.querySelector(".removeBtn").addEventListener("click",()=>row.remove());
+      });
+
+      // ----------------- SUBMIT -----------------
+      document.getElementById("submitBtn").addEventListener("click", function(){
+        const payload = {
+          pcode: (document.getElementById("pcode")||{}).value || "",
+          project_name: (document.getElementById("project_name")||{}).value || "",
+          client_name: (document.getElementById("client_name")||{}).value || "",
+          first_name: (document.getElementById("first_name")||{}).value || "",
+          last_name: (document.getElementById("last_name")||{}).value || "",
+          email: (document.getElementById("email")||{}).value || "",
+          eia_coordinator: (document.getElementById("eia_coordinator")||{}).value || "",
+          fae_cat_a: (document.getElementById("fae_cat_a")||{}).value || "",
+          fae_cat_b: (document.getElementById("fae_cat_b")||{}).value || "",
+          street_address: (document.getElementById("street_address")||{}).value || "",
+          address2: (document.getElementById("address2")||{}).value || "",
+          city: (document.getElementById("city")||{}).value || "",
+          state: (document.getElementById("state")||{}).value || "",
+          postal: (document.getElementById("postal")||{}).value || "",
+          country: (document.getElementById("country")||{}).value || "",
+          survey_date: (document.getElementById("survey_date")||{}).value || "",
+          state_select: stateSelect.value,
+          sector_select: sectorSelect.value,
+          team: collectTeamRows(),
+          vegetative_details: Array.from(document.querySelectorAll("#beltTransectBody .subform-row")).map(r=>({
+            name:r.querySelector(".belt_name").value,
+            distance:r.querySelector(".belt_distance").value,
+            height:r.querySelector(".belt_height").value,
+            canopy:r.querySelector(".belt_canopy").value,
+            circumference:r.querySelector(".belt_circumference").value
+          })).filter(x=>x.name),
+          study_of_flora: Array.from(document.querySelectorAll("#floraBody .subform-row")).map(r=>({
+            common_name:r.querySelector(".flora_common").value,
+            scientific_name:r.querySelector(".flora_scientific").value,
+            type:r.querySelector(".flora_type").value,
+            number:r.querySelector(".flora_number").value,
+            height:r.querySelector(".flora_height").value,
+            canopy:r.querySelector(".flora_canopy").value,
+            gbh:r.querySelector(".flora_gbh").value,
+            zone:r.querySelector(".flora_zone").value
+          })).filter(x=>x.common_name)
+        };
+
+        google.script.run
+          .withSuccessHandler(res=>{
+            document.getElementById("status").innerText = "Submitted: "+(res.submission_id||res.pcode||"OK");
+          })
+          .withFailureHandler(err=>{
+            document.getElementById("status").innerText = "Submit failed: "+err.message;
+          })
+          .submitForm(FORM_CODE.toUpperCase(), payload);
+      });
+    </script>
+  </body>
+</html>

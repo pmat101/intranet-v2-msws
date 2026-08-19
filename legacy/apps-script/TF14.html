@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <base target="_top" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TF14</title>
+    <?!= HtmlService.createHtmlOutputFromFile('shared-styles').getContent(); ?>
+    <style>
+      .section-divider {
+        margin: 22px 0 14px;
+        padding-top: 8px;
+        border-top: 1px solid #e5e7eb;
+        font-weight: 700;
+        font-size: 18px;
+      }
+      .subform-card {
+        border: 1px solid #e5e7eb;
+        border-radius: 14px;
+        padding: 14px;
+        margin-bottom: 14px;
+        background: #fff;
+      }
+      .subtle-note {
+        font-size: 12px;
+        color: #6b7280;
+        margin-top: 6px;
+      }
+      .actions-row {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+        flex-wrap: wrap;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="form-wrapper">
+      <div class="form-title">TF14</div>
+      <div class="form-subtitle">Coordination meeting - Agenda</div>
+
+      <div class="form-section">
+        <div class="form-group">
+          <label class="form-label" for="meeting_date"
+            >Date of Meeting <span class="required">*</span></label
+          >
+          <input type="date" id="meeting_date" required />
+          <div class="helper-text">dd-MMM-yyyy</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Employee Name</label>
+          <div class="form-row">
+            <div class="form-col">
+              <input
+                type="text"
+                id="employee_first_name"
+                placeholder="First Name"
+              />
+              <div class="helper-text">First Name</div>
+            </div>
+            <div class="form-col">
+              <input
+                type="text"
+                id="employee_last_name"
+                placeholder="Last Name"
+              />
+              <div class="helper-text">Last Name</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="employee_email"
+            >Employee Official Email ID <span class="required">*</span></label
+          >
+          <input type="email" id="employee_email" required />
+          <div class="helper-text">Email ID of the person filling the form</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="team_name"
+            >Team Name <span class="required">*</span></label
+          >
+          <select id="team_name" required></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Person/Expert Invited</label>
+          <div id="invitee-rows"></div>
+          <div class="actions-row">
+            <button type="button" class="btn-secondary" id="add-invitee-row">
+              + Add Row
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="company_name"
+            >Company Name <span class="required">*</span></label
+          >
+          <input type="text" id="company_name" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="project_name"
+            >Name of the Project <span class="required">*</span></label
+          >
+          <input type="text" id="project_name" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="pcode"
+            >PCODE <span class="required">*</span></label
+          >
+          <input type="text" id="pcode" required />
+          <div class="helper-text">
+            Refer the active PCODE list in your database
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="category">Category</label>
+          <select id="category"></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="eac_seac">EAC/SEAC</label>
+          <select id="eac_seac"></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="eia_coordinator_name"
+            >EIA Coordinator Name <span class="required">*</span></label
+          >
+          <select id="eia_coordinator_name" required></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="level_of_coordination_meeting"
+            >Level of Coordination Meeting
+            <span class="required">*</span></label
+          >
+          <input type="text" id="level_of_coordination_meeting" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="agenda_of_coordination_meeting"
+            >Agenda of Coordination Meeting
+            <span class="required">*</span></label
+          >
+          <textarea id="agenda_of_coordination_meeting" required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="meeting_link">Meeting Link</label>
+          <input type="url" id="meeting_link" />
+        </div>
+      </div>
+
+      <button
+        class="btn-primary"
+        type="button"
+        id="submitBtn"
+        onclick="submitTF14()"
+      >
+        Submit
+      </button>
+    </div>
+
+    <script>
+      let isSubmitting = false;
+
+      window.addEventListener("DOMContentLoaded", function () {
+        populateDropdowns();
+
+        const inviteeWrap = document.getElementById("invitee-rows");
+        inviteeWrap.appendChild(createInviteeRow());
+
+        document
+          .getElementById("add-invitee-row")
+          .addEventListener("click", function () {
+            inviteeWrap.appendChild(createInviteeRow());
+          });
+      });
+
+      function populateDropdowns() {
+        google.script.run
+          .withSuccessHandler(function (data) {
+            data = data || {};
+            fillSelect(
+              document.getElementById("team_name"),
+              data.team || [],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("category"),
+              data.categoryAdvanced || [],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("eac_seac"),
+              data.eac || [],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("eia_coordinator_name"),
+              data.eiaCoordinator || [],
+              "Select",
+            );
+          })
+          .getDropdownData();
+      }
+
+      function fillSelect(select, items, placeholder) {
+        if (!select) return;
+        select.innerHTML = "";
+        const first = document.createElement("option");
+        first.value = "";
+        first.textContent = placeholder || "Select";
+        select.appendChild(first);
+
+        (items || []).forEach(function (item) {
+          const option = document.createElement("option");
+          option.value = item;
+          option.textContent = item;
+          select.appendChild(option);
+        });
+      }
+
+      function createInviteeRow() {
+        const row = document.createElement("div");
+        row.className = "subform-card";
+        row.innerHTML = `
+          <div class="form-row">
+            <div class="form-col">
+              <label class="form-label">Name of Invitee</label>
+              <input type="text" class="tf14-invitee-name" />
+            </div>
+            <div class="form-col">
+              <label class="form-label">Email ID of Invitee</label>
+              <input type="email" class="tf14-invitee-email" />
+            </div>
+          </div>
+          <div class="subtle-note">The email ID will be added to the recipient list.</div>
+          <div class="actions-row">
+            <button type="button" class="btn-secondary tf14-remove-row">Remove</button>
+          </div>
+        `;
+        row
+          .querySelector(".tf14-remove-row")
+          .addEventListener("click", function () {
+            row.remove();
+          });
+        return row;
+      }
+
+      function collectInviteeRows() {
+        return Array.from(
+          document.querySelectorAll("#invitee-rows .subform-card"),
+        )
+          .map(function (row) {
+            return {
+              name_of_invitee:
+                row.querySelector(".tf14-invitee-name")?.value || "",
+              email_id_of_invitee:
+                row.querySelector(".tf14-invitee-email")?.value || "",
+            };
+          })
+          .filter(function (r) {
+            return (
+              String(r.name_of_invitee).trim() ||
+              String(r.email_id_of_invitee).trim()
+            );
+          });
+      }
+
+      function validateTF14(p) {
+        const missing = [];
+
+        if (!p.meeting_date) missing.push("Date of Meeting");
+        if (!p.employee_email) missing.push("Employee Official Email ID");
+        if (!p.team_name) missing.push("Team Name");
+        if (!p.company_name) missing.push("Company Name");
+        if (!p.project_name) missing.push("Name of the Project");
+        if (!p.pcode) missing.push("PCODE");
+        if (!p.eia_coordinator_name) missing.push("EIA Coordinator Name");
+        if (!p.level_of_coordination_meeting)
+          missing.push("Level of Coordination Meeting");
+        if (!p.agenda_of_coordination_meeting)
+          missing.push("Agenda of Coordination Meeting");
+
+        if (!p.person_expert_invited || !p.person_expert_invited.length) {
+          missing.push("Person/Expert Invited");
+        } else {
+          p.person_expert_invited.forEach(function (r, i) {
+            if (!r.name_of_invitee)
+              missing.push(
+                `Person/Expert Invited - Name of Invitee (row ${i + 1})`,
+              );
+            if (!r.email_id_of_invitee)
+              missing.push(
+                `Person/Expert Invited - Email ID of Invitee (row ${i + 1})`,
+              );
+          });
+        }
+
+        if (missing.length) {
+          alert("Please fill:\n\n" + missing.join("\n"));
+          return false;
+        }
+        return true;
+      }
+
+      function submitTF14() {
+        if (isSubmitting) return; // blocks double-clicks instantly
+        isSubmitting = true;
+        const submitBtn = document.getElementById("submitBtn");
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Submitting...";
+
+        const payload = {
+          meeting_date: document.getElementById("meeting_date").value,
+          employee_first_name: document.getElementById("employee_first_name")
+            .value,
+          employee_last_name:
+            document.getElementById("employee_last_name").value,
+          employee_email: document.getElementById("employee_email").value,
+          team_name: document.getElementById("team_name").value,
+          person_expert_invited: collectInviteeRows(),
+          company_name: document.getElementById("company_name").value,
+          project_name: document.getElementById("project_name").value,
+          pcode: document.getElementById("pcode").value,
+          category: document.getElementById("category").value,
+          eac_seac: document.getElementById("eac_seac").value,
+          eia_coordinator_name: document.getElementById("eia_coordinator_name")
+            .value,
+          level_of_coordination_meeting: document.getElementById(
+            "level_of_coordination_meeting",
+          ).value,
+          agenda_of_coordination_meeting: document.getElementById(
+            "agenda_of_coordination_meeting",
+          ).value,
+          meeting_link: document.getElementById("meeting_link").value,
+        };
+
+        if (!validateTF14(payload)) {
+          isSubmitting = false;
+          submitBtn.disabled = false;
+          submitBtn.innerText = "Submit";
+          return;
+        }
+
+        google.script.run
+          .withSuccessHandler(function (res) {
+            console.log("SUCCESS HANDLER RUNNING");
+            document.body.innerHTML = res.thankYouHtml;
+          })
+          .withFailureHandler(function (err) {
+            alert("Submission failed: " + err.message);
+            isSubmitting = false;
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Submit";
+          })
+          .submitTF14(payload);
+      }
+    </script>
+  </body>
+</html>

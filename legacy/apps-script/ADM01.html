@@ -1,0 +1,638 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <base target="_top" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ADM01</title>
+    <?!= HtmlService.createHtmlOutputFromFile('shared-styles').getContent(); ?>
+    <style>
+      .section-divider {
+        margin: 22px 0 14px;
+        padding-top: 8px;
+        border-top: 1px solid #e5e7eb;
+        font-weight: 700;
+        font-size: 18px;
+      }
+      .subform-card {
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 14px;
+        background: #fff;
+        margin-bottom: 14px;
+      }
+      .check-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px 16px;
+      }
+      .check-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        border: 1px solid #e5e7eb;
+        border-radius: 999px;
+        background: #fff;
+        cursor: pointer;
+      }
+      .subtle-note {
+        font-size: 12px;
+        color: #6b7280;
+        margin-top: 6px;
+      }
+      .conditional-block {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="form-wrapper">
+      <div class="form-title">ADM01</div>
+      <div class="form-subtitle">Checklist for client visits</div>
+
+      <div class="form-section">
+        <div class="form-group">
+          <label class="form-label" for="date"
+            >Date <span class="required">*</span></label
+          >
+          <input type="date" id="date" />
+          <div class="helper-text">dd-MMM-yyyy</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label"
+            >Name of Requester <span class="required">*</span></label
+          >
+          <div class="form-row">
+            <div class="form-col">
+              <input
+                type="text"
+                id="requestor_first_name"
+                placeholder="First Name"
+              />
+              <div class="helper-text">First Name</div>
+            </div>
+            <div class="form-col">
+              <input
+                type="text"
+                id="requestor_last_name"
+                placeholder="Last Name"
+              />
+              <div class="helper-text">Last Name</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="requestor_email"
+            >Email of Requester <span class="required">*</span></label
+          >
+          <input type="email" id="requestor_email" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="team_name"
+            >Team Name <span class="required">*</span></label
+          >
+          <select id="team_name" required></select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="project_name"
+            >Project Name <span class="required">*</span></label
+          >
+          <input type="text" id="project_name" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="pcode"
+            >P Code <span class="required">*</span></label
+          >
+          <input type="text" id="pcode" required />
+          <div class="helper-text">
+            Refer the active PCODE list in your project sheet
+          </div>
+        </div>
+
+        <div class="section-divider">Client Details</div>
+
+        <div class="form-group">
+          <label class="form-label"
+            >Client Name <span class="required">*</span></label
+          >
+          <div class="form-row">
+            <div class="form-col">
+              <input
+                type="text"
+                id="client_first_name"
+                placeholder="First Name"
+              />
+              <div class="helper-text">First Name</div>
+            </div>
+            <div class="form-col">
+              <input
+                type="text"
+                id="client_last_name"
+                placeholder="Last Name"
+              />
+              <div class="helper-text">Last Name</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label"
+            >Client Mobile Number <span class="required">*</span></label
+          >
+          <div class="form-row">
+            <div class="form-col">
+              <input
+                type="text"
+                id="client_mobile_code"
+                placeholder="+91"
+                maxlength="5"
+              />
+              <div class="helper-text">Code</div>
+            </div>
+            <div class="form-col">
+              <input
+                type="tel"
+                id="client_mobile_number"
+                placeholder="Mobile Number"
+                maxlength="20"
+              />
+              <div class="helper-text">Number</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-col">
+            <label class="form-label" for="date_of_arrival"
+              >Date of Arrival</label
+            >
+            <input type="date" id="date_of_arrival" />
+          </div>
+          <div class="form-col">
+            <label class="form-label" for="date_of_departure"
+              >Date of Departure</label
+            >
+            <input type="date" id="date_of_departure" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-col">
+            <label class="form-label" for="no_of_persons_visiting"
+              >No. of Persons Visiting</label
+            >
+            <input type="number" id="no_of_persons_visiting" min="0" />
+          </div>
+          <div class="form-col">
+            <label class="form-label" for="purpose_of_visit"
+              >Purpose of Visit</label
+            >
+            <input type="text" id="purpose_of_visit" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="conference_room_required"
+            >Whether Conference Room is required for Meeting</label
+          >
+          <select id="conference_room_required">
+            <option value="">Select</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>
+        </div>
+
+        <div
+          class="form-group"
+          id="conference_room_dates_wrap"
+          style="display: none"
+        >
+          <label class="form-label" for="conference_room_dates"
+            >If Yes, please mention the dates for which Conference Room is
+            required</label
+          >
+          <input
+            type="text"
+            id="conference_room_dates"
+            placeholder="e.g. 12-Jun-2026, 13-Jun-2026"
+          />
+        </div>
+
+        <div class="section-divider">Requirements</div>
+        <div class="subtle-note" style="margin-bottom: 10px">
+          Tick all that apply. The relevant section will appear below.
+        </div>
+        <div class="check-grid">
+          <label class="check-chip"
+            ><input
+              type="checkbox"
+              name="requirements"
+              value="Hotel Booking"
+              id="req_hotel"
+            />
+            Hotel Booking</label
+          >
+          <label class="check-chip"
+            ><input
+              type="checkbox"
+              name="requirements"
+              value="Food Arrangements"
+              id="req_food"
+            />
+            Food Arrangements</label
+          >
+          <label class="check-chip"
+            ><input
+              type="checkbox"
+              name="requirements"
+              value="Vehicle"
+              id="req_vehicle"
+            />
+            Vehicle</label
+          >
+        </div>
+
+        <div id="hotel_block" class="conditional-block">
+          <div class="section-divider">Hotel Booking</div>
+          <div class="subform-card">
+            <div class="form-group">
+              <label class="form-label" for="hotel_guest_name"
+                >Guest Name <span class="required">*</span></label
+              >
+              <input type="text" id="hotel_guest_name" />
+            </div>
+            <div class="form-row">
+              <div class="form-col">
+                <label class="form-label" for="hotel_check_in_date"
+                  >Check-in Date <span class="required">*</span></label
+                >
+                <input type="date" id="hotel_check_in_date" />
+              </div>
+              <div class="form-col">
+                <label class="form-label" for="hotel_check_out_date"
+                  >Check-out Date <span class="required">*</span></label
+                >
+                <input type="date" id="hotel_check_out_date" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="hotel_payment_due_by"
+                >Payment Due By <span class="required">*</span></label
+              >
+              <select id="hotel_payment_due_by">
+                <option value="">Select</option>
+                <option value="Perfact">Perfact</option>
+                <option value="Client">Client</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div id="food_block" class="conditional-block">
+          <div class="section-divider">Food Arrangements</div>
+          <div class="subform-card">
+            <div class="form-row">
+              <div class="form-col">
+                <label class="form-label" for="food_meal_type"
+                  >Meal Type <span class="required">*</span></label
+                >
+                <select id="food_meal_type">
+                  <option value="">Select</option>
+                  <option value="Breakfast">Breakfast</option>
+                  <option value="Lunch">Lunch</option>
+                  <option value="Dinner">Dinner</option>
+                </select>
+              </div>
+              <div class="form-col">
+                <label class="form-label" for="food_date"
+                  >Date for Food Arrangements
+                  <span class="required">*</span></label
+                >
+                <input type="date" id="food_date" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="food_no_of_clients"
+                >Number of Clients Needing Food
+                <span class="required">*</span></label
+              >
+              <input type="number" id="food_no_of_clients" min="0" />
+            </div>
+          </div>
+        </div>
+
+        <div id="vehicle_block" class="conditional-block">
+          <div class="section-divider">Vehicle</div>
+          <div class="subform-card">
+            <div class="form-row">
+              <div class="form-col">
+                <label class="form-label" for="vehicle_pickup_date"
+                  >Date of Pickup <span class="required">*</span></label
+                >
+                <input type="date" id="vehicle_pickup_date" />
+              </div>
+              <div class="form-col">
+                <label class="form-label" for="vehicle_end_date"
+                  >Vehicle Requirement End Date
+                  <span class="required">*</span></label
+                >
+                <input type="date" id="vehicle_end_date" />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-col">
+                <label class="form-label" for="vehicle_no_of_visitors"
+                  >Number of Visitors <span class="required">*</span></label
+                >
+                <input type="number" id="vehicle_no_of_visitors" min="0" />
+              </div>
+              <div class="form-col">
+                <label class="form-label" for="vehicle_pickup_time"
+                  >Pickup Time <span class="required">*</span></label
+                >
+                <input type="time" id="vehicle_pickup_time" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="vehicle_pickup_point"
+                >Pickup Point <span class="required">*</span></label
+              >
+              <input type="text" id="vehicle_pickup_point" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="vehicle_place_to_visit"
+                >Place to Visit <span class="required">*</span></label
+              >
+              <input type="text" id="vehicle_place_to_visit" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="vehicle_other_details"
+                >Other Details</label
+              >
+              <textarea id="vehicle_other_details"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-top: 18px">
+          <label class="form-label" for="remarks">Remarks</label>
+          <textarea id="remarks"></textarea>
+        </div>
+      </div>
+
+      <button
+        class="btn-primary"
+        type="button"
+        id="submitBtn"
+        onclick="submitADM01()"
+      >
+        Submit
+      </button>
+    </div>
+
+    <script>
+      let isSubmitting = false;
+
+      window.addEventListener("DOMContentLoaded", function () {
+        populateDropdowns();
+        bindConferenceRoomToggle();
+        bindRequirementToggles();
+      });
+
+      function populateDropdowns() {
+        google.script.run
+          .withSuccessHandler(function (data) {
+            data = data || {};
+            fillSelect(
+              document.getElementById("team_name"),
+              data.team || [],
+              "Select",
+            );
+          })
+          .getDropdownData();
+      }
+
+      function fillSelect(select, items, placeholder) {
+        if (!select) return;
+        select.innerHTML = "";
+        const first = document.createElement("option");
+        first.value = "";
+        first.textContent = placeholder || "Select";
+        select.appendChild(first);
+
+        (items || []).forEach(function (item) {
+          const option = document.createElement("option");
+          option.value = item;
+          option.textContent = item;
+          select.appendChild(option);
+        });
+      }
+
+      function bindConferenceRoomToggle() {
+        const select = document.getElementById("conference_room_required");
+        const wrap = document.getElementById("conference_room_dates_wrap");
+        const input = document.getElementById("conference_room_dates");
+
+        function sync() {
+          const show = String(select.value || "").toLowerCase() === "yes";
+          wrap.style.display = show ? "block" : "none";
+          if (!show) input.value = "";
+        }
+
+        select.addEventListener("change", sync);
+        sync();
+      }
+
+      function bindRequirementToggles() {
+        const map = [
+          { box: "req_hotel", block: "hotel_block" },
+          { box: "req_food", block: "food_block" },
+          { box: "req_vehicle", block: "vehicle_block" },
+        ];
+
+        map.forEach(function (m) {
+          const box = document.getElementById(m.box);
+          const block = document.getElementById(m.block);
+          function sync() {
+            block.style.display = box.checked ? "block" : "none";
+          }
+          box.addEventListener("change", sync);
+          sync();
+        });
+      }
+
+      function getCheckedValues(name) {
+        return Array.from(
+          document.querySelectorAll(`input[name="${name}"]:checked`),
+        )
+          .map(function (el) {
+            return el.value;
+          })
+          .join(", ");
+      }
+
+      function validateADM01(payload) {
+        const missing = [];
+
+        if (!payload.date) missing.push("Date");
+        if (!payload.requestor_first_name)
+          missing.push("Name of Requester - First Name");
+        if (!payload.requestor_last_name)
+          missing.push("Name of Requester - Last Name");
+        if (!payload.requestor_email) missing.push("Email of Requester");
+        if (!payload.team_name) missing.push("Team Name");
+        if (!payload.project_name) missing.push("Project Name");
+        if (!payload.pcode) missing.push("P Code");
+        if (!payload.client_first_name)
+          missing.push("Client Name - First Name");
+        if (!payload.client_last_name) missing.push("Client Name - Last Name");
+        if (!payload.client_mobile_number) missing.push("Client Mobile Number");
+
+        if (
+          String(payload.conference_room_required || "").toLowerCase() ===
+            "yes" &&
+          !payload.conference_room_dates
+        ) {
+          missing.push("Conference Room dates");
+        }
+
+        if (document.getElementById("req_hotel").checked) {
+          const h = payload.hotel_booking || {};
+          if (!h.guest_name) missing.push("Hotel Booking - Guest Name");
+          if (!h.check_in_date) missing.push("Hotel Booking - Check-in Date");
+          if (!h.check_out_date) missing.push("Hotel Booking - Check-out Date");
+          if (!h.payment_due_by) missing.push("Hotel Booking - Payment Due By");
+        }
+
+        if (document.getElementById("req_food").checked) {
+          const f = payload.food_arrangements || {};
+          if (!f.meal_type) missing.push("Food Arrangements - Meal Type");
+          if (!f.date) missing.push("Food Arrangements - Date");
+          if (!f.no_of_clients)
+            missing.push("Food Arrangements - Number of Clients");
+        }
+
+        if (document.getElementById("req_vehicle").checked) {
+          const v = payload.vehicle || {};
+          if (!v.pickup_date) missing.push("Vehicle - Date of Pickup");
+          if (!v.end_date)
+            missing.push("Vehicle - Vehicle Requirement End Date");
+          if (!v.no_of_visitors) missing.push("Vehicle - Number of Visitors");
+          if (!v.pickup_time) missing.push("Vehicle - Pickup Time");
+          if (!v.pickup_point) missing.push("Vehicle - Pickup Point");
+          if (!v.place_to_visit) missing.push("Vehicle - Place to Visit");
+        }
+
+        if (missing.length) {
+          alert("Please fill:\n\n" + missing.join("\n"));
+          return false;
+        }
+        return true;
+      }
+
+      function submitADM01() {
+        if (isSubmitting) return;
+        isSubmitting = true;
+        const submitBtn = document.getElementById("submitBtn");
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Submitting...";
+
+        const payload = {
+          date: document.getElementById("date").value,
+          requestor_first_name: document.getElementById("requestor_first_name")
+            .value,
+          requestor_last_name: document.getElementById("requestor_last_name")
+            .value,
+          requestor_email: document.getElementById("requestor_email").value,
+          team_name: document.getElementById("team_name").value,
+          project_name: document.getElementById("project_name").value,
+          pcode: document.getElementById("pcode").value,
+          client_first_name: document.getElementById("client_first_name").value,
+          client_last_name: document.getElementById("client_last_name").value,
+          client_mobile_code:
+            document.getElementById("client_mobile_code").value,
+          client_mobile_number: document.getElementById("client_mobile_number")
+            .value,
+          date_of_arrival: document.getElementById("date_of_arrival").value,
+          date_of_departure: document.getElementById("date_of_departure").value,
+          no_of_persons_visiting: document.getElementById(
+            "no_of_persons_visiting",
+          ).value,
+          purpose_of_visit: document.getElementById("purpose_of_visit").value,
+          conference_room_required: document.getElementById(
+            "conference_room_required",
+          ).value,
+          conference_room_dates: document.getElementById(
+            "conference_room_dates",
+          ).value,
+          requirements: getCheckedValues("requirements"),
+          hotel_booking: document.getElementById("req_hotel").checked
+            ? {
+                guest_name: document.getElementById("hotel_guest_name").value,
+                check_in_date: document.getElementById("hotel_check_in_date")
+                  .value,
+                check_out_date: document.getElementById("hotel_check_out_date")
+                  .value,
+                payment_due_by: document.getElementById("hotel_payment_due_by")
+                  .value,
+              }
+            : null,
+          food_arrangements: document.getElementById("req_food").checked
+            ? {
+                meal_type: document.getElementById("food_meal_type").value,
+                date: document.getElementById("food_date").value,
+                no_of_clients:
+                  document.getElementById("food_no_of_clients").value,
+              }
+            : null,
+          vehicle: document.getElementById("req_vehicle").checked
+            ? {
+                pickup_date: document.getElementById("vehicle_pickup_date")
+                  .value,
+                end_date: document.getElementById("vehicle_end_date").value,
+                no_of_visitors: document.getElementById(
+                  "vehicle_no_of_visitors",
+                ).value,
+                pickup_time: document.getElementById("vehicle_pickup_time")
+                  .value,
+                pickup_point: document.getElementById("vehicle_pickup_point")
+                  .value,
+                place_to_visit: document.getElementById(
+                  "vehicle_place_to_visit",
+                ).value,
+                other_details: document.getElementById("vehicle_other_details")
+                  .value,
+              }
+            : null,
+          remarks: document.getElementById("remarks").value,
+        };
+
+        if (!validateADM01(payload)) {
+          isSubmitting = false;
+          submitBtn.disabled = false;
+          submitBtn.innerText = "Submit";
+          return;
+        }
+
+        google.script.run
+          .withSuccessHandler(function (res) {
+            console.log("SUCCESS HANDLER RUNNING");
+            document.body.innerHTML = res.thankYouHtml;
+          })
+          .withFailureHandler(function (err) {
+            alert("Submission failed: " + err.message);
+            isSubmitting = false;
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Submit";
+          })
+          .submitADM01(payload);
+      }
+    </script>
+  </body>
+</html>

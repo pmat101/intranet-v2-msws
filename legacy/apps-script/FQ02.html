@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <base target="_top" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FQ02</title>
+
+    <?!= HtmlService.createHtmlOutputFromFile('shared-styles').getContent(); ?>
+  </head>
+
+  <body>
+    <div class="form-wrapper">
+      <div class="form-title">FQ02</div>
+      <div class="form-subtitle">AQ Dispersion Model Questionnaire</div>
+
+      <div class="form-section">
+        <!-- NAME -->
+        <div class="form-group">
+          <label class="form-label">Name of Requestor</label>
+          <div class="form-row">
+            <div class="form-col">
+              <input
+                type="text"
+                id="requestor_first_name"
+                placeholder="First Name"
+              />
+              <div class="helper-text">First Name</div>
+            </div>
+            <div class="form-col">
+              <input
+                type="text"
+                id="requestor_last_name"
+                placeholder="Last Name"
+              />
+              <div class="helper-text">Last Name</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- EMAIL -->
+        <div class="form-group">
+          <label class="form-label">
+            Official Email ID of Requestor <span class="required">*</span>
+          </label>
+          <input type="email" id="requestor_email" required />
+        </div>
+
+        <!-- TEAM -->
+        <div class="form-group">
+          <label class="form-label">
+            Team Name <span class="required">*</span>
+          </label>
+          <select id="team_name" required></select>
+        </div>
+
+        <!-- EAC -->
+        <div class="form-group">
+          <label class="form-label">EAC Name</label>
+          <select id="eac_name"></select>
+        </div>
+
+        <!-- COMPANY -->
+        <div class="form-group">
+          <label class="form-label">Company Name</label>
+          <input type="text" id="company_name" />
+        </div>
+
+        <!-- PROJECT -->
+        <div class="form-group">
+          <label class="form-label">Name of the project</label>
+          <input type="text" id="project_name" />
+        </div>
+
+        <!-- DEVELOPED BY -->
+        <div class="form-group">
+          <label class="form-label">Developed by</label>
+          <input type="text" id="developed_by" />
+        </div>
+
+        <!-- ADDRESS -->
+        <div class="section-divider">Address of the Project</div>
+
+        <div class="form-group">
+          <input type="text" id="address_line1" placeholder="Street Address" />
+        </div>
+
+        <div class="form-group">
+          <input type="text" id="address_line2" placeholder="Address Line 2" />
+        </div>
+
+        <div class="form-row">
+          <div class="form-col">
+            <input type="text" id="city" placeholder="City" />
+          </div>
+          <div class="form-col">
+            <input type="text" id="state" placeholder="State/Region/Province" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-col">
+            <input
+              type="text"
+              id="postal_code"
+              placeholder="Postal / Zip Code"
+            />
+          </div>
+          <div class="form-col">
+            <input type="text" id="country" placeholder="Country" />
+          </div>
+        </div>
+
+        <!-- PCODE -->
+        <div class="form-group">
+          <label class="form-label">
+            PCODE <span class="required">*</span>
+          </label>
+          <input type="text" id="pcode" required />
+        </div>
+
+        <!-- CATEGORY -->
+        <div class="form-group">
+          <label class="form-label">Category</label>
+          <select id="category"></select>
+        </div>
+
+        <!-- SECTOR -->
+        <div class="form-group">
+          <label class="form-label">Sector</label>
+          <select id="sector"></select>
+        </div>
+
+        <!-- BASELINE -->
+        <div class="form-group">
+          <label class="form-label">Baseline Season</label>
+          <select id="baseline_season"></select>
+        </div>
+
+        <!-- LINK -->
+        <div class="form-group">
+          <label class="form-label">
+            AQ Dispersion Model sheet link <span class="required">*</span>
+          </label>
+          <input type="url" id="aq_dispersion_model_link" required />
+        </div>
+
+        <!-- REMARKS -->
+        <div class="form-group">
+          <label class="form-label">Remarks</label>
+          <textarea id="remarks"></textarea>
+        </div>
+      </div>
+
+      <!-- SUBMIT -->
+      <button class="btn-primary" id="submitBtn" onclick="submitFQ02()">
+        Submit
+      </button>
+    </div>
+
+    <script>
+      let isSubmitting = false;
+
+      window.addEventListener("DOMContentLoaded", function () {
+        populateDropdowns();
+      });
+
+      function populateDropdowns() {
+        google.script.run
+          .withSuccessHandler(function (data) {
+            data = data || {};
+
+            fillSelect(
+              document.getElementById("team_name"),
+              data.team || [],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("category"),
+              data.category || [],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("sector"),
+              data.sector || [],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("eac_name"),
+              data.eac || [],
+              "Select",
+            );
+            fillSelect(
+              document.getElementById("baseline_season"),
+              data.baselineSeason || [],
+              "Select",
+            );
+          })
+          .getDropdownData();
+      }
+
+      function fillSelect(select, items, placeholder) {
+        if (!select) return;
+
+        select.innerHTML = "";
+
+        const first = document.createElement("option");
+        first.value = "";
+        first.textContent = placeholder || "Select";
+        select.appendChild(first);
+
+        (items || []).forEach(function (item) {
+          const opt = document.createElement("option");
+          opt.value = item;
+          opt.textContent = item;
+          select.appendChild(opt);
+        });
+      }
+
+      function validateFQ02(p) {
+        const missing = [];
+
+        if (!p.requestor_email) missing.push("Official Email ID");
+        if (!p.team_name) missing.push("Team Name");
+        if (!p.pcode) missing.push("PCODE");
+        if (!p.aq_dispersion_model_link)
+          missing.push("AQ Dispersion Model link");
+
+        if (missing.length) {
+          alert("Please fill:\n\n" + missing.join("\n"));
+          return false;
+        }
+        return true;
+      }
+
+      function submitFQ02() {
+        if (isSubmitting) return; // blocks double-clicks instantly
+        isSubmitting = true;
+        const submitBtn = document.getElementById("submitBtn");
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Submitting...";
+
+        const payload = {
+          requestor_first_name: document.getElementById("requestor_first_name")
+            .value,
+          requestor_last_name: document.getElementById("requestor_last_name")
+            .value,
+          requestor_email: document.getElementById("requestor_email").value,
+          team_name: document.getElementById("team_name").value,
+          eac_name: document.getElementById("eac_name").value,
+          company_name: document.getElementById("company_name").value,
+          project_name: document.getElementById("project_name").value,
+          developed_by: document.getElementById("developed_by").value,
+          address_line1: document.getElementById("address_line1").value,
+          address_line2: document.getElementById("address_line2").value,
+          city: document.getElementById("city").value,
+          state: document.getElementById("state").value,
+          postal_code: document.getElementById("postal_code").value,
+          country: document.getElementById("country").value,
+          pcode: document.getElementById("pcode").value,
+          category: document.getElementById("category").value,
+          sector: document.getElementById("sector").value,
+          baseline_season: document.getElementById("baseline_season").value,
+          aq_dispersion_model_link: document.getElementById(
+            "aq_dispersion_model_link",
+          ).value,
+          remarks: document.getElementById("remarks").value,
+        };
+
+        if (!validateFQ02(payload)) {
+          isSubmitting = false;
+          submitBtn.disabled = false;
+          submitBtn.innerText = "Submit";
+          return;
+        }
+
+        google.script.run
+          .withSuccessHandler(function (res) {
+            console.log("SUCCESS HANDLER RUNNING"); // 👈 debug
+            document.body.innerHTML = res.thankYouHtml;
+          })
+          .withFailureHandler(function (err) {
+            alert("Submission failed: " + err.message);
+            isSubmitting = false;
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Submit";
+          })
+          .submitFQ02(payload);
+      }
+    </script>
+  </body>
+</html>

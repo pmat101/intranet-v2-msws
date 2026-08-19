@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <base target="_top" />
+    <title>CF001</title>
+
+    <?!= HtmlService.createHtmlOutputFromFile('sharedStyles').getContent(); ?>
+    <?!= HtmlService.createHtmlOutputFromFile('sharedComponents').getContent(); ?>
+  </head>
+
+  <body>
+    <div class="form-wrapper">
+      <div class="form-title">CF001</div>
+      <div class="form-subtitle">
+        Council MOM (Minutes of Meeting)
+      </div>
+
+      <div id="prefill-area"></div>
+      <div id="f_selects"></div>
+      <div id="f_fields"></div>
+
+      <div style="margin-top: 20px">
+        <button class="btn-primary" id="submitBtn">Submit</button>
+        <span id="status" class="text-muted" style="margin-left: 12px"></span>
+      </div>
+    </div>
+
+    <script>
+      const FORM_CODE = "cf001";
+
+      const c = document.getElementById("f_fields");
+      const selContainer = document.getElementById("f_selects");
+
+      // =========================
+      // COUNCIL DETAILS
+      // =========================
+
+      renderField(c, {
+        label: "Council Name *Required",
+        id: "council_name",
+      });
+
+      renderField(c, {
+        label: "Meeting Date *Required",
+        id: "meeting_date",
+        type: "date",
+      });
+
+      renderField(c, {
+        label: "Special Invitees (if any)",
+        id: "special_invitees",
+        type: "textarea",
+      });
+
+      renderField(c, {
+        label: "Absentees (if any)",
+        id: "absentees",
+        type: "textarea",
+      });
+
+      renderField(c, {
+        label: "Link to the Minutes *Required",
+        id: "minutes_link",
+        placeholder:
+          "Refer to the standard MOM format sheet before submitting",
+      });
+
+      renderField(c, {
+        label: "Prepared By *Required",
+        id: "prepared_by",
+      });
+
+      // =========================
+      // SUBMIT
+      // =========================
+
+      document
+        .getElementById("submitBtn")
+        .addEventListener("click", function () {
+          const payload = {};
+
+          document
+            .querySelectorAll("#f_fields input, #f_fields textarea, #f_selects select")
+            .forEach((el) => {
+              payload[el.id] = el.value || "";
+            });
+
+          google.script.run
+            .withSuccessHandler(function (res) {
+              document.getElementById("status").innerText =
+                "Submitted: " + (res.submission_id || "OK");
+            })
+            .withFailureHandler(function (err) {
+              document.getElementById("status").innerText =
+                "Submit failed: " + err.message;
+            })
+            .submitForm(FORM_CODE.toUpperCase(), payload);
+        });
+    </script>
+  </body>
+</html>
