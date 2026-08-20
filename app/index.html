@@ -76,6 +76,7 @@
     <script src="/lib/vendor/msal-browser.min.js"></script>
     <script type="module">
       import { initAuth, signIn, signOut, getAccount } from "/lib/auth.js";
+      import { api } from "/lib/api.js";
 
       const outEl = document.getElementById("signed-out");
       const inEl = document.getElementById("signed-in");
@@ -97,8 +98,21 @@
       document.getElementById("btn-signin").onclick = () => signIn();
       document.getElementById("btn-signout").onclick = () => signOut();
 
+      // Order matters. Sign-in must be established before any API call,
+      // because getToken() needs an account to work with.
       await initAuth();
       render();
+
+      if (getAccount()) {
+        try {
+          const health = await api.get("health");
+          document.getElementById("detail").textContent =
+            "API says: " + JSON.stringify(health);
+        } catch (err) {
+          document.getElementById("detail").textContent =
+            "API call failed: " + err.message;
+        }
+      }
     </script>
   </body>
 </html>
