@@ -8,6 +8,7 @@
     "test": "echo \"No tests yet...\""
   },
   "dependencies": {
-    "@azure/functions": "^4.16.2"
+    "@azure/functions": "^4.16.2",
+    "jose": "^6.2.9"
   }
 }
