@@ -105,9 +105,9 @@
 
       if (getAccount()) {
         try {
-          const health = await api.get("whoami");
+          const health = await api.get("graphtest");
           document.getElementById("detail").textContent =
-            "Server sees: " + JSON.stringify(health);
+            "Lists on site: " + JSON.stringify(health);
         } catch (err) {
           document.getElementById("detail").textContent =
             "API call failed: " + err.message;
