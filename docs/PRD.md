@@ -4,7 +4,8 @@
 | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | Document | PG/BD/IT-PRD-001 (numbering to be confirmed under PG/IMS/BP-002 §2.4)                                                                                        |
 | Revision | v0.2, 19 July 2026. Supersedes v0.1 (16 July 2026)                                                                                                           |
-|          |
+| Owner    | Pranav Mathur (IT)                                                                                                                                           |
+| Approver | Kushal Bhargava (CSO). Strategy items: Dr. Nipun Bhargava (COO)                                                                                              |
 | Basis    | PG/IMS/BP-002 Rev C (IMS Blueprint v2) · PG/IMS/BD/T3-NOTE-001 (Tier 3 BD Forms Design) · Perfact Design Language v3.0 · migration work breakdown (Jul 2026) |
 
 **Change log v0.1 → v0.2:** scope reframed from "replace four BD forms" to "build the Tier 3 forms-led estate for IMS Module 1" per Kushal's blueprint and Tier 3 note. Six-stage pipeline with clocks adopted as canonical (stages held as master data pending CSO ratification of the 8-stage variant). Decision-grade capture, twin commercial gates, financial decomposition, Group/Customer/Contact identity registers, expense ledger, document control and the AI-assist roadmap added. Corporate design language v3.0 adopted for the UI.
@@ -98,22 +99,22 @@ A lead entered at BD01a is traceable to closure without any legacy BD form; ever
 
 ## 12. Decisions that gate the build
 
-| #   | Decision                                                                   | Owner              | Status                                                                                                                                                                                    |
-| --- | -------------------------------------------------------------------------- | ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | Cost and margin mandatory on BD02                                          | COO                | Open. Blocks the B6 commercial phase                                                                                                                                                      |
-| 2   | P-Code standard across PE, PS, PR and Group                                | COO + CSO          | **Resolved 4 Aug 2026.** One P-Code per project, entity encoded as its first segment; cross-entity work for one client is separate projects joined by GroupID and CustomerID              |
-| 3   | Pipeline stage list ratified, six canonical against the eight-stage funnel | CSO                | Open. Held as master data so it is a data edit                                                                                                                                            |
-| 4   | Form tool, custom screens against Microsoft Forms                          | COO + IT           | **Resolved 4 Aug 2026.** Custom screens, on the reasoning in Architecture section 2                                                                                                       |
-| 5   | Historical migration scope, fresh, Won-only or full                        | COO                | Open                                                                                                                                                                                      |
-| 6   | Form numbering reconciliation                                              | CSO                | Open, narrowed. The live estate is BD00, BD01A, BD01B, BD02, BD03, BD04, BD05; the Tier 3 note and the blueprint each use a different scheme. FormMapping is the single translation point |
-| 7   | AI provider and budget                                                     | COO + CSO          | Open, B13 only                                                                                                                                                                            |
-| 8   | Service mailbox, identity-field edit rights, PDF route                     | Kushal             | Open. Azure billing resolved as an interim arrangement, see decision 13                                                                                                                   |
-| 9   | What PBL2, PBL3 and PBL10 denote                                           | CSO                | **New.** The labels give the meaning, minimum, first and final quote, but not the numbering rationale the gates need                                                                      |
-| 10  | Storage unit, lakhs against rupees                                         | CSO, IT recommends | **New.** Every live form captures lakhs. Must settle before B2 fixes the column types                                                                                                     |
-| 11  | Delivery pool list                                                         | COO                | **New.** Seven pools confirmed by IT; the Tier 3 note lists Glacier where the live list has Spring                                                                                        |
-| 12  | Perfact entities                                                           | Accounts + CSO     | **New.** Dropdowns carry PE, PS, PR, PW while BD02's GST treatment list implies a fifth, PAWSPL, absent from the P-Code vocabulary                                                        |
-| 13  | Azure billing instrument                                                   | Kushal + Accounts  | **New.** Running on a personal instrument as a recorded interim measure; correction due before live BD data, backstop 30 September 2026                                                   |
-| 14  | Are BD00, BD01B, BD04 and BD05 live at all                                 | IT to verify       | **New.** All four are linked from the intranet directory but have no Apps Script page or handler; only Zoho originals exist                                                               |
-| 15  | How sibling projects are linked for Accounts                               | COO + Accounts     | **New.** BD04 lets Accounts type PR and PS P-Codes by hand; under decision 2 the link should come from GroupID and CustomerID, or an explicit LinkedPCode field is needed                 |
+| # | Decision | Owner | Status |
+|---|---|---|---|
+| 1 | Cost and margin mandatory on BD02 | COO | Open. Blocks the B6 commercial phase |
+| 2 | P-Code standard across PE, PS, PR and Group | COO + CSO | **Resolved 4 Aug 2026.** One P-Code per project, entity encoded as its first segment; cross-entity work for one client is separate projects joined by GroupID and CustomerID |
+| 3 | Pipeline stage list ratified, six canonical against the eight-stage funnel | CSO | Open. Held as master data so it is a data edit |
+| 4 | Form tool, custom screens against Microsoft Forms | COO + IT | **Resolved 4 Aug 2026.** Custom screens, on the reasoning in Architecture section 2 |
+| 5 | Historical migration scope, fresh, Won-only or full | COO | Open |
+| 6 | Form numbering reconciliation | CSO | Open, narrowed. The live estate is BD00, BD01A, BD01B, BD02, BD03, BD04, BD05; the Tier 3 note and the blueprint each use a different scheme. FormMapping is the single translation point |
+| 7 | AI provider and budget | COO + CSO | Open, B13 only |
+| 8 | Service mailbox, identity-field edit rights, PDF route | Kushal | Open. Azure billing resolved as an interim arrangement, see decision 13 |
+| 9 | What PBL2, PBL3 and PBL10 denote | CSO | **New.** The labels give the meaning, minimum, first and final quote, but not the numbering rationale the gates need |
+| 10 | Storage unit, lakhs against rupees | CSO, IT recommends | **Resolved 20 August 2026.** Stored as integer paise, displayed as lakh and crore, converted once at migration. Taken as an IT call, noted to the CSO |
+| 11 | Delivery pool list | COO | **New.** Seven pools confirmed by IT; the Tier 3 note lists Glacier where the live list has Spring |
+| 12 | Perfact entities | Accounts + CSO | **New.** Dropdowns carry PE, PS, PR, PW while BD02's GST treatment list implies a fifth, PAWSPL, absent from the P-Code vocabulary |
+| 13 | Azure billing instrument | Kushal + Accounts | **New.** Running on a personal instrument as a recorded interim measure; correction due before live BD data, backstop 30 September 2026 |
+| 14 | Are BD00, BD01B, BD04 and BD05 live at all | IT to verify | **New.** All four are linked from the intranet directory but have no Apps Script page or handler; only Zoho originals exist |
+| 15 | How sibling projects are linked for Accounts | COO + Accounts | **New.** BD04 lets Accounts type PR and PS P-Codes by hand; under decision 2 the link should come from GroupID and CustomerID, or an explicit LinkedPCode field is needed |
 
 Draft, requires approval by Kushal Bhargava before issue.

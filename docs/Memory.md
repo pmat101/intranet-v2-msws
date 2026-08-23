@@ -4,6 +4,30 @@ Append-only. Newest entries at the top. Every working session adds: date, what w
 
 ---
 
+## 2026-08-20, B0 closed and B1 nearly complete: live site, authentication working end to end
+
+**Built today, all verified working.** Workshop rebuilt from scratch (Homebrew, Git, Node 24, Functions Core Tools v4, SWA CLI, VS Code). Legacy Apps Script snapshot recloned via clasp into `legacy/apps-script`, 97 files, which also settled an open question: BD00, BD01B, BD04 and BD05 do have page files, but no submit handlers exist for BD01B, BD04 or BD05, so those three were never operational in Apps Script and exist only as Zoho originals. Corrected document set committed. Design tokens written to `app/assets/tokens.css` with both themes. Hello page, `staticwebapp.config.json`, health endpoint on Functions v4. Static Web App created on the **Free** plan with continuous deployment from GitHub; live at `https://delightful-hill-04d74c200.7.azurestaticapps.net`. MSAL sign-in against the single-tenant registration, `api.js` wrapper, and server-side JWT verification with a `whoami` endpoint.
+
+**Decisions taken.**
+1. **Hosting**: Static Web Apps Free with managed functions for the browser-facing API, plus a separate standalone Function App on Flex Consumption with Node 24 for scheduled work at B5. Reasoning: bring-your-own functions requires the SWA Standard plan at roughly ₹9,600 a year, and buys features our design does not use, since we validate tokens ourselves rather than using SWA's built-in auth. Managed functions are HTTP only, which is why timer work needs the separate app. Flex free grant is 250,000 executions and 100,000 GB-s a month, ample for us. Always Ready must stay at zero, since it carries no free grant.
+2. **Money is stored as integer paise**, displayed as lakh and crore, converted once at migration from the lakhs the live forms capture. Taken as an IT call, to be noted to the CSO.
+3. **Node 24, not Node 20.** Pranav checked and was right; Node 20 reached end of life in April 2026. Consumption plan caps at Node 22 and retires September 2028, which is the other reason Flex is the forward path.
+4. **Azure billing** proceeds on the interim personal instrument as recorded on 1 August; correction still due before live BD data.
+
+**Gotchas worth keeping.**
+- Entra issues **v1.0 access tokens by default** for custom APIs, with issuer `sts.windows.net` and audience `api://{clientId}`. Our verifier expects v2.0. Fixed by setting `requestedAccessTokenVersion` to 2 on the app registration. A cached token survives the change, so a full sign-out is required to see the fix.
+- The SWA CLI tries to download its own copy of Functions Core Tools and fails on a broken partial download; there is no `--func-binary` flag in 2.0.10. The documented approach is two terminals: `func start` in `api/`, then `swa start` with `apiDevserverUrl` pointing at 7071. Saved in `swa-cli.config.json`.
+- Prettier reformats on save, so text-matching patches against source files fail. Whole-file replacements only.
+- `cat >` cannot create missing directories, which produced a `Cannot find module` cascade at `api/src/lib/`.
+- `AzureWebJobsStorage` warnings are harmless for HTTP triggers but will matter at B5, when timer triggers need storage.
+- Ordering bug worth remembering: an API call placed above `await initAuth()` runs before any account exists, so it silently does nothing. No error, no warning.
+
+**Teaching note.** Quiz checkpoints 2 and 3 did not land when asked at the end of long sessions. Changed approach: one question at the point it matters, mid-step. Learning notes are still not being written, which is the main reason recall is thin.
+
+**Next.** B1's last piece is roles, which needs the UsersRoles master, so it merges into B2 provisioning. Before B2: the SharePoint site decision, and the Decoder content including ID formats.
+
+---
+
 ## 2026-08-04, BD workflow field map built; document audit and corrections
 
 **Done.** Read all seven live BD forms directly, three from Apps Script (BD01A, BD02, BD03) and six Zoho originals supplied by Pranav (BD01A, BD01B, BD02, BD04, BD05, BD00). Produced BDWorkflow.md and a thirteen-slide field map deck covering the six stage chain with every field per form. Audited all project markdown files and corrected them.
