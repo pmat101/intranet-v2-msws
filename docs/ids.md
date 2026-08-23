@@ -5,8 +5,6 @@ Entra app client ID [62acdb32-484e-47ca-9e3a-0b58359edbb5]
 Application (client) ID [a0640e62-6b90-4c4b-999c-0ed595a6b4c8]
 Directory (tenant) ID [62acdb32-484e-47ca-9e3a-0b58359edbb5]
 
-intranet-api: - Secret ID [fa41a4e6-f03a-44ba-902c-9444c5fe9ad9] - value [gio8Q~50.WNGGBcmLi9ED.S5JHkypllR6IY5nduM] - expiry [23/8/2028]
-
 Supported account types- my organisation only
 | SharePoint host | perfactgroup933.sharepoint.com |
 | Development site URL | https://perfactgroup933.sharepoint.com/sites/bd-pipeline-dev |,
