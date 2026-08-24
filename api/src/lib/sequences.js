@@ -9,24 +9,18 @@ function conflictCount() {
   return conflicts;
 }
 
-// Diagnostic only: how often the optimistic guard actually caught a conflict.
-let conflicts = 0;
-function conflictCount() {
-  return conflicts;
-}
-
 /**
  * Allocates the next value of a named sequence and advances it.
  *
  * Concurrency is handled optimistically. We read the row with its ETag,
  * then write back with If-Match. If another request advanced the counter
- * in between, SharePoint answers 412 and we start again. This is what
- * replaces the legacy LockService, which SharePoint has no equivalent of.
+ * in between, SharePoint answers 412 and we start again. This replaces the
+ * legacy LockService, which SharePoint has no equivalent of.
  *
  * Getting this wrong means two projects sharing a P-Code, which cannot be
- * repaired afterwards, so the retry loop is deliberate and the guard against
- * a counter moving backwards is deliberate.
- */
+ * repaired afterwards. Hence the retry loop and the validation below.
+ **/
+
 async function allocate(sequenceKey) {
   for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
     const found = await graph(
@@ -72,7 +66,6 @@ async function allocate(sequenceKey) {
       return current;
     } catch (err) {
       if (String(err.message).includes("412")) {
-        conflicts++;
         conflicts++;
         // Someone else advanced the counter. Wait a moment and try again.
         await new Promise((r) => setTimeout(r, 40 * attempt));
