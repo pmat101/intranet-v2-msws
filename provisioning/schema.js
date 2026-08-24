@@ -53,6 +53,16 @@ const lists = [
     ],
   },
   {
+    name: "Sequences",
+    description: "Named counters. One row per sequence. Never delete a row.",
+    audit: false,
+    columns: [
+      { name: "SequenceKey", type: "text", indexed: true },
+      { name: "NextValue", type: "number" },
+      { name: "Notes", type: "note" },
+    ],
+  },
+  {
     name: "GroupMaster",
     description: "One canonical record per corporate group.",
     columns: [

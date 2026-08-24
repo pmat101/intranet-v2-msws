@@ -49,12 +49,12 @@ async function getAppToken() {
 /**
  * Calls Graph as the application. Retries politely when throttled.
  */
-async function graph(method, path, body) {
+async function graph(method, path, body, extraHeaders) {
   for (let attempt = 0; attempt < 4; attempt++) {
     const token = await getAppToken();
     const options = {
       method,
-      headers: { Authorization: "Bearer " + token },
+      headers: { Authorization: "Bearer " + token, ...(extraHeaders || {}) },
     };
     if (body !== undefined) {
       options.headers["Content-Type"] = "application/json";
