@@ -50,7 +50,10 @@ async function verifyRequest(request) {
       console.log("  ver          :", raw.ver);
       console.log("  scp          :", raw.scp);
       console.log("  appid        :", raw.appid || raw.azp);
-      console.log("  expected iss :", `https://login.microsoftonline.com/${TENANT_ID}/v2.0`);
+      console.log(
+        "  expected iss :",
+        `https://login.microsoftonline.com/${TENANT_ID}/v2.0`,
+      );
       console.log("  expected aud :", CLIENT_ID);
       console.log("  jose error   :", err.message);
       console.log("========================");
