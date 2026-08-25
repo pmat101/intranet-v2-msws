@@ -111,6 +111,7 @@ const lists = [
       "The project spine. One row per P-Code; identity fields lock after creation.",
     columns: [
       { name: "PCode", type: "text", indexed: true },
+      { name: "ClientRef", type: "text", indexed: true },
       { name: "ProposalID", type: "text", indexed: true },
       { name: "ProjectName", type: "text", indexed: true },
       { name: "Nickname", type: "text" },

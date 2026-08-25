@@ -166,6 +166,7 @@ async function mintProject(payload, caller) {
 
   await addItem("ProjectRegister", {
     Title: pcode,
+    ClientRef: payload.clientRef || "",
     PCode: pcode,
     ProposalID: proposalID,
     ProjectName: payload.projectName || payload.activityProposed || "",

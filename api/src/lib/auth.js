@@ -25,7 +25,15 @@ async function verifyRequest(request) {
   if (!header.startsWith("Bearer ")) {
     throw new AuthError("missing_token", "No bearer token supplied");
   }
-  const token = header.slice(7);
+  const token = header.slice(7).trim();
+
+  // A clipped or corrupted token must fail like any other bad token, with our
+  // envelope, not as an unhandled parse error producing an empty 500. This
+  // happens more often than you would expect: browsers truncate long values
+  // when displaying them, and people copy what they can see.
+  if (!token || token.split(".").length !== 3) {
+    throw new AuthError("invalid_token", "Token failed verification");
+  }
 
   let payload;
   try {
