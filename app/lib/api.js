@@ -1,13 +1,21 @@
 import { getToken } from "./auth.js";
 
-// Every call to our own back end goes through here.
+// The token travels in X-Perfact-Auth, not Authorization.
+//
+// Azure Static Web Apps overwrites the Authorization header on requests to
+// managed functions, substituting its own platform token for the internal hop
+// between the static host and the function host. Our Entra token therefore
+// never arrives. This is a long-standing documented behaviour, see
+// github.com/Azure/static-web-apps issues 34, 275 and 335.
+//
+// A custom header passes through untouched. The token is unchanged and is
+// still fully verified server-side; only the envelope differs.
+const AUTH_HEADER = "X-Perfact-Auth";
+
 async function call(method, path, payload) {
   const token = await getToken();
 
-  const options = {
-    method,
-    headers: { Authorization: "Bearer " + token },
-  };
+  const options = { method, headers: { [AUTH_HEADER]: "Bearer " + token } };
   if (payload !== undefined) {
     options.headers["Content-Type"] = "application/json";
     options.body = JSON.stringify(payload);
@@ -30,6 +38,7 @@ async function call(method, path, payload) {
     const err = new Error(message);
     err.status = response.status;
     err.code = data && data.error && data.error.code;
+    err.errors = data && data.error && data.error.errors;
     throw err;
   }
 

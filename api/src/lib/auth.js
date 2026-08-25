@@ -1,4 +1,4 @@
-const { createRemoteJWKSet, jwtVerify, decodeJwt } = require("jose");
+const { createRemoteJWKSet, jwtVerify } = require("jose");
 
 const TENANT_ID = process.env.TENANT_ID;
 const CLIENT_ID = process.env.CLIENT_ID;
@@ -15,15 +15,23 @@ class AuthError extends Error {
 }
 
 /**
- * Verifies the bearer token on a request. Returns the caller, or throws.
+ * Verifies the caller's token and returns their identity, or throws.
  *
- * Requires v2.0 access tokens. The app registration manifest must set
- * requestedAccessTokenVersion to 2, otherwise Entra issues v1.0 tokens whose
- * issuer is sts.windows.net and whose audience is the api:// URI, and
- * verification fails on the issuer claim.
+ * The token arrives in X-Perfact-Auth rather than Authorization, because
+ * Static Web Apps overwrites Authorization on requests to managed functions
+ * with its own platform token. Authorization is still accepted as a fallback
+ * so that direct curl testing against localhost:7071 works.
+ *
+ * Requires v2.0 access tokens: the app registration sets
+ * requestedAccessTokenVersion to 2. Without it Entra issues v1.0 tokens whose
+ * issuer is sts.windows.net and whose audience is the api:// URI.
  */
 async function verifyRequest(request) {
-  const header = request.headers.get("authorization") || "";
+  const header =
+    request.headers.get("x-perfact-auth") ||
+    request.headers.get("authorization") ||
+    "";
+
   if (!header.startsWith("Bearer ")) {
     throw new AuthError("missing_token", "No bearer token supplied");
   }
@@ -40,26 +48,6 @@ async function verifyRequest(request) {
       audience: CLIENT_ID,
     }));
   } catch (err) {
-    // TEMPORARY DIAGNOSTIC. Decoding is not verifying; this reads the claims
-    // so we can see which one mismatched. Remove once resolved.
-    try {
-      const raw = decodeJwt(token);
-      console.log("=== TOKEN DIAGNOSTIC ===");
-      console.log("  iss          :", raw.iss);
-      console.log("  aud          :", raw.aud);
-      console.log("  ver          :", raw.ver);
-      console.log("  scp          :", raw.scp);
-      console.log("  appid        :", raw.appid || raw.azp);
-      console.log(
-        "  expected iss :",
-        `https://login.microsoftonline.com/${TENANT_ID}/v2.0`,
-      );
-      console.log("  expected aud :", CLIENT_ID);
-      console.log("  jose error   :", err.message);
-      console.log("========================");
-    } catch (e) {
-      console.log("TOKEN DIAGNOSTIC: could not decode.", e.message);
-    }
     throw new AuthError("invalid_token", "Token failed verification");
   }
 
