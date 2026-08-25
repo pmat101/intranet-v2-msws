@@ -1,0 +1,741 @@
+<!doctype html>
+<html lang="en-IN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>New lead, BD01A, Perfact Intranet</title>
+    <link rel="stylesheet" href="/assets/tokens.css" />
+    <style>
+      body {
+        padding-bottom: 96px;
+      }
+      header.bar {
+        background: linear-gradient(135deg, var(--pine-a), var(--pine-b));
+        color: var(--hero-ink);
+        padding: 20px 0;
+      }
+      .wrap {
+        max-width: 880px;
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+      header.bar h1 {
+        margin: 0;
+        font-size: 1.35rem;
+        font-weight: 700;
+      }
+      header.bar p {
+        margin: 4px 0 0;
+        color: var(--hero-sub);
+        font-size: 0.875rem;
+      }
+
+      fieldset {
+        border: 1px solid var(--line);
+        border-radius: var(--radius-card);
+        background: var(--card);
+        padding: 20px 24px 24px;
+        margin: 24px 0 0;
+      }
+      legend {
+        font-size: 0.72rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--pine);
+        padding: 0 8px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 16px 20px;
+      }
+      .field {
+        display: flex;
+        flex-direction: column;
+      }
+      .field.wide {
+        grid-column: 1 / -1;
+      }
+      label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--ink-soft);
+        margin-bottom: 6px;
+      }
+      label .req {
+        color: var(--amber);
+        margin-left: 2px;
+      }
+      input,
+      select,
+      textarea {
+        font: inherit;
+        font-size: 0.9rem;
+        color: var(--ink);
+        background: var(--bg);
+        border: 1px solid var(--line);
+        border-radius: var(--radius-input);
+        padding: 9px 11px;
+        width: 100%;
+      }
+      input:focus,
+      select:focus,
+      textarea:focus {
+        outline: none;
+        border-color: var(--amber);
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--amber) 30%, transparent);
+      }
+      input[aria-invalid="true"],
+      select[aria-invalid="true"] {
+        border-color: var(--danger);
+      }
+      .msg {
+        font-size: 0.75rem;
+        color: var(--danger);
+        margin-top: 4px;
+        min-height: 1em;
+      }
+      .hint {
+        font-size: 0.75rem;
+        color: var(--ink-soft);
+        margin-top: 4px;
+      }
+
+      .summary {
+        border: 1px solid var(--danger);
+        border-radius: var(--radius-input);
+        padding: 14px 18px;
+        margin-top: 24px;
+        background: color-mix(in srgb, var(--danger) 8%, transparent);
+      }
+      .summary h2 {
+        font-size: 0.9rem;
+        margin: 0 0 8px;
+        color: var(--danger);
+      }
+      .summary ul {
+        margin: 0;
+        padding-left: 20px;
+        font-size: 0.85rem;
+        color: var(--ink);
+      }
+      .summary a {
+        color: var(--danger);
+      }
+
+      .suggest {
+        border: 1px solid var(--amber);
+        border-radius: var(--radius-input);
+        background: var(--amber-soft);
+        padding: 10px 14px;
+        margin-top: 8px;
+        font-size: 0.82rem;
+      }
+      .suggest strong {
+        color: var(--ink);
+      }
+      .suggest button {
+        font: inherit;
+        font-size: 0.78rem;
+        background: none;
+        cursor: pointer;
+        border: 1px solid var(--amber);
+        color: var(--ink);
+        border-radius: 999px;
+        padding: 3px 10px;
+        margin: 4px 6px 0 0;
+      }
+
+      .actions {
+        position: sticky;
+        bottom: 0;
+        background: var(--bg);
+        border-top: 1px solid var(--line);
+        padding: 16px 0;
+        margin-top: 32px;
+        display: flex;
+        gap: 12px;
+        align-items: center;
+      }
+      button.primary {
+        font: inherit;
+        font-weight: 600;
+        cursor: pointer;
+        border: none;
+        background: var(--amber);
+        color: #fff;
+        padding: 11px 24px;
+        border-radius: var(--radius-input);
+      }
+      button.primary:hover:not(:disabled) {
+        background: var(--amber-deep);
+      }
+      button.primary:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+      .status {
+        font-size: 0.85rem;
+        color: var(--ink-soft);
+      }
+
+      .done {
+        border: 1px solid var(--moss);
+        background: var(--moss-soft);
+        border-radius: var(--radius-card);
+        padding: 28px;
+        margin-top: 24px;
+      }
+      .done h2 {
+        margin: 0 0 12px;
+        color: var(--pine);
+        font-size: 1.15rem;
+      }
+      .code {
+        font-family: var(--font-mono);
+        font-size: 1.4rem;
+        color: var(--pine);
+        display: block;
+        margin: 4px 0 16px;
+      }
+      .done dl {
+        display: grid;
+        grid-template-columns: max-content 1fr;
+        gap: 6px 16px;
+        font-size: 0.85rem;
+        margin: 0 0 20px;
+      }
+      .done dt {
+        color: var(--ink-soft);
+      }
+      .done dd {
+        margin: 0;
+        font-family: var(--font-mono);
+        color: var(--ink);
+      }
+      .hidden {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="bar">
+      <div class="wrap">
+        <h1>New lead</h1>
+        <p>BD01A, offer pre-screen. Stage 1 of the pipeline.</p>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <div id="gate" class="status" style="padding: 32px 0">
+        Checking your access...
+      </div>
+
+      <form id="lead-form" class="hidden" novalidate>
+        <div id="summary" class="summary hidden">
+          <h2>Please correct the following</h2>
+          <ul id="summary-list"></ul>
+        </div>
+
+        <fieldset>
+          <legend>Lead</legend>
+          <div class="grid">
+            <div class="field">
+              <label for="leadDate"
+                >Date of client's mail or lead generation<span class="req"
+                  >*</span
+                ></label
+              >
+              <input type="date" id="leadDate" name="leadDate" />
+              <div class="msg" id="msg-leadDate"></div>
+            </div>
+            <div class="field">
+              <label for="leadSource"
+                >Lead source<span class="req">*</span></label
+              >
+              <select id="leadSource" name="leadSource"></select>
+              <div class="msg" id="msg-leadSource"></div>
+            </div>
+            <div
+              class="field"
+              id="wrap-leadSourceOtherSpecify"
+              style="display: none"
+            >
+              <label for="leadSourceOtherSpecify"
+                >Please specify the lead source<span class="req">*</span></label
+              >
+              <input
+                type="text"
+                id="leadSourceOtherSpecify"
+                name="leadSourceOtherSpecify"
+              />
+              <div class="msg" id="msg-leadSourceOtherSpecify"></div>
+            </div>
+            <div class="field wide">
+              <label for="activityProposed"
+                >Activity proposed<span class="req">*</span></label
+              >
+              <textarea
+                id="activityProposed"
+                name="activityProposed"
+                rows="2"
+              ></textarea>
+              <div class="msg" id="msg-activityProposed"></div>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Client</legend>
+          <div class="grid">
+            <div class="field wide">
+              <label for="customerCompany"
+                >Customer's company legal name<span class="req">*</span></label
+              >
+              <input
+                type="text"
+                id="customerCompany"
+                name="customerCompany"
+                autocomplete="off"
+              />
+              <div class="msg" id="msg-customerCompany"></div>
+              <div id="suggest" class="suggest hidden"></div>
+            </div>
+            <div class="field">
+              <label for="customerFirstName">Contact first name</label>
+              <input
+                type="text"
+                id="customerFirstName"
+                name="customerFirstName"
+              />
+            </div>
+            <div class="field">
+              <label for="customerLastName">Contact last name</label>
+              <input
+                type="text"
+                id="customerLastName"
+                name="customerLastName"
+              />
+            </div>
+            <div class="field">
+              <label for="customerContact"
+                >Contact number<span class="req">*</span></label
+              >
+              <input type="tel" id="customerContact" name="customerContact" />
+              <div class="msg" id="msg-customerContact"></div>
+            </div>
+            <div class="field">
+              <label for="customerEmail"
+                >Contact email<span class="req">*</span></label
+              >
+              <input type="email" id="customerEmail" name="customerEmail" />
+              <div class="msg" id="msg-customerEmail"></div>
+            </div>
+            <div class="field">
+              <label for="customerEmailConfirm"
+                >Confirm contact email<span class="req">*</span></label
+              >
+              <input
+                type="email"
+                id="customerEmailConfirm"
+                name="customerEmailConfirm"
+                onpaste="return false;"
+              />
+              <div class="msg" id="msg-customerEmailConfirm"></div>
+              <div class="hint">
+                Type it again; pasting is disabled deliberately.
+              </div>
+            </div>
+            <div class="field">
+              <label for="customerClass"
+                >Customer class<span class="req">*</span></label
+              >
+              <select id="customerClass" name="customerClass"></select>
+              <div class="msg" id="msg-customerClass"></div>
+            </div>
+            <div class="field">
+              <label for="isRepeatCustomer"
+                >Repeat customer<span class="req">*</span></label
+              >
+              <select id="isRepeatCustomer" name="isRepeatCustomer"></select>
+              <div class="msg" id="msg-isRepeatCustomer"></div>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>
+            Identity, these determine the P-Code and cannot be changed later
+          </legend>
+          <div class="grid">
+            <div class="field">
+              <label for="pgCompany"
+                >Perfact entity<span class="req">*</span></label
+              >
+              <select id="pgCompany" name="pgCompany"></select>
+              <div class="msg" id="msg-pgCompany"></div>
+            </div>
+            <div class="field">
+              <label for="finYear"
+                >Financial year<span class="req">*</span></label
+              >
+              <select id="finYear" name="finYear"></select>
+              <div class="msg" id="msg-finYear"></div>
+            </div>
+            <div class="field">
+              <label for="stUt"
+                >State or union territory<span class="req">*</span></label
+              >
+              <select id="stUt" name="stUt"></select>
+              <div class="msg" id="msg-stUt"></div>
+            </div>
+            <div class="field">
+              <label for="workType"
+                >Type of work<span class="req">*</span></label
+              >
+              <select id="workType" name="workType"></select>
+              <div class="msg" id="msg-workType"></div>
+            </div>
+            <div
+              class="field"
+              id="wrap-workTypeOtherSpecify"
+              style="display: none"
+            >
+              <label for="workTypeOtherSpecify"
+                >Please specify the type of work<span class="req"
+                  >*</span
+                ></label
+              >
+              <input
+                type="text"
+                id="workTypeOtherSpecify"
+                name="workTypeOtherSpecify"
+              />
+              <div class="msg" id="msg-workTypeOtherSpecify"></div>
+            </div>
+            <div class="field">
+              <label for="sector">Sector<span class="req">*</span></label>
+              <select id="sector" name="sector"></select>
+              <div class="msg" id="msg-sector"></div>
+            </div>
+            <div class="field">
+              <label for="specs">Specification<span class="req">*</span></label>
+              <select id="specs" name="specs"></select>
+              <div class="msg" id="msg-specs"></div>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Site location, if known</legend>
+          <div class="grid">
+            <div class="field">
+              <label for="village">Village</label
+              ><input type="text" id="village" name="village" />
+            </div>
+            <div class="field">
+              <label for="taluka">Taluka</label
+              ><input type="text" id="taluka" name="taluka" />
+            </div>
+            <div class="field">
+              <label for="district">District</label
+              ><input type="text" id="district" name="district" />
+            </div>
+            <div class="field">
+              <label for="state">State</label
+              ><input type="text" id="state" name="state" />
+            </div>
+            <div class="field">
+              <label for="postalCode">Postal code</label
+              ><input type="text" id="postalCode" name="postalCode" />
+            </div>
+            <div class="field">
+              <label for="country">Country</label
+              ><input type="text" id="country" name="country" value="India" />
+            </div>
+            <div class="field wide">
+              <label for="rfqUrl">Link to RFQ or scope document</label>
+              <input
+                type="url"
+                id="rfqUrl"
+                name="rfqUrl"
+                placeholder="https://"
+              />
+            </div>
+            <div class="field wide">
+              <label for="remarks">Remarks</label>
+              <textarea id="remarks" name="remarks" rows="2"></textarea>
+            </div>
+          </div>
+        </fieldset>
+
+        <div class="actions">
+          <button type="submit" class="primary" id="submit-btn">
+            Create lead
+          </button>
+          <span class="status" id="status"></span>
+        </div>
+      </form>
+
+      <div id="done" class="done hidden">
+        <h2>Lead created</h2>
+        <span class="code" id="done-pcode"></span>
+        <dl>
+          <dt>Proposal ID</dt>
+          <dd id="done-proposal"></dd>
+          <dt>Client group</dt>
+          <dd id="done-group"></dd>
+          <dt>Customer</dt>
+          <dd id="done-customer"></dd>
+          <dt>Contact</dt>
+          <dd id="done-contact"></dd>
+        </dl>
+        <button type="button" class="primary" onclick="location.reload()">
+          Create another lead
+        </button>
+      </div>
+    </main>
+
+    <script src="/lib/vendor/msal-browser.min.js"></script>
+    <script type="module">
+      import { initAuth, signIn, getAccount } from "/lib/auth.js";
+      import { api } from "/lib/api.js";
+      import { vocab, financialYears } from "/lib/vocab.js";
+
+      // One reference per opened form. Sent with the submission so that a
+      // double-click or an impatient refresh cannot create two projects.
+      const clientRef =
+        (crypto.randomUUID && crypto.randomUUID()) ||
+        String(Date.now()) + Math.random().toString(16).slice(2);
+
+      const $ = (id) => document.getElementById(id);
+
+      function fillSelect(id, items, placeholder) {
+        const el = $(id);
+        const opts = [`<option value="">${placeholder}</option>`];
+        for (const it of items) {
+          const value = typeof it === "string" ? it : it.value;
+          const label = typeof it === "string" ? it : it.label;
+          opts.push(`<option value="${value}">${label}</option>`);
+        }
+        el.innerHTML = opts.join("");
+      }
+
+      // Mirrors api/src/lib/validate.js. Both must agree; the server decides.
+      const REQUIRED = [
+        ["leadDate", "Date of client's mail or lead generation"],
+        ["customerCompany", "Customer's company legal name"],
+        ["customerContact", "Contact number"],
+        ["customerEmail", "Contact email"],
+        ["customerEmailConfirm", "Confirm contact email"],
+        ["isRepeatCustomer", "Repeat customer"],
+        ["activityProposed", "Activity proposed"],
+        ["stUt", "State or union territory"],
+        ["workType", "Type of work"],
+        ["sector", "Sector"],
+        ["specs", "Specification"],
+        ["finYear", "Financial year"],
+        ["pgCompany", "Perfact entity"],
+        ["customerClass", "Customer class"],
+        ["leadSource", "Lead source"],
+      ];
+
+      function readForm() {
+        const data = { clientRef };
+        for (const el of document.querySelectorAll("#lead-form [name]")) {
+          data[el.name] = el.value.trim();
+        }
+        return data;
+      }
+
+      function clearErrors() {
+        $("summary").classList.add("hidden");
+        $("summary-list").innerHTML = "";
+        for (const el of document.querySelectorAll("[aria-invalid]")) {
+          el.removeAttribute("aria-invalid");
+        }
+        for (const el of document.querySelectorAll(".msg")) el.textContent = "";
+      }
+
+      function showErrors(errors) {
+        const list = $("summary-list");
+        list.innerHTML = errors
+          .map((e) => `<li><a href="#${e.field}">${e.message}</a></li>`)
+          .join("");
+        $("summary").classList.remove("hidden");
+        for (const e of errors) {
+          const input = $(e.field);
+          if (input) input.setAttribute("aria-invalid", "true");
+          const msg = $("msg-" + e.field);
+          if (msg) msg.textContent = e.message;
+        }
+        $("summary").scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+
+      // Returns an array of errors. Never throws.
+      function validate(data) {
+        const errors = [];
+        for (const [field, label] of REQUIRED) {
+          if (!data[field])
+            errors.push({ field, message: `${label} is required` });
+        }
+        if (
+          data.customerEmail &&
+          data.customerEmailConfirm &&
+          data.customerEmail.toLowerCase() !==
+            data.customerEmailConfirm.toLowerCase()
+        ) {
+          errors.push({
+            field: "customerEmailConfirm",
+            message: "The two email addresses do not match",
+          });
+        }
+        if (data.leadSource === "others" && !data.leadSourceOtherSpecify) {
+          errors.push({
+            field: "leadSourceOtherSpecify",
+            message: "Please specify the lead source",
+          });
+        }
+        if (data.workType === "OTH" && !data.workTypeOtherSpecify) {
+          errors.push({
+            field: "workTypeOtherSpecify",
+            message: "Please specify the type of work",
+          });
+        }
+        return errors;
+      }
+
+      let searchTimer = null;
+      async function suggestGroups() {
+        const q = $("customerCompany").value.trim();
+        const box = $("suggest");
+        if (q.length < 3) {
+          box.classList.add("hidden");
+          return;
+        }
+        try {
+          const matches = await api.get(
+            "groups/search?q=" + encodeURIComponent(q),
+          );
+          if (!matches.length) {
+            box.classList.add("hidden");
+            return;
+          }
+          box.innerHTML =
+            "<strong>This client may already exist.</strong> " +
+            "Use the exact existing name so the two records stay joined.<br>" +
+            matches
+              .map(
+                (m) =>
+                  `<button type="button" data-name="${m.canonicalName.replace(/"/g, "&quot;")}">` +
+                  `${m.canonicalName}${m.exact ? " (exact match)" : ""}</button>`,
+              )
+              .join("");
+          box.classList.remove("hidden");
+          for (const b of box.querySelectorAll("button")) {
+            b.onclick = () => {
+              $("customerCompany").value = b.dataset.name;
+              box.classList.add("hidden");
+            };
+          }
+        } catch {
+          box.classList.add("hidden");
+        }
+      }
+
+      async function onSubmit(event) {
+        event.preventDefault();
+        clearErrors();
+
+        const data = readForm();
+        const errors = validate(data);
+        if (errors.length) {
+          showErrors(errors);
+          return;
+        }
+
+        const btn = $("submit-btn");
+        btn.disabled = true;
+        $("status").textContent = "Creating lead...";
+
+        try {
+          const result = await api.post("leads", data);
+          $("lead-form").classList.add("hidden");
+          $("done-pcode").textContent = result.pcode;
+          $("done-proposal").textContent = result.proposalID;
+          $("done-group").textContent = result.groupId || "unchanged";
+          $("done-customer").textContent = result.customerId || "unchanged";
+          $("done-contact").textContent = result.contactId || "unchanged";
+          $("done").classList.remove("hidden");
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        } catch (err) {
+          // The button is re-enabled on every failure path, so the form can
+          // never strand the person in "Creating lead...".
+          btn.disabled = false;
+          $("status").textContent = "";
+          if (err.code === "validation_failed" && Array.isArray(err.errors)) {
+            showErrors(err.errors);
+          } else {
+            showErrors([
+              {
+                field: "customerCompany",
+                message: err.message || "The lead could not be created",
+              },
+            ]);
+          }
+        }
+      }
+
+      async function start() {
+        await initAuth();
+        if (!getAccount()) {
+          $("gate").innerHTML = "You need to sign in to create a lead. ";
+          const b = document.createElement("button");
+          b.className = "primary";
+          b.textContent = "Sign in";
+          b.onclick = () => signIn();
+          $("gate").appendChild(b);
+          return;
+        }
+
+        try {
+          const me = await api.get("whoami");
+          $("gate").classList.add("hidden");
+          $("lead-form").classList.remove("hidden");
+          $("status").textContent = `Signed in as ${me.name}, ${me.role}`;
+        } catch (err) {
+          $("gate").textContent =
+            err.message || "Your account has no access to this form.";
+          return;
+        }
+
+        fillSelect("leadSource", vocab.leadSource, "Select");
+        fillSelect("customerClass", vocab.customerClass, "Select");
+        fillSelect("isRepeatCustomer", vocab.isRepeatCustomer, "Select");
+        fillSelect("pgCompany", vocab.pgCompany, "Select");
+        fillSelect("finYear", financialYears(), "Select");
+        fillSelect("stUt", vocab.stUt, "Select");
+        fillSelect("workType", vocab.workType, "Select");
+        fillSelect("sector", vocab.sector, "Select");
+        fillSelect("specs", vocab.specs, "Select");
+
+        $("leadSource").onchange = (e) => {
+          $("wrap-leadSourceOtherSpecify").style.display =
+            e.target.value === "others" ? "flex" : "none";
+        };
+        $("workType").onchange = (e) => {
+          $("wrap-workTypeOtherSpecify").style.display =
+            e.target.value === "OTH" ? "flex" : "none";
+        };
+        $("customerCompany").oninput = () => {
+          clearTimeout(searchTimer);
+          searchTimer = setTimeout(suggestGroups, 350);
+        };
+        $("lead-form").onsubmit = onSubmit;
+      }
+
+      start();
+    </script>
+  </body>
+</html>
