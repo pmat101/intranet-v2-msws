@@ -4,11 +4,11 @@ const { send } = require("./mail");
 // The legacy list is glacier@ plus the submitter, cc info@. Held here as
 // configuration because the destination is a business decision: the pool
 // list no longer includes Glacier, so this needs confirming with the CSO.
-const LEAD_TO = (process.env.MAIL_BD01A_TO || "glacier@perfactgroup.in")
+const LEAD_TO = (process.env.MAIL_BD01A_TO || "pranav.mathur@perfactgroup.in")
   .split(",")
   .map((s) => s.trim())
   .filter(Boolean);
-const LEAD_CC = (process.env.MAIL_BD01A_CC || "info@perfactgroup.in")
+const LEAD_CC = (process.env.MAIL_BD01A_CC || "support@perfactgroup.in")
   .split(",")
   .map((s) => s.trim())
   .filter(Boolean);
