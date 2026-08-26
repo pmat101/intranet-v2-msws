@@ -4,6 +4,7 @@ const { resolveRole } = require("../lib/roles");
 const { validateLead } = require("../lib/validate");
 const { mintProject } = require("../lib/mint");
 const { graph, SITE_ID } = require("../lib/graph");
+const { sendLeadCreated } = require("../lib/mail-bd01a");
 
 const MAY_CREATE = ["BD", "Admin", "CSO", "COO"];
 
@@ -84,7 +85,18 @@ async function handleCreateLead(request, context) {
 
     const result = await mintProject(payload, caller);
     context.log(`Lead created ${result.pcode} by ${caller.email}`);
-    return { status: 201, jsonBody: { ok: true, data: result } };
+
+    // Mail is sent after the project is safely stored, and its failure is
+    // reported rather than thrown. A lead that saved has saved; losing the
+    // notification must not tell the person their submission failed and have
+    // them enter it a second time.
+    const mail = await sendLeadCreated(payload, caller, result);
+    if (!mail.sent) context.log(`Confirmation mail not sent: ${mail.reason}`);
+
+    return {
+      status: 201,
+      jsonBody: { ok: true, data: { ...result, mailSent: mail.sent } },
+    };
   } catch (err) {
     context.log("Lead creation failed:", err.stack || err.message);
     return fail(
