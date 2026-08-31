@@ -89,3 +89,44 @@ two hours before treating a failure as real.
 a generated name, not into `ExchangeOnlineManagement`. If they appear to be
 missing, the session has expired: reconnect. `Get-Command *ServicePrincipal*`
 without a `-Module` filter is the right diagnostic.
+
+## Site separation, deferred to B12 by decision
+
+**Decision, 25 August 2026 (Pranav).** A separate production SharePoint site
+will be created at B12 as part of cutover, rather than now. Until then both the
+development and production deployments read and write `bd-pipeline-dev`. This
+section supersedes the earlier "Open item" note.
+
+**Reasoning.** Creating the second site now would mean a second provisioning
+run, dual configuration, and a cutover at B12 regardless. Deferring costs
+nothing provided the rule below holds. The trade accepted is that experiments
+during B5 to B11 happen on the same site the production deployment reads.
+
+**The rule this depends on. No real BD lead may be entered in the production
+deployment until the second site exists.** The register currently holds only
+test rows, with test P-Codes in the 4080 to 4118 range. If a genuine lead is
+created before separation it becomes entangled with test data and with P-Codes
+that correspond to nothing.
+
+**Also required before B5 flows send anything.** Reviewer addresses in the
+qualification approval flow must point at Pranav during development, not at the
+real land use team or technical leads. Testing against colleagues' inboxes
+trains them to ignore approval requests, which is the one habit this system
+cannot afford.
+
+**The steps, when B12 arrives.**
+
+1. Create the production site `bd-pipeline`.
+2. Grant the app registration the `manage` role on it, by POST to
+   `/sites/{host}:/sites/bd-pipeline:/permissions`. This is an addition; the
+   development grant stays.
+3. Run `node provisioning/provision.js --site="{production-site-id}"` to build
+   the lists. The `--site` override exists so `local.settings.json` is never
+   edited and never left pointing at production.
+4. Seed the reference masters and `UsersRoles`.
+5. Seed `Sequences.project_serial` **from the live legacy sequences sheet**,
+   read at cutover, not guessed at in advance. The legacy system mints daily,
+   so any figure decided earlier will be wrong.
+6. Change `SITE_ID` in the production environment variables only. Leave
+   `local.settings.json` pointing at development.
+7. Confirm the development deployment still reads `bd-pipeline-dev`.

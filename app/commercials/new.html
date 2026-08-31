@@ -1,0 +1,835 @@
+<!doctype html>
+<html lang="en-IN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Commercials, BD02a, Perfact Intranet</title>
+    <link rel="stylesheet" href="/assets/tokens.css" />
+    <style>
+      body {
+        padding-bottom: 96px;
+      }
+      header.bar {
+        background: linear-gradient(135deg, var(--pine-a), var(--pine-b));
+        color: var(--hero-ink);
+        padding: 20px 0;
+      }
+      .wrap {
+        max-width: 920px;
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+      header.bar h1 {
+        margin: 0;
+        font-size: 1.35rem;
+        font-weight: 700;
+      }
+      header.bar p {
+        margin: 4px 0 0;
+        color: var(--hero-sub);
+        font-size: 0.875rem;
+      }
+
+      fieldset {
+        border: 1px solid var(--line);
+        border-radius: var(--radius-card);
+        background: var(--card);
+        padding: 20px 24px 24px;
+        margin: 24px 0 0;
+      }
+      legend {
+        font-size: 0.72rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--pine);
+        padding: 0 8px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 16px 20px;
+      }
+      .field {
+        display: flex;
+        flex-direction: column;
+      }
+      .field.wide {
+        grid-column: 1 / -1;
+      }
+      label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--ink-soft);
+        margin-bottom: 6px;
+      }
+      label .req {
+        color: var(--amber);
+        margin-left: 2px;
+      }
+      input,
+      select,
+      textarea {
+        font: inherit;
+        font-size: 0.9rem;
+        color: var(--ink);
+        background: var(--bg);
+        border: 1px solid var(--line);
+        border-radius: var(--radius-input);
+        padding: 9px 11px;
+        width: 100%;
+      }
+      input:focus,
+      textarea:focus {
+        outline: none;
+        border-color: var(--amber);
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--amber) 30%, transparent);
+      }
+      input[aria-invalid="true"] {
+        border-color: var(--danger);
+      }
+      input.money {
+        text-align: right;
+        font-family: var(--font-mono);
+      }
+      .unit {
+        font-size: 0.7rem;
+        color: var(--ink-soft);
+        margin-top: 3px;
+        text-align: right;
+      }
+      .msg {
+        font-size: 0.75rem;
+        color: var(--danger);
+        margin-top: 4px;
+        min-height: 1em;
+      }
+
+      /* A computed value must not look like something you can type into. */
+      .computed {
+        background: var(--moss-soft);
+        border: 1px dashed var(--moss);
+        border-radius: var(--radius-input);
+        padding: 9px 11px;
+        font-family: var(--font-mono);
+        font-size: 0.9rem;
+        color: var(--pine);
+        text-align: right;
+      }
+      .computed-note {
+        font-size: 0.68rem;
+        color: var(--moss);
+        margin-top: 3px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .verdict {
+        border-radius: var(--radius-card);
+        padding: 18px 22px;
+        margin-top: 24px;
+        border: 1px solid var(--line);
+        background: var(--card);
+      }
+      .verdict h2 {
+        margin: 0 0 14px;
+        font-size: 0.95rem;
+        color: var(--pine);
+      }
+      .vgrid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 14px 20px;
+      }
+      .vcell {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+      }
+      .vlabel {
+        font-size: 0.68rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--ink-soft);
+      }
+      .vvalue {
+        font-family: var(--font-mono);
+        font-size: 1.15rem;
+        color: var(--ink);
+      }
+      .chip {
+        display: inline-block;
+        font-size: 0.72rem;
+        font-weight: 600;
+        padding: 3px 10px;
+        border-radius: 999px;
+        align-self: flex-start;
+      }
+      .chip.within {
+        background: var(--moss-soft);
+        color: var(--moss);
+        border: 1px solid var(--moss);
+      }
+      .chip.below {
+        background: color-mix(in srgb, var(--danger) 12%, transparent);
+        color: var(--danger);
+        border: 1px solid var(--danger);
+      }
+      .chip.above {
+        background: var(--amber-soft);
+        color: var(--amber-deep);
+        border: 1px solid var(--amber);
+      }
+      .chip.idle {
+        background: transparent;
+        color: var(--ink-soft);
+        border: 1px solid var(--line);
+      }
+
+      .escalation {
+        border: 1px solid var(--danger);
+        border-radius: var(--radius-input);
+        background: color-mix(in srgb, var(--danger) 8%, transparent);
+        padding: 16px 18px;
+        margin-top: 18px;
+      }
+      .escalation h3 {
+        margin: 0 0 6px;
+        font-size: 0.9rem;
+        color: var(--danger);
+      }
+      .escalation p {
+        margin: 0 0 10px;
+        font-size: 0.82rem;
+        color: var(--ink);
+      }
+
+      .summary {
+        border: 1px solid var(--danger);
+        border-radius: var(--radius-input);
+        padding: 14px 18px;
+        margin-top: 24px;
+        background: color-mix(in srgb, var(--danger) 8%, transparent);
+      }
+      .summary h2 {
+        font-size: 0.9rem;
+        margin: 0 0 8px;
+        color: var(--danger);
+      }
+      .summary ul {
+        margin: 0;
+        padding-left: 20px;
+        font-size: 0.85rem;
+      }
+      .summary a {
+        color: var(--danger);
+      }
+
+      .actions {
+        position: sticky;
+        bottom: 0;
+        background: var(--bg);
+        border-top: 1px solid var(--line);
+        padding: 16px 0;
+        margin-top: 32px;
+        display: flex;
+        gap: 12px;
+        align-items: center;
+      }
+      button.primary {
+        font: inherit;
+        font-weight: 600;
+        cursor: pointer;
+        border: none;
+        background: var(--amber);
+        color: #fff;
+        padding: 11px 24px;
+        border-radius: var(--radius-input);
+      }
+      button.primary:hover:not(:disabled) {
+        background: var(--amber-deep);
+      }
+      button.primary:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+      .status {
+        font-size: 0.85rem;
+        color: var(--ink-soft);
+      }
+
+      .done {
+        border: 1px solid var(--moss);
+        background: var(--moss-soft);
+        border-radius: var(--radius-card);
+        padding: 28px;
+        margin-top: 24px;
+      }
+      .done h2 {
+        margin: 0 0 12px;
+        color: var(--pine);
+        font-size: 1.15rem;
+      }
+      .done dl {
+        display: grid;
+        grid-template-columns: max-content 1fr;
+        gap: 6px 16px;
+        font-size: 0.85rem;
+        margin: 0 0 20px;
+      }
+      .done dt {
+        color: var(--ink-soft);
+      }
+      .done dd {
+        margin: 0;
+        font-family: var(--font-mono);
+      }
+      .hidden {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="bar">
+      <div class="wrap">
+        <h1>Final project commercials</h1>
+        <p>
+          BD02a. Stage 3. Every cost is mandatory, and margin is computed, not
+          entered.
+        </p>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <div id="gate" class="status" style="padding: 32px 0">
+        Checking your access...
+      </div>
+
+      <form id="form" class="hidden" novalidate>
+        <div id="summary" class="summary hidden">
+          <h2>Please correct the following</h2>
+          <ul id="summary-list"></ul>
+        </div>
+
+        <fieldset>
+          <legend>Project</legend>
+          <div class="grid">
+            <div class="field">
+              <label for="pcode">P-Code<span class="req">*</span></label>
+              <input
+                type="text"
+                id="pcode"
+                name="pcode"
+                placeholder="PE274118"
+                autocomplete="off"
+              />
+              <div class="msg" id="msg-pcode"></div>
+            </div>
+            <div class="field">
+              <label for="projectDurationMonths"
+                >Project duration, months<span class="req">*</span></label
+              >
+              <input
+                type="number"
+                id="projectDurationMonths"
+                min="1"
+                step="1"
+              />
+              <div class="msg" id="msg-projectDurationMonths"></div>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Cost stack, all figures in lakh</legend>
+          <div class="grid" id="cost-grid"></div>
+        </fieldset>
+
+        <fieldset>
+          <legend>The quote ladder, in lakh</legend>
+          <div class="grid">
+            <div class="field">
+              <label for="pbl2Minimum">PBL2, minimum acceptable quote</label>
+              <input
+                type="text"
+                class="money"
+                id="pbl2Minimum"
+                inputmode="decimal"
+              />
+              <div class="unit">lakh</div>
+            </div>
+            <div class="field">
+              <label for="pbl3First">PBL3, first quote sent</label>
+              <input
+                type="text"
+                class="money"
+                id="pbl3First"
+                inputmode="decimal"
+              />
+              <div class="unit">lakh</div>
+            </div>
+            <div class="field">
+              <label for="pbl10FinalQuote"
+                >PBL10, agreed quote<span class="req">*</span></label
+              >
+              <input
+                type="text"
+                class="money"
+                id="pbl10FinalQuote"
+                inputmode="decimal"
+              />
+              <div class="unit">lakh</div>
+              <div class="msg" id="msg-pbl10FinalQuote"></div>
+            </div>
+          </div>
+        </fieldset>
+
+        <div class="verdict">
+          <h2>Computed by the server on submission. Shown here as you type.</h2>
+          <div class="vgrid">
+            <div class="vcell">
+              <span class="vlabel">Base cost, PBL</span>
+              <span class="vvalue" id="v-base">&mdash;</span>
+            </div>
+            <div class="vcell">
+              <span class="vlabel">Margin</span>
+              <span class="vvalue" id="v-margin">&mdash;</span>
+              <span class="chip idle" id="chip-margin">no figures yet</span>
+            </div>
+            <div class="vcell">
+              <span class="vlabel">Revenue a month</span>
+              <span class="vvalue" id="v-velocity">&mdash;</span>
+              <span class="chip idle" id="chip-velocity">no figures yet</span>
+            </div>
+          </div>
+
+          <div class="escalation hidden" id="escalation">
+            <h3>This proposal is below the floor</h3>
+            <p id="escalation-detail"></p>
+            <label for="escalationReason"
+              >Why should this be pursued?<span class="req">*</span></label
+            >
+            <textarea id="escalationReason" rows="3"></textarea>
+            <div class="msg" id="msg-escalationReason"></div>
+          </div>
+        </div>
+
+        <fieldset>
+          <legend>Revenue decomposition, in lakh, optional</legend>
+          <div class="grid">
+            <div class="field">
+              <label for="grossFee">Gross fee</label>
+              <input
+                type="text"
+                class="money"
+                id="grossFee"
+                inputmode="decimal"
+              />
+              <div class="unit">lakh</div>
+            </div>
+            <div class="field">
+              <label for="prLab">PR, laboratory</label>
+              <input type="text" class="money" id="prLab" inputmode="decimal" />
+              <div class="unit">lakh</div>
+            </div>
+            <div class="field">
+              <label for="psCompliance">PS, compliance</label>
+              <input
+                type="text"
+                class="money"
+                id="psCompliance"
+                inputmode="decimal"
+              />
+              <div class="unit">lakh</div>
+            </div>
+            <div class="field">
+              <label for="liaison">Liaison</label>
+              <input
+                type="text"
+                class="money"
+                id="liaison"
+                inputmode="decimal"
+              />
+              <div class="unit">lakh</div>
+            </div>
+            <div class="field">
+              <label for="subContractor">Sub-contractor</label>
+              <input
+                type="text"
+                class="money"
+                id="subContractor"
+                inputmode="decimal"
+              />
+              <div class="unit">lakh</div>
+            </div>
+            <div class="field">
+              <label>Net Perfact revenue</label>
+              <div class="computed" id="v-npr">&mdash;</div>
+              <div class="computed-note">computed</div>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Documents and mode</legend>
+          <div class="grid">
+            <div class="field">
+              <label for="costComputerLink">Link to cost computer</label>
+              <input type="url" id="costComputerLink" placeholder="https://" />
+            </div>
+            <div class="field">
+              <label for="finalProposalLink">Link to final proposal</label>
+              <input type="url" id="finalProposalLink" placeholder="https://" />
+            </div>
+            <div class="field">
+              <label for="prMode">PR mode</label>
+              <select id="prMode">
+                <option value="">Select</option>
+                <option value="PPIP">PPIP</option>
+                <option value="PPTP">PPTP</option>
+                <option value="PPNP">PPNP</option>
+              </select>
+            </div>
+            <div class="field wide">
+              <label for="remarks">Remarks</label>
+              <textarea id="remarks" rows="2"></textarea>
+            </div>
+          </div>
+        </fieldset>
+
+        <div class="actions">
+          <button type="submit" class="primary" id="submit-btn">
+            Record commercials
+          </button>
+          <span class="status" id="status"></span>
+        </div>
+      </form>
+
+      <div id="done" class="done hidden">
+        <h2>Commercials recorded</h2>
+        <dl>
+          <dt>Proposal record</dt>
+          <dd id="d-rec"></dd>
+          <dt>P-Code</dt>
+          <dd id="d-pcode"></dd>
+          <dt>Base cost</dt>
+          <dd id="d-base"></dd>
+          <dt>Agreed quote</dt>
+          <dd id="d-quote"></dd>
+          <dt>Margin</dt>
+          <dd id="d-margin"></dd>
+          <dt>Revenue a month</dt>
+          <dd id="d-velocity"></dd>
+          <dt>Escalated</dt>
+          <dd id="d-esc"></dd>
+        </dl>
+        <button type="button" class="primary" onclick="location.reload()">
+          Record another
+        </button>
+      </div>
+    </main>
+
+    <script src="/lib/vendor/msal-browser.min.js"></script>
+    <script type="module">
+      import { initAuth, signIn, getAccount } from "/lib/auth.js";
+      import { api } from "/lib/api.js";
+      import { lakhToPaise, paiseToLakh, formatRupees } from "/lib/money.js";
+
+      const $ = (id) => document.getElementById(id);
+
+      // The ten cost fields, in the order the live BD02 form carries them.
+      const COST_FIELDS = [
+        ["overheadCosts", "Overhead costs"],
+        ["testingCharges", "Testing charges"],
+        ["adminExpenses", "Admin expenses"],
+        ["manpowerCosts", "Manpower costs"],
+        ["outsourcingCosts", "Outsourcing costs"],
+        ["commissions", "Commissions"],
+        ["outsourcedManpower", "Outsourced manpower"],
+        ["secondaryDataCosts", "Secondary data costs"],
+        ["contingencyCosts", "Contingency costs"],
+        ["siteVisitCosts", "Site visit costs"],
+      ];
+
+      const OPTIONAL_MONEY = [
+        "pbl2Minimum",
+        "pbl3First",
+        "grossFee",
+        "prLab",
+        "psCompliance",
+        "liaison",
+        "subContractor",
+      ];
+
+      // Bounds are fetched from the server so the preview matches the verdict.
+      let bounds = {
+        marginFloorPct: 15,
+        marginCeilingPct: 30,
+        velocityFloorPerMonth: 15000000,
+      };
+
+      function buildCostFields() {
+        $("cost-grid").innerHTML = COST_FIELDS.map(
+          ([id, label]) => `
+        <div class="field">
+          <label for="${id}">${label}<span class="req">*</span></label>
+          <input type="text" class="money" id="${id}" inputmode="decimal">
+          <div class="unit">lakh</div>
+          <div class="msg" id="msg-${id}"></div>
+        </div>`,
+        ).join("");
+      }
+
+      function setChip(el, state, text) {
+        el.className = "chip " + state;
+        el.textContent = text;
+      }
+
+      /**
+       * Recomputes the preview. This mirrors the server, it does not replace it.
+       * Whatever this shows, the server computes its own figures on submission
+       * and those are what get stored.
+       */
+      function preview() {
+        let base = 0,
+          complete = true;
+        for (const [id] of COST_FIELDS) {
+          const p = lakhToPaise($(id).value);
+          if (p === null || Number.isNaN(p)) {
+            complete = false;
+            continue;
+          }
+          base += p;
+        }
+        const quote = lakhToPaise($("pbl10FinalQuote").value);
+        const months = Number($("projectDurationMonths").value);
+
+        $("v-base").textContent = complete ? formatRupees(base) : "\u2014";
+
+        // Net Perfact revenue.
+        const gross = lakhToPaise($("grossFee").value) || 0;
+        let deductions = 0;
+        for (const f of ["prLab", "psCompliance", "liaison", "subContractor"]) {
+          deductions += lakhToPaise($(f).value) || 0;
+        }
+        $("v-npr").textContent = gross
+          ? formatRupees(gross - deductions)
+          : "\u2014";
+
+        if (
+          !complete ||
+          !quote ||
+          quote <= 0 ||
+          !Number.isFinite(months) ||
+          months <= 0
+        ) {
+          $("v-margin").textContent = "\u2014";
+          $("v-velocity").textContent = "\u2014";
+          setChip($("chip-margin"), "idle", "incomplete");
+          setChip($("chip-velocity"), "idle", "incomplete");
+          $("escalation").classList.add("hidden");
+          return;
+        }
+
+        const marginPct = Math.round(((quote - base) / quote) * 10000) / 100;
+        const velocity = Math.round(quote / months);
+
+        $("v-margin").textContent = marginPct.toFixed(2) + "%";
+        $("v-velocity").textContent = formatRupees(velocity);
+
+        const marginBelow = marginPct < bounds.marginFloorPct;
+        const marginAbove = marginPct > bounds.marginCeilingPct;
+        setChip(
+          $("chip-margin"),
+          marginBelow ? "below" : marginAbove ? "above" : "within",
+          marginBelow
+            ? `below the ${bounds.marginFloorPct}% floor`
+            : marginAbove
+              ? `above the ${bounds.marginCeilingPct}% band`
+              : "within the band",
+        );
+
+        const velBelow = velocity < bounds.velocityFloorPerMonth;
+        setChip(
+          $("chip-velocity"),
+          velBelow ? "below" : "within",
+          velBelow
+            ? `below ${paiseToLakh(bounds.velocityFloorPerMonth)} lakh a month`
+            : "clears the floor",
+        );
+
+        if (marginBelow || velBelow) {
+          $("escalation").classList.remove("hidden");
+          $("escalation-detail").textContent =
+            `Margin ${marginPct.toFixed(2)} per cent and revenue of ` +
+            `${paiseToLakh(velocity)} lakh a month. This cannot be recorded ` +
+            `without a stated reason, and the CSO will see it.`;
+        } else {
+          $("escalation").classList.add("hidden");
+        }
+      }
+
+      function clearErrors() {
+        $("summary").classList.add("hidden");
+        $("summary-list").innerHTML = "";
+        for (const el of document.querySelectorAll("[aria-invalid]"))
+          el.removeAttribute("aria-invalid");
+        for (const el of document.querySelectorAll(".msg")) el.textContent = "";
+      }
+
+      function showErrors(errors) {
+        $("summary-list").innerHTML = errors
+          .map((e) => `<li><a href="#${e.field}">${e.message}</a></li>`)
+          .join("");
+        $("summary").classList.remove("hidden");
+        for (const e of errors) {
+          const input = $(e.field);
+          if (input) input.setAttribute("aria-invalid", "true");
+          const msg = $("msg-" + e.field);
+          if (msg) msg.textContent = e.message;
+        }
+        $("summary").scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+
+      function readPayload() {
+        const out = {
+          pcode: $("pcode").value.trim(),
+          projectDurationMonths: Number($("projectDurationMonths").value),
+          costComputerLink: $("costComputerLink").value.trim(),
+          finalProposalLink: $("finalProposalLink").value.trim(),
+          prMode: $("prMode").value,
+          remarks: $("remarks").value.trim(),
+          escalationReason: $("escalationReason").value.trim(),
+        };
+        for (const [id] of COST_FIELDS) out[id] = lakhToPaise($(id).value);
+        out.pbl10FinalQuote = lakhToPaise($("pbl10FinalQuote").value);
+        for (const id of OPTIONAL_MONEY) {
+          const p = lakhToPaise($(id).value);
+          if (p !== null && !Number.isNaN(p)) out[id] = p;
+        }
+        return out;
+      }
+
+      function validate(payload) {
+        const errors = [];
+        if (!payload.pcode)
+          errors.push({ field: "pcode", message: "A P-Code is required" });
+        if (
+          !Number.isFinite(payload.projectDurationMonths) ||
+          payload.projectDurationMonths <= 0
+        ) {
+          errors.push({
+            field: "projectDurationMonths",
+            message: "Project duration is required and must be more than zero",
+          });
+        }
+        for (const [id, label] of COST_FIELDS) {
+          const v = payload[id];
+          if (v === null)
+            errors.push({
+              field: id,
+              message: `${label} is required. Enter 0 if it does not apply.`,
+            });
+          else if (Number.isNaN(v))
+            errors.push({ field: id, message: `${label} must be a number` });
+        }
+        if (!payload.pbl10FinalQuote || payload.pbl10FinalQuote <= 0) {
+          errors.push({
+            field: "pbl10FinalQuote",
+            message: "The agreed quote is required",
+          });
+        }
+        if (
+          !$("escalation").classList.contains("hidden") &&
+          !payload.escalationReason
+        ) {
+          errors.push({
+            field: "escalationReason",
+            message:
+              "This proposal is below the floor. State why it should be pursued.",
+          });
+        }
+        return errors;
+      }
+
+      async function onSubmit(event) {
+        event.preventDefault();
+        clearErrors();
+
+        const payload = readPayload();
+        const errors = validate(payload);
+        if (errors.length) {
+          showErrors(errors);
+          return;
+        }
+
+        const btn = $("submit-btn");
+        btn.disabled = true;
+        $("status").textContent = "Recording...";
+
+        try {
+          const r = await api.post("commercials", payload);
+          $("form").classList.add("hidden");
+          $("d-rec").textContent = r.proposalRecId;
+          $("d-pcode").textContent = r.pcode;
+          $("d-base").textContent = formatRupees(r.baseCost);
+          $("d-quote").textContent = formatRupees(r.quote);
+          $("d-margin").textContent = r.marginPct + "% (" + r.gateMargin + ")";
+          $("d-velocity").textContent =
+            formatRupees(r.velocityPerMonth) + " (" + r.gateVelocity + ")";
+          $("d-esc").textContent = r.needsEscalation
+            ? "Yes, the CSO will see this"
+            : "No";
+          $("done").classList.remove("hidden");
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        } catch (err) {
+          btn.disabled = false;
+          $("status").textContent = "";
+          if (Array.isArray(err.errors) && err.errors.length)
+            showErrors(err.errors);
+          else
+            showErrors([
+              {
+                field: "pcode",
+                message: err.message || "The commercials could not be recorded",
+              },
+            ]);
+        }
+      }
+
+      async function start() {
+        await initAuth();
+        if (!getAccount()) {
+          $("gate").innerHTML = "You need to sign in. ";
+          const b = document.createElement("button");
+          b.className = "primary";
+          b.textContent = "Sign in";
+          b.onclick = () => signIn();
+          $("gate").appendChild(b);
+          return;
+        }
+
+        try {
+          const me = await api.get("whoami");
+          $("gate").classList.add("hidden");
+          $("form").classList.remove("hidden");
+          $("status").textContent = `Signed in as ${me.name}, ${me.role}`;
+        } catch (err) {
+          $("gate").textContent =
+            err.message || "Your account has no access to this form.";
+          return;
+        }
+
+        buildCostFields();
+
+        for (const el of document.querySelectorAll("input, select")) {
+          el.addEventListener("input", preview);
+        }
+        $("form").onsubmit = onSubmit;
+        preview();
+      }
+
+      start();
+    </script>
+  </body>
+</html>
