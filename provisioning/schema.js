@@ -63,6 +63,70 @@ const lists = [
     ],
   },
   {
+    name: "ProposalRegister",
+    description: "Commercials per project. All money is INTEGER PAISE, never decimals.",
+    columns: [
+      { name: "ProposalRecID", type: "text", indexed: true },
+      { name: "PCode", type: "text", indexed: true },
+      { name: "Version", type: "number" },
+
+      // Revenue side, from the blueprint decomposition.
+      { name: "GrossFee", type: "money" },
+      { name: "PRLab", type: "money" },
+      { name: "PSCompliance", type: "money" },
+      { name: "Liaison", type: "money" },
+      { name: "SubContractor", type: "money" },
+      { name: "NetPerfactRevenue", type: "money" },
+
+      // Cost stack, the ten fields carried by the live BD02 form.
+      { name: "OverheadCosts", type: "money" },
+      { name: "TestingCharges", type: "money" },
+      { name: "AdminExpenses", type: "money" },
+      { name: "ManpowerCosts", type: "money" },
+      { name: "OutsourcingCosts", type: "money" },
+      { name: "Commissions", type: "money" },
+      { name: "OutsourcedManpower", type: "money" },
+      { name: "SecondaryDataCosts", type: "money" },
+      { name: "ContingencyCosts", type: "money" },
+      { name: "SiteVisitCosts", type: "money" },
+
+      // The quote ladder. PBL is summed, never typed.
+      { name: "PBLBaseCost", type: "money" },
+      { name: "PBL2Minimum", type: "money" },
+      { name: "PBL3First", type: "money" },
+      { name: "PBL10Final", type: "money" },
+
+      // Derived. Written only by the server.
+      { name: "MarginPaise", type: "money" },
+      { name: "MarginPct", type: "number" },
+      { name: "DurationMonths", type: "number" },
+      { name: "VelocityPerMonth", type: "money" },
+      { name: "GateMarginResult", type: "text" },
+      { name: "GateVelocityResult", type: "text" },
+      { name: "NeedsEscalation", type: "boolean" },
+      { name: "EscalationRef", type: "text" },
+      { name: "EscalationReason", type: "note" },
+
+      // Approval and despatch.
+      { name: "CSODecision", type: "choice",
+        choices: ["NotSubmitted", "Pending", "Approved", "Rejected"] },
+      { name: "CSORemarks", type: "note" },
+      { name: "CSODecidedAtIso", type: "text" },
+      { name: "SentToClientAtIso", type: "text" },
+
+      // Documents and commercial mode, carried from the live form.
+      { name: "WorkOrderLink", type: "text" },
+      { name: "SalesOrderLink", type: "text" },
+      { name: "CostComputerLink", type: "text" },
+      { name: "FinalProposalLink", type: "text" },
+      { name: "GSTTreatment", type: "text" },
+      { name: "PRMode", type: "text" },
+      { name: "Remarks", type: "note" },
+      { name: "Status", type: "choice", indexed: true,
+        choices: ["Draft", "AwaitingCSO", "Approved", "Sent", "Superseded"] },
+    ],
+  },
+  {
     name: "GroupMaster",
     description: "One canonical record per corporate group.",
     columns: [

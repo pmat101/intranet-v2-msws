@@ -57,7 +57,21 @@ function toColumn(col) {
   return d;
 }
 
+function assertNoDuplicates() {
+  const seen = new Set();
+  for (const spec of lists) {
+    if (seen.has(spec.name)) {
+      throw new Error(
+        `schema.js defines "${spec.name}" more than once. This usually means a ` +
+        `patch was applied twice. Fix the schema before provisioning.`,
+      );
+    }
+    seen.add(spec.name);
+  }
+}
+
 async function main() {
+  assertNoDuplicates();
   console.log(`Site: ${SITE_ID}`);
   if (dryRun) console.log("DRY RUN, nothing will be written.\n");
 
