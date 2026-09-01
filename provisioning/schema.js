@@ -12,6 +12,8 @@ const AUDIT = [
   { name: "ModifiedAtIso", type: "text" },
 ];
 
+const { stage5 } = require("./schema-stage5");
+
 const lists = [
   {
     name: "UsersRoles",
@@ -64,7 +66,8 @@ const lists = [
   },
   {
     name: "ProposalRegister",
-    description: "Commercials per project. All money is INTEGER PAISE, never decimals.",
+    description:
+      "Commercials per project. All money is INTEGER PAISE, never decimals.",
     columns: [
       { name: "ProposalRecID", type: "text", indexed: true },
       { name: "PCode", type: "text", indexed: true },
@@ -108,8 +111,11 @@ const lists = [
       { name: "EscalationReason", type: "note" },
 
       // Approval and despatch.
-      { name: "CSODecision", type: "choice",
-        choices: ["NotSubmitted", "Pending", "Approved", "Rejected"] },
+      {
+        name: "CSODecision",
+        type: "choice",
+        choices: ["NotSubmitted", "Pending", "Approved", "Rejected"],
+      },
       { name: "CSORemarks", type: "note" },
       { name: "CSODecidedAtIso", type: "text" },
       { name: "SentToClientAtIso", type: "text" },
@@ -122,8 +128,12 @@ const lists = [
       { name: "GSTTreatment", type: "text" },
       { name: "PRMode", type: "text" },
       { name: "Remarks", type: "note" },
-      { name: "Status", type: "choice", indexed: true,
-        choices: ["Draft", "AwaitingCSO", "Approved", "Sent", "Superseded"] },
+      {
+        name: "Status",
+        type: "choice",
+        indexed: true,
+        choices: ["Draft", "AwaitingCSO", "Approved", "Sent", "Superseded"],
+      },
     ],
   },
   {
@@ -223,4 +233,4 @@ for (const list of lists) {
   if (list.audit !== false) list.columns = list.columns.concat(AUDIT);
 }
 
-module.exports = { lists };
+module.exports = { lists: lists.concat(stage5) };
