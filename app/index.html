@@ -3,116 +3,523 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Perfact Intranet</title>
+    <title>Perfact Intranet, BD pipeline</title>
     <link rel="stylesheet" href="/assets/tokens.css" />
     <style>
-      main {
-        max-width: 680px;
+      body {
+        padding-bottom: 64px;
+      }
+      header.bar {
+        background: linear-gradient(135deg, var(--pine-a), var(--pine-b));
+        color: var(--hero-ink);
+        padding: 22px 0 0;
+      }
+      .wrap {
+        max-width: 1120px;
         margin: 0 auto;
-        padding: 64px 24px;
+        padding: 0 24px;
       }
-      h1 {
-        color: var(--pine);
-        font-size: 2rem;
-        margin: 0 0 8px;
+      header.bar h1 {
+        margin: 0;
+        font-size: 1.4rem;
+        font-weight: 700;
       }
-      p {
-        color: var(--ink-soft);
-        margin: 0 0 24px;
+      header.bar .who {
+        font-size: 0.8rem;
+        color: var(--hero-sub);
+        margin-top: 3px;
       }
-      button {
+
+      .tabs {
+        display: flex;
+        gap: 4px;
+        margin-top: 18px;
+      }
+      .tab {
         font: inherit;
+        font-size: 0.85rem;
         font-weight: 600;
         cursor: pointer;
-        padding: 10px 20px;
-        border-radius: var(--radius-input);
-        border: none;
-        background: var(--amber);
-        color: #fff;
-      }
-      button:hover {
-        background: var(--amber-deep);
-      }
-      button.secondary {
         background: transparent;
-        color: var(--ink);
-        border: 1px solid var(--line);
+        border: none;
+        color: var(--hero-sub);
+        padding: 10px 18px;
+        border-radius: var(--radius-input) var(--radius-input) 0 0;
       }
+      .tab:hover {
+        color: var(--hero-ink);
+      }
+      .tab.active {
+        background: var(--bg);
+        color: var(--pine);
+      }
+
+      .kpis {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+        gap: 14px;
+        margin: 24px 0 0;
+      }
+      .kpi {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: var(--radius-card);
+        padding: 14px 18px;
+      }
+      .kpi .n {
+        font-size: 1.7rem;
+        font-weight: 700;
+        color: var(--pine);
+        font-family: var(--font-mono);
+        line-height: 1.1;
+      }
+      .kpi .l {
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--ink-soft);
+        margin-top: 4px;
+      }
+      .kpi.warn .n {
+        color: var(--danger);
+      }
+
+      .toolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 26px 0 10px;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+      .toolbar h2 {
+        margin: 0;
+        font-size: 1rem;
+        color: var(--pine);
+      }
+      .toolbar .note {
+        font-size: 0.78rem;
+        color: var(--ink-soft);
+      }
+      button.link {
+        font: inherit;
+        font-size: 0.8rem;
+        cursor: pointer;
+        background: none;
+        border: none;
+        color: var(--pine);
+        text-decoration: underline;
+        padding: 0;
+      }
+
       .card {
         background: var(--card);
         border: 1px solid var(--line);
         border-radius: var(--radius-card);
-        padding: 24px;
-        margin-top: 24px;
+        padding: 16px 20px;
+        margin-bottom: 10px;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 14px 20px;
+        align-items: center;
       }
-      .who {
+      .card .head {
+        display: flex;
+        align-items: baseline;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .pcode {
         font-family: var(--font-mono);
-        font-size: 0.875rem;
+        font-size: 0.95rem;
         color: var(--pine);
+        font-weight: 600;
+      }
+      .pname {
+        font-size: 0.9rem;
+        color: var(--ink);
+      }
+      .meta {
+        font-size: 0.75rem;
+        color: var(--ink-soft);
+        margin-top: 5px;
+      }
+      .chip {
+        display: inline-block;
+        font-size: 0.68rem;
+        font-weight: 600;
+        padding: 2px 9px;
+        border-radius: 999px;
+        border: 1px solid var(--line);
+        color: var(--ink-soft);
+      }
+      .chip.aged {
+        border-color: var(--danger);
+        color: var(--danger);
+        background: color-mix(in srgb, var(--danger) 8%, transparent);
+      }
+      .chip.fresh {
+        border-color: var(--moss);
+        color: var(--moss);
+        background: var(--moss-soft);
+      }
+
+      /* Six dots, one per step. The project's whole journey at a glance. */
+      .dots {
+        display: flex;
+        gap: 4px;
+        margin-top: 8px;
+      }
+      .dot {
+        width: 22px;
+        height: 5px;
+        border-radius: 3px;
+        background: var(--line);
+      }
+      .dot.done {
+        background: var(--moss);
+      }
+      .dot.skip {
+        background: transparent;
+        border: 1px dashed var(--line);
+        height: 3px;
+      }
+
+      .act {
+        text-align: right;
+      }
+      .act a {
+        display: inline-block;
+        font-size: 0.82rem;
+        font-weight: 600;
+        background: var(--amber);
+        color: #fff;
+        text-decoration: none;
+        padding: 9px 16px;
+        border-radius: var(--radius-input);
+        white-space: nowrap;
+      }
+      .act a:hover {
+        background: var(--amber-deep);
+      }
+      .act .offline {
+        font-size: 0.78rem;
+        color: var(--ink-soft);
+      }
+
+      /* Board view */
+      .board {
+        display: grid;
+        grid-template-columns: repeat(6, minmax(150px, 1fr));
+        gap: 12px;
+        margin-top: 22px;
+        overflow-x: auto;
+      }
+      .col {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: var(--radius-card);
+        padding: 12px;
+        min-width: 150px;
+      }
+      .col h3 {
+        margin: 0 0 4px;
+        font-size: 0.74rem;
+        color: var(--pine);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+      .col .count {
+        font-family: var(--font-mono);
+        font-size: 1.3rem;
+        color: var(--ink);
+        margin-bottom: 10px;
+      }
+      .mini {
+        border-top: 1px solid var(--line);
+        padding: 8px 0 6px;
+      }
+      .mini a {
+        font-family: var(--font-mono);
+        font-size: 0.78rem;
+        color: var(--pine);
+        text-decoration: none;
+      }
+      .mini a:hover {
+        text-decoration: underline;
+      }
+      .mini .d {
+        font-size: 0.7rem;
+        color: var(--ink-soft);
+      }
+
+      .empty {
+        background: var(--card);
+        border: 1px dashed var(--line);
+        border-radius: var(--radius-card);
+        padding: 40px 24px;
+        text-align: center;
+        color: var(--ink-soft);
+        font-size: 0.9rem;
+      }
+      .empty a {
+        color: var(--pine);
+      }
+      button.primary {
+        font: inherit;
+        font-weight: 600;
+        cursor: pointer;
+        border: none;
+        background: var(--amber);
+        color: #fff;
+        padding: 11px 24px;
+        border-radius: var(--radius-input);
+        text-decoration: none;
+        display: inline-block;
       }
       .hidden {
         display: none;
       }
+      @media (max-width: 720px) {
+        .card {
+          grid-template-columns: 1fr;
+        }
+        .act {
+          text-align: left;
+        }
+        .board {
+          grid-template-columns: 1fr;
+        }
+      }
     </style>
   </head>
   <body>
-    <main>
-      <h1>Perfact Intranet</h1>
-      <p>BD Pipeline application. Build in progress.</p>
-
-      <div id="signed-out">
-        <button id="btn-signin">Sign in with your Perfact account</button>
-      </div>
-
-      <div id="signed-in" class="hidden">
-        <div class="card">
-          <div class="who" id="who"></div>
-          <p id="detail"></p>
-          <button class="secondary" id="btn-signout">Sign out</button>
+    <header class="bar">
+      <div class="wrap">
+        <h1>BD pipeline</h1>
+        <div class="who" id="who">Checking your access...</div>
+        <div class="tabs">
+          <button class="tab active" id="tab-work" type="button">
+            What needs doing
+          </button>
+          <button class="tab" id="tab-board" type="button">
+            Pipeline board
+          </button>
         </div>
       </div>
+    </header>
+
+    <main class="wrap">
+      <div id="gate" style="padding: 40px 0" class="empty hidden"></div>
+
+      <section id="view-work" class="hidden">
+        <div class="kpis" id="kpis"></div>
+        <div class="toolbar">
+          <h2 id="work-title">Longest waiting first</h2>
+          <div>
+            <span class="note" id="scope-note"></span>
+            <button
+              class="link hidden"
+              id="toggle-scope"
+              type="button"
+            ></button>
+          </div>
+        </div>
+        <div id="work-list"></div>
+      </section>
+
+      <section id="view-board" class="hidden">
+        <div class="board" id="board"></div>
+      </section>
     </main>
 
     <script src="/lib/vendor/msal-browser.min.js"></script>
     <script type="module">
-      import { initAuth, signIn, signOut, getAccount } from "/lib/auth.js";
+      import { initAuth, signIn, getAccount } from "/lib/auth.js";
       import { api } from "/lib/api.js";
 
-      const outEl = document.getElementById("signed-out");
-      const inEl = document.getElementById("signed-in");
+      const $ = (id) => document.getElementById(id);
+      let showEveryone = false;
 
-      function render() {
-        const acct = getAccount();
-        if (acct) {
-          outEl.classList.add("hidden");
-          inEl.classList.remove("hidden");
-          document.getElementById("who").textContent = acct.username;
-          document.getElementById("detail").textContent =
-            "Signed in as " + (acct.name || "unknown");
-        } else {
-          outEl.classList.remove("hidden");
-          inEl.classList.add("hidden");
-        }
+      const esc = (s) =>
+        String(s === undefined || s === null ? "" : s)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+
+      /**
+       * Six dots, one per step, so a project's whole journey reads at a glance.
+       * Qualification is drawn as an outline rather than a gap, because it is
+       * deliberately skipped rather than merely undone.
+       */
+      function dots(steps) {
+        return (
+          `<div class="dots">` +
+          steps
+            .map((s) => {
+              if (s.key === "qualification")
+                return `<span class="dot skip" title="Qualification, handled offline"></span>`;
+              return `<span class="dot${s.done ? " done" : ""}" title="${esc(s.label)}${s.done ? ", done" : ""}"></span>`;
+            })
+            .join("") +
+          `</div>`
+        );
       }
 
-      document.getElementById("btn-signin").onclick = () => signIn();
-      document.getElementById("btn-signout").onclick = () => signOut();
+      function ageChip(days) {
+        if (days === null || days === undefined) return "";
+        if (days >= 15)
+          return `<span class="chip aged">${days} days in stage</span>`;
+        if (days <= 2)
+          return `<span class="chip fresh">${days} days in stage</span>`;
+        return `<span class="chip">${days} days in stage</span>`;
+      }
 
-      // Order matters. Sign-in must be established before any API call,
-      // because getToken() needs an account to work with.
-      await initAuth();
-      render();
+      function workCard(w) {
+        const next = w.next;
+        // The action carries the P-Code, so the form opens ready to use. That
+        // link is what makes the chain a workflow rather than a set of forms.
+        const action = !next
+          ? `<span class="offline">Nothing outstanding</span>`
+          : next.href
+            ? `<a href="${next.href}?pcode=${encodeURIComponent(w.pcode)}">${esc(next.label)}</a>`
+            : `<span class="offline">${esc(next.label)}<br>${esc(next.note || "")}</span>`;
 
-      if (getAccount()) {
+        return `
+        <div class="card">
+          <div>
+            <div class="head">
+              <a class="pcode" href="/project.html?pcode=${encodeURIComponent(w.pcode)}"
+                 style="text-decoration:none">${esc(w.pcode)}</a>
+              <span class="pname">${esc(w.projectName) || "<span style='color:var(--ink-soft)'>unnamed</span>"}</span>
+              ${ageChip(w.daysInStage)}
+            </div>
+            <div class="meta">${esc(w.stage)}
+              &middot; ${w.stepsDone} of 7 steps
+              &middot; ${esc(w.owner || "")}</div>
+            ${dots(w.steps || [])}
+          </div>
+          <div class="act">${action}</div>
+        </div>`;
+      }
+
+      async function renderWork() {
+        const path = "pipeline/work" + (showEveryone ? "?all=1" : "");
+        const d = await api.get(path);
+
+        $("kpis").innerHTML = `
+        <div class="kpi"><div class="n">${d.totals.active}</div><div class="l">Active</div></div>
+        <div class="kpi"><div class="n">${d.totals.awaitingAction}</div><div class="l">Awaiting action</div></div>
+        <div class="kpi"><div class="n">${d.totals.lost}</div><div class="l">Lost</div></div>
+        <div class="kpi"><div class="n">${d.totals.closed}</div><div class="l">Closed</div></div>`;
+
+        $("scope-note").textContent =
+          d.scopedTo === "everyone"
+            ? "Showing every project."
+            : "Showing only your projects.";
+
+        // A BD executive can see the whole pipeline when they want to, but the
+        // default is their own work. Eighty other people's projects is a report,
+        // not a work list.
+        if (!d.canSeeEveryone) {
+          const b = $("toggle-scope");
+          b.classList.remove("hidden");
+          b.textContent = showEveryone ? "Show only mine" : "Show everyone's";
+          b.onclick = () => {
+            showEveryone = !showEveryone;
+            renderWork();
+          };
+        }
+
+        if (!d.work.length) {
+          $("work-list").innerHTML = `
+          <div class="empty">
+            <p>Nothing is waiting on you.</p>
+            <a class="primary" href="/leads/new.html">Capture a new lead</a>
+          </div>`;
+          return;
+        }
+        $("work-list").innerHTML = d.work.map(workCard).join("");
+      }
+
+      async function renderBoard() {
+        const d = await api.get("pipeline/board");
+        $("board").innerHTML = d.stages
+          .map((stage) => {
+            const rows = d.byStage[stage] || [];
+            return `
+          <div class="col">
+            <h3>${esc(stage)}</h3>
+            <div class="count">${rows.length}</div>
+            ${rows
+              .slice(0, 12)
+              .map(
+                (p) => `
+              <div class="mini">
+                <a href="/project.html?pcode=${encodeURIComponent(p.pcode)}">${esc(p.pcode)}</a>
+                <div class="d">${esc(p.projectName || "unnamed")}</div>
+                <div class="d">${p.daysInStage === null ? "" : p.daysInStage + " days"}</div>
+              </div>`,
+              )
+              .join("")}
+            ${rows.length > 12 ? `<div class="mini d">and ${rows.length - 12} more</div>` : ""}
+          </div>`;
+          })
+          .join("");
+      }
+
+      function showTab(which) {
+        const work = which === "work";
+        $("tab-work").classList.toggle("active", work);
+        $("tab-board").classList.toggle("active", !work);
+        $("view-work").classList.toggle("hidden", !work);
+        $("view-board").classList.toggle("hidden", work);
+        if (!work) renderBoard();
+      }
+
+      async function start() {
+        await initAuth();
+        if (!getAccount()) {
+          $("who").textContent = "Not signed in";
+          const g = $("gate");
+          g.classList.remove("hidden");
+          g.innerHTML =
+            "<p>Sign in with your Perfact account to see the pipeline.</p>";
+          const b = document.createElement("button");
+          b.className = "primary";
+          b.textContent = "Sign in";
+          b.onclick = () => signIn();
+          g.appendChild(b);
+          return;
+        }
+
+        let me;
         try {
-          const health = await api.get("whoami");
-          document.getElementById("detail").textContent =
-            "Server sees: " + JSON.stringify(health);
+          me = await api.get("whoami");
         } catch (err) {
-          document.getElementById("detail").textContent =
-            "API call failed: " + err.message;
+          $("who").textContent = "Access denied";
+          const g = $("gate");
+          g.classList.remove("hidden");
+          g.textContent =
+            err.message || "Your account has no role in this application.";
+          return;
+        }
+
+        $("who").textContent = `${me.name}, ${me.role}`;
+        $("view-work").classList.remove("hidden");
+        $("tab-work").onclick = () => showTab("work");
+        $("tab-board").onclick = () => showTab("board");
+
+        try {
+          await renderWork();
+        } catch (err) {
+          $("work-list").innerHTML =
+            `<div class="empty">The work list could not be loaded. ${esc(err.message || "")}</div>`;
         }
       }
+
+      start();
     </script>
   </body>
 </html>

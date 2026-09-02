@@ -151,7 +151,6 @@ async function projectView(pcode) {
 
   const stage = project.Stage || "Lead Identified";
   const next = nextAction(steps, project.Status);
-
   return {
     pcode: project.PCode,
     proposalId: project.ProposalID,
