@@ -3,6 +3,7 @@ const { verifyRequest } = require("../lib/auth");
 const { resolveRole } = require("../lib/roles");
 const { graph, SITE_ID } = require("../lib/graph");
 const { allocate } = require("../lib/sequences");
+const { refreshStage } = require("../lib/stage-machine");
 
 const MAY_SUBMIT = ["BD", "TeamHead", "Admin", "CSO", "COO"];
 
@@ -289,7 +290,7 @@ async function handle(request, context) {
     allocated += amount;
 
     const termId =
-      "TRM-" + String(await allocate("ledger_serial")).padStart(6, "0");
+      "TRM-" + String(await allocate("term_serial")).padStart(6, "0");
 
     await graph("POST", `/sites/${SITE_ID}/lists/BillingMilestones/items`, {
       fields: {
@@ -329,9 +330,15 @@ async function handle(request, context) {
     seeded.push({ termId, name: m.name, percent: Number(m.percent), amount });
   }
 
-  context.log(
+    context.log(
     `Handover ${handoverId} filed for ${pcode} by ${caller.email}, pool ${p.deliveryPool}`,
   );
+
+  // The stage is derived from what exists, so refresh it now this record does.
+  const staged = await refreshStage(project);
+  if (staged.changed) {
+    context.log(`${pcode} moved ${staged.stored} to ${staged.derived}`);
+  }
 
   return {
     status: 201,

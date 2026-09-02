@@ -1,0 +1,820 @@
+<!doctype html>
+<html lang="en-IN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Technical handover, BD03, Perfact Intranet</title>
+    <link rel="stylesheet" href="/assets/tokens.css" />
+    <style>
+      body {
+        padding-bottom: 96px;
+      }
+      header.bar {
+        background: linear-gradient(135deg, var(--pine-a), var(--pine-b));
+        color: var(--hero-ink);
+        padding: 20px 0;
+      }
+      .wrap {
+        max-width: 940px;
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+      header.bar h1 {
+        margin: 0;
+        font-size: 1.35rem;
+        font-weight: 700;
+      }
+      header.bar p {
+        margin: 4px 0 0;
+        color: var(--hero-sub);
+        font-size: 0.875rem;
+      }
+      fieldset {
+        border: 1px solid var(--line);
+        border-radius: var(--radius-card);
+        background: var(--card);
+        padding: 20px 24px 24px;
+        margin: 24px 0 0;
+      }
+      legend {
+        font-size: 0.72rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--pine);
+        padding: 0 8px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 16px 20px;
+      }
+      .field {
+        display: flex;
+        flex-direction: column;
+      }
+      .field.wide {
+        grid-column: 1 / -1;
+      }
+      label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--ink-soft);
+        margin-bottom: 6px;
+      }
+      label .req {
+        color: var(--amber);
+        margin-left: 2px;
+      }
+      input,
+      select,
+      textarea {
+        font: inherit;
+        font-size: 0.9rem;
+        color: var(--ink);
+        background: var(--bg);
+        border: 1px solid var(--line);
+        border-radius: var(--radius-input);
+        padding: 9px 11px;
+        width: 100%;
+      }
+      input:focus,
+      select:focus,
+      textarea:focus {
+        outline: none;
+        border-color: var(--amber);
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--amber) 30%, transparent);
+      }
+      input[aria-invalid="true"],
+      select[aria-invalid="true"] {
+        border-color: var(--danger);
+      }
+      .msg {
+        font-size: 0.75rem;
+        color: var(--danger);
+        margin-top: 4px;
+        min-height: 1em;
+      }
+
+      table.rows {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 6px;
+      }
+      table.rows th {
+        text-align: left;
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--ink-soft);
+        padding: 0 8px 6px 0;
+        font-weight: 600;
+      }
+      table.rows td {
+        padding: 0 8px 8px 0;
+        vertical-align: top;
+      }
+      table.rows input {
+        font-size: 0.85rem;
+      }
+      .num {
+        text-align: right;
+        font-family: var(--font-mono);
+      }
+      button.small {
+        font: inherit;
+        font-size: 0.78rem;
+        cursor: pointer;
+        background: transparent;
+        border: 1px solid var(--line);
+        color: var(--ink);
+        border-radius: var(--radius-input);
+        padding: 6px 12px;
+      }
+      button.small:hover {
+        border-color: var(--amber);
+      }
+      button.remove {
+        border-color: transparent;
+        color: var(--ink-soft);
+        padding: 6px 8px;
+      }
+      button.remove:hover {
+        color: var(--danger);
+        border-color: var(--danger);
+      }
+
+      .total {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 12px;
+        padding: 10px 14px;
+        border-radius: var(--radius-input);
+        font-size: 0.85rem;
+      }
+      .total.ok {
+        background: var(--moss-soft);
+        color: var(--pine);
+        border: 1px solid var(--moss);
+      }
+      .total.bad {
+        background: color-mix(in srgb, var(--danger) 10%, transparent);
+        color: var(--danger);
+        border: 1px solid var(--danger);
+      }
+      .total strong {
+        font-family: var(--font-mono);
+      }
+
+      .summary {
+        border: 1px solid var(--danger);
+        border-radius: var(--radius-input);
+        padding: 14px 18px;
+        margin-top: 24px;
+        background: color-mix(in srgb, var(--danger) 8%, transparent);
+      }
+      .summary h2 {
+        font-size: 0.9rem;
+        margin: 0 0 8px;
+        color: var(--danger);
+      }
+      .summary ul {
+        margin: 0;
+        padding-left: 20px;
+        font-size: 0.85rem;
+      }
+      .summary a {
+        color: var(--danger);
+      }
+      .actions {
+        position: sticky;
+        bottom: 0;
+        background: var(--bg);
+        border-top: 1px solid var(--line);
+        padding: 16px 0;
+        margin-top: 32px;
+        display: flex;
+        gap: 12px;
+        align-items: center;
+      }
+      button.primary {
+        font: inherit;
+        font-weight: 600;
+        cursor: pointer;
+        border: none;
+        background: var(--amber);
+        color: #fff;
+        padding: 11px 24px;
+        border-radius: var(--radius-input);
+      }
+      button.primary:hover:not(:disabled) {
+        background: var(--amber-deep);
+      }
+      button.primary:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+      .status {
+        font-size: 0.85rem;
+        color: var(--ink-soft);
+      }
+      .done {
+        border: 1px solid var(--moss);
+        background: var(--moss-soft);
+        border-radius: var(--radius-card);
+        padding: 28px;
+        margin-top: 24px;
+      }
+      .done h2 {
+        margin: 0 0 12px;
+        color: var(--pine);
+        font-size: 1.15rem;
+      }
+      .done table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.85rem;
+        margin: 12px 0 20px;
+      }
+      .done th {
+        text-align: left;
+        color: var(--ink-soft);
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        padding-bottom: 6px;
+      }
+      .done td {
+        padding: 4px 0;
+        font-family: var(--font-mono);
+      }
+      .hidden {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="bar">
+      <div class="wrap">
+        <h1>Technical handover</h1>
+        <p>
+          BD03. Stage 5. Assigns the delivery pool and sets the billing
+          schedule.
+        </p>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <div id="gate" class="status" style="padding: 32px 0">
+        Checking your access...
+      </div>
+
+      <form id="form" class="hidden" novalidate>
+        <div id="summary" class="summary hidden">
+          <h2>Please correct the following</h2>
+          <ul id="summary-list"></ul>
+        </div>
+
+        <fieldset>
+          <legend>Project and delivery</legend>
+          <div class="grid">
+            <div class="field">
+              <label for="pcode">P-Code<span class="req">*</span></label>
+              <input
+                type="text"
+                id="pcode"
+                placeholder="PE274118"
+                autocomplete="off"
+              />
+              <div class="msg" id="msg-pcode"></div>
+            </div>
+            <div class="field">
+              <label for="deliveryPool"
+                >Delivery pool<span class="req">*</span></label
+              >
+              <select id="deliveryPool">
+                <option value="">Select</option>
+                <option>Fountain</option>
+                <option>Ocean</option>
+                <option>Pond</option>
+                <option>Pool</option>
+                <option>Reservoir</option>
+                <option>Spring</option>
+                <option>Tributary</option>
+              </select>
+              <div class="msg" id="msg-deliveryPool"></div>
+            </div>
+            <div class="field">
+              <label for="projectStartDate">Project start date</label>
+              <input type="date" id="projectStartDate" />
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>People</legend>
+          <div class="grid">
+            <div class="field">
+              <label for="teamHeadName">Team head</label>
+              <input type="text" id="teamHeadName" />
+            </div>
+            <div class="field">
+              <label for="teamHeadEmail"
+                >Team head email<span class="req">*</span></label
+              >
+              <input type="email" id="teamHeadEmail" />
+              <div class="msg" id="msg-teamHeadEmail"></div>
+            </div>
+            <div class="field">
+              <label for="cSuiteOfficerName">C-suite officer</label>
+              <input type="text" id="cSuiteOfficerName" />
+            </div>
+            <div class="field">
+              <label for="cSuiteOfficerEmail"
+                >C-suite officer email<span class="req">*</span></label
+              >
+              <input type="email" id="cSuiteOfficerEmail" />
+              <div class="msg" id="msg-cSuiteOfficerEmail"></div>
+            </div>
+            <div class="field">
+              <label for="eiaCoordinatorName">EIA coordinator</label>
+              <input type="text" id="eiaCoordinatorName" />
+            </div>
+            <div class="field">
+              <label for="eiaCoordinatorEmail">EIA coordinator email</label>
+              <input type="email" id="eiaCoordinatorEmail" />
+            </div>
+          </div>
+
+          <div style="margin-top: 18px">
+            <label>Other people on this project</label>
+            <table class="rows">
+              <thead>
+                <tr>
+                  <th style="width: 32%">Name</th>
+                  <th style="width: 38%">Email</th>
+                  <th style="width: 25%">Purpose</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="persons"></tbody>
+            </table>
+            <button type="button" class="small" id="add-person">
+              Add a person
+            </button>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Technical scope</legend>
+          <div class="grid">
+            <div class="field wide">
+              <label for="scopeOfWork"
+                >Scope of work<span class="req">*</span></label
+              >
+              <textarea id="scopeOfWork" rows="3"></textarea>
+              <div class="msg" id="msg-scopeOfWork"></div>
+            </div>
+            <div class="field">
+              <label for="category">Category<span class="req">*</span></label>
+              <input type="text" id="category" placeholder="A or B1 or B2" />
+              <div class="msg" id="msg-category"></div>
+            </div>
+            <div class="field">
+              <label for="nabetSector"
+                >NABET sector<span class="req">*</span></label
+              >
+              <input type="text" id="nabetSector" placeholder="1A" />
+              <div class="msg" id="msg-nabetSector"></div>
+            </div>
+            <div class="field">
+              <label for="baselineSeason"
+                >Baseline season<span class="req">*</span></label
+              >
+              <input
+                type="text"
+                id="baselineSeason"
+                placeholder="Post-monsoon"
+              />
+              <div class="msg" id="msg-baselineSeason"></div>
+            </div>
+            <div class="field">
+              <label for="eacName">EAC name<span class="req">*</span></label>
+              <input type="text" id="eacName" placeholder="EAC Industry-1" />
+              <div class="msg" id="msg-eacName"></div>
+            </div>
+            <div class="field">
+              <label for="tagSet">Scope tags</label>
+              <input type="text" id="tagSet" placeholder="Comma separated" />
+            </div>
+            <div class="field wide">
+              <label for="previousECAndConsents"
+                >Previous EC and consents</label
+              >
+              <textarea id="previousECAndConsents" rows="2"></textarea>
+            </div>
+            <div class="field wide">
+              <label for="generalConditionsApplicability"
+                >General conditions applicability</label
+              >
+              <textarea id="generalConditionsApplicability" rows="2"></textarea>
+            </div>
+            <div class="field">
+              <label for="ganttChartLink">Gantt chart link</label>
+              <input type="url" id="ganttChartLink" placeholder="https://" />
+            </div>
+            <div class="field">
+              <label for="timelineBaselineUrl">Timeline baseline</label>
+              <input
+                type="url"
+                id="timelineBaselineUrl"
+                placeholder="https://"
+              />
+            </div>
+            <div class="field">
+              <label for="relevantDocumentsUrl">Relevant documents</label>
+              <input
+                type="url"
+                id="relevantDocumentsUrl"
+                placeholder="https://"
+              />
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>
+            Billing milestones. These become the schedule Accounts bills
+            against.
+          </legend>
+          <table class="rows">
+            <thead>
+              <tr>
+                <th style="width: 26%">Milestone</th>
+                <th style="width: 30%">Details</th>
+                <th style="width: 18%">Timeline</th>
+                <th style="width: 12%">Percent</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="milestones"></tbody>
+          </table>
+          <button type="button" class="small" id="add-milestone">
+            Add a milestone
+          </button>
+          <div class="total bad" id="total">
+            <span>Percentages must total 100</span>
+            <strong id="total-value">0</strong>
+          </div>
+          <div class="msg" id="msg-milestones"></div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Terms</legend>
+          <div class="grid">
+            <div class="field">
+              <label for="travellingBorneBy">Travelling borne by</label>
+              <input type="text" id="travellingBorneBy" />
+            </div>
+            <div class="field">
+              <label for="overheadExpensesBorneBy"
+                >Overhead expenses borne by</label
+              >
+              <input type="text" id="overheadExpensesBorneBy" />
+            </div>
+            <div class="field wide">
+              <label for="termsAndConditions">Terms and conditions</label>
+              <textarea id="termsAndConditions" rows="2"></textarea>
+            </div>
+            <div class="field wide">
+              <label for="remarks">Remarks</label>
+              <textarea id="remarks" rows="2"></textarea>
+            </div>
+          </div>
+        </fieldset>
+
+        <div class="actions">
+          <button type="submit" class="primary" id="submit-btn">
+            File handover
+          </button>
+          <span class="status" id="status"></span>
+        </div>
+      </form>
+
+      <div id="done" class="done hidden">
+        <h2 id="done-title">Handover filed</h2>
+        <table>
+          <tbody>
+            <tr>
+              <th>Handover</th>
+              <td id="d-handover"></td>
+            </tr>
+            <tr>
+              <th>P-Code</th>
+              <td id="d-pcode"></td>
+            </tr>
+            <tr>
+              <th>Delivery pool</th>
+              <td id="d-pool"></td>
+            </tr>
+            <tr>
+              <th>Work order value</th>
+              <td id="d-value"></td>
+            </tr>
+          </tbody>
+        </table>
+        <table>
+          <thead>
+            <tr>
+              <th>Milestone</th>
+              <th>Percent</th>
+              <th>Amount</th>
+            </tr>
+          </thead>
+          <tbody id="d-milestones"></tbody>
+        </table>
+        <button type="button" class="primary" onclick="location.reload()">
+          File another
+        </button>
+      </div>
+    </main>
+
+    <script src="/lib/vendor/msal-browser.min.js"></script>
+    <script type="module">
+      import { initAuth, signIn, getAccount } from "/lib/auth.js";
+      import { api } from "/lib/api.js";
+      import { formatRupees } from "/lib/money.js";
+
+      const $ = (id) => document.getElementById(id);
+
+      function addPersonRow() {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+        <td><input type="text" class="p-name"></td>
+        <td><input type="email" class="p-email"></td>
+        <td><input type="text" class="p-purpose"></td>
+        <td><button type="button" class="small remove">Remove</button></td>`;
+        tr.querySelector(".remove").onclick = () => tr.remove();
+        $("persons").appendChild(tr);
+      }
+
+      function addMilestoneRow(name, percent) {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+        <td><input type="text" class="m-name" value="${name || ""}"></td>
+        <td><input type="text" class="m-details"></td>
+        <td><input type="text" class="m-timeline"></td>
+        <td><input type="number" class="m-percent num" min="0" max="100" step="0.01"
+             value="${percent === undefined ? "" : percent}"></td>
+        <td><button type="button" class="small remove">Remove</button></td>`;
+        tr.querySelector(".remove").onclick = () => {
+          tr.remove();
+          updateTotal();
+        };
+        tr.querySelector(".m-percent").addEventListener("input", updateTotal);
+        $("milestones").appendChild(tr);
+        updateTotal();
+      }
+
+      /**
+       * The running total is shown as you type, because discovering at submission
+       * that the schedule adds to 90 means re-reading every row to find the gap.
+       */
+      function updateTotal() {
+        let total = 0;
+        for (const el of document.querySelectorAll(".m-percent")) {
+          total += Number(el.value) || 0;
+        }
+        const rounded = Math.round(total * 100) / 100;
+        $("total-value").textContent = rounded + " per cent";
+        const ok = Math.abs(rounded - 100) < 0.01;
+        $("total").className = "total " + (ok ? "ok" : "bad");
+        $("total").firstElementChild.textContent = ok
+          ? "The schedule accounts for the whole contract"
+          : "Percentages must total 100";
+        return rounded;
+      }
+
+      function readMilestones() {
+        const out = [];
+        for (const tr of $("milestones").querySelectorAll("tr")) {
+          const name = tr.querySelector(".m-name").value.trim();
+          const percent = Number(tr.querySelector(".m-percent").value);
+          if (!name && !percent) continue;
+          out.push({
+            name,
+            details: tr.querySelector(".m-details").value.trim(),
+            timeline: tr.querySelector(".m-timeline").value.trim(),
+            percent,
+          });
+        }
+        return out;
+      }
+
+      function readPersons() {
+        const out = [];
+        for (const tr of $("persons").querySelectorAll("tr")) {
+          const name = tr.querySelector(".p-name").value.trim();
+          const email = tr.querySelector(".p-email").value.trim();
+          if (!name && !email) continue;
+          out.push({
+            name,
+            email,
+            purpose: tr.querySelector(".p-purpose").value.trim(),
+          });
+        }
+        return out;
+      }
+
+      function clearErrors() {
+        $("summary").classList.add("hidden");
+        $("summary-list").innerHTML = "";
+        for (const el of document.querySelectorAll("[aria-invalid]"))
+          el.removeAttribute("aria-invalid");
+        for (const el of document.querySelectorAll(".msg")) el.textContent = "";
+      }
+
+      function showErrors(errors) {
+        $("summary-list").innerHTML = errors
+          .map((e) => `<li><a href="#${e.field}">${e.message}</a></li>`)
+          .join("");
+        $("summary").classList.remove("hidden");
+        for (const e of errors) {
+          const input = $(e.field);
+          if (input) input.setAttribute("aria-invalid", "true");
+          const msg = $("msg-" + e.field);
+          if (msg) msg.textContent = e.message;
+        }
+        $("summary").scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+
+      const REQUIRED = [
+        ["pcode", "A P-Code"],
+        ["deliveryPool", "A delivery pool"],
+        ["teamHeadEmail", "The team head email"],
+        ["cSuiteOfficerEmail", "The C-suite officer email"],
+        ["scopeOfWork", "The scope of work"],
+        ["category", "Category"],
+        ["nabetSector", "The NABET sector"],
+        ["baselineSeason", "The baseline season"],
+        ["eacName", "The EAC name"],
+      ];
+
+      function readPayload() {
+        const p = { milestones: readMilestones(), otherPersons: readPersons() };
+        for (const id of [
+          "pcode",
+          "deliveryPool",
+          "projectStartDate",
+          "teamHeadName",
+          "teamHeadEmail",
+          "cSuiteOfficerName",
+          "cSuiteOfficerEmail",
+          "eiaCoordinatorName",
+          "eiaCoordinatorEmail",
+          "scopeOfWork",
+          "category",
+          "nabetSector",
+          "baselineSeason",
+          "eacName",
+          "tagSet",
+          "previousECAndConsents",
+          "generalConditionsApplicability",
+          "ganttChartLink",
+          "timelineBaselineUrl",
+          "relevantDocumentsUrl",
+          "travellingBorneBy",
+          "overheadExpensesBorneBy",
+          "termsAndConditions",
+          "remarks",
+        ]) {
+          p[id] = $(id).value.trim();
+        }
+        return p;
+      }
+
+      function validate(p) {
+        const errors = [];
+        for (const [id, label] of REQUIRED) {
+          if (!p[id])
+            errors.push({ field: id, message: `${label} is required` });
+        }
+        if (p.milestones.length === 0) {
+          errors.push({
+            field: "milestones",
+            message: "At least one billing milestone is required",
+          });
+        }
+        p.milestones.forEach((m, i) => {
+          if (!m.name)
+            errors.push({
+              field: "milestones",
+              message: `Milestone ${i + 1} needs a name`,
+            });
+          if (!(m.percent > 0 && m.percent <= 100)) {
+            errors.push({
+              field: "milestones",
+              message: `Milestone ${i + 1} needs a percentage between 1 and 100`,
+            });
+          }
+        });
+        const total = p.milestones.reduce(
+          (t, m) => t + (Number(m.percent) || 0),
+          0,
+        );
+        if (p.milestones.length > 0 && Math.abs(total - 100) > 0.01) {
+          errors.push({
+            field: "milestones",
+            message: `Milestone percentages total ${Math.round(total * 100) / 100}, and must total 100`,
+          });
+        }
+        return errors;
+      }
+
+      async function onSubmit(event) {
+        event.preventDefault();
+        clearErrors();
+        const p = readPayload();
+        const errors = validate(p);
+        if (errors.length) {
+          showErrors(errors);
+          return;
+        }
+
+        const btn = $("submit-btn");
+        btn.disabled = true;
+        $("status").textContent = "Filing...";
+
+        try {
+          const r = await api.post("handover", p);
+          $("form").classList.add("hidden");
+          if (r.duplicate) {
+            $("done-title").textContent = "A handover was already filed";
+            $("d-handover").textContent = r.handoverId;
+            $("d-pcode").textContent = r.pcode;
+          } else {
+            $("d-handover").textContent = r.handoverId;
+            $("d-pcode").textContent = r.pcode;
+            $("d-pool").textContent = r.deliveryPool;
+            $("d-value").textContent = formatRupees(r.workOrderValue);
+            $("d-milestones").innerHTML = (r.milestones || [])
+              .map(
+                (m) =>
+                  `<tr><td>${m.name}</td><td>${m.percent}%</td><td>${formatRupees(m.amount)}</td></tr>`,
+              )
+              .join("");
+          }
+          $("done").classList.remove("hidden");
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        } catch (err) {
+          btn.disabled = false;
+          $("status").textContent = "";
+          if (Array.isArray(err.errors) && err.errors.length)
+            showErrors(err.errors);
+          else
+            showErrors([
+              {
+                field: "pcode",
+                message: err.message || "The handover could not be filed",
+              },
+            ]);
+        }
+      }
+
+      async function start() {
+        await initAuth();
+        if (!getAccount()) {
+          $("gate").innerHTML = "You need to sign in. ";
+          const b = document.createElement("button");
+          b.className = "primary";
+          b.textContent = "Sign in";
+          b.onclick = () => signIn();
+          $("gate").appendChild(b);
+          return;
+        }
+        try {
+          const me = await api.get("whoami");
+          $("gate").classList.add("hidden");
+          $("form").classList.remove("hidden");
+          $("status").textContent = `Signed in as ${me.name}, ${me.role}`;
+        } catch (err) {
+          $("gate").textContent =
+            err.message || "Your account has no access to this form.";
+          return;
+        }
+
+        // A sensible starting schedule, which people can change or remove.
+        addMilestoneRow("On award", 30);
+        addMilestoneRow("On draft submission", 40);
+        addMilestoneRow("On final submission", 30);
+        addPersonRow();
+
+        $("add-person").onclick = addPersonRow;
+        $("add-milestone").onclick = () => addMilestoneRow();
+        $("form").onsubmit = onSubmit;
+      }
+
+      start();
+    </script>
+  </body>
+</html>

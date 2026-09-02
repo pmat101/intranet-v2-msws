@@ -189,6 +189,11 @@ async function handle(request, context) {
     },
   });
 
+  const staged = await refreshStage(project);
+  if (staged.changed) {
+    context.log(`${pcode} moved ${staged.stored} to ${staged.derived}`);
+  }
+
   context.log(
     `Billing started for ${pcode} by ${caller.email}, value ${workOrderValue} paise`,
   );

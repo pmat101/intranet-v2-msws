@@ -5,6 +5,7 @@ const { gateBounds } = require("../lib/settings");
 const { computeCommercials } = require("../lib/commercials");
 const { graph, SITE_ID } = require("../lib/graph");
 const { allocate } = require("../lib/sequences");
+const { refreshStage } = require("../lib/stage-machine");
 
 const MAY_SUBMIT = ["BD", "Admin", "CSO", "COO", "Accounts"];
 
@@ -36,7 +37,11 @@ async function handle(request, context) {
     return fail(403, err.code || "role_failed", err.message);
   }
   if (!MAY_SUBMIT.includes(entry.role)) {
-    return fail(403, "not_permitted", `Role ${entry.role} may not record commercials`);
+    return fail(
+      403,
+      "not_permitted",
+      `Role ${entry.role} may not record commercials`,
+    );
   }
 
   let payload;
@@ -50,7 +55,8 @@ async function handle(request, context) {
   if (!pcode) return fail(400, "validation_failed", "A P-Code is required");
 
   const project = await findProject(pcode);
-  if (!project) return fail(404, "no_such_project", `No project found for ${pcode}`);
+  if (!project)
+    return fail(404, "no_such_project", `No project found for ${pcode}`);
 
   // Bounds first. If they are missing the gates cannot be evaluated, and a
   // proposal must not be accepted through a gate that is not really there.
@@ -59,8 +65,11 @@ async function handle(request, context) {
     bounds = await gateBounds();
   } catch (err) {
     context.log("Gate bounds unavailable:", err.message);
-    return fail(503, "gates_unavailable",
-      "The commercial gates cannot be evaluated because their bounds are not configured");
+    return fail(
+      503,
+      "gates_unavailable",
+      "The commercial gates cannot be evaluated because their bounds are not configured",
+    );
   }
 
   // The server computes. Anything the client sent as a derived figure is
@@ -68,14 +77,18 @@ async function handle(request, context) {
   // user can choose.
   const result = computeCommercials(payload, bounds);
   if (!result.ok) {
-    return fail(400, "validation_failed",
+    return fail(
+      400,
+      "validation_failed",
       "Please complete the cost stack and the required commercial fields",
-      result.errors);
+      result.errors,
+    );
   }
   const c = result.computed;
 
   const nowIso = new Date().toISOString();
-  const recId = "PRP-" + String(await allocate("proposal_serial")).padStart(5, "0");
+  const recId =
+    "PRP-" + String(await allocate("proposal_serial")).padStart(5, "0");
 
   const fields = {
     Title: `${pcode} v1`,
@@ -113,7 +126,9 @@ async function handle(request, context) {
     GateMarginResult: c.gateMargin,
     GateVelocityResult: c.gateVelocity,
     NeedsEscalation: c.needsEscalation,
-    EscalationReason: c.needsEscalation ? String(payload.escalationReason || "") : "",
+    EscalationReason: c.needsEscalation
+      ? String(payload.escalationReason || "")
+      : "",
 
     // A proposal needing escalation cannot go straight to the CSO. The
     // escalation is a recorded step, not a warning that can be clicked past.
@@ -136,19 +151,35 @@ async function handle(request, context) {
   // accepted at all. This is Kushal's rule that a below-floor project
   // escalates before acceptance, enforced rather than advertised.
   if (c.needsEscalation && !String(payload.escalationReason || "").trim()) {
-    return fail(400, "escalation_required",
+    return fail(
+      400,
+      "escalation_required",
       "This proposal is below the floor and cannot be recorded without an escalation reason",
       [
-        { field: "escalationReason",
+        {
+          field: "escalationReason",
           message:
             `Margin ${c.marginPct} per cent, velocity ` +
             `Rs ${(c.velocityPerMonth / 10000000).toFixed(2)} lakh a month. ` +
-            `State why this should be pursued.` },
-      ]);
+            `State why this should be pursued.`,
+        },
+      ],
+    );
   }
 
-  await graph("POST", `/sites/${SITE_ID}/lists/ProposalRegister/items`, { fields });
-  context.log(`Commercials recorded for ${pcode} by ${caller.email}, margin ${c.marginPct}%`);
+  await graph("POST", `/sites/${SITE_ID}/lists/ProposalRegister/items`, {
+    fields,
+  });
+
+  // The stage is derived from what exists, so refresh it now the record does.
+  const staged = await refreshStage(project);
+  if (staged.changed) {
+    context.log(`${pcode} moved ${staged.stored} to ${staged.derived}`);
+  }
+
+  context.log(
+    `Commercials recorded for ${pcode} by ${caller.email}, margin ${c.marginPct}%`,
+  );
 
   return {
     status: 201,
@@ -178,7 +209,11 @@ app.http("recordCommercials", {
       return await handle(request, context);
     } catch (err) {
       context.log("UNHANDLED in recordCommercials:", err.stack || String(err));
-      return fail(500, "unexpected", "Something went wrong. Nothing was saved.");
+      return fail(
+        500,
+        "unexpected",
+        "Something went wrong. Nothing was saved.",
+      );
     }
   },
 });

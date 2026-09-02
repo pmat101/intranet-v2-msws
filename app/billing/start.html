@@ -1,0 +1,591 @@
+<!doctype html>
+<html lang="en-IN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Start billing, BD02b, Perfact Intranet</title>
+    <link rel="stylesheet" href="/assets/tokens.css" />
+    <style>
+      body {
+        padding-bottom: 96px;
+      }
+      header.bar {
+        background: linear-gradient(135deg, var(--pine-a), var(--pine-b));
+        color: var(--hero-ink);
+        padding: 20px 0;
+      }
+      .wrap {
+        max-width: 880px;
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+      header.bar h1 {
+        margin: 0;
+        font-size: 1.35rem;
+        font-weight: 700;
+      }
+      header.bar p {
+        margin: 4px 0 0;
+        color: var(--hero-sub);
+        font-size: 0.875rem;
+      }
+      fieldset {
+        border: 1px solid var(--line);
+        border-radius: var(--radius-card);
+        background: var(--card);
+        padding: 20px 24px 24px;
+        margin: 24px 0 0;
+      }
+      legend {
+        font-size: 0.72rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--pine);
+        padding: 0 8px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 16px 20px;
+      }
+      .field {
+        display: flex;
+        flex-direction: column;
+      }
+      .field.wide {
+        grid-column: 1 / -1;
+      }
+      label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--ink-soft);
+        margin-bottom: 6px;
+      }
+      label .req {
+        color: var(--amber);
+        margin-left: 2px;
+      }
+      input,
+      select,
+      textarea {
+        font: inherit;
+        font-size: 0.9rem;
+        color: var(--ink);
+        background: var(--bg);
+        border: 1px solid var(--line);
+        border-radius: var(--radius-input);
+        padding: 9px 11px;
+        width: 100%;
+      }
+      input:focus,
+      select:focus,
+      textarea:focus {
+        outline: none;
+        border-color: var(--amber);
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--amber) 30%, transparent);
+      }
+      input[aria-invalid="true"],
+      select[aria-invalid="true"] {
+        border-color: var(--danger);
+      }
+      input.money {
+        text-align: right;
+        font-family: var(--font-mono);
+      }
+      .unit {
+        font-size: 0.7rem;
+        color: var(--ink-soft);
+        margin-top: 3px;
+        text-align: right;
+      }
+      .msg {
+        font-size: 0.75rem;
+        color: var(--danger);
+        margin-top: 4px;
+        min-height: 1em;
+      }
+      .inline {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .inline input[type="checkbox"] {
+        width: auto;
+      }
+      .summary {
+        border: 1px solid var(--danger);
+        border-radius: var(--radius-input);
+        padding: 14px 18px;
+        margin-top: 24px;
+        background: color-mix(in srgb, var(--danger) 8%, transparent);
+      }
+      .summary h2 {
+        font-size: 0.9rem;
+        margin: 0 0 8px;
+        color: var(--danger);
+      }
+      .summary ul {
+        margin: 0;
+        padding-left: 20px;
+        font-size: 0.85rem;
+      }
+      .summary a {
+        color: var(--danger);
+      }
+      .actions {
+        position: sticky;
+        bottom: 0;
+        background: var(--bg);
+        border-top: 1px solid var(--line);
+        padding: 16px 0;
+        margin-top: 32px;
+        display: flex;
+        gap: 12px;
+        align-items: center;
+      }
+      button.primary {
+        font: inherit;
+        font-weight: 600;
+        cursor: pointer;
+        border: none;
+        background: var(--amber);
+        color: #fff;
+        padding: 11px 24px;
+        border-radius: var(--radius-input);
+      }
+      button.primary:hover:not(:disabled) {
+        background: var(--amber-deep);
+      }
+      button.primary:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+      .status {
+        font-size: 0.85rem;
+        color: var(--ink-soft);
+      }
+      .done {
+        border: 1px solid var(--moss);
+        background: var(--moss-soft);
+        border-radius: var(--radius-card);
+        padding: 28px;
+        margin-top: 24px;
+      }
+      .done h2 {
+        margin: 0 0 12px;
+        color: var(--pine);
+        font-size: 1.15rem;
+      }
+      .done dl {
+        display: grid;
+        grid-template-columns: max-content 1fr;
+        gap: 6px 16px;
+        font-size: 0.85rem;
+        margin: 0 0 20px;
+      }
+      .done dt {
+        color: var(--ink-soft);
+      }
+      .done dd {
+        margin: 0;
+        font-family: var(--font-mono);
+      }
+      .next {
+        font-size: 0.85rem;
+        color: var(--ink);
+        margin-top: 4px;
+      }
+      .hidden {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="bar">
+      <div class="wrap">
+        <h1>Start billing</h1>
+        <p>
+          BD02b. Stage 5. Records how the client accepted and opens the ledger.
+        </p>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <div id="gate" class="status" style="padding: 32px 0">
+        Checking your access...
+      </div>
+
+      <form id="form" class="hidden" novalidate>
+        <div id="summary" class="summary hidden">
+          <h2>Please correct the following</h2>
+          <ul id="summary-list"></ul>
+        </div>
+
+        <fieldset>
+          <legend>Acceptance</legend>
+          <div class="grid">
+            <div class="field">
+              <label for="pcode">P-Code<span class="req">*</span></label>
+              <input
+                type="text"
+                id="pcode"
+                placeholder="PE274118"
+                autocomplete="off"
+              />
+              <div class="msg" id="msg-pcode"></div>
+            </div>
+            <div class="field">
+              <label for="mode"
+                >How the client accepted<span class="req">*</span></label
+              >
+              <select id="mode">
+                <option value="">Select</option>
+                <option value="WorkOrder">Work order</option>
+                <option value="Email">Email</option>
+                <option value="Verbal">Verbal</option>
+              </select>
+              <div class="msg" id="msg-mode"></div>
+            </div>
+            <div class="field">
+              <label for="acceptanceDate"
+                >Date of acceptance<span class="req">*</span></label
+              >
+              <input type="date" id="acceptanceDate" />
+              <div class="msg" id="msg-acceptanceDate"></div>
+            </div>
+            <div class="field">
+              <label for="woNumber">Work order number</label>
+              <input type="text" id="woNumber" />
+              <div class="msg" id="msg-woNumber"></div>
+            </div>
+            <div class="field">
+              <label for="soNumber">Sales order number</label>
+              <input type="text" id="soNumber" />
+            </div>
+            <div class="field">
+              <label for="referenceNo">Other reference</label>
+              <input
+                type="text"
+                id="referenceNo"
+                placeholder="Email subject, minute number"
+              />
+            </div>
+            <div class="field">
+              <label for="workOrderValue"
+                >Work order value<span class="req">*</span></label
+              >
+              <input
+                type="text"
+                class="money"
+                id="workOrderValue"
+                inputmode="decimal"
+              />
+              <div class="unit">lakh</div>
+              <div class="msg" id="msg-workOrderValue"></div>
+            </div>
+            <div class="field">
+              <label for="workOrderValidity">Work order validity</label>
+              <input
+                type="text"
+                id="workOrderValidity"
+                placeholder="12 months from award"
+              />
+            </div>
+            <div class="field">
+              <label for="workOrderLink">Link to work order</label>
+              <input type="url" id="workOrderLink" placeholder="https://" />
+            </div>
+            <div class="field">
+              <label for="salesOrderLink">Link to sales order</label>
+              <input type="url" id="salesOrderLink" placeholder="https://" />
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Tax identity</legend>
+          <div class="grid">
+            <div class="field">
+              <label class="inline"
+                ><input type="checkbox" id="gstAvailable" /> GST
+                available</label
+              >
+              <input
+                type="text"
+                id="gstNumber"
+                placeholder="GST number"
+                disabled
+              />
+              <div class="msg" id="msg-gstNumber"></div>
+            </div>
+            <div class="field">
+              <label class="inline"
+                ><input type="checkbox" id="panAvailable" /> PAN
+                available</label
+              >
+              <input
+                type="text"
+                id="panNumber"
+                placeholder="PAN number"
+                disabled
+              />
+              <div class="msg" id="msg-panNumber"></div>
+            </div>
+            <div class="field">
+              <label class="inline"
+                ><input type="checkbox" id="tanAvailable" /> TAN
+                available</label
+              >
+              <input
+                type="text"
+                id="tanNumber"
+                placeholder="TAN number"
+                disabled
+              />
+              <div class="msg" id="msg-tanNumber"></div>
+            </div>
+            <div class="field">
+              <label for="gstTreatment">GST treatment</label>
+              <select id="gstTreatment">
+                <option value="">Select</option>
+                <option>PESPL Delhi</option>
+                <option>PESPL LKO</option>
+                <option>PESPL Gujarat</option>
+                <option>PESPL Chennai</option>
+                <option>PRPL Delhi</option>
+                <option>PRPL Gurgaon</option>
+                <option>PS Delhi</option>
+                <option>PS Gurgaon</option>
+                <option>PWMPL Delhi</option>
+                <option>PAWSPL Delhi</option>
+              </select>
+            </div>
+            <div class="field wide">
+              <label for="paymentTerms">Payment terms</label>
+              <textarea
+                id="paymentTerms"
+                rows="2"
+                placeholder="50 per cent on award, 50 per cent on submission"
+              ></textarea>
+            </div>
+            <div class="field wide">
+              <label for="remarks">Remarks</label>
+              <textarea id="remarks" rows="2"></textarea>
+            </div>
+          </div>
+        </fieldset>
+
+        <div class="actions">
+          <button type="submit" class="primary" id="submit-btn">
+            Start billing
+          </button>
+          <span class="status" id="status"></span>
+        </div>
+      </form>
+
+      <div id="done" class="done hidden">
+        <h2 id="done-title">Billing started</h2>
+        <dl>
+          <dt>P-Code</dt>
+          <dd id="d-pcode"></dd>
+          <dt>Work order value</dt>
+          <dd id="d-value"></dd>
+          <dt>Ledger entry</dt>
+          <dd id="d-ledger"></dd>
+        </dl>
+        <p class="next">
+          Next: file the technical handover, which seeds the billing milestones
+          as a percentage of this value.
+        </p>
+        <button type="button" class="primary" onclick="location.reload()">
+          Start another
+        </button>
+      </div>
+    </main>
+
+    <script src="/lib/vendor/msal-browser.min.js"></script>
+    <script type="module">
+      import { initAuth, signIn, getAccount } from "/lib/auth.js";
+      import { api } from "/lib/api.js";
+      import { lakhToPaise, formatRupees } from "/lib/money.js";
+
+      const $ = (id) => document.getElementById(id);
+
+      // A tax number field only accepts input once its flag is ticked, so the
+      // two cannot disagree.
+      for (const [flag, num] of [
+        ["gstAvailable", "gstNumber"],
+        ["panAvailable", "panNumber"],
+        ["tanAvailable", "tanNumber"],
+      ]) {
+        $(flag).addEventListener("change", () => {
+          $(num).disabled = !$(flag).checked;
+          if (!$(flag).checked) $(num).value = "";
+        });
+      }
+
+      function clearErrors() {
+        $("summary").classList.add("hidden");
+        $("summary-list").innerHTML = "";
+        for (const el of document.querySelectorAll("[aria-invalid]"))
+          el.removeAttribute("aria-invalid");
+        for (const el of document.querySelectorAll(".msg")) el.textContent = "";
+      }
+
+      function showErrors(errors) {
+        $("summary-list").innerHTML = errors
+          .map((e) => `<li><a href="#${e.field}">${e.message}</a></li>`)
+          .join("");
+        $("summary").classList.remove("hidden");
+        for (const e of errors) {
+          const input = $(e.field);
+          if (input) input.setAttribute("aria-invalid", "true");
+          const msg = $("msg-" + e.field);
+          if (msg) msg.textContent = e.message;
+        }
+        $("summary").scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+
+      function readPayload() {
+        return {
+          pcode: $("pcode").value.trim(),
+          mode: $("mode").value,
+          acceptanceDate: $("acceptanceDate").value,
+          woNumber: $("woNumber").value.trim(),
+          soNumber: $("soNumber").value.trim(),
+          referenceNo: $("referenceNo").value.trim(),
+          workOrderValue: lakhToPaise($("workOrderValue").value),
+          workOrderValidity: $("workOrderValidity").value.trim(),
+          workOrderLink: $("workOrderLink").value.trim(),
+          salesOrderLink: $("salesOrderLink").value.trim(),
+          gstAvailable: $("gstAvailable").checked,
+          gstNumber: $("gstNumber").value.trim(),
+          panAvailable: $("panAvailable").checked,
+          panNumber: $("panNumber").value.trim(),
+          tanAvailable: $("tanAvailable").checked,
+          tanNumber: $("tanNumber").value.trim(),
+          gstTreatment: $("gstTreatment").value,
+          paymentTerms: $("paymentTerms").value.trim(),
+          remarks: $("remarks").value.trim(),
+        };
+      }
+
+      function validate(p) {
+        const errors = [];
+        if (!p.pcode)
+          errors.push({ field: "pcode", message: "A P-Code is required" });
+        if (!p.mode)
+          errors.push({
+            field: "mode",
+            message: "How the client accepted is required",
+          });
+        if (!p.acceptanceDate)
+          errors.push({
+            field: "acceptanceDate",
+            message: "The acceptance date is required",
+          });
+        if (p.workOrderValue === null) {
+          errors.push({
+            field: "workOrderValue",
+            message: "The work order value is required",
+          });
+        } else if (Number.isNaN(p.workOrderValue) || p.workOrderValue <= 0) {
+          errors.push({
+            field: "workOrderValue",
+            message: "The work order value must be more than zero",
+          });
+        }
+        if (!p.woNumber && !p.soNumber && !p.referenceNo) {
+          errors.push({
+            field: "woNumber",
+            message:
+              "A work order number, sales order number or other reference is required",
+          });
+        }
+        for (const [flag, num, label] of [
+          ["gstAvailable", "gstNumber", "GST number"],
+          ["panAvailable", "panNumber", "PAN number"],
+          ["tanAvailable", "tanNumber", "TAN number"],
+        ]) {
+          if (p[flag] && !p[num]) {
+            errors.push({
+              field: num,
+              message: `${label} is required when you tick that one is available`,
+            });
+          }
+        }
+        return errors;
+      }
+
+      async function onSubmit(event) {
+        event.preventDefault();
+        clearErrors();
+        const p = readPayload();
+        const errors = validate(p);
+        if (errors.length) {
+          showErrors(errors);
+          return;
+        }
+
+        const btn = $("submit-btn");
+        btn.disabled = true;
+        $("status").textContent = "Recording...";
+
+        try {
+          const r = await api.post("billing/start", p);
+          $("form").classList.add("hidden");
+          if (r.duplicate) {
+            $("done-title").textContent = "Billing was already started";
+            $("d-value").textContent = "unchanged";
+            $("d-ledger").textContent = "unchanged";
+          } else {
+            $("d-value").textContent = formatRupees(r.workOrderValue);
+            $("d-ledger").textContent = r.ledgerEntryId;
+          }
+          $("d-pcode").textContent = r.pcode;
+          $("done").classList.remove("hidden");
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        } catch (err) {
+          btn.disabled = false;
+          $("status").textContent = "";
+          if (Array.isArray(err.errors) && err.errors.length)
+            showErrors(err.errors);
+          else
+            showErrors([
+              {
+                field: "pcode",
+                message: err.message || "Billing could not be started",
+              },
+            ]);
+        }
+      }
+
+      async function start() {
+        await initAuth();
+        if (!getAccount()) {
+          $("gate").innerHTML = "You need to sign in. ";
+          const b = document.createElement("button");
+          b.className = "primary";
+          b.textContent = "Sign in";
+          b.onclick = () => signIn();
+          $("gate").appendChild(b);
+          return;
+        }
+        try {
+          const me = await api.get("whoami");
+          $("gate").classList.add("hidden");
+          $("form").classList.remove("hidden");
+          $("status").textContent = `Signed in as ${me.name}, ${me.role}`;
+        } catch (err) {
+          $("gate").textContent =
+            err.message || "Your account has no access to this form.";
+          return;
+        }
+        $("form").onsubmit = onSubmit;
+      }
+
+      start();
+    </script>
+  </body>
+</html>
