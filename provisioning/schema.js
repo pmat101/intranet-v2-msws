@@ -13,6 +13,7 @@ const AUDIT = [
 ];
 
 const { stage5 } = require("./schema-stage5");
+const { closure } = require("./schema-closure");
 
 const lists = [
   {
@@ -233,4 +234,4 @@ for (const list of lists) {
   if (list.audit !== false) list.columns = list.columns.concat(AUDIT);
 }
 
-module.exports = { lists: lists.concat(stage5) };
+module.exports = { lists: lists.concat(stage5, closure) };
