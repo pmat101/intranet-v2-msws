@@ -6,6 +6,7 @@
 // be told. Nothing here writes; it reads and reasons.
 
 const { graph, SITE_ID } = require("./graph");
+const { nextAction } = require("./next-action");
 
 const STAGES = [
   "Lead Identified",
@@ -107,7 +108,11 @@ async function projectView(pcode) {
       key: "proposal",
       label: "Proposal and quote ladder",
       done: Boolean(latestProposal && latestProposal.PBL3First),
-      at: latestProposal ? latestProposal.CreatedAtIso : null,
+      at:
+        latestProposal && latestProposal.PBL3First
+          ? latestProposal.CreatedAtIso
+          : null,
+
       detail:
         latestProposal && latestProposal.PBL3First
           ? `First quote ${(Number(latestProposal.PBL3First) / 10000000).toFixed(2)} lakh`
@@ -145,7 +150,7 @@ async function projectView(pcode) {
   ];
 
   const stage = project.Stage || "Lead Identified";
-  const next = NEXT_ACTION[stage] || null;
+  const next = nextAction(steps, project.Status);
 
   return {
     pcode: project.PCode,

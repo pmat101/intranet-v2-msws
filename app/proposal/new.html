@@ -1,0 +1,780 @@
+<!doctype html>
+<html lang="en-IN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Proposal and quote, BD01B, Perfact Intranet</title>
+    <link rel="stylesheet" href="/assets/tokens.css" />
+    <style>
+      body {
+        padding-bottom: 96px;
+      }
+      header.bar {
+        background: linear-gradient(135deg, var(--pine-a), var(--pine-b));
+        color: var(--hero-ink);
+        padding: 20px 0;
+      }
+      .wrap {
+        max-width: 920px;
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+      header.bar h1 {
+        margin: 0;
+        font-size: 1.35rem;
+        font-weight: 700;
+      }
+      header.bar p {
+        margin: 4px 0 0;
+        color: var(--hero-sub);
+        font-size: 0.875rem;
+      }
+      fieldset {
+        border: 1px solid var(--line);
+        border-radius: var(--radius-card);
+        background: var(--card);
+        padding: 20px 24px 24px;
+        margin: 24px 0 0;
+      }
+      legend {
+        font-size: 0.72rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--pine);
+        padding: 0 8px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 16px 20px;
+      }
+      .field {
+        display: flex;
+        flex-direction: column;
+      }
+      .field.wide {
+        grid-column: 1 / -1;
+      }
+      label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--ink-soft);
+        margin-bottom: 6px;
+      }
+      label .req {
+        color: var(--amber);
+        margin-left: 2px;
+      }
+      input,
+      textarea {
+        font: inherit;
+        font-size: 0.9rem;
+        color: var(--ink);
+        background: var(--bg);
+        border: 1px solid var(--line);
+        border-radius: var(--radius-input);
+        padding: 9px 11px;
+        width: 100%;
+      }
+      input:focus,
+      textarea:focus {
+        outline: none;
+        border-color: var(--amber);
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--amber) 30%, transparent);
+      }
+      input[aria-invalid="true"] {
+        border-color: var(--danger);
+      }
+      input.money {
+        text-align: right;
+        font-family: var(--font-mono);
+      }
+      .unit {
+        font-size: 0.7rem;
+        color: var(--ink-soft);
+        margin-top: 3px;
+        text-align: right;
+      }
+      .msg {
+        font-size: 0.75rem;
+        color: var(--danger);
+        margin-top: 4px;
+        min-height: 1em;
+      }
+
+      /* The ladder, drawn as rungs so the relationships are visible. */
+      .ladder {
+        margin-top: 20px;
+      }
+      .rung {
+        display: grid;
+        grid-template-columns: 130px 1fr auto;
+        align-items: center;
+        gap: 14px;
+        padding: 11px 0;
+        border-bottom: 1px solid var(--line);
+      }
+      .rung:last-child {
+        border-bottom: none;
+      }
+      .rung-name {
+        font-size: 0.78rem;
+        font-weight: 600;
+        color: var(--ink-soft);
+      }
+      .rung-name small {
+        display: block;
+        font-weight: 400;
+        color: var(--ink-soft);
+        font-size: 0.68rem;
+        margin-top: 2px;
+      }
+      .bar-track {
+        height: 22px;
+        background: var(--bg);
+        border-radius: 4px;
+        border: 1px solid var(--line);
+        position: relative;
+        overflow: hidden;
+      }
+      .bar-fill {
+        height: 100%;
+        border-radius: 3px;
+        transition: width 150ms ease-out;
+      }
+      .bar-cost {
+        background: var(--ink-soft);
+      }
+      .bar-floor {
+        background: var(--river);
+      }
+      .bar-ask {
+        background: var(--moss);
+      }
+      .rung-value {
+        font-family: var(--font-mono);
+        font-size: 0.9rem;
+        color: var(--ink);
+        white-space: nowrap;
+        text-align: right;
+        min-width: 128px;
+      }
+      .rung-value small {
+        display: block;
+        color: var(--ink-soft);
+        font-size: 0.7rem;
+      }
+
+      .room {
+        margin-top: 16px;
+        padding: 12px 16px;
+        border-radius: var(--radius-input);
+        background: var(--moss-soft);
+        border: 1px solid var(--moss);
+        font-size: 0.85rem;
+        color: var(--pine);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .room strong {
+        font-family: var(--font-mono);
+      }
+      .room.none {
+        background: var(--amber-soft);
+        border-color: var(--amber);
+        color: var(--amber-deep);
+      }
+
+      .advice {
+        margin-top: 16px;
+      }
+      .advice-item {
+        border: 1px solid var(--amber);
+        background: var(--amber-soft);
+        border-radius: var(--radius-input);
+        padding: 11px 15px;
+        font-size: 0.82rem;
+        color: var(--ink);
+        margin-bottom: 8px;
+      }
+      .advice-item strong {
+        color: var(--amber-deep);
+      }
+
+      .summary {
+        border: 1px solid var(--danger);
+        border-radius: var(--radius-input);
+        padding: 14px 18px;
+        margin-top: 24px;
+        background: color-mix(in srgb, var(--danger) 8%, transparent);
+      }
+      .summary h2 {
+        font-size: 0.9rem;
+        margin: 0 0 8px;
+        color: var(--danger);
+      }
+      .summary ul {
+        margin: 0;
+        padding-left: 20px;
+        font-size: 0.85rem;
+      }
+      .summary a {
+        color: var(--danger);
+      }
+      .actions {
+        position: sticky;
+        bottom: 0;
+        background: var(--bg);
+        border-top: 1px solid var(--line);
+        padding: 16px 0;
+        margin-top: 32px;
+        display: flex;
+        gap: 12px;
+        align-items: center;
+      }
+      button.primary {
+        font: inherit;
+        font-weight: 600;
+        cursor: pointer;
+        border: none;
+        background: var(--amber);
+        color: #fff;
+        padding: 11px 24px;
+        border-radius: var(--radius-input);
+      }
+      button.primary:hover:not(:disabled) {
+        background: var(--amber-deep);
+      }
+      button.primary:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+      .status {
+        font-size: 0.85rem;
+        color: var(--ink-soft);
+      }
+      .done {
+        border: 1px solid var(--moss);
+        background: var(--moss-soft);
+        border-radius: var(--radius-card);
+        padding: 28px;
+        margin-top: 24px;
+      }
+      .done h2 {
+        margin: 0 0 12px;
+        color: var(--pine);
+        font-size: 1.15rem;
+      }
+      .done dl {
+        display: grid;
+        grid-template-columns: max-content 1fr;
+        gap: 6px 16px;
+        font-size: 0.85rem;
+        margin: 0 0 20px;
+      }
+      .done dt {
+        color: var(--ink-soft);
+      }
+      .done dd {
+        margin: 0;
+        font-family: var(--font-mono);
+      }
+      .hidden {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="bar">
+      <div class="wrap">
+        <h1>Proposal and quote</h1>
+        <p>
+          BD01B. Stage 3. Sets the floor and the opening ask before the quote
+          goes out.
+        </p>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <div id="gate" class="status" style="padding: 32px 0">
+        Checking your access...
+      </div>
+
+      <form id="form" class="hidden" novalidate>
+        <div id="summary" class="summary hidden">
+          <h2>Please correct the following</h2>
+          <ul id="summary-list"></ul>
+        </div>
+
+        <fieldset>
+          <legend>Project</legend>
+          <div class="grid">
+            <div class="field">
+              <label for="pcode">P-Code<span class="req">*</span></label>
+              <input
+                type="text"
+                id="pcode"
+                placeholder="PE274119"
+                autocomplete="off"
+              />
+              <div class="msg" id="msg-pcode"></div>
+            </div>
+            <div class="field">
+              <label for="projectDurationMonths"
+                >Project duration, months<span class="req">*</span></label
+              >
+              <input
+                type="number"
+                id="projectDurationMonths"
+                min="1"
+                step="1"
+              />
+              <div class="msg" id="msg-projectDurationMonths"></div>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>What the work costs us, in lakh</legend>
+          <div class="grid" id="cost-grid"></div>
+        </fieldset>
+
+        <fieldset>
+          <legend>The quote ladder</legend>
+          <div class="grid">
+            <div class="field">
+              <label for="pbl2Minimum"
+                >PBL2, the lowest we will accept<span class="req"
+                  >*</span
+                ></label
+              >
+              <input
+                type="text"
+                class="money"
+                id="pbl2Minimum"
+                inputmode="decimal"
+              />
+              <div class="unit">lakh</div>
+              <div class="msg" id="msg-pbl2Minimum"></div>
+            </div>
+            <div class="field">
+              <label for="pbl3First"
+                >PBL3, what we ask for<span class="req">*</span></label
+              >
+              <input
+                type="text"
+                class="money"
+                id="pbl3First"
+                inputmode="decimal"
+              />
+              <div class="unit">lakh</div>
+              <div class="msg" id="msg-pbl3First"></div>
+            </div>
+          </div>
+
+          <div class="ladder">
+            <div class="rung">
+              <span class="rung-name"
+                >Base cost <small>PBL, summed from above</small></span
+              >
+              <div class="bar-track">
+                <div
+                  class="bar-fill bar-cost"
+                  id="bar-cost"
+                  style="width: 0"
+                ></div>
+              </div>
+              <span class="rung-value" id="v-cost">&mdash;</span>
+            </div>
+            <div class="rung">
+              <span class="rung-name"
+                >Our floor <small>PBL2, walk away below this</small></span
+              >
+              <div class="bar-track">
+                <div
+                  class="bar-fill bar-floor"
+                  id="bar-floor"
+                  style="width: 0"
+                ></div>
+              </div>
+              <span class="rung-value" id="v-floor"
+                >&mdash;<small id="v-floor-margin"></small
+              ></span>
+            </div>
+            <div class="rung">
+              <span class="rung-name"
+                >Our ask <small>PBL3, the opening quote</small></span
+              >
+              <div class="bar-track">
+                <div
+                  class="bar-fill bar-ask"
+                  id="bar-ask"
+                  style="width: 0"
+                ></div>
+              </div>
+              <span class="rung-value" id="v-ask"
+                >&mdash;<small id="v-ask-margin"></small
+              ></span>
+            </div>
+          </div>
+
+          <div class="room" id="room">
+            <span id="room-label">Room to negotiate</span>
+            <strong id="room-value">&mdash;</strong>
+          </div>
+
+          <div class="advice" id="advice"></div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Notes</legend>
+          <div class="grid">
+            <div class="field wide">
+              <label for="remarks">Remarks on the pricing</label>
+              <textarea
+                id="remarks"
+                rows="2"
+                placeholder="Why this floor, why this ask"
+              ></textarea>
+            </div>
+          </div>
+        </fieldset>
+
+        <div class="actions">
+          <button type="submit" class="primary" id="submit-btn">
+            Record the quote
+          </button>
+          <span class="status" id="status"></span>
+        </div>
+      </form>
+
+      <div id="done" class="done hidden">
+        <h2 id="done-title">Quote recorded</h2>
+        <dl>
+          <dt>Proposal record</dt>
+          <dd id="d-rec"></dd>
+          <dt>P-Code</dt>
+          <dd id="d-pcode"></dd>
+          <dt>Base cost</dt>
+          <dd id="d-cost"></dd>
+          <dt>Our floor</dt>
+          <dd id="d-floor"></dd>
+          <dt>Our ask</dt>
+          <dd id="d-ask"></dd>
+          <dt>Room to negotiate</dt>
+          <dd id="d-room"></dd>
+        </dl>
+        <button type="button" class="primary" onclick="location.reload()">
+          Record another
+        </button>
+      </div>
+    </main>
+
+    <script src="/lib/vendor/msal-browser.min.js"></script>
+    <script type="module">
+      import { initAuth, signIn, getAccount } from "/lib/auth.js";
+      import { api } from "/lib/api.js";
+      import { lakhToPaise, paiseToLakh, formatRupees } from "/lib/money.js";
+
+      const $ = (id) => document.getElementById(id);
+
+      const COST_FIELDS = [
+        ["overheadCosts", "Overhead costs"],
+        ["testingCharges", "Testing charges"],
+        ["adminExpenses", "Admin expenses"],
+        ["manpowerCosts", "Manpower costs"],
+        ["outsourcingCosts", "Outsourcing costs"],
+        ["commissions", "Commissions"],
+        ["outsourcedManpower", "Outsourced manpower"],
+        ["secondaryDataCosts", "Secondary data costs"],
+        ["contingencyCosts", "Contingency costs"],
+        ["siteVisitCosts", "Site visit costs"],
+      ];
+
+      // Mirrors the server. The binding gate is on the agreed figure later.
+      const BOUNDS = { marginFloorPct: 15, velocityFloorPerMonth: 15000000 };
+
+      function buildCostFields() {
+        $("cost-grid").innerHTML = COST_FIELDS.map(
+          ([id, label]) => `
+        <div class="field">
+          <label for="${id}">${label}<span class="req">*</span></label>
+          <input type="text" class="money" id="${id}" inputmode="decimal">
+          <div class="unit">lakh</div>
+          <div class="msg" id="msg-${id}"></div>
+        </div>`,
+        ).join("");
+      }
+
+      function marginOf(quote, cost) {
+        if (!quote || quote <= 0) return null;
+        return Math.round(((quote - cost) / quote) * 10000) / 100;
+      }
+
+      /**
+       * Draws the three rungs against a common scale, so their relationship is
+       * visible rather than something to work out from three numbers. The bars
+       * are what make "the floor is below cost" obvious at a glance.
+       */
+      function preview() {
+        let cost = 0,
+          complete = true;
+        for (const [id] of COST_FIELDS) {
+          const p = lakhToPaise($(id).value);
+          if (p === null || Number.isNaN(p)) {
+            complete = false;
+            continue;
+          }
+          cost += p;
+        }
+        const floor = lakhToPaise($("pbl2Minimum").value) || 0;
+        const ask = lakhToPaise($("pbl3First").value) || 0;
+        const months = Number($("projectDurationMonths").value);
+
+        const scale = Math.max(cost, floor, ask, 1);
+        $("bar-cost").style.width = complete ? (cost / scale) * 100 + "%" : "0";
+        $("bar-floor").style.width = (floor / scale) * 100 + "%";
+        $("bar-ask").style.width = (ask / scale) * 100 + "%";
+
+        $("v-cost").textContent = complete ? formatRupees(cost) : "\u2014";
+
+        const fMargin = complete && floor ? marginOf(floor, cost) : null;
+        const aMargin = complete && ask ? marginOf(ask, cost) : null;
+
+        $("v-floor").innerHTML = floor
+          ? formatRupees(floor) +
+            `<small>${fMargin === null ? "" : fMargin + "% margin"}</small>`
+          : "\u2014";
+        $("v-ask").innerHTML = ask
+          ? formatRupees(ask) +
+            `<small>${aMargin === null ? "" : aMargin + "% margin"}</small>`
+          : "\u2014";
+
+        // Room to negotiate.
+        if (floor && ask && ask >= floor) {
+          const room = ask - floor;
+          const pct = Math.round((room / ask) * 10000) / 100;
+          $("room").className = "room" + (room === 0 ? " none" : "");
+          $("room-label").textContent =
+            room === 0
+              ? "No room to negotiate. This is a take it or leave it quote."
+              : "Room to negotiate before you hit your floor";
+          $("room-value").textContent =
+            room === 0 ? "\u2014" : `${paiseToLakh(room)} lakh (${pct}%)`;
+        } else {
+          $("room").className = "room";
+          $("room-label").textContent = "Room to negotiate";
+          $("room-value").textContent = "\u2014";
+        }
+
+        // Advice, mirroring the server. Guidance, not refusal.
+        const advice = [];
+        if (complete && floor && floor <= cost) {
+          advice.push([
+            "Your floor is at or below cost",
+            `A floor of ${paiseToLakh(floor)} lakh against a cost of ` +
+              `${paiseToLakh(cost)} lakh means accepting it would be a loss. This will be refused.`,
+          ]);
+        }
+        if (floor && ask && ask < floor) {
+          advice.push([
+            "Your ask is below your floor",
+            "The negotiation would start already conceded. This will be refused.",
+          ]);
+        }
+        if (
+          aMargin !== null &&
+          aMargin < BOUNDS.marginFloorPct &&
+          aMargin >= 0
+        ) {
+          advice.push([
+            "The opening quote is thin",
+            `${aMargin} per cent is below the ${BOUNDS.marginFloorPct} per cent floor, ` +
+              `so there is no room to come down.`,
+          ]);
+        }
+        if (
+          fMargin !== null &&
+          fMargin < BOUNDS.marginFloorPct &&
+          fMargin >= 0
+        ) {
+          advice.push([
+            "Accepting your floor would need an escalation",
+            `It gives ${fMargin} per cent, below the ${BOUNDS.marginFloorPct} per cent floor.`,
+          ]);
+        }
+        if (ask && Number.isFinite(months) && months > 0) {
+          const velocity = Math.round(ask / months);
+          if (velocity < BOUNDS.velocityFloorPerMonth) {
+            advice.push([
+              "The money arrives slowly",
+              `${paiseToLakh(velocity)} lakh a month over ${months} months, below the ` +
+                `${paiseToLakh(BOUNDS.velocityFloorPerMonth)} lakh floor.`,
+            ]);
+          }
+        }
+        $("advice").innerHTML = advice
+          .map(
+            ([title, body]) =>
+              `<div class="advice-item"><strong>${title}.</strong> ${body}</div>`,
+          )
+          .join("");
+      }
+
+      function clearErrors() {
+        $("summary").classList.add("hidden");
+        $("summary-list").innerHTML = "";
+        for (const el of document.querySelectorAll("[aria-invalid]"))
+          el.removeAttribute("aria-invalid");
+        for (const el of document.querySelectorAll(".msg")) el.textContent = "";
+      }
+
+      function showErrors(errors) {
+        $("summary-list").innerHTML = errors
+          .map((e) => `<li><a href="#${e.field}">${e.message}</a></li>`)
+          .join("");
+        $("summary").classList.remove("hidden");
+        for (const e of errors) {
+          const input = $(e.field);
+          if (input) input.setAttribute("aria-invalid", "true");
+          const msg = $("msg-" + e.field);
+          if (msg) msg.textContent = e.message;
+        }
+        $("summary").scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+
+      function readPayload() {
+        const p = {
+          pcode: $("pcode").value.trim(),
+          projectDurationMonths: Number($("projectDurationMonths").value),
+          pbl2Minimum: lakhToPaise($("pbl2Minimum").value),
+          pbl3First: lakhToPaise($("pbl3First").value),
+          remarks: $("remarks").value.trim(),
+        };
+        for (const [id] of COST_FIELDS) p[id] = lakhToPaise($(id).value);
+        return p;
+      }
+
+      function validate(p) {
+        const errors = [];
+        if (!p.pcode)
+          errors.push({ field: "pcode", message: "A P-Code is required" });
+        if (
+          !Number.isFinite(p.projectDurationMonths) ||
+          p.projectDurationMonths <= 0
+        ) {
+          errors.push({
+            field: "projectDurationMonths",
+            message: "Project duration is required and must be more than zero",
+          });
+        }
+        for (const [id, label] of COST_FIELDS) {
+          if (p[id] === null) {
+            errors.push({
+              field: id,
+              message: `${label} is required. Enter 0 if it does not apply.`,
+            });
+          } else if (Number.isNaN(p[id])) {
+            errors.push({ field: id, message: `${label} must be a number` });
+          }
+        }
+        if (!p.pbl2Minimum)
+          errors.push({
+            field: "pbl2Minimum",
+            message: "The lowest acceptable quote is required",
+          });
+        if (!p.pbl3First)
+          errors.push({
+            field: "pbl3First",
+            message: "The opening quote is required",
+          });
+        return errors;
+      }
+
+      async function onSubmit(event) {
+        event.preventDefault();
+        clearErrors();
+        const p = readPayload();
+        const errors = validate(p);
+        if (errors.length) {
+          showErrors(errors);
+          return;
+        }
+
+        const btn = $("submit-btn");
+        btn.disabled = true;
+        $("status").textContent = "Recording...";
+
+        try {
+          const r = await api.post("proposal", p);
+          $("form").classList.add("hidden");
+          $("done-title").textContent = r.revised
+            ? "Quote revised"
+            : "Quote recorded";
+          $("d-rec").textContent = r.proposalRecId;
+          $("d-pcode").textContent = r.pcode;
+          $("d-cost").textContent = formatRupees(r.baseCost);
+          $("d-floor").textContent =
+            formatRupees(r.pbl2Minimum) + `  (${r.marginAtFloor}% margin)`;
+          $("d-ask").textContent =
+            formatRupees(r.pbl3First) + `  (${r.marginAtFirst}% margin)`;
+          $("d-room").textContent =
+            formatRupees(r.negotiationRoom) + `  (${r.negotiationRoomPct}%)`;
+          $("done").classList.remove("hidden");
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        } catch (err) {
+          btn.disabled = false;
+          $("status").textContent = "";
+          if (Array.isArray(err.errors) && err.errors.length)
+            showErrors(err.errors);
+          else
+            showErrors([
+              {
+                field: "pcode",
+                message: err.message || "The quote could not be recorded",
+              },
+            ]);
+        }
+      }
+
+      async function start() {
+        await initAuth();
+        if (!getAccount()) {
+          $("gate").innerHTML = "You need to sign in. ";
+          const b = document.createElement("button");
+          b.className = "primary";
+          b.textContent = "Sign in";
+          b.onclick = () => signIn();
+          $("gate").appendChild(b);
+          return;
+        }
+        try {
+          const me = await api.get("whoami");
+          $("gate").classList.add("hidden");
+          $("form").classList.remove("hidden");
+          $("status").textContent = `Signed in as ${me.name}, ${me.role}`;
+        } catch (err) {
+          $("gate").textContent =
+            err.message || "Your account has no access to this form.";
+          return;
+        }
+
+        buildCostFields();
+
+        // A P-Code may arrive in the query string, from the work list.
+        const fromQuery = new URLSearchParams(location.search).get("pcode");
+        if (fromQuery) $("pcode").value = fromQuery;
+
+        for (const el of document.querySelectorAll("input")) {
+          el.addEventListener("input", preview);
+        }
+        $("form").onsubmit = onSubmit;
+        preview();
+      }
+
+      start();
+    </script>
+  </body>
+</html>

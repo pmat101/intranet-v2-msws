@@ -13,11 +13,10 @@ function fail(status, code, message, errors) {
   return { status, jsonBody: { ok: false, error: { code, message, errors } } };
 }
 
-async function findProject(pcode) {
+async function findOne(list, filter) {
   const r = await graph(
     "GET",
-    `/sites/${SITE_ID}/lists/ProjectRegister/items` +
-      `?expand=fields&$filter=fields/PCode eq '${pcode}'`,
+    `/sites/${SITE_ID}/lists/${list}/items?expand=fields&$filter=${encodeURIComponent(filter)}`,
   );
   return (r.value && r.value[0]) || null;
 }
@@ -52,11 +51,19 @@ async function handle(request, context) {
   }
 
   const pcode = String(payload.pcode || "").trim();
-  if (!pcode) return fail(400, "validation_failed", "A P-Code is required");
+  if (!pcode) {
+    return fail(400, "validation_failed", "A P-Code is required", [
+      { field: "pcode", message: "A P-Code is required" },
+    ]);
+  }
 
-  const project = await findProject(pcode);
-  if (!project)
+  const project = await findOne(
+    "ProjectRegister",
+    `fields/PCode eq '${pcode}'`,
+  );
+  if (!project) {
     return fail(404, "no_such_project", `No project found for ${pcode}`);
+  }
 
   // Bounds first. If they are missing the gates cannot be evaluated, and a
   // proposal must not be accepted through a gate that is not really there.
@@ -86,15 +93,42 @@ async function handle(request, context) {
   }
   const c = result.computed;
 
+  // Below the floor, an escalation reason is required before the record is
+  // accepted at all. This is Kushal's rule that a below-floor project
+  // escalates before acceptance, enforced rather than advertised.
+  //
+  // Checked BEFORE any serial is allocated, so a refused submission does not
+  // burn a proposal number and leave a gap in the series.
+  if (c.needsEscalation && !String(payload.escalationReason || "").trim()) {
+    return fail(
+      400,
+      "escalation_required",
+      "This proposal is below the floor and cannot be recorded without an escalation reason",
+      [
+        {
+          field: "escalationReason",
+          message:
+            `Margin ${c.marginPct} per cent, velocity ` +
+            `Rs ${(c.velocityPerMonth / 10000000).toFixed(2)} lakh a month. ` +
+            `State why this should be pursued.`,
+        },
+      ],
+    );
+  }
+
   const nowIso = new Date().toISOString();
-  const recId =
-    "PRP-" + String(await allocate("proposal_serial")).padStart(5, "0");
+
+  // BD01B may already have created this row with the quote ladder. If so we
+  // update it rather than creating a second, so a project has one
+  // authoritative proposal record and the step derivation never has to guess
+  // which one is current.
+  const existing = await findOne(
+    "ProposalRegister",
+    `fields/PCode eq '${pcode}'`,
+  );
 
   const fields = {
-    Title: `${pcode} v1`,
-    ProposalRecID: recId,
     PCode: pcode,
-    Version: 1,
 
     GrossFee: c.grossFee,
     PRLab: Number(payload.prLab) || 0,
@@ -115,8 +149,6 @@ async function handle(request, context) {
     SiteVisitCosts: Number(payload.siteVisitCosts),
 
     PBLBaseCost: c.baseCost,
-    PBL2Minimum: Number(payload.pbl2Minimum) || 0,
-    PBL3First: Number(payload.pbl3First) || 0,
     PBL10Final: c.quote,
 
     MarginPaise: c.marginPaise,
@@ -130,9 +162,6 @@ async function handle(request, context) {
       ? String(payload.escalationReason || "")
       : "",
 
-    // A proposal needing escalation cannot go straight to the CSO. The
-    // escalation is a recorded step, not a warning that can be clicked past.
-    CSODecision: "NotSubmitted",
     Status: "Draft",
 
     WorkOrderLink: payload.workOrderLink || "",
@@ -143,51 +172,69 @@ async function handle(request, context) {
     PRMode: payload.prMode || "",
     Remarks: payload.remarks || "",
 
-    CreatedByEmail: caller.email,
-    CreatedAtIso: nowIso,
+    ModifiedByEmail: caller.email,
+    ModifiedAtIso: nowIso,
   };
 
-  // Below the floor, an escalation reason is required before the record is
-  // accepted at all. This is Kushal's rule that a below-floor project
-  // escalates before acceptance, enforced rather than advertised.
-  if (c.needsEscalation && !String(payload.escalationReason || "").trim()) {
-    return fail(
-      400,
-      "escalation_required",
-      "This proposal is below the floor and cannot be recorded without an escalation reason",
-      [
-        {
-          field: "escalationReason",
-          message:
-            `Margin ${c.marginPct} per cent, velocity ` +
-            `Rs ${(c.velocityPerMonth / 10000000).toFixed(2)} lakh a month. ` +
-            `State why this should be pursued.`,
-        },
-      ],
+  // The quote ladder belongs to BD01B, not here. These rungs are touched only
+  // if the caller actually sent them. Writing `Number(x) || 0` unconditionally
+  // would erase a floor and an opening quote that were deliberately set
+  // earlier, which is silent data loss of exactly the kind that surfaces
+  // months later when somebody asks what we originally quoted.
+  if (payload.pbl2Minimum !== undefined && payload.pbl2Minimum !== null) {
+    fields.PBL2Minimum = Number(payload.pbl2Minimum) || 0;
+  }
+  if (payload.pbl3First !== undefined && payload.pbl3First !== null) {
+    fields.PBL3First = Number(payload.pbl3First) || 0;
+  }
+
+  let recId;
+  if (existing) {
+    recId = existing.fields.ProposalRecID;
+    await graph(
+      "PATCH",
+      `/sites/${SITE_ID}/lists/ProposalRegister/items/${existing.id}/fields`,
+      fields,
+    );
+    context.log(
+      `Commercials updated for ${pcode} by ${caller.email}, margin ${c.marginPct}%`,
+    );
+  } else {
+    recId = "PRP-" + String(await allocate("proposal_serial")).padStart(5, "0");
+    await graph("POST", `/sites/${SITE_ID}/lists/ProposalRegister/items`, {
+      fields: {
+        ...fields,
+        Title: `${pcode} v1`,
+        ProposalRecID: recId,
+        Version: 1,
+        CSODecision: "NotSubmitted",
+        CreatedByEmail: caller.email,
+        CreatedAtIso: nowIso,
+      },
+    });
+    context.log(
+      `Commercials recorded for ${pcode} by ${caller.email}, margin ${c.marginPct}%`,
     );
   }
 
-  await graph("POST", `/sites/${SITE_ID}/lists/ProposalRegister/items`, {
-    fields,
-  });
-
   // The stage is derived from what exists, so refresh it now the record does.
-  const staged = await refreshStage(project);
+  // findOne returns the raw Graph item with columns under `fields`, and
+  // syncStage reads Stage and Status at the top level, so it must be flattened.
+  // Without this every project looks like a fresh lead and a Lost one would be
+  // resurrected.
+  const staged = await refreshStage({ id: project.id, ...project.fields });
   if (staged.changed) {
     context.log(`${pcode} moved ${staged.stored} to ${staged.derived}`);
   }
 
-  context.log(
-    `Commercials recorded for ${pcode} by ${caller.email}, margin ${c.marginPct}%`,
-  );
-
   return {
-    status: 201,
+    status: existing ? 200 : 201,
     jsonBody: {
       ok: true,
       data: {
         proposalRecId: recId,
         pcode,
+        revised: Boolean(existing),
         baseCost: c.baseCost,
         quote: c.quote,
         marginPct: c.marginPct,
