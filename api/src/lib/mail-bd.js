@@ -8,8 +8,6 @@
 // Sender is resolved by form family in mail-senders.js, so all of these go
 // from support@perfactgroup.in.
 
-// Alright now that the first draft of the BD Pipeline app is ready, I need to give the BD team and management a demo of the working app- show them all the features and the process from start to finish (speaking of which,
-
 const { send } = require("./mail");
 
 const TOP_MANAGEMENT =
@@ -67,6 +65,7 @@ function wrap(intro, rows, footer) {
 /** BD01B, the quote ladder. Top management see what we are asking for. */
 async function sendProposalRecorded(pcode, caller, d) {
   return send({
+    submittedBy: caller.email,
     formCode: "BD01B",
     to: [TOP_MANAGEMENT, caller.email],
     subject: `Quote set for ${pcode}: asking ${lakh(d.pbl3First)} lakh, floor ${lakh(d.pbl2Minimum)} lakh`,
@@ -119,6 +118,7 @@ async function sendCommercialsRecorded(pcode, caller, d) {
          ${esc(caller.name || caller.email)}.</p>`;
 
   return send({
+    submittedBy: caller.email,
     formCode: "BD02",
     to: [ACCOUNTS, caller.email],
     cc: escalated ? [TOP_MANAGEMENT] : [],
@@ -144,6 +144,7 @@ async function sendBillingStarted(pcode, caller, d) {
   return send({
     formCode: "BD02",
     to: [ACCOUNTS, caller.email],
+    submittedBy: caller.email,
     subject: `Billing started for ${pcode}: work order ${lakh(d.workOrderValue)} lakh`,
     html: wrap(
       `<p>The client has accepted <strong>${esc(pcode)}</strong> and the expense
@@ -187,6 +188,7 @@ async function sendHandoverFiled(pcode, caller, d) {
     formCode: "BD03",
     to,
     cc: [ACCOUNTS, caller.email],
+    submittedBy: caller.email,
     subject:
       `Handover to ${d.deliveryPool}: ${pcode}, ${esc(d.projectName || "")}`.trim(),
     html: wrap(
@@ -220,6 +222,7 @@ async function sendProjectClosed(pcode, caller, d) {
     formCode: "BD05",
     to: [OPS_COUNCIL, caller.email],
     cc: [ACCOUNTS],
+    submittedBy: caller.email,
     subject: `Closed: ${pcode}${d.lessonTexts && d.lessonTexts.length ? `, ${d.lessonTexts.length} lessons recorded` : ""}`,
     html: wrap(
       `<p><strong>${esc(pcode)}</strong> has been closed by

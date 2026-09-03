@@ -24,7 +24,7 @@ const REDIRECT = (process.env.MAIL_REDIRECT_ALL || "").trim();
  * saved has been saved; losing a notification is a smaller problem than
  * telling someone their submission failed and having them enter it twice.
  */
-async function send({ formCode, to, cc, subject, html }) {
+async function send({ formCode, to, cc, subject, html, submittedBy }) {
   const sender = senderFor(formCode);
   if (!sender) {
     return { sent: false, reason: `No sending mailbox configured for ${formCode}` };
@@ -41,7 +41,11 @@ async function send({ formCode, to, cc, subject, html }) {
 
   if (REDIRECT) {
     finalTo = [REDIRECT];
-    finalCc = [];
+    // The person who submitted is kept on copy, so they see their own
+    // submission land. Everyone else is stripped.
+    finalCc = realTo.concat(realCc).includes(submittedBy) && submittedBy
+      ? [submittedBy]
+      : [];
     finalSubject = `[TEST] ${subject}`;
     finalHtml = `
       <div style="font-family:Arial,sans-serif;background:#fdebdc;border:1px solid #f27b21;
