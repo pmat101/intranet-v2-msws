@@ -6,6 +6,7 @@ const { computeCommercials } = require("../lib/commercials");
 const { graph, SITE_ID } = require("../lib/graph");
 const { allocate } = require("../lib/sequences");
 const { refreshStage } = require("../lib/stage-machine");
+const { sendCommercialsRecorded } = require("../lib/mail-bd");
 
 const MAY_SUBMIT = ["BD", "Admin", "CSO", "COO", "Accounts"];
 
@@ -226,6 +227,21 @@ async function handle(request, context) {
   if (staged.changed) {
     context.log(`${pcode} moved ${staged.stored} to ${staged.derived}`);
   }
+
+  // Sent after the record is safely stored, and its failure is reported
+  // rather than thrown. Commercials that saved have saved; losing the
+  // notification must not tell the person their submission failed.
+  const mail = await sendCommercialsRecorded(pcode, caller, {
+    baseCost: c.baseCost,
+    quote: c.quote,
+    marginPct: c.marginPct,
+    velocityPerMonth: c.velocityPerMonth,
+    gateMargin: c.gateMargin,
+    gateVelocity: c.gateVelocity,
+    needsEscalation: c.needsEscalation,
+    escalationReason: payload.escalationReason || "",
+  });
+  if (!mail.sent) context.log(`Commercials mail not sent: ${mail.reason}`);
 
   return {
     status: existing ? 200 : 201,

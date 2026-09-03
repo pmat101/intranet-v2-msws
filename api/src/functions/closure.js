@@ -4,6 +4,7 @@ const { resolveRole } = require("../lib/roles");
 const { graph, SITE_ID } = require("../lib/graph");
 const { allocate } = require("../lib/sequences");
 const { refreshStage } = require("../lib/stage-machine");
+const { sendProjectClosed } = require("../lib/mail-bd");
 
 const MAY_CLOSE = ["BD", "Accounts", "Admin", "CSO", "COO"];
 
@@ -223,6 +224,18 @@ async function handle(request, context) {
   context.log(
     `${pcode} closed by ${caller.email}, closure ${closureId}, ${recorded.length} lessons`,
   );
+
+  const mail = await sendProjectClosed(pcode, caller, {
+    fnfAmount: Number(p.fnfAmount) || 0,
+    fnfDate: p.fnfDate,
+    tf08Reference: p.tf08Reference,
+    aarWhatWentWell: p.aarWhatWentWell,
+    aarWhatDidNot: p.aarWhatDidNot,
+    aarWhatWeLearned: p.aarWhatWeLearned,
+    aarWhatWeWouldChange: p.aarWhatWeWouldChange,
+    lessonTexts: lessons.filter((l) => l.lesson && l.lesson.trim()),
+  });
+  if (!mail.sent) context.log(`Closure mail not sent: ${mail.reason}`);
 
   return {
     status: 201,

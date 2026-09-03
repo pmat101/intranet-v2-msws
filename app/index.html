@@ -101,6 +101,26 @@
         font-size: 0.78rem;
         color: var(--ink-soft);
       }
+      .toolbar-right {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+      .new-lead {
+        font-size: 0.82rem;
+        font-weight: 600;
+        background: transparent;
+        color: var(--amber);
+        border: 1px solid var(--amber);
+        text-decoration: none;
+        padding: 8px 15px;
+        border-radius: var(--radius-input);
+        white-space: nowrap;
+      }
+      .new-lead:hover {
+        background: var(--amber);
+        color: #fff;
+      }
       button.link {
         font: inherit;
         font-size: 0.8rem;
@@ -316,13 +336,14 @@
         <div class="kpis" id="kpis"></div>
         <div class="toolbar">
           <h2 id="work-title">Longest waiting first</h2>
-          <div>
+          <div class="toolbar-right">
             <span class="note" id="scope-note"></span>
             <button
               class="link hidden"
               id="toggle-scope"
               type="button"
             ></button>
+            <a class="new-lead" href="/leads/leads-new.html">New lead</a>
           </div>
         </div>
         <div id="work-list"></div>

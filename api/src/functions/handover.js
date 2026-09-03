@@ -4,6 +4,7 @@ const { resolveRole } = require("../lib/roles");
 const { graph, SITE_ID } = require("../lib/graph");
 const { allocate } = require("../lib/sequences");
 const { refreshStage } = require("../lib/stage-machine");
+const { sendHandoverFiled } = require("../lib/mail-bd");
 
 const MAY_SUBMIT = ["BD", "TeamHead", "Admin", "CSO", "COO"];
 
@@ -330,7 +331,7 @@ async function handle(request, context) {
     seeded.push({ termId, name: m.name, percent: Number(m.percent), amount });
   }
 
-    context.log(
+  context.log(
     `Handover ${handoverId} filed for ${pcode} by ${caller.email}, pool ${p.deliveryPool}`,
   );
 
@@ -339,6 +340,23 @@ async function handle(request, context) {
   if (staged.changed) {
     context.log(`${pcode} moved ${staged.stored} to ${staged.derived}`);
   }
+
+  const mail = await sendHandoverFiled(pcode, caller, {
+    deliveryPool: p.deliveryPool,
+    projectName: project.fields.ProjectName || "",
+    teamHeadEmail: p.teamHeadEmail,
+    cSuiteOfficerEmail: p.cSuiteOfficerEmail,
+    eiaCoordinatorEmail: p.eiaCoordinatorEmail,
+    scopeOfWork: p.scopeOfWork,
+    category: p.category,
+    nabetSector: p.nabetSector,
+    baselineSeason: p.baselineSeason,
+    eacName: p.eacName,
+    projectStartDate: p.projectStartDate,
+    workOrderValue,
+    milestones: seeded,
+  });
+  if (!mail.sent) context.log(`Handover mail not sent: ${mail.reason}`);
 
   return {
     status: 201,

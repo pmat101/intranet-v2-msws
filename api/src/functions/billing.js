@@ -3,6 +3,7 @@ const { verifyRequest } = require("../lib/auth");
 const { resolveRole } = require("../lib/roles");
 const { graph, SITE_ID } = require("../lib/graph");
 const { allocate } = require("../lib/sequences");
+const { sendBillingStarted } = require("../lib/mail-bd");
 
 const MAY_SUBMIT = ["BD", "Accounts", "Admin", "CSO", "COO"];
 
@@ -197,6 +198,18 @@ async function handle(request, context) {
   context.log(
     `Billing started for ${pcode} by ${caller.email}, value ${workOrderValue} paise`,
   );
+
+  const mail = await sendBillingStarted(pcode, caller, {
+    mode: p.mode,
+    woNumber: p.woNumber,
+    soNumber: p.soNumber,
+    referenceNo: p.referenceNo,
+    workOrderValue,
+    workOrderValidity: p.workOrderValidity,
+    paymentTerms: p.paymentTerms,
+    ledgerEntryId: entryId,
+  });
+  if (!mail.sent) context.log(`Billing mail not sent: ${mail.reason}`);
 
   return {
     status: 201,

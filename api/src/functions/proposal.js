@@ -6,6 +6,7 @@ const { computeLadder } = require("../lib/quote-ladder");
 const { graph, SITE_ID } = require("../lib/graph");
 const { allocate } = require("../lib/sequences");
 const { refreshStage } = require("../lib/stage-machine");
+const { sendProposalRecorded } = require("../lib/mail-bd");
 
 const MAY_SUBMIT = ["BD", "Admin", "CSO", "COO"];
 
@@ -150,6 +151,18 @@ async function handle(request, context) {
   if (staged.changed) {
     context.log(`${pcode} moved ${staged.stored} to ${staged.derived}`);
   }
+
+  const mail = await sendProposalRecorded(pcode, caller, {
+    baseCost: c.baseCost,
+    pbl2Minimum: c.pbl2,
+    pbl3First: c.pbl3,
+    marginAtFloor: c.marginAtFloor,
+    marginAtFirst: c.marginAtFirst,
+    negotiationRoom: c.negotiationRoom,
+    negotiationRoomPct: c.negotiationRoomPct,
+    advisory: c.advisory,
+  });
+  if (!mail.sent) context.log(`Proposal mail not sent: ${mail.reason}`);
 
   return {
     status: existing ? 200 : 201,
