@@ -525,13 +525,11 @@
       }
 
       function renderNextAction(data) {
-        const next = data.next;
-
-        if (!next) {
+        const n = data.next;
+        if (!n) {
           $("next-wrap").innerHTML = "";
           return;
         }
-
         // The sent step has no form, because it writes one field. It gets a
         // button here rather than a page of its own.
         const link = n.href
@@ -539,19 +537,29 @@
           : n.forStep === "sent"
             ? `<a href="#" id="btn-sent">Mark as sent to the client</a>`
             : "";
-
         $("next-wrap").innerHTML = `
-          <div class="next">
-            <h2>Next</h2>
-            <p>
-              ${esc(next.label)}
-              ${next.note ? `. ${esc(next.note)}` : ""}
-            </p>
-            ${link}
-          </div>
-        `;
-      }
+        <div class="next">
+          <h2>Next</h2>
+          <p>${esc(n.label)}${n.note ? ". " + esc(n.note) : ""}</p>
+          ${link}
+        </div>`;
 
+        // Wired here rather than in load(), because the element only exists
+        // once the markup above has been written.
+        const btn = document.getElementById("btn-sent");
+        if (btn) {
+          btn.onclick = async (e) => {
+            e.preventDefault();
+            btn.textContent = "Recording...";
+            try {
+              await api.post("proposal/sent", { pcode: data.pcode });
+              location.reload();
+            } catch (err) {
+              btn.textContent = err.message || "That did not work";
+            }
+          };
+        }
+      }
       async function loadProject() {
         const data = await api.get(
           "pipeline/project?pcode=" + encodeURIComponent(pcode),
