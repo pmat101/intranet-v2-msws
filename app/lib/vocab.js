@@ -1,10 +1,3 @@
-// Controlled vocabularies for BD01A.
-//
-// Extracted verbatim from the legacy config.js and BD01A.html on 25 August 2026.
-// These values feed the ProposalID, so they MUST match the legacy set exactly.
-// Do not tidy, reorder or "correct" them. When these move to the Decoder master
-// at B12, this file is replaced by a fetch, not edited.
-
 export const vocab = {
   pgCompany: ["PE", "PS", "PR", "PW"],
 
@@ -59,6 +52,7 @@ export const vocab = {
     "CRZ",
     "CTE",
     "CTO",
+    "DIC",
     "DUA",
     "EAM",
     "EAS",
@@ -85,10 +79,13 @@ export const vocab = {
     "ESI",
     "FCA",
     "FEO",
+    "FLA",
     "FOR",
     "GWC",
     "HAZ",
+    "HWM",
     "IMP",
+    "INA",
     "LCA",
     "LCS",
     "LIM",
@@ -199,12 +196,18 @@ export const vocab = {
   ],
 
   leadSource: [
+    { value: "ak", label: "Dr. Anil Kumar" },
+    { value: "da", label: "Mrs. Deepika Arora" },
+    { value: "dp", label: "Mrs. Disha Patel" },
+    { value: "gmk", label: "Mr. Muthukumaran Ganpathi Narayanan" },
+    { value: "na", label: "Ms. Neha Aggarwal" },
+    { value: "nb", label: "Dr. Nipun Bhargava" },
     { value: "pb", label: "Mr. Praveen Bhargava" },
     { value: "rb", label: "Mrs. Rachna Bhargava" },
-    { value: "nb", label: "Dr. Nipun Bhargava" },
     { value: "rd", label: "Mrs. Rachna Dogra" },
-    { value: "gmk", label: "Mr. Muthukumaran Ganpathi Narayanan" },
-    { value: "ag", label: "Mrs. Aarti Gupta" },
+    { value: "sp", label: "Mr. Santosh Pant" },
+    { value: "sr", label: "Mrs. Shweta Rajput" },
+    { value: "ss", label: "Ms. Sreeja Sreekanth" },
     { value: "others", label: "Others" },
   ],
 };
@@ -214,5 +217,12 @@ export function financialYears() {
   const now = new Date();
   const startYear =
     now.getMonth() >= 3 ? now.getFullYear() : now.getFullYear() - 1;
-  return [String(startYear + 1), String(startYear + 2)];
+  return [
+    String(startYear),
+    String(startYear + 1),
+    String(startYear + 2),
+    String(startYear + 3),
+    String(startYear + 4),
+    String(startYear + 5),
+  ];
 }
