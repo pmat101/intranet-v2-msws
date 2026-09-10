@@ -1,0 +1,585 @@
+<!doctype html>
+<html lang="en-IN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Approval to pursue, Perfact Intranet</title>
+    <link rel="stylesheet" href="/assets/tokens.css" />
+    <style>
+      body {
+        padding-bottom: 96px;
+      }
+      header.bar {
+        background: linear-gradient(135deg, var(--pine-a), var(--pine-b));
+        color: var(--hero-ink);
+        padding: 20px 0;
+      }
+      .wrap {
+        max-width: 760px;
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+      header.bar h1 {
+        margin: 0;
+        font-size: 1.35rem;
+        font-weight: 700;
+      }
+      header.bar p {
+        margin: 4px 0 0;
+        color: var(--hero-sub);
+        font-size: 0.875rem;
+      }
+
+      .context {
+        background: var(--moss-soft);
+        border: 1px solid var(--moss);
+        border-radius: var(--radius-card);
+        padding: 14px 18px;
+        margin-top: 24px;
+        font-size: 0.84rem;
+        color: var(--ink);
+      }
+      .context strong {
+        color: var(--pine);
+      }
+
+      fieldset {
+        border: 1px solid var(--line);
+        border-radius: var(--radius-card);
+        background: var(--card);
+        padding: 20px 24px 24px;
+        margin: 16px 0 0;
+      }
+      legend {
+        font-size: 0.72rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--pine);
+        padding: 0 8px;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 16px 20px;
+      }
+      .field {
+        display: flex;
+        flex-direction: column;
+      }
+      .field.wide {
+        grid-column: 1 / -1;
+      }
+      label {
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--ink-soft);
+        margin-bottom: 6px;
+      }
+      label .req {
+        color: var(--amber);
+        margin-left: 2px;
+      }
+      input,
+      select,
+      textarea {
+        font: inherit;
+        font-size: 0.9rem;
+        color: var(--ink);
+        background: var(--bg);
+        border: 1px solid var(--line);
+        border-radius: var(--radius-input);
+        padding: 9px 11px;
+        width: 100%;
+      }
+      input:focus,
+      select:focus,
+      textarea:focus {
+        outline: none;
+        border-color: var(--amber);
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--amber) 30%, transparent);
+      }
+      input[aria-invalid="true"],
+      select[aria-invalid="true"],
+      textarea[aria-invalid="true"] {
+        border-color: var(--danger);
+      }
+      .msg {
+        font-size: 0.75rem;
+        color: var(--danger);
+        margin-top: 4px;
+        min-height: 1em;
+      }
+      .hint {
+        font-size: 0.75rem;
+        color: var(--ink-soft);
+        margin-top: 4px;
+      }
+
+      /* Decision as three buttons, not a dropdown. It is the one thing on this
+       form that matters, and it should be visible without opening anything. */
+      .decisions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .dbtn {
+        font: inherit;
+        font-size: 0.88rem;
+        font-weight: 600;
+        cursor: pointer;
+        background: transparent;
+        border: 1.5px solid var(--line);
+        color: var(--ink-soft);
+        padding: 12px 22px;
+        border-radius: var(--radius-input);
+      }
+      .dbtn:hover {
+        border-color: var(--ink-soft);
+      }
+      .dbtn.sel-approved {
+        background: var(--moss-soft);
+        border-color: var(--moss);
+        color: var(--moss);
+      }
+      .dbtn.sel-declined {
+        background: color-mix(in srgb, var(--danger) 10%, transparent);
+        border-color: var(--danger);
+        color: var(--danger);
+      }
+      .dbtn.sel-onhold {
+        background: var(--amber-soft);
+        border-color: var(--amber);
+        color: var(--amber-deep);
+      }
+
+      .summary {
+        border: 1px solid var(--danger);
+        border-radius: var(--radius-input);
+        padding: 14px 18px;
+        margin-top: 20px;
+        background: color-mix(in srgb, var(--danger) 8%, transparent);
+      }
+      .summary h2 {
+        font-size: 0.9rem;
+        margin: 0 0 8px;
+        color: var(--danger);
+      }
+      .summary ul {
+        margin: 0;
+        padding-left: 20px;
+        font-size: 0.85rem;
+      }
+      .summary a {
+        color: var(--danger);
+      }
+      .actions {
+        position: sticky;
+        bottom: 0;
+        background: var(--bg);
+        border-top: 1px solid var(--line);
+        padding: 16px 0;
+        margin-top: 28px;
+        display: flex;
+        gap: 12px;
+        align-items: center;
+      }
+      button.primary {
+        font: inherit;
+        font-weight: 600;
+        cursor: pointer;
+        border: none;
+        background: var(--amber);
+        color: #fff;
+        padding: 11px 24px;
+        border-radius: var(--radius-input);
+      }
+      button.primary:hover:not(:disabled) {
+        background: var(--amber-deep);
+      }
+      button.primary:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+      .status {
+        font-size: 0.85rem;
+        color: var(--ink-soft);
+      }
+      .done {
+        border: 1px solid var(--moss);
+        background: var(--moss-soft);
+        border-radius: var(--radius-card);
+        padding: 28px;
+        margin-top: 24px;
+      }
+      .done h2 {
+        margin: 0 0 12px;
+        color: var(--pine);
+        font-size: 1.15rem;
+      }
+      .done dl {
+        display: grid;
+        grid-template-columns: max-content 1fr;
+        gap: 6px 16px;
+        font-size: 0.85rem;
+        margin: 0 0 20px;
+      }
+      .done dt {
+        color: var(--ink-soft);
+      }
+      .done dd {
+        margin: 0;
+      }
+      .done a {
+        color: var(--pine);
+      }
+      .hidden {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="bar">
+      <div class="wrap">
+        <h1>Approval to pursue</h1>
+        <p>Stage 2, Qualification. Records a decision made elsewhere.</p>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <div id="gate" class="status" style="padding: 32px 0">
+        Checking your access...
+      </div>
+
+      <form id="form" class="hidden" novalidate>
+        <div class="context">
+          <strong>This records an approval, it does not request one.</strong>
+          The technical review happens in conversation for now. Capture who
+          decided, when, and on what terms, so the decision is on the record
+          rather than in somebody's memory.
+        </div>
+
+        <div id="summary" class="summary hidden">
+          <h2>Please correct the following</h2>
+          <ul id="summary-list"></ul>
+        </div>
+
+        <fieldset>
+          <legend>Project</legend>
+          <div class="grid">
+            <div class="field">
+              <label for="pcode">P-Code<span class="req">*</span></label>
+              <input
+                type="text"
+                id="pcode"
+                placeholder="PE274119"
+                autocomplete="off"
+              />
+              <div class="msg" id="msg-pcode"></div>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>The decision</legend>
+          <div class="decisions" id="decisions">
+            <button type="button" class="dbtn" data-value="Approved">
+              Approved to pursue
+            </button>
+            <button type="button" class="dbtn" data-value="Declined">
+              Declined
+            </button>
+            <button type="button" class="dbtn" data-value="OnHold">
+              On hold
+            </button>
+          </div>
+          <div class="msg" id="msg-decision"></div>
+
+          <div class="grid" style="margin-top: 18px">
+            <div class="field">
+              <label for="approvedByName"
+                >Who decided<span class="req">*</span></label
+              >
+              <input type="text" id="approvedByName" placeholder="Their name" />
+              <div class="hint">
+                Free text, since they may not be a system user.
+              </div>
+              <div class="msg" id="msg-approvedByName"></div>
+            </div>
+            <div class="field">
+              <label for="approvedByEmail">Their email</label>
+              <input type="email" id="approvedByEmail" placeholder="Optional" />
+            </div>
+            <div class="field">
+              <label for="approvalRole"
+                >In what capacity<span class="req">*</span></label
+              >
+              <select id="approvalRole">
+                <option value="">Select</option>
+                <option value="TechnicalLead">Technical lead</option>
+                <option value="LandUse">Land use team</option>
+                <option value="CSO">CSO</option>
+                <option value="COO">COO</option>
+                <option value="Other">Other</option>
+              </select>
+              <div class="msg" id="msg-approvalRole"></div>
+            </div>
+            <div class="field">
+              <label for="obtainedHow"
+                >How was it obtained<span class="req">*</span></label
+              >
+              <select id="obtainedHow">
+                <option value="">Select</option>
+                <option value="Verbal">Verbally</option>
+                <option value="Email">By email</option>
+                <option value="Meeting">In a meeting</option>
+              </select>
+              <div class="msg" id="msg-obtainedHow"></div>
+            </div>
+            <div class="field">
+              <label for="decisionDate"
+                >Date of the decision<span class="req">*</span></label
+              >
+              <input type="date" id="decisionDate" />
+              <div class="msg" id="msg-decisionDate"></div>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Terms and notes</legend>
+          <div class="grid">
+            <div class="field wide">
+              <label for="conditions">Conditions attached</label>
+              <textarea
+                id="conditions"
+                rows="2"
+                placeholder="Yes, provided we can get the baseline data this season"
+              ></textarea>
+              <div class="hint">
+                A qualified yes is different from an unqualified one, and it is
+                the sort of thing forgotten by the time the quote is written.
+              </div>
+            </div>
+            <div class="field wide">
+              <label for="technicalNotes">Technical notes</label>
+              <textarea
+                id="technicalNotes"
+                rows="2"
+                placeholder="Sensitivity, feasibility, resourcing concerns"
+              ></textarea>
+            </div>
+            <div class="field wide hidden" id="wrap-declineReason">
+              <label for="declineReason"
+                >Why was it declined<span class="req">*</span></label
+              >
+              <textarea id="declineReason" rows="2"></textarea>
+              <div class="hint">
+                This is what the win and loss analysis is built from.
+              </div>
+              <div class="msg" id="msg-declineReason"></div>
+            </div>
+          </div>
+        </fieldset>
+
+        <div class="actions">
+          <button type="submit" class="primary" id="submit-btn">
+            Record the decision
+          </button>
+          <span class="status" id="status"></span>
+        </div>
+      </form>
+
+      <div id="done" class="done hidden">
+        <h2 id="done-title">Decision recorded</h2>
+        <dl>
+          <dt>P-Code</dt>
+          <dd id="d-pcode"></dd>
+          <dt>Decision</dt>
+          <dd id="d-decision"></dd>
+          <dt>Decided by</dt>
+          <dd id="d-by"></dd>
+          <dt>Stage now</dt>
+          <dd id="d-stage"></dd>
+        </dl>
+        <p><a href="/">Back to the pipeline</a></p>
+      </div>
+    </main>
+
+    <script src="/lib/vendor/msal-browser.min.js"></script>
+    <script type="module">
+      import { initAuth, signIn, getAccount } from "/lib/auth.js";
+      import { api } from "/lib/api.js";
+
+      const $ = (id) => document.getElementById(id);
+      let decision = "";
+
+      function selectDecision(value) {
+        decision = value;
+        for (const b of $("decisions").querySelectorAll(".dbtn")) {
+          b.className =
+            "dbtn" +
+            (b.dataset.value === value ? " sel-" + value.toLowerCase() : "");
+        }
+        // A decline needs a reason, so the field appears only when it applies
+        // rather than sitting empty on every approval.
+        $("wrap-declineReason").classList.toggle(
+          "hidden",
+          value !== "Declined",
+        );
+      }
+
+      function clearErrors() {
+        $("summary").classList.add("hidden");
+        $("summary-list").innerHTML = "";
+        for (const el of document.querySelectorAll("[aria-invalid]"))
+          el.removeAttribute("aria-invalid");
+        for (const el of document.querySelectorAll(".msg")) el.textContent = "";
+      }
+
+      function showErrors(errors) {
+        $("summary-list").innerHTML = errors
+          .map((e) => `<li><a href="#${e.field}">${e.message}</a></li>`)
+          .join("");
+        $("summary").classList.remove("hidden");
+        for (const e of errors) {
+          const input = $(e.field);
+          if (input) input.setAttribute("aria-invalid", "true");
+          const msg = $("msg-" + e.field);
+          if (msg) msg.textContent = e.message;
+        }
+        $("summary").scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+
+      function readPayload() {
+        return {
+          pcode: $("pcode").value.trim(),
+          decision,
+          approvedByName: $("approvedByName").value.trim(),
+          approvedByEmail: $("approvedByEmail").value.trim(),
+          approvalRole: $("approvalRole").value,
+          obtainedHow: $("obtainedHow").value,
+          decisionDate: $("decisionDate").value,
+          conditions: $("conditions").value.trim(),
+          technicalNotes: $("technicalNotes").value.trim(),
+          declineReason: $("declineReason").value.trim(),
+        };
+      }
+
+      function validate(p) {
+        const errors = [];
+        if (!p.pcode)
+          errors.push({ field: "pcode", message: "A P-Code is required" });
+        if (!p.decision)
+          errors.push({ field: "decision", message: "Choose a decision" });
+        if (!p.approvedByName) {
+          errors.push({
+            field: "approvedByName",
+            message: "Name the person who decided",
+          });
+        }
+        if (!p.approvalRole) {
+          errors.push({
+            field: "approvalRole",
+            message: "In what capacity did they decide",
+          });
+        }
+        if (!p.obtainedHow) {
+          errors.push({
+            field: "obtainedHow",
+            message: "How was the decision obtained",
+          });
+        }
+        if (!p.decisionDate) {
+          errors.push({
+            field: "decisionDate",
+            message: "The date of the decision is required",
+          });
+        }
+        if (p.decision === "Declined" && !p.declineReason) {
+          errors.push({
+            field: "declineReason",
+            message: "Say why this was declined",
+          });
+        }
+        return errors;
+      }
+
+      async function onSubmit(event) {
+        event.preventDefault();
+        clearErrors();
+        const p = readPayload();
+        const errors = validate(p);
+        if (errors.length) {
+          showErrors(errors);
+          return;
+        }
+
+        const btn = $("submit-btn");
+        btn.disabled = true;
+        $("status").textContent = "Recording...";
+
+        try {
+          const r = await api.post("approval", p);
+          $("form").classList.add("hidden");
+          $("done-title").textContent = r.duplicate
+            ? "A decision was already recorded"
+            : "Decision recorded";
+          $("d-pcode").textContent = r.pcode;
+          $("d-decision").textContent = r.decision;
+          $("d-by").textContent = r.approvedByName || "";
+          $("d-stage").textContent = r.stage || "";
+          $("done").classList.remove("hidden");
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        } catch (err) {
+          btn.disabled = false;
+          $("status").textContent = "";
+          if (Array.isArray(err.errors) && err.errors.length)
+            showErrors(err.errors);
+          else
+            showErrors([
+              {
+                field: "pcode",
+                message: err.message || "The decision could not be recorded",
+              },
+            ]);
+        }
+      }
+
+      async function start() {
+        await initAuth();
+        if (!getAccount()) {
+          $("gate").innerHTML = "You need to sign in. ";
+          const b = document.createElement("button");
+          b.className = "primary";
+          b.textContent = "Sign in";
+          b.onclick = () => signIn();
+          $("gate").appendChild(b);
+          return;
+        }
+        try {
+          const me = await api.get("whoami");
+          $("gate").classList.add("hidden");
+          $("form").classList.remove("hidden");
+          $("status").textContent = `Signed in as ${me.name}, ${me.role}`;
+        } catch (err) {
+          $("gate").textContent =
+            err.message || "Your account has no access to this form.";
+          return;
+        }
+
+        const fromQuery = new URLSearchParams(location.search).get("pcode");
+        if (fromQuery) $("pcode").value = fromQuery;
+
+        $("decisionDate").value = new Date().toISOString().slice(0, 10);
+
+        for (const b of $("decisions").querySelectorAll(".dbtn")) {
+          b.onclick = () => selectDecision(b.dataset.value);
+        }
+        $("form").onsubmit = onSubmit;
+      }
+
+      start();
+    </script>
+  </body>
+</html>

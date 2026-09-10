@@ -1,20 +1,24 @@
 // Derives a project's pipeline stage from the records that exist, and keeps
 // the stored Stage field in step with it.
 //
-// WHY DERIVED RATHER THAN SET. A status somebody has to maintain drifts: it
-// is forgotten on a busy day, or a record is fixed in SharePoint by hand and
+// WHY DERIVED RATHER THAN SET. A status somebody has to maintain drifts: it is
+// forgotten on a busy day, or a record is fixed in SharePoint by hand and
 // nothing updates it. Whether a record exists cannot drift. So the stage is
 // computed from evidence, and the stored field is a cache of that computation.
 // When the two disagree, the computation wins and the clock is reset.
 //
-// The stored field still matters, because the days-in-stage clock needs to
-// know when a stage was entered, and only a record can say that.
+// EIGHT STAGES as of 2 September 2026. This resolves the discrepancy between
+// PG/IMS/BP-002, which mentions an eight stage funnel, and T3-NOTE-001, which
+// specifies six. Proposal Under Preparation and Proposal Under Review were
+// added to reflect what actually happens between approval and despatch.
 
 const { graph, SITE_ID } = require("./graph");
 
 const STAGES = [
   "Lead Identified",
   "Qualification",
+  "Proposal Under Preparation",
+  "Proposal Under Review",
   "Proposal Sent",
   "Negotiation",
   "Won and Onboarded",
@@ -22,91 +26,115 @@ const STAGES = [
 ];
 
 /**
- * Works out which stage the evidence supports.
+ * Which stage the evidence supports. Read downwards: the furthest step with
+ * evidence wins.
  *
- * Read this downwards: the furthest step with evidence wins. Qualification is
- * absent from the evidence because it is handled offline at present, so a
- * project with a proposal jumps from Lead Identified to Proposal Sent.
+ * The two new stages sit either side of the quote ladder. Approval recorded
+ * but no ladder means the proposal is being written; a ladder recorded but not
+ * yet sent means it is being reviewed internally. That boundary is BD01B.
  */
 function deriveStage(evidence) {
   const e = evidence || {};
 
   if (e.closure) return "Delivered and Closed";
   if (e.handover || e.acceptance) return "Won and Onboarded";
-
-  // Final commercials agreed means the negotiating is over.
   if (e.finalCommercials) return "Negotiation";
+  if (e.sentToClient) return "Proposal Sent";
 
-  // A quote has gone out but no final figure is agreed.
-  if (e.proposal) return "Proposal Sent";
+  // The quote exists but has not gone out: it is under internal review.
+  if (e.proposal) return "Proposal Under Review";
+
+  // Approved to pursue, but no quote yet: the proposal is being prepared.
+  if (e.approved) return "Proposal Under Preparation";
+
+  // A review has been asked for but not answered.
+  if (e.qualificationRequested) return "Qualification";
 
   return "Lead Identified";
 }
 
+class StageError extends Error {
+  constructor(code, message) {
+    super(message);
+    this.code = code;
+  }
+}
+
 /**
- * Reconciles the stored Stage with the derived one.
- * Returns what it found and what it did. Writes only when they differ.
+ * Decides what should happen, without writing. Both syncStage and the backfill
+ * dry run call this, so a dry run cannot disagree with the real thing.
+ *
+ * allowBackwards exists for one situation only: a stage has been renamed or
+ * its meaning changed, so a stored value set under the old rule is an artefact
+ * rather than a decision. Never use it in normal operation.
  */
-async function syncStage(project, evidence) {
+function planStage(project, evidence, opts) {
+  const options = opts || {};
   const stored = project.Stage || "Lead Identified";
   const derived = deriveStage(evidence);
 
-  // A project that is Lost or Closed does not move. Those are terminal
-  // states set deliberately, and evidence arriving afterwards must not
-  // resurrect them.
   if (project.Status === "Lost" || project.Status === "Closed") {
     return {
       stored,
       derived: stored,
-      changed: false,
+      change: false,
       reason: "terminal status",
     };
   }
-
   if (stored === derived) {
-    return { stored, derived, changed: false };
+    return { stored, derived, change: false };
   }
-
-  // Never move backwards. If the stored stage is further along than the
-  // evidence supports, something was set deliberately and we leave it,
-  // rather than silently undoing a person's action.
-  if (STAGES.indexOf(derived) < STAGES.indexOf(stored)) {
+  if (
+    STAGES.indexOf(derived) < STAGES.indexOf(stored) &&
+    !options.allowBackwards
+  ) {
     return {
       stored,
       derived,
-      changed: false,
+      change: false,
       reason: "stored stage is further than the evidence; not moved backwards",
     };
+  }
+  return { stored, derived, change: true };
+}
+
+async function syncStage(project, evidence, opts) {
+  const plan = planStage(project, evidence, opts);
+  if (!plan.change) {
+    return { ...plan, changed: false };
   }
 
   const nowIso = new Date().toISOString();
   await graph(
     "PATCH",
     `/sites/${SITE_ID}/lists/ProjectRegister/items/${project.id}/fields`,
-    { Stage: derived, StageEnteredAtIso: nowIso },
+    { Stage: plan.derived, StageEnteredAtIso: nowIso },
   );
-
-  return { stored, derived, changed: true, atIso: nowIso };
+  return { ...plan, changed: true, atIso: nowIso };
 }
 
-/** Gathers the evidence for one project in a single pass. */
 async function gatherEvidence(pcode) {
-  const read = async (list, filter, select) => {
+  const read = async (list, filter) => {
     const q = `?expand=fields&$top=5&$filter=${encodeURIComponent(filter)}`;
     const r = await graph("GET", `/sites/${SITE_ID}/lists/${list}/items${q}`);
     return (r.value || []).map((i) => i.fields);
   };
   const f = `fields/PCode eq '${pcode}'`;
 
-  const [proposals, acceptance, handover, closure] = await Promise.all([
-    read("ProposalRegister", f),
-    read("AcceptanceRegister", f),
-    read("HandoverRegister", f),
-    read("ClosureRegister", f).catch(() => []),
-  ]);
+  const [proposals, approvals, acceptance, handover, closure] =
+    await Promise.all([
+      read("ProposalRegister", f),
+      read("QualificationApprovals", f).catch(() => []),
+      read("AcceptanceRegister", f),
+      read("HandoverRegister", f),
+      read("ClosureRegister", f).catch(() => []),
+    ]);
 
   return {
-    proposal: proposals.some((p) => p.PBL3First || p.PBL10Final),
+    qualificationRequested: approvals.length > 0,
+    approved: approvals.some((a) => a.Decision === "Approved"),
+    proposal: proposals.some((p) => p.PBL3First),
+    sentToClient: proposals.some((p) => p.SentToClientAtIso),
     finalCommercials: proposals.some((p) => p.PBL10Final),
     acceptance: acceptance.length > 0,
     handover: handover.length > 0,
@@ -114,7 +142,6 @@ async function gatherEvidence(pcode) {
   };
 }
 
-/** Convenience: gather and sync in one call. Used after every write. */
 async function refreshStage(project) {
   const evidence = await gatherEvidence(project.PCode);
   return syncStage(project, evidence);
@@ -122,8 +149,10 @@ async function refreshStage(project) {
 
 module.exports = {
   deriveStage,
+  planStage,
   syncStage,
   gatherEvidence,
   refreshStage,
   STAGES,
+  StageError,
 };

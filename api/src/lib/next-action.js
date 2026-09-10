@@ -1,24 +1,28 @@
 // Works out the single next thing due on a project.
 //
 // Derived from the steps that exist, not from the stage. A stage is a coarse
-// label covering several actions: "Won and Onboarded" covers both starting
-// billing and filing the handover, so a lookup keyed on the stage alone will
+// label covering several actions, so a lookup keyed on the stage alone will
 // tell someone to do work they have already finished. The steps know better,
 // because each one reflects whether a record exists.
 //
 // Returns one action, never a list. A work list with three things per project
 // is a list of a hundred things, which nobody reads.
+//
+// EIGHT STEPS as of 2 September 2026, matching the eight stage pipeline.
 
 const ACTIONS = {
-  qualification: {
-    label: "Send for qualification review",
-    href: null,
-    note: "Handled offline at present, so this step is skipped.",
-    skippable: true,
+  approval: {
+    label: "Record the approval to pursue",
+    href: "/approval/new.html",
   },
   proposal: {
     label: "Record the proposal and quote ladder",
     href: "/proposal/new.html",
+  },
+  sent: {
+    label: "Mark the proposal as sent to the client",
+    href: null,
+    note: "Use the button on the project page.",
   },
   commercials: {
     label: "Record the final commercials",
@@ -49,10 +53,20 @@ const ACTIONS = {
  */
 function nextAction(steps, projectStatus) {
   if (projectStatus === "Lost") {
-    return { label: "Lost", href: null, note: "No further action.", terminal: true };
+    return {
+      label: "Lost",
+      href: null,
+      note: "No further action.",
+      terminal: true,
+    };
   }
   if (projectStatus === "Closed") {
-    return { label: "Closed", href: null, note: "No further action.", terminal: true };
+    return {
+      label: "Closed",
+      href: null,
+      note: "No further action.",
+      terminal: true,
+    };
   }
 
   const list = steps || [];

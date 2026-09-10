@@ -1,12 +1,12 @@
 // Builds an accurate work list for many projects.
 //
 // WHY THIS EXISTS. Computing the true next action needs the step evidence,
-// which lives across six registers. Reading six lists per project would be
-// 600 Graph calls for 100 projects, which is slow and will throttle. So we
-// read each register ONCE for everybody and index by P-Code in memory:
-// six calls in total, whatever the project count.
+// which lives across seven registers. Reading seven lists per project would be
+// 700 Graph calls for 100 projects, which is slow and will throttle. So we
+// read each register ONCE for everybody and index by P-Code in memory: seven
+// calls in total, whatever the project count, fired in parallel.
 //
-// The cost is memory rather than time, and a few hundred rows is nothing.
+// EIGHT STEPS as of 2 September 2026, matching the eight stage pipeline.
 
 const { graph, SITE_ID } = require("./graph");
 const { nextAction } = require("./next-action");
@@ -47,18 +47,21 @@ function daysSince(iso) {
 
 const lakh = (paise) => (Number(paise || 0) / 10000000).toFixed(2);
 
-/** Builds the step list for one project from already-indexed records. */
+/** Builds the eight step list for one project from already-indexed records. */
 function stepsFor(project, idx) {
   const proposals = (idx.proposals.get(project.PCode) || [])
     .slice()
     .sort((a, b) => (Number(b.Version) || 0) - (Number(a.Version) || 0));
   const latest = proposals[0] || null;
+  const approval = (idx.approvals.get(project.PCode) || [])[0] || null;
   const acceptance = (idx.acceptance.get(project.PCode) || [])[0] || null;
   const handover = (idx.handover.get(project.PCode) || [])[0] || null;
   const closure = (idx.closure.get(project.PCode) || [])[0] || null;
   const milestones = idx.milestones.get(project.PCode) || [];
 
+  const approved = Boolean(approval && approval.Decision === "Approved");
   const hasLadder = Boolean(latest && latest.PBL3First);
+  const wasSent = Boolean(latest && latest.SentToClientAtIso);
   const hasFinal = Boolean(latest && latest.PBL10Final);
 
   return [
@@ -69,28 +72,46 @@ function stepsFor(project, idx) {
       at: project.CreatedAtIso,
       detail: project.ProjectName || "",
     },
+
     {
-      key: "qualification",
-      label: "Qualification",
-      done: false,
-      detail: "Handled offline at present",
+      key: "approval",
+      label: "Approved to pursue",
+      done: approved,
+      at: approved ? approval.DecisionDateIso : null,
+      detail: approval
+        ? `${approval.Decision} by ${approval.ApprovedByName || "unnamed"}` +
+          `${approval.ObtainedHow ? `, ${approval.ObtainedHow.toLowerCase()}` : ""}`
+        : "",
     },
+
     {
       key: "proposal",
       label: "Proposal and quote ladder",
       done: hasLadder,
       at: hasLadder ? latest.CreatedAtIso : null,
-      detail: hasLadder ? `First quote ${lakh(latest.PBL3First)} lakh` : "",
+      detail: hasLadder
+        ? `Floor ${lakh(latest.PBL2Minimum)}, asking ${lakh(latest.PBL3First)} lakh`
+        : "",
     },
+
+    {
+      key: "sent",
+      label: "Sent to the client",
+      done: wasSent,
+      at: wasSent ? latest.SentToClientAtIso : null,
+      detail: "",
+    },
+
     {
       key: "commercials",
       label: "Final commercials",
       done: hasFinal,
-      at: hasFinal ? latest.CreatedAtIso : null,
+      at: hasFinal ? latest.ModifiedAtIso || latest.CreatedAtIso : null,
       detail: hasFinal
-        ? `Margin ${latest.MarginPct} per cent, ${latest.GateMarginResult}`
+        ? `${lakh(latest.PBL10Final)} lakh at ${latest.MarginPct} per cent, ${latest.GateMarginResult}`
         : "",
     },
+
     {
       key: "billing",
       label: "Billing started",
@@ -100,6 +121,7 @@ function stepsFor(project, idx) {
         ? `${acceptance.Mode}, ${lakh(acceptance.WorkOrderValue)} lakh`
         : "",
     },
+
     {
       key: "handover",
       label: "Handed to delivery",
@@ -109,35 +131,45 @@ function stepsFor(project, idx) {
         ? `${handover.DeliveryPool} pool, ${milestones.length} milestones`
         : "",
     },
+
     {
       key: "closure",
       label: "Closed",
       done: Boolean(closure),
       at: closure ? closure.ClosedAtIso : null,
-      detail: "",
+      detail: closure ? `Settled ${lakh(closure.FNFAmount)} lakh` : "",
     },
   ];
 }
 
 /**
- * The work list. Six reads regardless of project count.
+ * The work list. Seven reads regardless of project count.
  * Ordered by what has waited longest, since that is what needs attention.
  */
 async function workList(options) {
   const opts = options || {};
 
-  const [projects, proposals, acceptance, handover, milestones, closure] =
-    await Promise.all([
-      readAll("ProjectRegister"),
-      readAll("ProposalRegister"),
-      readAll("AcceptanceRegister"),
-      readAll("HandoverRegister"),
-      readAll("BillingMilestones"),
-      readAll("ClosureRegister").catch(() => []),
-    ]);
+  const [
+    projects,
+    proposals,
+    approvals,
+    acceptance,
+    handover,
+    milestones,
+    closure,
+  ] = await Promise.all([
+    readAll("ProjectRegister"),
+    readAll("ProposalRegister"),
+    readAll("QualificationApprovals").catch(() => []),
+    readAll("AcceptanceRegister"),
+    readAll("HandoverRegister"),
+    readAll("BillingMilestones"),
+    readAll("ClosureRegister").catch(() => []),
+  ]);
 
   const idx = {
     proposals: indexBy(proposals, "PCode"),
+    approvals: indexBy(approvals, "PCode"),
     acceptance: indexBy(acceptance, "PCode"),
     handover: indexBy(handover, "PCode"),
     milestones: indexBy(milestones, "PCode"),
@@ -160,6 +192,7 @@ async function workList(options) {
         leadDate: p.LeadDate,
         steps,
         stepsDone: steps.filter((s) => s.done).length,
+        stepCount: steps.length,
         next: nextAction(steps, p.Status),
       };
     });
@@ -167,7 +200,7 @@ async function workList(options) {
   const active = work.filter((w) => w.status === "Active");
 
   return {
-    reads: 6,
+    reads: 7,
     totals: {
       all: work.length,
       active: active.length,

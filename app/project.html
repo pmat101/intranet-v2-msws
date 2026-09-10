@@ -378,8 +378,7 @@
           .replace(/>/g, "&gt;")
           .replace(/"/g, "&quot;");
 
-      const pcode =
-        new URLSearchParams(location.search).get("pcode") || "";
+      const pcode = new URLSearchParams(location.search).get("pcode") || "";
 
       function shortDate(iso) {
         if (!iso) return "";
@@ -417,12 +416,7 @@
       function renderSteps(list) {
         $("steps").innerHTML = list
           .map((step) => {
-            const skipped = step.key === "qualification";
-            const className = step.done
-              ? "done"
-              : skipped
-                ? "skip pending"
-                : "pending";
+            const className = step.done ? "done" : "pending";
 
             return `
               <div class="step ${className}">
@@ -538,9 +532,13 @@
           return;
         }
 
-        const link = next.href
-          ? `<a href="${next.href}?pcode=${encodeURIComponent(data.pcode)}">${esc(next.label)}</a>`
-          : "";
+        // The sent step has no form, because it writes one field. It gets a
+        // button here rather than a page of its own.
+        const link = n.href
+          ? `<a href="${n.href}?pcode=${encodeURIComponent(d.pcode)}">${esc(n.label)}</a>`
+          : n.forStep === "sent"
+            ? `<a href="#" id="btn-sent">Mark as sent to the client</a>`
+            : "";
 
         $("next-wrap").innerHTML = `
           <div class="next">
@@ -565,8 +563,7 @@
         $("h-sub").textContent =
           `${data.stage} for ${
             data.daysInStage === null ? "?" : data.daysInStage
-          } days` +
-          `  ·  ${data.status}  ·  ${data.owner || ""}`;
+          } days` + `  ·  ${data.status}  ·  ${data.owner || ""}`;
 
         renderRibbon(data.stages, data.stageIndex);
         renderSteps(data.steps || []);
@@ -574,6 +571,20 @@
         renderMoney(data.ledger);
         renderFindings(data.ledger);
         renderLedger(data.ledgerRows);
+
+        const sentBtn = document.getElementById("btn-sent");
+        if (sentBtn) {
+          sentBtn.onclick = async (e) => {
+            e.preventDefault();
+            sentBtn.textContent = "Recording...";
+            try {
+              await api.post("proposal/sent", { pcode: d.pcode });
+              location.reload();
+            } catch (err) {
+              sentBtn.textContent = err.message || "That did not work";
+            }
+          };
+        }
 
         $("ids").innerHTML = `
           <dt>Proposal ID</dt>

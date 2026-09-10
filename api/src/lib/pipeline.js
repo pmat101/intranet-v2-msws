@@ -4,47 +4,23 @@
 // This is the SIPOC rule made computable: every step's output is the next
 // step's trigger, so the system can say what is due rather than waiting to
 // be told. Nothing here writes; it reads and reasons.
+//
+// EIGHT STAGES as of 2 September 2026.
 
 const { graph, SITE_ID } = require("./graph");
 const { nextAction } = require("./next-action");
+const { stepsFor } = require("./work-list");
 
 const STAGES = [
   "Lead Identified",
   "Qualification",
+  "Proposal Under Preparation",
+  "Proposal Under Review",
   "Proposal Sent",
   "Negotiation",
   "Won and Onboarded",
   "Delivered and Closed",
 ];
-
-// What is due at each stage, and which form does it.
-const NEXT_ACTION = {
-  "Lead Identified": {
-    label: "Send for qualification review",
-    href: null,
-    note: "Qualification is handled offline at present.",
-  },
-  Qualification: {
-    label: "Record the proposal and quote ladder",
-    href: "/proposal/new.html",
-  },
-  "Proposal Sent": {
-    label: "Record a negotiation round, or the final commercials",
-    href: "/commercials/new.html",
-  },
-  Negotiation: {
-    label: "Record the final commercials",
-    href: "/commercials/new.html",
-  },
-  "Won and Onboarded": {
-    label: "Start billing, then file the handover",
-    href: "/billing/start.html",
-  },
-  "Delivered and Closed": {
-    label: "File closure and the after action review",
-    href: "/closure/new.html",
-  },
-};
 
 async function items(list, filter, top) {
   const q = filter ? `&$filter=${encodeURIComponent(filter)}` : "";
@@ -62,9 +38,24 @@ function daysSince(iso) {
   return Math.floor((Date.now() - then) / 86400000);
 }
 
+/** Turns a flat list into the shape stepsFor expects. */
+function asIndex(rows) {
+  const map = new Map();
+  for (const row of rows) {
+    const k = row.PCode;
+    if (!k) continue;
+    if (!map.has(k)) map.set(k, []);
+    map.get(k).push(row);
+  }
+  return map;
+}
+
 /**
  * Reads everything known about one project.
- * Returns the project, what exists at each step, and the next action.
+ *
+ * The step list is built by the same stepsFor used for the work list, so a
+ * project cannot show one thing on the board and another on its own page.
+ * That duplication caused a real inconsistency before it was unified.
  */
 async function projectView(pcode) {
   const [project] = await items(
@@ -73,84 +64,36 @@ async function projectView(pcode) {
   );
   if (!project) return null;
 
-  const [proposals, acceptance, handover, milestones, ledger] =
-    await Promise.all([
-      items("ProposalRegister", `fields/PCode eq '${pcode}'`),
-      items("AcceptanceRegister", `fields/PCode eq '${pcode}'`),
-      items("HandoverRegister", `fields/PCode eq '${pcode}'`),
-      items("BillingMilestones", `fields/PCode eq '${pcode}'`),
-      items("ExpenseLedger", `fields/PCode eq '${pcode}'`),
-    ]);
+  const f = `fields/PCode eq '${pcode}'`;
+  const [
+    proposals,
+    approvals,
+    acceptance,
+    handover,
+    milestones,
+    closure,
+    ledger,
+  ] = await Promise.all([
+    items("ProposalRegister", f),
+    items("QualificationApprovals", f).catch(() => []),
+    items("AcceptanceRegister", f),
+    items("HandoverRegister", f),
+    items("BillingMilestones", f),
+    items("ClosureRegister", f).catch(() => []),
+    items("ExpenseLedger", f),
+  ]);
 
-  // Steps are derived from what exists, not from a status somebody set.
-  // A record either exists or it does not, and that cannot drift.
-  const latestProposal =
-    proposals
-      .slice()
-      .sort((a, b) => (Number(b.Version) || 0) - (Number(a.Version) || 0))[0] ||
-    null;
-
-  const steps = [
-    {
-      key: "lead",
-      label: "Lead captured",
-      done: true,
-      at: project.CreatedAtIso,
-      detail: project.ProjectName || "",
-    },
-    {
-      key: "qualification",
-      label: "Qualification",
-      done: false,
-      detail: "Handled offline at present",
-    },
-    {
-      key: "proposal",
-      label: "Proposal and quote ladder",
-      done: Boolean(latestProposal && latestProposal.PBL3First),
-      at:
-        latestProposal && latestProposal.PBL3First
-          ? latestProposal.CreatedAtIso
-          : null,
-
-      detail:
-        latestProposal && latestProposal.PBL3First
-          ? `First quote ${(Number(latestProposal.PBL3First) / 10000000).toFixed(2)} lakh`
-          : "",
-    },
-    {
-      key: "commercials",
-      label: "Final commercials",
-      done: Boolean(latestProposal && latestProposal.PBL10Final),
-      at: latestProposal ? latestProposal.CreatedAtIso : null,
-      detail:
-        latestProposal && latestProposal.MarginPct !== undefined
-          ? `Margin ${latestProposal.MarginPct} per cent, ${latestProposal.GateMarginResult}`
-          : "",
-    },
-    {
-      key: "billing",
-      label: "Billing started",
-      done: acceptance.length > 0,
-      at: acceptance[0] ? acceptance[0].CreatedAtIso : null,
-      detail: acceptance[0]
-        ? `${acceptance[0].Mode}, ${(Number(acceptance[0].WorkOrderValue) / 10000000).toFixed(2)} lakh`
-        : "",
-    },
-    {
-      key: "handover",
-      label: "Handed to delivery",
-      done: handover.length > 0,
-      at: handover[0] ? handover[0].HandoverAtIso : null,
-      detail: handover[0]
-        ? `${handover[0].DeliveryPool} pool, ${milestones.length} milestones`
-        : "",
-    },
-    { key: "closure", label: "Closed", done: false, detail: "" },
-  ];
+  const steps = stepsFor(project, {
+    proposals: asIndex(proposals),
+    approvals: asIndex(approvals),
+    acceptance: asIndex(acceptance),
+    handover: asIndex(handover),
+    milestones: asIndex(milestones),
+    closure: asIndex(closure),
+  });
 
   const stage = project.Stage || "Lead Identified";
-  const next = nextAction(steps, project.Status);
+
   return {
     pcode: project.PCode,
     proposalId: project.ProposalID,
@@ -170,14 +113,14 @@ async function projectView(pcode) {
       milestones: milestones.length,
       ledgerRows: ledger.length,
     },
-    next,
+    next: nextAction(steps, project.Status),
   };
 }
 
 /**
- * A list of projects for the dashboard, with just enough to decide what
- * needs attention. Deliberately one read of one list: the board must stay
- * fast as the register grows.
+ * A list of projects for the board, with just enough to decide what needs
+ * attention. Deliberately one read of one list: the board must stay fast as
+ * the register grows, and it does not need step detail.
  */
 async function pipelineBoard(options) {
   const opts = options || {};
@@ -217,4 +160,4 @@ async function pipelineBoard(options) {
   };
 }
 
-module.exports = { projectView, pipelineBoard, STAGES, NEXT_ACTION };
+module.exports = { projectView, pipelineBoard, STAGES };
