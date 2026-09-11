@@ -16,6 +16,7 @@ const path = require("path");
 // Load settings BEFORE requiring graph.js, which reads process.env on load.
 const settingsPath = path.join(__dirname, "..", "api", "local.settings.json");
 const settings = JSON.parse(fs.readFileSync(settingsPath, "utf8"));
+
 for (const [key, value] of Object.entries(settings.Values || {})) {
   process.env[key] = value;
 }
@@ -24,6 +25,19 @@ const { graph, SITE_ID } = require("../api/src/lib/graph");
 const { lists } = require("./schema");
 
 const dryRun = process.argv.includes("--dry-run");
+
+const sequenceSeeds = [
+  {
+    SequenceKey: "closure_serial",
+    NextValue: 1,
+    Notes: "ClosureRegister ClosureID counter",
+  },
+  {
+    SequenceKey: "lesson_serial",
+    NextValue: 1,
+    Notes: "LearningRegister LessonID counter",
+  },
+];
 
 function toColumn(col) {
   const d = { name: col.name };
@@ -49,41 +63,114 @@ function toColumn(col) {
       d.boolean = {};
       break;
     case "choice":
-      d.choice = { choices: col.choices, allowTextEntry: false };
+      d.choice = {
+        choices: col.choices,
+        allowTextEntry: false,
+      };
       break;
     default:
       throw new Error(`Unknown column type "${col.type}" on ${col.name}`);
   }
+
   return d;
 }
 
 function assertNoDuplicates() {
   const seen = new Set();
+
   for (const spec of lists) {
     if (seen.has(spec.name)) {
       throw new Error(
         `schema.js defines "${spec.name}" more than once. This usually means a ` +
-        `patch was applied twice. Fix the schema before provisioning.`,
+          `patch was applied twice. Fix the schema before provisioning.`,
       );
     }
+
     seen.add(spec.name);
   }
 }
 
+async function ensureSequences(listId) {
+  const result = await graph(
+    "GET",
+    `/sites/${SITE_ID}/lists/${listId}/items?$expand=fields($select=SequenceKey,NextValue,Notes)`,
+  );
+
+  const existing = new Map();
+
+  for (const item of result.value || []) {
+    const key = item.fields?.SequenceKey;
+    if (!key) continue;
+
+    if (existing.has(key)) {
+      throw new Error(
+        `Sequences contains duplicate rows for "${key}". Keep exactly one row per SequenceKey.`,
+      );
+    }
+
+    existing.set(key, item);
+  }
+
+  let seeded = 0;
+
+  for (const seed of sequenceSeeds) {
+    if (existing.has(seed.SequenceKey)) {
+      console.log(`  sequence ok   ${seed.SequenceKey}`);
+      continue;
+    }
+
+    if (dryRun) {
+      console.log(
+        `  would seed    ${seed.SequenceKey} = ${seed.NextValue}`,
+      );
+      continue;
+    }
+
+    await graph(
+      "POST",
+      `/sites/${SITE_ID}/lists/${listId}/items`,
+      {
+        fields: {
+          Title: seed.SequenceKey,
+          SequenceKey: seed.SequenceKey,
+          NextValue: seed.NextValue,
+          Notes: seed.Notes,
+        },
+      },
+    );
+
+    console.log(
+      `  seeded        ${seed.SequenceKey} = ${seed.NextValue}`,
+    );
+
+    seeded++;
+  }
+
+  return seeded;
+}
+
 async function main() {
   assertNoDuplicates();
+
   console.log(`Site: ${SITE_ID}`);
-  if (dryRun) console.log("DRY RUN, nothing will be written.\n");
+
+  if (dryRun) {
+    console.log("DRY RUN, nothing will be written.\n");
+  }
 
   const existing = await graph(
     "GET",
     `/sites/${SITE_ID}/lists?$select=displayName,id`,
   );
-  const byName = new Map(existing.value.map((l) => [l.displayName, l.id]));
 
-  let created = 0,
-    added = 0,
-    unchanged = 0;
+  const byName = new Map(
+    existing.value.map((l) => [l.displayName, l.id]),
+  );
+
+  let created = 0;
+  let added = 0;
+  let unchanged = 0;
+  let seeded = 0;
 
   for (const spec of lists) {
     if (!byName.has(spec.name)) {
@@ -93,53 +180,81 @@ async function main() {
         );
         continue;
       }
+
       const body = {
         displayName: spec.name,
         description: spec.description || "",
         columns: spec.columns.map(toColumn),
         list: { template: "genericList" },
       };
-      const result = await graph("POST", `/sites/${SITE_ID}/lists`, body);
+
+      const result = await graph(
+        "POST",
+        `/sites/${SITE_ID}/lists`,
+        body,
+      );
+
       console.log(
         `  created       ${spec.name}  (${spec.columns.length} columns)`,
       );
+
       byName.set(spec.name, result.id);
       created++;
+
+      if (spec.name === "Sequences") {
+        seeded += await ensureSequences(result.id);
+      }
+
       continue;
     }
 
-    // The list exists. Reconcile its columns.
     const listId = byName.get(spec.name);
+
     const cols = await graph(
       "GET",
       `/sites/${SITE_ID}/lists/${listId}/columns?$select=name,displayName`,
     );
-    const have = new Set(cols.value.flatMap((c) => [c.name, c.displayName]));
-    const missing = spec.columns.filter((c) => !have.has(c.name));
+
+    const have = new Set(
+      cols.value.flatMap((c) => [c.name, c.displayName]),
+    );
+
+    const missing = spec.columns.filter(
+      (c) => !have.has(c.name),
+    );
 
     if (missing.length === 0) {
       console.log(`  unchanged     ${spec.name}`);
       unchanged++;
-      continue;
+    } else {
+      for (const col of missing) {
+        if (dryRun) {
+          console.log(`  would add     ${spec.name}.${col.name}`);
+          continue;
+        }
+
+        await graph(
+          "POST",
+          `/sites/${SITE_ID}/lists/${listId}/columns`,
+          toColumn(col),
+        );
+
+        console.log(
+          `  added column  ${spec.name}.${col.name}`,
+        );
+
+        added++;
+      }
     }
 
-    for (const col of missing) {
-      if (dryRun) {
-        console.log(`  would add     ${spec.name}.${col.name}`);
-        continue;
-      }
-      await graph(
-        "POST",
-        `/sites/${SITE_ID}/lists/${listId}/columns`,
-        toColumn(col),
-      );
-      console.log(`  added column  ${spec.name}.${col.name}`);
-      added++;
+    if (spec.name === "Sequences") {
+      seeded += await ensureSequences(listId);
     }
   }
 
   console.log(
-    `\nDone. ${created} list(s) created, ${added} column(s) added, ${unchanged} unchanged.`,
+    `\nDone. ${created} list(s) created, ${added} column(s) added, ` +
+      `${unchanged} unchanged, ${seeded} sequence row(s) seeded.`,
   );
 }
 

@@ -310,10 +310,12 @@
       .hidden {
         display: none;
       }
+
       .danger-zone {
         margin-top: 16px;
         text-align: right;
       }
+
       .danger-zone button {
         font: inherit;
         font-size: 0.78rem;
@@ -324,6 +326,7 @@
         padding: 7px 14px;
         border-radius: var(--radius-input);
       }
+
       .danger-zone button:hover {
         border-color: var(--danger);
         color: var(--danger);
@@ -339,6 +342,7 @@
         padding: 24px;
         z-index: 50;
       }
+
       .modal {
         background: var(--card);
         border-radius: var(--radius-card);
@@ -347,16 +351,19 @@
         width: 100%;
         border: 1px solid var(--line);
       }
+
       .modal h2 {
         margin: 0 0 6px;
         font-size: 1.05rem;
         color: var(--danger);
       }
+
       .modal .lead {
         font-size: 0.84rem;
         color: var(--ink-soft);
         margin: 0 0 18px;
       }
+
       .modal label {
         display: block;
         font-size: 0.75rem;
@@ -364,9 +371,11 @@
         color: var(--ink-soft);
         margin: 14px 0 6px;
       }
+
       .modal label .req {
         color: var(--amber);
       }
+
       .modal select,
       .modal input,
       .modal textarea {
@@ -379,12 +388,14 @@
         background: var(--bg);
         color: var(--ink);
       }
+
       .modal .row {
         display: flex;
         gap: 10px;
         justify-content: flex-end;
         margin-top: 22px;
       }
+
       .modal .cancel {
         font: inherit;
         font-size: 0.85rem;
@@ -395,6 +406,7 @@
         padding: 10px 18px;
         border-radius: var(--radius-input);
       }
+
       .modal .confirm {
         font: inherit;
         font-size: 0.85rem;
@@ -406,12 +418,14 @@
         padding: 10px 18px;
         border-radius: var(--radius-input);
       }
+
       .modal .err {
         font-size: 0.78rem;
         color: var(--danger);
         min-height: 1em;
         margin-top: 10px;
       }
+
       .doc {
         display: grid;
         grid-template-columns: 1fr auto;
@@ -420,22 +434,27 @@
         border-bottom: 1px solid var(--line);
         align-items: center;
       }
+
       .doc:last-of-type {
         border-bottom: none;
       }
+
       .doc a {
         font-size: 0.84rem;
         color: var(--pine);
         text-decoration: none;
       }
+
       .doc a:hover {
         text-decoration: underline;
       }
+
       .doc .dmeta {
         font-size: 0.72rem;
         color: var(--ink-soft);
         margin-top: 2px;
       }
+
       .doc .dtype {
         font-size: 0.66rem;
         font-weight: 600;
@@ -449,12 +468,14 @@
         margin-top: 14px;
         padding-top: 14px;
       }
+
       .upload .row {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 10px;
         margin-bottom: 10px;
       }
+
       .upload select,
       .upload input[type="text"] {
         font: inherit;
@@ -466,12 +487,14 @@
         background: var(--bg);
         color: var(--ink);
       }
+
       .upload input[type="file"] {
         font: inherit;
         font-size: 0.8rem;
         width: 100%;
         color: var(--ink-soft);
       }
+
       .upload .go {
         font: inherit;
         font-size: 0.82rem;
@@ -484,15 +507,18 @@
         border-radius: var(--radius-input);
         margin-top: 10px;
       }
+
       .upload .go:disabled {
         opacity: 0.45;
         cursor: not-allowed;
       }
+
       .upload .note {
         font-size: 0.72rem;
         color: var(--ink-soft);
         margin-top: 8px;
       }
+
       .upload .err {
         font-size: 0.78rem;
         color: var(--danger);
@@ -548,6 +574,7 @@
               <h2>Identity</h2>
               <dl class="idblock" id="ids"></dl>
             </div>
+
             <div class="panel">
               <h2>Documents</h2>
               <div id="documents"></div>
@@ -574,7 +601,8 @@
           .replace(/>/g, "&gt;")
           .replace(/"/g, "&quot;");
 
-      const pcode = new URLSearchParams(location.search).get("pcode") || "";
+      const pcode =
+        new URLSearchParams(location.search).get("pcode") || "";
 
       function shortDate(iso) {
         if (!iso) return "";
@@ -647,7 +675,9 @@
         }
 
         const row = (label, amount, big = false) =>
-          `<dt>${label}</dt><dd${big ? ' class="big"' : ""}>${formatRupees(amount)}</dd>`;
+          `<dt>${label}</dt><dd${
+            big ? ' class="big"' : ""
+          }>${formatRupees(amount)}</dd>`;
 
         $("money").innerHTML =
           row("Work order", ledger.committed, true) +
@@ -722,36 +752,46 @@
 
       function renderNextAction(d) {
         const n = d.next;
+
         if (!n) {
           $("next-wrap").innerHTML = "";
           return;
         }
-        // The sent step has no form, because it writes one field. It gets a
-        // button here rather than a page of its own.
+
         const link = n.href
-          ? `<a href="${n.href}?pcode=${encodeURIComponent(d.pcode)}">${esc(n.label)}</a>`
+          ? `<a href="${n.href}?pcode=${encodeURIComponent(
+              d.pcode,
+            )}">${esc(n.label)}</a>`
           : n.forStep === "sent"
             ? `<a href="#" id="btn-sent">Mark as sent to the client</a>`
             : "";
-        $("next-wrap").innerHTML = `
-        <div class="next">
-          <h2>Next</h2>
-          <p>${esc(n.label)}${n.note ? ". " + esc(n.note) : ""}</p>
-          ${link}
-        </div>`;
 
-        // Wired here rather than in load(), because the element only exists
-        // once the markup above has been written.
+        $("next-wrap").innerHTML = `
+          <div class="next">
+            <h2>Next</h2>
+            <p>${esc(n.label)}${
+              n.note ? ". " + esc(n.note) : ""
+            }</p>
+            ${link}
+          </div>
+        `;
+
         const btn = document.getElementById("btn-sent");
+
         if (btn) {
           btn.onclick = async (e) => {
             e.preventDefault();
             btn.textContent = "Recording...";
+
             try {
-              await api.post("proposal/sent", { pcode: d.pcode });
+              await api.post("proposal/sent", {
+                pcode: d.pcode,
+              });
+
               location.reload();
             } catch (err) {
-              btn.textContent = err.message || "That did not work";
+              btn.textContent =
+                err.message || "That did not work";
             }
           };
         }
@@ -768,118 +808,188 @@
         ["Other", "Something else"],
       ];
 
-      /**
-       * The Lost action. Deliberately quiet in appearance and behind a
-       * confirmation, because it is terminal: a lost project leaves the working
-       * list and does not come back. But it is also the answer to the question in
-       * the Tier 3 note, why a thousand leads went nowhere, so a category and a
-       * sentence are both required.
-       */
       function renderDangerZone(d) {
         const zone = $("danger-zone");
+
         if (d.status !== "Active") {
           zone.innerHTML = "";
           return;
         }
-        zone.innerHTML = `<button type="button" id="btn-lost">Mark this project as lost</button>`;
-        document.getElementById("btn-lost").onclick = () => openLostModal(d);
+
+        zone.innerHTML =
+          `<button type="button" id="btn-lost">Mark this project as lost</button>`;
+
+        document.getElementById("btn-lost").onclick = () =>
+          openLostModal(d);
       }
 
       function openLostModal(d) {
         const back = document.createElement("div");
+
         back.className = "modal-back";
+
         back.innerHTML = `
-        <div class="modal" role="dialog" aria-modal="true">
-          <h2>Mark ${esc(d.pcode)} as lost</h2>
-          <p class="lead">This is final. The project leaves the working list.
-             It will be recorded as lost at <strong>${esc(d.stage)}</strong>,
-             which is how we learn where in the funnel we lose work.</p>
+          <div class="modal" role="dialog" aria-modal="true">
+            <h2>Mark ${esc(d.pcode)} as lost</h2>
 
-          <label for="m-cat">Why was it lost<span class="req">*</span></label>
-          <select id="m-cat">
-            <option value="">Select</option>
-            ${LOSS_REASONS.map(([v, l]) => `<option value="${v}">${l}</option>`).join("")}
-          </select>
+            <p class="lead">
+              This is final. The project leaves the working list.
+              It will be recorded as lost at
+              <strong>${esc(d.stage)}</strong>,
+              which is how we learn where in the funnel we lose work.
+            </p>
 
-          <div id="m-comp-wrap" style="display:none">
-            <label for="m-comp">Which competitor<span class="req">*</span></label>
-            <input type="text" id="m-comp">
+            <label for="m-cat">
+              Why was it lost<span class="req">*</span>
+            </label>
+
+            <select id="m-cat">
+              <option value="">Select</option>
+              ${LOSS_REASONS.map(
+                ([v, l]) =>
+                  `<option value="${v}">${l}</option>`,
+              ).join("")}
+            </select>
+
+            <div id="m-comp-wrap" style="display:none">
+              <label for="m-comp">
+                Which competitor<span class="req">*</span>
+              </label>
+
+              <input type="text" id="m-comp">
+            </div>
+
+            <label for="m-reason">
+              What happened<span class="req">*</span>
+            </label>
+
+            <textarea
+              id="m-reason"
+              rows="3"
+              placeholder="One or two sentences. This is what the win and loss analysis is built from."
+            ></textarea>
+
+            <label for="m-date">Date it was lost</label>
+
+            <input
+              type="date"
+              id="m-date"
+              value="${new Date().toISOString().slice(0, 10)}"
+            >
+
+            <label for="m-cost">
+              Cost incurred so far, in lakh
+            </label>
+
+            <input
+              type="text"
+              id="m-cost"
+              inputmode="decimal"
+              placeholder="0"
+            >
+
+            <div class="err" id="m-err"></div>
+
+            <div class="row">
+              <button
+                type="button"
+                class="cancel"
+                id="m-cancel"
+              >
+                Keep it active
+              </button>
+
+              <button
+                type="button"
+                class="confirm"
+                id="m-confirm"
+              >
+                Mark as lost
+              </button>
+            </div>
           </div>
+        `;
 
-          <label for="m-reason">What happened<span class="req">*</span></label>
-          <textarea id="m-reason" rows="3"
-            placeholder="One or two sentences. This is what the win and loss analysis is built from."></textarea>
-
-          <label for="m-date">Date it was lost</label>
-          <input type="date" id="m-date" value="${new Date().toISOString().slice(0, 10)}">
-
-          <label for="m-cost">Cost incurred so far, in lakh</label>
-          <input type="text" id="m-cost" inputmode="decimal" placeholder="0">
-
-          <div class="err" id="m-err"></div>
-          <div class="row">
-            <button type="button" class="cancel" id="m-cancel">Keep it active</button>
-            <button type="button" class="confirm" id="m-confirm">Mark as lost</button>
-          </div>
-        </div>`;
         document.body.appendChild(back);
 
         const close = () => back.remove();
+
         document.getElementById("m-cancel").onclick = close;
+
         back.onclick = (e) => {
           if (e.target === back) close();
         };
 
-        // The competitor name only matters for one reason, so it appears only
-        // then rather than sitting empty on every other loss.
         document.getElementById("m-cat").onchange = (e) => {
           document.getElementById("m-comp-wrap").style.display =
-            e.target.value === "LostToCompetitor" ? "block" : "none";
+            e.target.value === "LostToCompetitor"
+              ? "block"
+              : "none";
         };
 
-        document.getElementById("m-confirm").onclick = async () => {
-          const err = document.getElementById("m-err");
-          const cat = document.getElementById("m-cat").value;
-          const reason = document.getElementById("m-reason").value.trim();
-          const comp = document.getElementById("m-comp").value.trim();
+        document.getElementById("m-confirm").onclick =
+          async () => {
+            const err = document.getElementById("m-err");
+            const cat =
+              document.getElementById("m-cat").value;
+            const reason =
+              document.getElementById("m-reason").value.trim();
+            const comp =
+              document.getElementById("m-comp").value.trim();
 
-          if (!cat) {
-            err.textContent = "Choose why it was lost.";
-            return;
-          }
-          if (!reason) {
-            err.textContent = "Say in a sentence what happened.";
-            return;
-          }
-          if (cat === "LostToCompetitor" && !comp) {
-            err.textContent = "Name the competitor.";
-            return;
-          }
+            if (!cat) {
+              err.textContent = "Choose why it was lost.";
+              return;
+            }
 
-          const lakhText = document.getElementById("m-cost").value.trim();
-          const costPaise = lakhText
-            ? Math.round(Number(lakhText.replace(/,/g, "")) * 10000000)
-            : 0;
+            if (!reason) {
+              err.textContent =
+                "Say in a sentence what happened.";
+              return;
+            }
 
-          const btn = document.getElementById("m-confirm");
-          btn.disabled = true;
-          btn.textContent = "Recording...";
-          try {
-            await api.post("lost", {
-              pcode: d.pcode,
-              reasonCategory: cat,
-              reason,
-              competitorName: comp,
-              lostDate: document.getElementById("m-date").value,
-              costIncurred: Number.isFinite(costPaise) ? costPaise : 0,
-            });
-            location.reload();
-          } catch (e) {
-            btn.disabled = false;
-            btn.textContent = "Mark as lost";
-            err.textContent = e.message || "That did not work.";
-          }
-        };
+            if (cat === "LostToCompetitor" && !comp) {
+              err.textContent = "Name the competitor.";
+              return;
+            }
+
+            const lakhText =
+              document.getElementById("m-cost").value.trim();
+
+            const costPaise = lakhText
+              ? Math.round(
+                  Number(lakhText.replace(/,/g, "")) *
+                    10000000,
+                )
+              : 0;
+
+            const btn =
+              document.getElementById("m-confirm");
+
+            btn.disabled = true;
+            btn.textContent = "Recording...";
+
+            try {
+              await api.post("lost", {
+                pcode: d.pcode,
+                reasonCategory: cat,
+                reason,
+                competitorName: comp,
+                lostDate:
+                  document.getElementById("m-date").value,
+                costIncurred: Number.isFinite(costPaise)
+                  ? costPaise
+                  : 0,
+              });
+
+              location.reload();
+            } catch (e) {
+              btn.disabled = false;
+              btn.textContent = "Mark as lost";
+              err.textContent =
+                e.message || "That did not work.";
+            }
+          };
       }
 
       const DOC_TYPES = [
@@ -893,8 +1003,12 @@
 
       async function renderDocuments(pcode) {
         let d;
+
         try {
-          d = await api.get("documents?pcode=" + encodeURIComponent(pcode));
+          d = await api.get(
+            "documents?pcode=" +
+              encodeURIComponent(pcode),
+          );
         } catch (err) {
           $("documents").innerHTML =
             `<div class="empty">Documents could not be loaded.</div>`;
@@ -905,69 +1019,130 @@
           ? d.rows
               .map(
                 (r) => `
-            <div class="doc">
-              <div>
-                <div class="dtype">${esc(r.documentType)}</div>
-                <a href="${esc(r.fileUrl)}" target="_blank" rel="noopener">
-                  ${esc(r.label || r.fileName)}</a>
-                <div class="dmeta">${esc(r.uploadedBy)} &middot; ${shortDate(r.uploadedAt)}
-                  ${r.sizeKb ? " &middot; " + r.sizeKb + " KB" : ""}</div>
-              </div>
-            </div>`,
+                  <div class="doc">
+                    <div>
+                      <div class="dtype">
+                        ${esc(r.documentType)}
+                      </div>
+
+                      <a
+                        href="${esc(r.fileUrl)}"
+                        target="_blank"
+                        rel="noopener"
+                      >
+                        ${esc(r.label || r.fileName)}
+                      </a>
+
+                      <div class="dmeta">
+                        ${esc(r.uploadedBy)}
+                        &middot;
+                        ${shortDate(r.uploadedAt)}
+                        ${
+                          r.sizeKb
+                            ? " &middot; " +
+                              r.sizeKb +
+                              " KB"
+                            : ""
+                        }
+                      </div>
+                    </div>
+                  </div>
+                `,
               )
               .join("")
           : `<div class="empty" style="padding:20px">Nothing uploaded yet.</div>`;
       }
 
-      /**
-       * The upload posts raw bytes rather than JSON, because a PDF is binary and
-       * base64 inside JSON would inflate it by a third. Metadata therefore goes
-       * in the query string. This is the only call in the app shaped this way.
-       */
       function renderUpload(pcode) {
         $("upload-box").innerHTML = `
-        <div class="row">
-          <select id="u-type">
-            ${DOC_TYPES.map(([v, l]) => `<option value="${v}">${l}</option>`).join("")}
-          </select>
-          <input type="text" id="u-label" placeholder="Label, for instance Round 2">
-        </div>
-        <input type="file" id="u-file" accept=".pdf,.png,.jpg,.jpeg">
-        <button type="button" class="go" id="u-go">Upload</button>
-        <div class="note">PDF, PNG or JPEG, up to 4 MB.</div>
-        <div class="err" id="u-err"></div>`;
+          <div class="row">
+            <select id="u-type">
+              ${DOC_TYPES.map(
+                ([v, l]) =>
+                  `<option value="${v}">${l}</option>`,
+              ).join("")}
+            </select>
+
+            <input
+              type="text"
+              id="u-label"
+              placeholder="Label, for instance Round 2"
+            >
+          </div>
+
+          <input
+            type="file"
+            id="u-file"
+            accept=".pdf,.png,.jpg,.jpeg"
+          >
+
+          <button
+            type="button"
+            class="go"
+            id="u-go"
+          >
+            Upload
+          </button>
+
+          <div class="note">
+            PDF, PNG or JPEG, up to 4 MB.
+          </div>
+
+          <div class="err" id="u-err"></div>
+        `;
 
         const go = document.getElementById("u-go");
+
         go.onclick = async () => {
           const err = document.getElementById("u-err");
           const input = document.getElementById("u-file");
           const file = input.files && input.files[0];
+
           err.textContent = "";
 
           if (!file) {
             err.textContent = "Choose a file first.";
             return;
           }
+
           if (file.size > 4 * 1024 * 1024) {
-            err.textContent = `That file is ${(file.size / 1048576).toFixed(1)} MB. The limit is 4 MB.`;
+            err.textContent =
+              `That file is ${(file.size / 1048576).toFixed(
+                1,
+              )} MB. The limit is 4 MB.`;
             return;
           }
 
           go.disabled = true;
           go.textContent = "Uploading...";
+
           try {
             const params = new URLSearchParams({
               pcode,
-              type: document.getElementById("u-type").value,
-              label: document.getElementById("u-label").value.trim(),
+              type:
+                document.getElementById("u-type").value,
+              label:
+                document
+                  .getElementById("u-label")
+                  .value.trim(),
               filename: file.name,
             });
-            await api.postBinary("documents/upload?" + params.toString(), file);
+
+            await api.postBinary(
+              "documents/upload?" +
+                params.toString(),
+              file,
+            );
+
             await renderDocuments(pcode);
+
             input.value = "";
-            document.getElementById("u-label").value = "";
+
+            document.getElementById("u-label").value =
+              "";
           } catch (e) {
-            err.textContent = e.message || "That did not upload.";
+            err.textContent =
+              e.message || "That did not upload.";
           } finally {
             go.disabled = false;
             go.textContent = "Upload";
@@ -977,19 +1152,46 @@
 
       async function loadProject() {
         const data = await api.get(
-          "pipeline/project?pcode=" + encodeURIComponent(pcode),
+          "pipeline/project?pcode=" +
+            encodeURIComponent(pcode),
         );
 
         $("h-pcode").textContent = data.pcode;
-        $("h-name").textContent = data.projectName || "unnamed";
+        $("h-name").textContent =
+          data.projectName || "unnamed";
+
+        /*
+         * Closed projects are terminal. If the backend still has an older
+         * stored stage such as "Negotiation", the UI should still show the
+         * actual terminal stage: "Delivered and Closed".
+         */
+        const currentStage =
+          data.status === "Closed"
+            ? "Delivered and Closed"
+            : data.stage;
+
+        const currentStageIndex =
+          data.status === "Closed"
+            ? data.stages.indexOf("Delivered and Closed")
+            : data.stageIndex;
 
         $("h-sub").textContent =
-          `${data.stage} for ${
-            data.daysInStage === null ? "?" : data.daysInStage
-          } days` + `  ·  ${data.status}  ·  ${data.owner || ""}`;
+          `${currentStage} for ${
+            data.daysInStage === null
+              ? "?"
+              : data.daysInStage
+          } days` +
+          `  ·  ${data.status}  ·  ${
+            data.owner || ""
+          }`;
 
-        renderRibbon(data.stages, data.stageIndex);
+        renderRibbon(
+          data.stages,
+          currentStageIndex,
+        );
+
         renderSteps(data.steps || []);
+
         renderNextAction(data);
         renderDangerZone(data);
         renderMoney(data.ledger);
@@ -1032,9 +1234,12 @@
         await initAuth();
 
         if (!getAccount()) {
-          $("loading").innerHTML = "You need to sign in. ";
+          $("loading").innerHTML =
+            "You need to sign in. ";
 
-          const button = document.createElement("button");
+          const button =
+            document.createElement("button");
+
           button.textContent = "Sign in";
           button.onclick = () => signIn();
 
@@ -1046,7 +1251,8 @@
           await loadProject();
         } catch (error) {
           $("loading").textContent =
-            error.message || "The project could not be loaded.";
+            error.message ||
+            "The project could not be loaded.";
         }
       }
 
