@@ -310,6 +310,108 @@
       .hidden {
         display: none;
       }
+      .danger-zone {
+        margin-top: 16px;
+        text-align: right;
+      }
+      .danger-zone button {
+        font: inherit;
+        font-size: 0.78rem;
+        cursor: pointer;
+        background: transparent;
+        border: 1px solid var(--line);
+        color: var(--ink-soft);
+        padding: 7px 14px;
+        border-radius: var(--radius-input);
+      }
+      .danger-zone button:hover {
+        border-color: var(--danger);
+        color: var(--danger);
+      }
+
+      .modal-back {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.55);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        z-index: 50;
+      }
+      .modal {
+        background: var(--card);
+        border-radius: var(--radius-card);
+        padding: 26px 28px;
+        max-width: 520px;
+        width: 100%;
+        border: 1px solid var(--line);
+      }
+      .modal h2 {
+        margin: 0 0 6px;
+        font-size: 1.05rem;
+        color: var(--danger);
+      }
+      .modal .lead {
+        font-size: 0.84rem;
+        color: var(--ink-soft);
+        margin: 0 0 18px;
+      }
+      .modal label {
+        display: block;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--ink-soft);
+        margin: 14px 0 6px;
+      }
+      .modal label .req {
+        color: var(--amber);
+      }
+      .modal select,
+      .modal input,
+      .modal textarea {
+        font: inherit;
+        font-size: 0.88rem;
+        width: 100%;
+        padding: 9px 11px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius-input);
+        background: var(--bg);
+        color: var(--ink);
+      }
+      .modal .row {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+        margin-top: 22px;
+      }
+      .modal .cancel {
+        font: inherit;
+        font-size: 0.85rem;
+        cursor: pointer;
+        background: transparent;
+        border: 1px solid var(--line);
+        color: var(--ink);
+        padding: 10px 18px;
+        border-radius: var(--radius-input);
+      }
+      .modal .confirm {
+        font: inherit;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+        background: var(--danger);
+        border: none;
+        color: #fff;
+        padding: 10px 18px;
+        border-radius: var(--radius-input);
+      }
+      .modal .err {
+        font-size: 0.78rem;
+        color: var(--danger);
+        min-height: 1em;
+        margin-top: 10px;
+      }
     </style>
   </head>
 
@@ -328,6 +430,8 @@
 
       <div id="content" class="hidden">
         <div id="next-wrap"></div>
+
+        <div class="danger-zone" id="danger-zone"></div>
 
         <div class="cols">
           <div>
@@ -560,6 +664,132 @@
           };
         }
       }
+
+      const LOSS_REASONS = [
+        ["PriceTooHigh", "Our price was too high"],
+        ["LostToCompetitor", "Lost to a competitor"],
+        ["ClientDeferred", "Client deferred the project"],
+        ["ClientWithdrew", "Client withdrew entirely"],
+        ["TechnicalDecline", "We declined on technical grounds"],
+        ["ScopeMismatch", "Scope did not match what we do"],
+        ["NoResponse", "Client stopped responding"],
+        ["Other", "Something else"],
+      ];
+
+      /**
+       * The Lost action. Deliberately quiet in appearance and behind a
+       * confirmation, because it is terminal: a lost project leaves the working
+       * list and does not come back. But it is also the answer to the question in
+       * the Tier 3 note, why a thousand leads went nowhere, so a category and a
+       * sentence are both required.
+       */
+      function renderDangerZone(d) {
+        const zone = $("danger-zone");
+        if (d.status !== "Active") {
+          zone.innerHTML = "";
+          return;
+        }
+        zone.innerHTML = `<button type="button" id="btn-lost">Mark this project as lost</button>`;
+        document.getElementById("btn-lost").onclick = () => openLostModal(d);
+      }
+
+      function openLostModal(d) {
+        const back = document.createElement("div");
+        back.className = "modal-back";
+        back.innerHTML = `
+        <div class="modal" role="dialog" aria-modal="true">
+          <h2>Mark ${esc(d.pcode)} as lost</h2>
+          <p class="lead">This is final. The project leaves the working list.
+             It will be recorded as lost at <strong>${esc(d.stage)}</strong>,
+             which is how we learn where in the funnel we lose work.</p>
+
+          <label for="m-cat">Why was it lost<span class="req">*</span></label>
+          <select id="m-cat">
+            <option value="">Select</option>
+            ${LOSS_REASONS.map(([v, l]) => `<option value="${v}">${l}</option>`).join("")}
+          </select>
+
+          <div id="m-comp-wrap" style="display:none">
+            <label for="m-comp">Which competitor<span class="req">*</span></label>
+            <input type="text" id="m-comp">
+          </div>
+
+          <label for="m-reason">What happened<span class="req">*</span></label>
+          <textarea id="m-reason" rows="3"
+            placeholder="One or two sentences. This is what the win and loss analysis is built from."></textarea>
+
+          <label for="m-date">Date it was lost</label>
+          <input type="date" id="m-date" value="${new Date().toISOString().slice(0, 10)}">
+
+          <label for="m-cost">Cost incurred so far, in lakh</label>
+          <input type="text" id="m-cost" inputmode="decimal" placeholder="0">
+
+          <div class="err" id="m-err"></div>
+          <div class="row">
+            <button type="button" class="cancel" id="m-cancel">Keep it active</button>
+            <button type="button" class="confirm" id="m-confirm">Mark as lost</button>
+          </div>
+        </div>`;
+        document.body.appendChild(back);
+
+        const close = () => back.remove();
+        document.getElementById("m-cancel").onclick = close;
+        back.onclick = (e) => {
+          if (e.target === back) close();
+        };
+
+        // The competitor name only matters for one reason, so it appears only
+        // then rather than sitting empty on every other loss.
+        document.getElementById("m-cat").onchange = (e) => {
+          document.getElementById("m-comp-wrap").style.display =
+            e.target.value === "LostToCompetitor" ? "block" : "none";
+        };
+
+        document.getElementById("m-confirm").onclick = async () => {
+          const err = document.getElementById("m-err");
+          const cat = document.getElementById("m-cat").value;
+          const reason = document.getElementById("m-reason").value.trim();
+          const comp = document.getElementById("m-comp").value.trim();
+
+          if (!cat) {
+            err.textContent = "Choose why it was lost.";
+            return;
+          }
+          if (!reason) {
+            err.textContent = "Say in a sentence what happened.";
+            return;
+          }
+          if (cat === "LostToCompetitor" && !comp) {
+            err.textContent = "Name the competitor.";
+            return;
+          }
+
+          const lakhText = document.getElementById("m-cost").value.trim();
+          const costPaise = lakhText
+            ? Math.round(Number(lakhText.replace(/,/g, "")) * 10000000)
+            : 0;
+
+          const btn = document.getElementById("m-confirm");
+          btn.disabled = true;
+          btn.textContent = "Recording...";
+          try {
+            await api.post("lost", {
+              pcode: d.pcode,
+              reasonCategory: cat,
+              reason,
+              competitorName: comp,
+              lostDate: document.getElementById("m-date").value,
+              costIncurred: Number.isFinite(costPaise) ? costPaise : 0,
+            });
+            location.reload();
+          } catch (e) {
+            btn.disabled = false;
+            btn.textContent = "Mark as lost";
+            err.textContent = e.message || "That did not work.";
+          }
+        };
+      }
+
       async function loadProject() {
         const data = await api.get(
           "pipeline/project?pcode=" + encodeURIComponent(pcode),
@@ -576,6 +806,7 @@
         renderRibbon(data.stages, data.stageIndex);
         renderSteps(data.steps || []);
         renderNextAction(data);
+        renderDangerZone(data);
         renderMoney(data.ledger);
         renderFindings(data.ledger);
         renderLedger(data.ledgerRows);

@@ -3,33 +3,28 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-
     <title>Perfact Intranet, BD pipeline</title>
     <link rel="stylesheet" href="/assets/tokens.css" />
-
     <style>
       body {
         padding-bottom: 64px;
       }
-
       header.bar {
         background: linear-gradient(135deg, var(--pine-a), var(--pine-b));
         color: var(--hero-ink);
         padding: 22px 0 0;
       }
-
       .wrap {
         max-width: 1120px;
         margin: 0 auto;
         padding: 0 24px;
       }
-
       header.bar h1 {
         margin: 0;
         font-size: 1.4rem;
+        font-weight: 700;
       }
-
-      .who {
+      header.bar .who {
         font-size: 0.8rem;
         color: var(--hero-sub);
         margin-top: 3px;
@@ -39,8 +34,8 @@
         display: flex;
         gap: 4px;
         margin-top: 18px;
+        flex-wrap: wrap;
       }
-
       .tab {
         font: inherit;
         font-size: 0.85rem;
@@ -52,40 +47,42 @@
         padding: 10px 18px;
         border-radius: var(--radius-input) var(--radius-input) 0 0;
       }
-
       .tab:hover {
         color: var(--hero-ink);
       }
-
       .tab.active {
         background: var(--bg);
         color: var(--pine);
+      }
+      .tab .n {
+        font-family: var(--font-mono);
+        opacity: 0.75;
+        margin-left: 5px;
       }
 
       .kpis {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
         gap: 14px;
-        margin-top: 24px;
+        margin: 24px 0 0;
       }
-
       .kpi {
         background: var(--card);
         border: 1px solid var(--line);
         border-radius: var(--radius-card);
         padding: 14px 18px;
       }
-
       .kpi .n {
         font-size: 1.7rem;
         font-weight: 700;
         color: var(--pine);
         font-family: var(--font-mono);
+        line-height: 1.1;
       }
-
       .kpi .l {
         font-size: 0.7rem;
         text-transform: uppercase;
+        letter-spacing: 0.05em;
         color: var(--ink-soft);
         margin-top: 4px;
       }
@@ -98,40 +95,20 @@
         gap: 16px;
         flex-wrap: wrap;
       }
-
       .toolbar h2 {
         margin: 0;
         font-size: 1rem;
         color: var(--pine);
       }
-
       .toolbar-right {
         display: flex;
         align-items: center;
         gap: 14px;
       }
-
       .note {
         font-size: 0.78rem;
         color: var(--ink-soft);
       }
-
-      .new-lead {
-        font-size: 0.82rem;
-        font-weight: 600;
-        background: transparent;
-        color: var(--amber);
-        border: 1px solid var(--amber);
-        text-decoration: none;
-        padding: 8px 15px;
-        border-radius: var(--radius-input);
-      }
-
-      .new-lead:hover {
-        background: var(--amber);
-        color: #fff;
-      }
-
       button.link {
         font: inherit;
         font-size: 0.8rem;
@@ -142,62 +119,20 @@
         text-decoration: underline;
         padding: 0;
       }
-
-      .search-filter {
-        display: flex;
-        gap: 10px;
-        margin: 14px 0 12px;
-      }
-
-      .search-box {
-        flex: 1;
-        position: relative;
-      }
-
-      .search-box input {
-        width: 100%;
-        box-sizing: border-box;
-        font: inherit;
+      .new-lead {
         font-size: 0.82rem;
-        color: var(--ink);
-        background: var(--card);
-        border: 1px solid var(--line);
+        font-weight: 600;
+        background: transparent;
+        color: var(--amber);
+        border: 1px solid var(--amber);
+        text-decoration: none;
+        padding: 8px 15px;
         border-radius: var(--radius-input);
-        padding: 10px 13px 10px 36px;
-        outline: none;
+        white-space: nowrap;
       }
-
-      .search-box input:focus,
-      .sort-select:focus {
-        border-color: var(--moss);
-        box-shadow: 0 0 0 2px var(--moss-soft);
-      }
-
-      .search-icon {
-        position: absolute;
-        left: 13px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: var(--ink-soft);
-        pointer-events: none;
-      }
-
-      .sort-select {
-        font: inherit;
-        font-size: 0.82rem;
-        color: var(--ink);
-        background: var(--card);
-        border: 1px solid var(--line);
-        border-radius: var(--radius-input);
-        padding: 10px 12px;
-        cursor: pointer;
-        outline: none;
-      }
-
-      .results-note {
-        font-size: 0.75rem;
-        color: var(--ink-soft);
-        margin-bottom: 10px;
+      .new-lead:hover {
+        background: var(--amber);
+        color: #fff;
       }
 
       .card {
@@ -211,14 +146,15 @@
         gap: 14px 20px;
         align-items: center;
       }
-
+      .card.muted {
+        opacity: 0.85;
+      }
       .card .head {
         display: flex;
         align-items: baseline;
         gap: 10px;
         flex-wrap: wrap;
       }
-
       .pcode {
         font-family: var(--font-mono);
         font-size: 0.95rem;
@@ -226,18 +162,18 @@
         font-weight: 600;
         text-decoration: none;
       }
-
+      .pcode:hover {
+        text-decoration: underline;
+      }
       .pname {
         font-size: 0.9rem;
         color: var(--ink);
       }
-
       .meta {
         font-size: 0.75rem;
         color: var(--ink-soft);
         margin-top: 5px;
       }
-
       .chip {
         display: inline-block;
         font-size: 0.68rem;
@@ -247,16 +183,23 @@
         border: 1px solid var(--line);
         color: var(--ink-soft);
       }
-
       .chip.aged {
         border-color: var(--danger);
         color: var(--danger);
+        background: color-mix(in srgb, var(--danger) 8%, transparent);
       }
-
       .chip.fresh {
         border-color: var(--moss);
         color: var(--moss);
         background: var(--moss-soft);
+      }
+      .chip.lost {
+        border-color: var(--danger);
+        color: var(--danger);
+      }
+      .chip.closed {
+        border-color: var(--moss);
+        color: var(--moss);
       }
 
       .dots {
@@ -264,28 +207,19 @@
         gap: 4px;
         margin-top: 8px;
       }
-
       .dot {
-        width: 22px;
+        width: 20px;
         height: 5px;
         border-radius: 3px;
         background: var(--line);
       }
-
       .dot.done {
         background: var(--moss);
-      }
-
-      .dot.skip {
-        background: transparent;
-        border: 1px dashed var(--line);
-        height: 3px;
       }
 
       .act {
         text-align: right;
       }
-
       .act a {
         display: inline-block;
         font-size: 0.82rem;
@@ -295,56 +229,109 @@
         text-decoration: none;
         padding: 9px 16px;
         border-radius: var(--radius-input);
+        white-space: nowrap;
       }
-
-      .offline {
+      .act a:hover {
+        background: var(--amber-deep);
+      }
+      .act .offline {
         font-size: 0.78rem;
         color: var(--ink-soft);
+      }
+      .act .figure {
+        font-family: var(--font-mono);
+        font-size: 0.9rem;
+        color: var(--ink);
+      }
+      .act .figure small {
+        display: block;
+        font-size: 0.7rem;
+        color: var(--ink-soft);
+        font-family: var(--font-body);
       }
 
       .board {
         display: grid;
-        grid-template-columns: repeat(6, minmax(150px, 1fr));
-        gap: 12px;
+        grid-template-columns: repeat(8, minmax(132px, 1fr));
+        gap: 10px;
         margin-top: 22px;
         overflow-x: auto;
       }
-
       .col {
         background: var(--card);
         border: 1px solid var(--line);
         border-radius: var(--radius-card);
-        padding: 12px;
-        min-width: 150px;
+        padding: 11px;
+        min-width: 132px;
       }
-
       .col h3 {
         margin: 0 0 4px;
-        font-size: 0.74rem;
+        font-size: 0.68rem;
         color: var(--pine);
         text-transform: uppercase;
+        letter-spacing: 0.03em;
+        line-height: 1.3;
       }
-
-      .count {
+      .col .count {
         font-family: var(--font-mono);
-        font-size: 1.3rem;
-        margin-bottom: 10px;
+        font-size: 1.25rem;
+        color: var(--ink);
+        margin-bottom: 8px;
       }
-
       .mini {
         border-top: 1px solid var(--line);
-        padding: 8px 0 6px;
+        padding: 7px 0 5px;
       }
-
       .mini a {
         font-family: var(--font-mono);
-        font-size: 0.78rem;
+        font-size: 0.76rem;
         color: var(--pine);
         text-decoration: none;
       }
-
+      .mini a:hover {
+        text-decoration: underline;
+      }
       .mini .d {
-        font-size: 0.7rem;
+        font-size: 0.68rem;
+        color: var(--ink-soft);
+      }
+
+      .tally {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 16px;
+        margin-top: 22px;
+      }
+      .tally-box {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: var(--radius-card);
+        padding: 16px 20px;
+      }
+      .tally-box h3 {
+        margin: 0 0 12px;
+        font-size: 0.72rem;
+        color: var(--pine);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+      .tally-row {
+        display: grid;
+        grid-template-columns: 1fr 56px 34px;
+        align-items: center;
+        gap: 10px;
+        padding: 4px 0;
+        font-size: 0.82rem;
+      }
+      .tally-bar {
+        height: 6px;
+        background: var(--danger);
+        border-radius: 3px;
+        opacity: 0.7;
+      }
+      .tally-n {
+        font-family: var(--font-mono);
+        text-align: right;
         color: var(--ink-soft);
       }
 
@@ -357,7 +344,9 @@
         color: var(--ink-soft);
         font-size: 0.9rem;
       }
-
+      .empty a {
+        color: var(--pine);
+      }
       button.primary {
         font: inherit;
         font-weight: 600;
@@ -367,325 +356,182 @@
         color: #fff;
         padding: 11px 24px;
         border-radius: var(--radius-input);
+        text-decoration: none;
+        display: inline-block;
       }
-
+      .loading {
+        padding: 40px 0;
+        color: var(--ink-soft);
+        font-size: 0.9rem;
+      }
       .hidden {
         display: none;
       }
-
-      @media (max-width: 720px) {
+      @media (max-width: 760px) {
         .card {
           grid-template-columns: 1fr;
         }
-
         .act {
           text-align: left;
         }
-
         .board {
           grid-template-columns: 1fr;
-        }
-
-        .search-filter {
-          flex-direction: column;
-        }
-
-        .sort-select {
-          width: 100%;
         }
       }
     </style>
   </head>
-
   <body>
     <header class="bar">
       <div class="wrap">
         <h1>BD pipeline</h1>
         <div class="who" id="who">Checking your access...</div>
-
-        <div class="tabs">
-          <button class="tab active" id="tab-work" type="button">
+        <div class="tabs" id="tabs">
+          <button class="tab active" data-view="work" type="button">
             What needs doing
           </button>
-
-          <button class="tab" id="tab-board" type="button">
+          <button class="tab" data-view="board" type="button">
             Pipeline board
+          </button>
+          <button class="tab" data-view="lost" type="button">
+            Lost<span class="n" id="n-lost"></span>
+          </button>
+          <button class="tab" data-view="closed" type="button">
+            Closed<span class="n" id="n-closed"></span>
           </button>
         </div>
       </div>
     </header>
 
     <main class="wrap">
-      <div id="gate" style="padding: 40px 0" class="empty hidden"></div>
+      <div id="gate" class="empty hidden" style="margin-top: 40px"></div>
 
       <section id="view-work" class="hidden">
         <div class="kpis" id="kpis"></div>
-
         <div class="toolbar">
-          <h2 id="work-title">Longest waiting first</h2>
-
+          <h2>Longest waiting first</h2>
           <div class="toolbar-right">
             <span class="note" id="scope-note"></span>
-
             <button
               class="link hidden"
               id="toggle-scope"
               type="button"
             ></button>
-
-            <a class="new-lead" href="/leads/leads-new.html">
-              New lead
-            </a>
+            <a class="new-lead" href="/leads/new.html">New lead</a>
           </div>
         </div>
-
-        <div class="search-filter">
-          <label class="search-box">
-            <span class="search-icon">⌕</span>
-
-            <input
-              id="project-search"
-              type="search"
-              placeholder="Search P-Code or client name..."
-              autocomplete="off"
-            />
-          </label>
-
-          <select id="sort-projects" class="sort-select">
-            <option value="waiting">Longest waiting first</option>
-            <option value="newest">Newest first</option>
-            <option value="oldest">Oldest first</option>
-            <option value="shortest">Shortest waiting first</option>
-          </select>
-        </div>
-
-        <div class="results-note" id="results-note"></div>
-        <div id="work-list"></div>
+        <div id="work-list"><div class="loading">Loading...</div></div>
       </section>
 
       <section id="view-board" class="hidden">
-        <div class="board" id="board"></div>
+        <div class="board" id="board">
+          <div class="loading">Loading...</div>
+        </div>
+      </section>
+
+      <section id="view-lost" class="hidden">
+        <div class="tally" id="lost-tally"></div>
+        <div class="toolbar">
+          <h2>Lost projects</h2>
+          <span class="note" id="lost-note"></span>
+        </div>
+        <div id="lost-list"><div class="loading">Loading...</div></div>
+      </section>
+
+      <section id="view-closed" class="hidden">
+        <div class="kpis" id="closed-kpis"></div>
+        <div class="toolbar"><h2>Closed projects</h2></div>
+        <div id="closed-list"><div class="loading">Loading...</div></div>
       </section>
     </main>
 
     <script src="/lib/vendor/msal-browser.min.js"></script>
-
     <script type="module">
       import { initAuth, signIn, getAccount } from "/lib/auth.js";
       import { api } from "/lib/api.js";
 
       const $ = (id) => document.getElementById(id);
-
       let showEveryone = false;
-      let allWork = [];
-      let currentSearch = "";
-      let currentSort = "waiting";
+      const loaded = {};
 
-      const esc = (value) =>
-        String(value ?? "")
+      const esc = (s) =>
+        String(s === undefined || s === null ? "" : s)
           .replace(/&/g, "&amp;")
           .replace(/</g, "&lt;")
           .replace(/>/g, "&gt;")
           .replace(/"/g, "&quot;");
 
-      function dots(steps) {
-        return `
-          <div class="dots">
-            ${steps
-              .map((step) => {
-                if (step.key === "qualification") {
-                  return `<span class="dot skip" title="Qualification, handled offline"></span>`;
-                }
+      const REASON_LABELS = {
+        PriceTooHigh: "Our price was too high",
+        LostToCompetitor: "Lost to a competitor",
+        ClientDeferred: "Client deferred",
+        ClientWithdrew: "Client withdrew",
+        TechnicalDecline: "We declined, technical",
+        ScopeMismatch: "Scope mismatch",
+        NoResponse: "Client stopped responding",
+        Other: "Something else",
+        Unrecorded: "Not recorded",
+      };
 
-                return `
-                  <span
-                    class="dot${step.done ? " done" : ""}"
-                    title="${esc(step.label)}${step.done ? ", done" : ""}"
-                  ></span>
-                `;
-              })
-              .join("")}
-          </div>
-        `;
+      function dots(steps) {
+        return (
+          '<div class="dots">' +
+          (steps || [])
+            .map(
+              (s) =>
+                `<span class="dot${s.done ? " done" : ""}" title="${esc(s.label)}${s.done ? ", done" : ""}"></span>`,
+            )
+            .join("") +
+          "</div>"
+        );
       }
 
       function ageChip(days) {
         if (days === null || days === undefined) return "";
-
-        if (days >= 15) {
+        if (days >= 15)
           return `<span class="chip aged">${days} days in stage</span>`;
-        }
-
-        if (days <= 2) {
+        if (days <= 2)
           return `<span class="chip fresh">${days} days in stage</span>`;
-        }
-
         return `<span class="chip">${days} days in stage</span>`;
       }
 
       function workCard(w) {
         const next = w.next;
-
         const action = !next
-          ? `<span class="offline">Nothing outstanding</span>`
+          ? '<span class="offline">Nothing outstanding</span>'
           : next.href
             ? `<a href="${next.href}?pcode=${encodeURIComponent(w.pcode)}">${esc(next.label)}</a>`
             : `<span class="offline">${esc(next.label)}<br>${esc(next.note || "")}</span>`;
 
         return `
-          <div class="card">
-            <div>
-              <div class="head">
-                <a
-                  class="pcode"
-                  href="/project.html?pcode=${encodeURIComponent(w.pcode)}"
-                >
-                  ${esc(w.pcode)}
-                </a>
-
-                <span class="pname">
-                  ${esc(w.projectName) || "unnamed"}
-                </span>
-
-                ${ageChip(w.daysInStage)}
-              </div>
-
-              <div class="meta">
-                ${esc(w.stage)}
-                &middot; ${w.stepsDone} of ${w.stepCount} steps
-                &middot; ${esc(w.owner || "")}
-              </div>
-
-              ${dots(w.steps || [])}
-            </div>
-
-            <div class="act">${action}</div>
-          </div>
-        `;
-      }
-
-      function searchValue(w) {
-        return [
-          w.pcode,
-          w.projectName,
-          w.clientName,
-          w.customerName,
-          w.customer,
-          w.client,
-        ]
-          .filter(Boolean)
-          .join(" ")
-          .toLowerCase();
-      }
-
-      function projectDate(w) {
-        const value =
-          w.leadDate ||
-          w.createdAt ||
-          w.createdDate ||
-          w.updatedAt ||
-          w.date;
-
-        if (!value) return 0;
-
-        const time = new Date(value).getTime();
-        return Number.isNaN(time) ? 0 : time;
-      }
-
-      function sortWork(list) {
-        const rows = [...list];
-
-        if (currentSort === "waiting") {
-          rows.sort(
-            (a, b) =>
-              (b.daysInStage ?? -1) -
-              (a.daysInStage ?? -1)
-          );
-        }
-
-        if (currentSort === "shortest") {
-          rows.sort(
-            (a, b) =>
-              (a.daysInStage ?? Number.MAX_SAFE_INTEGER) -
-              (b.daysInStage ?? Number.MAX_SAFE_INTEGER)
-          );
-        }
-
-        if (currentSort === "newest") {
-          rows.sort((a, b) => projectDate(b) - projectDate(a));
-        }
-
-        if (currentSort === "oldest") {
-          rows.sort((a, b) => projectDate(a) - projectDate(b));
-        }
-
-        return rows;
-      }
-
-      function renderFilteredWork() {
-        const query = currentSearch.trim().toLowerCase();
-
-        const filtered = query
-          ? allWork.filter((project) =>
-              searchValue(project).includes(query)
-            )
-          : allWork;
-
-        const rows = sortWork(filtered);
-
-        $("results-note").textContent = query
-          ? `Showing ${rows.length} of ${allWork.length} projects`
-          : `${rows.length} projects`;
-
-        if (!rows.length) {
-          $("work-list").innerHTML = `
-            <div class="empty">
-              <p>No projects match your search.</p>
-              <button class="primary" id="clear-search" type="button">
-                Clear search
-              </button>
-            </div>
-          `;
-
-          $("clear-search").onclick = () => {
-            $("project-search").value = "";
-            currentSearch = "";
-            renderFilteredWork();
-          };
-
-          return;
-        }
-
-        $("work-list").innerHTML = rows.map(workCard).join("");
+    <div class="card">
+      <div>
+        <div class="head">
+          <a class="pcode" href="/project.html?pcode=${encodeURIComponent(w.pcode)}">${esc(w.pcode)}</a>
+          <span class="pname">${esc(w.projectName) || "unnamed"}</span>
+          ${ageChip(w.daysInStage)}
+        </div>
+        <div class="meta">${esc(w.stage)}
+          &middot; ${w.stepsDone} of ${w.stepCount} steps
+          &middot; ${esc(w.owner || "")}</div>
+        ${dots(w.steps)}
+      </div>
+      <div class="act">${action}</div>
+    </div>`;
       }
 
       async function renderWork() {
-        const path =
-          "pipeline/work" + (showEveryone ? "?all=1" : "");
-
-        const d = await api.get(path);
+        const d = await api.get(
+          "pipeline/work" + (showEveryone ? "?all=1" : ""),
+        );
 
         $("kpis").innerHTML = `
-          <div class="kpi">
-            <div class="n">${d.totals.active}</div>
-            <div class="l">Active</div>
-          </div>
+    <div class="kpi"><div class="n">${d.totals.active}</div><div class="l">Active</div></div>
+    <div class="kpi"><div class="n">${d.totals.awaitingAction}</div><div class="l">Awaiting action</div></div>
+    <div class="kpi"><div class="n">${d.totals.lost}</div><div class="l">Lost</div></div>
+    <div class="kpi"><div class="n">${d.totals.closed}</div><div class="l">Closed</div></div>`;
 
-          <div class="kpi">
-            <div class="n">${d.totals.awaitingAction}</div>
-            <div class="l">Awaiting action</div>
-          </div>
-
-          <div class="kpi">
-            <div class="n">${d.totals.lost}</div>
-            <div class="l">Lost</div>
-          </div>
-
-          <div class="kpi">
-            <div class="n">${d.totals.closed}</div>
-            <div class="l">Closed</div>
-          </div>
-        `;
+        $("n-lost").textContent = d.totals.lost ? d.totals.lost : "";
+        $("n-closed").textContent = d.totals.closed ? d.totals.closed : "";
 
         $("scope-note").textContent =
           d.scopedTo === "everyone"
@@ -693,147 +539,199 @@
             : "Showing only your projects.";
 
         if (!d.canSeeEveryone) {
-          const button = $("toggle-scope");
-
-          button.classList.remove("hidden");
-          button.textContent = showEveryone
-            ? "Show only mine"
-            : "Show everyone's";
-
-          button.onclick = () => {
+          const b = $("toggle-scope");
+          b.classList.remove("hidden");
+          b.textContent = showEveryone ? "Show only mine" : "Show everyone's";
+          b.onclick = () => {
             showEveryone = !showEveryone;
-            renderWork();
+            loaded.work = false;
+            showView("work");
           };
         }
 
-        allWork = d.work || [];
-        renderFilteredWork();
+        $("work-list").innerHTML = d.work.length
+          ? d.work.map(workCard).join("")
+          : '<div class="empty"><p>Nothing is waiting on you.</p>' +
+            '<a class="primary" href="/leads/new.html">Capture a new lead</a></div>';
       }
 
       async function renderBoard() {
         const d = await api.get("pipeline/board");
-
         $("board").innerHTML = d.stages
           .map((stage) => {
             const rows = d.byStage[stage] || [];
-
             return `
-              <div class="col">
-                <h3>${esc(stage)}</h3>
-                <div class="count">${rows.length}</div>
-
-                ${rows
-                  .slice(0, 12)
-                  .map(
-                    (p) => `
-                      <div class="mini">
-                        <a href="/project.html?pcode=${encodeURIComponent(p.pcode)}">
-                          ${esc(p.pcode)}
-                        </a>
-
-                        <div class="d">
-                          ${esc(p.projectName || "unnamed")}
-                        </div>
-
-                        <div class="d">
-                          ${p.daysInStage === null
-                            ? ""
-                            : p.daysInStage + " days"}
-                        </div>
-                      </div>
-                    `
-                  )
-                  .join("")}
-
-                ${
-                  rows.length > 12
-                    ? `<div class="mini d">and ${rows.length - 12} more</div>`
-                    : ""
-                }
-              </div>
-            `;
+      <div class="col">
+        <h3>${esc(stage)}</h3>
+        <div class="count">${rows.length}</div>
+        ${rows
+          .slice(0, 10)
+          .map(
+            (p) => `
+          <div class="mini">
+            <a href="/project.html?pcode=${encodeURIComponent(p.pcode)}">${esc(p.pcode)}</a>
+            <div class="d">${esc(p.projectName || "unnamed")}</div>
+            <div class="d">${p.daysInStage === null ? "" : p.daysInStage + " days"}</div>
+          </div>`,
+          )
+          .join("")}
+        ${rows.length > 10 ? `<div class="mini d">and ${rows.length - 10} more</div>` : ""}
+      </div>`;
           })
           .join("");
       }
 
-      function showTab(which) {
-        const work = which === "work";
+      // The counts come first, deliberately. A list of lost projects answers no
+      // better than the current system does; "why do we lose, and where in the
+      // funnel" is a counting question, and that is what the Tier 3 note asks.
+      function tallyBox(title, counts, labelMap) {
+        const entries = Object.entries(counts || {}).sort(
+          (a, b) => b[1] - a[1],
+        );
+        const max = entries.length ? entries[0][1] : 1;
+        const rows = entries
+          .map(
+            ([k, n]) => `
+    <div class="tally-row">
+      <span>${esc((labelMap && labelMap[k]) || k)}</span>
+      <span class="tally-bar" style="width:${Math.round((n / max) * 56)}px"></span>
+      <span class="tally-n">${n}</span>
+    </div>`,
+          )
+          .join("");
+        return `
+    <div class="tally-box">
+      <h3>${esc(title)}</h3>
+      ${rows || '<div class="note">Nothing recorded yet.</div>'}
+    </div>`;
+      }
 
-        $("tab-work").classList.toggle("active", work);
-        $("tab-board").classList.toggle("active", !work);
+      function lostCard(r) {
+        return `
+    <div class="card muted">
+      <div>
+        <div class="head">
+          <a class="pcode" href="/project.html?pcode=${encodeURIComponent(r.pcode)}">${esc(r.pcode)}</a>
+          <span class="pname">${esc(r.projectName) || "unnamed"}</span>
+          <span class="chip lost">${esc(REASON_LABELS[r.reasonCategory] || r.reasonCategory || "no reason recorded")}</span>
+        </div>
+        <div class="meta">Lost at ${esc(r.stageAtOutcome)}
+          &middot; ${esc(r.lostOn)}
+          &middot; ${esc(r.owner || "")}</div>
+        <div class="meta">${esc(r.reason)}${r.competitor ? " &middot; Competitor: " + esc(r.competitor) : ""}</div>
+      </div>
+      <div class="act">
+        <span class="figure">${esc(r.quotedLakh)} lakh
+          <small>quoted${r.marginPct ? ", " + r.marginPct + "% margin" : ""}</small></span>
+      </div>
+    </div>`;
+      }
 
-        $("view-work").classList.toggle("hidden", !work);
-        $("view-board").classList.toggle("hidden", work);
+      async function renderLost() {
+        const d = await api.get("pipeline/lost");
+        $("lost-tally").innerHTML =
+          tallyBox("Why we lost", d.byReason, REASON_LABELS) +
+          tallyBox("Where in the funnel", d.byStage, null);
+        $("lost-note").textContent =
+          `${d.count} project${d.count === 1 ? "" : "s"}, ${d.valueLostLakh} lakh quoted`;
+        $("lost-list").innerHTML = d.rows.length
+          ? d.rows.map(lostCard).join("")
+          : '<div class="empty">No projects have been marked as lost.</div>';
+      }
 
-        if (!work) renderBoard();
+      function closedCard(r) {
+        return `
+    <div class="card muted">
+      <div>
+        <div class="head">
+          <a class="pcode" href="/project.html?pcode=${encodeURIComponent(r.pcode)}">${esc(r.pcode)}</a>
+          <span class="pname">${esc(r.projectName) || "unnamed"}</span>
+          <span class="chip closed">closed</span>
+          ${r.lessons ? `<span class="chip">${r.lessons} lesson${r.lessons === 1 ? "" : "s"}</span>` : ""}
+        </div>
+        <div class="meta">Closed ${esc(r.closedOn)}
+          &middot; settled ${esc(r.settledOn)}
+          &middot; ${esc(r.owner || "")}</div>
+        ${r.hasCertificate ? "" : '<div class="meta">No completion certificate on record.</div>'}
+      </div>
+      <div class="act">
+        <span class="figure">${esc(r.settledLakh)} lakh<small>settled</small></span>
+      </div>
+    </div>`;
+      }
+
+      async function renderClosed() {
+        const d = await api.get("pipeline/closed");
+        $("closed-kpis").innerHTML = `
+    <div class="kpi"><div class="n">${d.count}</div><div class="l">Closed</div></div>
+    <div class="kpi"><div class="n">${esc(d.settledLakh)}</div><div class="l">Lakh settled</div></div>
+    <div class="kpi"><div class="n">${d.totalLessons}</div><div class="l">Lessons recorded</div></div>`;
+        $("closed-list").innerHTML = d.rows.length
+          ? d.rows.map(closedCard).join("")
+          : '<div class="empty">No projects have been closed yet.</div>';
+      }
+
+      const RENDER = {
+        work: renderWork,
+        board: renderBoard,
+        lost: renderLost,
+        closed: renderClosed,
+      };
+
+      async function showView(which) {
+        for (const b of $("tabs").querySelectorAll(".tab")) {
+          b.classList.toggle("active", b.dataset.view === which);
+        }
+        for (const v of ["work", "board", "lost", "closed"]) {
+          $("view-" + v).classList.toggle("hidden", v !== which);
+        }
+        // Each tab loads once and then stays. Refetching on every click is slow for
+        // no benefit, since none of this changes minute to minute.
+        if (loaded[which]) return;
+        try {
+          await RENDER[which]();
+          loaded[which] = true;
+        } catch (err) {
+          $("view-" + which).innerHTML =
+            '<div class="empty">That could not be loaded. ' +
+            esc(err.message || "") +
+            "</div>";
+        }
       }
 
       async function start() {
         await initAuth();
-
         if (!getAccount()) {
           $("who").textContent = "Not signed in";
-
-          const gate = $("gate");
-          gate.classList.remove("hidden");
-          gate.innerHTML =
+          const g = $("gate");
+          g.classList.remove("hidden");
+          g.innerHTML =
             "<p>Sign in with your Perfact account to see the pipeline.</p>";
-
-          const button = document.createElement("button");
-          button.className = "primary";
-          button.textContent = "Sign in";
-          button.onclick = () => signIn();
-
-          gate.appendChild(button);
+          const b = document.createElement("button");
+          b.className = "primary";
+          b.textContent = "Sign in";
+          b.onclick = () => signIn();
+          g.appendChild(b);
           return;
         }
 
         let me;
-
         try {
           me = await api.get("whoami");
         } catch (err) {
           $("who").textContent = "Access denied";
-
-          const gate = $("gate");
-          gate.classList.remove("hidden");
-          gate.textContent =
-            err.message ||
-            "Your account has no role in this application.";
-
+          const g = $("gate");
+          g.classList.remove("hidden");
+          g.textContent =
+            err.message || "Your account has no role in this application.";
           return;
         }
 
-        $("who").textContent = `${me.name}, ${me.role}`;
-        $("view-work").classList.remove("hidden");
-
-        $("tab-work").onclick = () => showTab("work");
-        $("tab-board").onclick = () => showTab("board");
-
-        $("project-search").addEventListener("input", (event) => {
-          currentSearch = event.target.value;
-          renderFilteredWork();
-        });
-
-        $("sort-projects").addEventListener("change", (event) => {
-          currentSort = event.target.value;
-
-          $("work-title").textContent =
-            event.target.options[event.target.selectedIndex].textContent;
-
-          renderFilteredWork();
-        });
-
-        try {
-          await renderWork();
-        } catch (err) {
-          $("work-list").innerHTML = `
-            <div class="empty">
-              The work list could not be loaded.
-              ${esc(err.message || "")}
-            </div>
-          `;
+        $("who").textContent = me.name + ", " + me.role;
+        for (const b of $("tabs").querySelectorAll(".tab")) {
+          b.onclick = () => showView(b.dataset.view);
         }
+        showView("work");
       }
 
       start();
