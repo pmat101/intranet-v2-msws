@@ -524,8 +524,8 @@
         `;
       }
 
-      function renderNextAction(data) {
-        const n = data.next;
+      function renderNextAction(d) {
+        const n = d.next;
         if (!n) {
           $("next-wrap").innerHTML = "";
           return;
@@ -552,7 +552,7 @@
             e.preventDefault();
             btn.textContent = "Recording...";
             try {
-              await api.post("proposal/sent", { pcode: data.pcode });
+              await api.post("proposal/sent", { pcode: d.pcode });
               location.reload();
             } catch (err) {
               btn.textContent = err.message || "That did not work";
@@ -579,20 +579,6 @@
         renderMoney(data.ledger);
         renderFindings(data.ledger);
         renderLedger(data.ledgerRows);
-
-        const sentBtn = document.getElementById("btn-sent");
-        if (sentBtn) {
-          sentBtn.onclick = async (e) => {
-            e.preventDefault();
-            sentBtn.textContent = "Recording...";
-            try {
-              await api.post("proposal/sent", { pcode: d.pcode });
-              location.reload();
-            } catch (err) {
-              sentBtn.textContent = err.message || "That did not work";
-            }
-          };
-        }
 
         $("ids").innerHTML = `
           <dt>Proposal ID</dt>
