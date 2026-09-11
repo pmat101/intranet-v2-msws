@@ -412,6 +412,93 @@
         min-height: 1em;
         margin-top: 10px;
       }
+      .doc {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 8px 14px;
+        padding: 10px 0;
+        border-bottom: 1px solid var(--line);
+        align-items: center;
+      }
+      .doc:last-of-type {
+        border-bottom: none;
+      }
+      .doc a {
+        font-size: 0.84rem;
+        color: var(--pine);
+        text-decoration: none;
+      }
+      .doc a:hover {
+        text-decoration: underline;
+      }
+      .doc .dmeta {
+        font-size: 0.72rem;
+        color: var(--ink-soft);
+        margin-top: 2px;
+      }
+      .doc .dtype {
+        font-size: 0.66rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: var(--ink-soft);
+      }
+
+      .upload {
+        border-top: 1px solid var(--line);
+        margin-top: 14px;
+        padding-top: 14px;
+      }
+      .upload .row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+      .upload select,
+      .upload input[type="text"] {
+        font: inherit;
+        font-size: 0.84rem;
+        width: 100%;
+        padding: 8px 10px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius-input);
+        background: var(--bg);
+        color: var(--ink);
+      }
+      .upload input[type="file"] {
+        font: inherit;
+        font-size: 0.8rem;
+        width: 100%;
+        color: var(--ink-soft);
+      }
+      .upload .go {
+        font: inherit;
+        font-size: 0.82rem;
+        font-weight: 600;
+        cursor: pointer;
+        background: var(--amber);
+        border: none;
+        color: #fff;
+        padding: 9px 18px;
+        border-radius: var(--radius-input);
+        margin-top: 10px;
+      }
+      .upload .go:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+      .upload .note {
+        font-size: 0.72rem;
+        color: var(--ink-soft);
+        margin-top: 8px;
+      }
+      .upload .err {
+        font-size: 0.78rem;
+        color: var(--danger);
+        min-height: 1em;
+        margin-top: 8px;
+      }
     </style>
   </head>
 
@@ -460,6 +547,11 @@
             <div class="panel">
               <h2>Identity</h2>
               <dl class="idblock" id="ids"></dl>
+            </div>
+            <div class="panel">
+              <h2>Documents</h2>
+              <div id="documents"></div>
+              <div class="upload" id="upload-box"></div>
             </div>
           </div>
         </div>
@@ -790,6 +882,99 @@
         };
       }
 
+      const DOC_TYPES = [
+        ["Proposal", "Proposal"],
+        ["ClientConfirmation", "Client confirmation"],
+        ["PurchaseOrder", "Purchase order"],
+        ["WorkOrder", "Work order"],
+        ["Correspondence", "Correspondence"],
+        ["Other", "Other"],
+      ];
+
+      async function renderDocuments(pcode) {
+        let d;
+        try {
+          d = await api.get("documents?pcode=" + encodeURIComponent(pcode));
+        } catch (err) {
+          $("documents").innerHTML =
+            `<div class="empty">Documents could not be loaded.</div>`;
+          return;
+        }
+
+        $("documents").innerHTML = d.rows.length
+          ? d.rows
+              .map(
+                (r) => `
+            <div class="doc">
+              <div>
+                <div class="dtype">${esc(r.documentType)}</div>
+                <a href="${esc(r.fileUrl)}" target="_blank" rel="noopener">
+                  ${esc(r.label || r.fileName)}</a>
+                <div class="dmeta">${esc(r.uploadedBy)} &middot; ${shortDate(r.uploadedAt)}
+                  ${r.sizeKb ? " &middot; " + r.sizeKb + " KB" : ""}</div>
+              </div>
+            </div>`,
+              )
+              .join("")
+          : `<div class="empty" style="padding:20px">Nothing uploaded yet.</div>`;
+      }
+
+      /**
+       * The upload posts raw bytes rather than JSON, because a PDF is binary and
+       * base64 inside JSON would inflate it by a third. Metadata therefore goes
+       * in the query string. This is the only call in the app shaped this way.
+       */
+      function renderUpload(pcode) {
+        $("upload-box").innerHTML = `
+        <div class="row">
+          <select id="u-type">
+            ${DOC_TYPES.map(([v, l]) => `<option value="${v}">${l}</option>`).join("")}
+          </select>
+          <input type="text" id="u-label" placeholder="Label, for instance Round 2">
+        </div>
+        <input type="file" id="u-file" accept=".pdf,.png,.jpg,.jpeg">
+        <button type="button" class="go" id="u-go">Upload</button>
+        <div class="note">PDF, PNG or JPEG, up to 4 MB.</div>
+        <div class="err" id="u-err"></div>`;
+
+        const go = document.getElementById("u-go");
+        go.onclick = async () => {
+          const err = document.getElementById("u-err");
+          const input = document.getElementById("u-file");
+          const file = input.files && input.files[0];
+          err.textContent = "";
+
+          if (!file) {
+            err.textContent = "Choose a file first.";
+            return;
+          }
+          if (file.size > 4 * 1024 * 1024) {
+            err.textContent = `That file is ${(file.size / 1048576).toFixed(1)} MB. The limit is 4 MB.`;
+            return;
+          }
+
+          go.disabled = true;
+          go.textContent = "Uploading...";
+          try {
+            const params = new URLSearchParams({
+              pcode,
+              type: document.getElementById("u-type").value,
+              label: document.getElementById("u-label").value.trim(),
+              filename: file.name,
+            });
+            await api.postBinary("documents/upload?" + params.toString(), file);
+            await renderDocuments(pcode);
+            input.value = "";
+            document.getElementById("u-label").value = "";
+          } catch (e) {
+            err.textContent = e.message || "That did not upload.";
+          } finally {
+            go.disabled = false;
+            go.textContent = "Upload";
+          }
+        };
+      }
+
       async function loadProject() {
         const data = await api.get(
           "pipeline/project?pcode=" + encodeURIComponent(pcode),
@@ -810,6 +995,8 @@
         renderMoney(data.ledger);
         renderFindings(data.ledger);
         renderLedger(data.ledgerRows);
+        renderDocuments(data.pcode);
+        renderUpload(data.pcode);
 
         $("ids").innerHTML = `
           <dt>Proposal ID</dt>

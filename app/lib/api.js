@@ -48,4 +48,31 @@ async function call(method, path, payload) {
 export const api = {
   get: (path) => call("GET", path),
   post: (path, payload) => call("POST", path, payload),
+  postBinary: async (path, file) => {
+    const token = await getToken();
+    const response = await fetch("/api/" + path, {
+      method: "POST",
+      headers: {
+        "X-Perfact-Auth": "Bearer " + token,
+        "Content-Type": file.type || "application/octet-stream",
+      },
+      body: file,
+    });
+    let data = null;
+    try {
+      data = await response.json();
+    } catch {
+      data = null;
+    }
+    if (!response.ok) {
+      const message =
+        (data && data.error && data.error.message) ||
+        "Upload failed with status " + response.status;
+      const err = new Error(message);
+      err.status = response.status;
+      err.code = data && data.error && data.error.code;
+      throw err;
+    }
+    return data && data.data !== undefined ? data.data : data;
+  },
 };
