@@ -115,7 +115,7 @@ async function syncStage(project, evidence, opts) {
 
 async function gatherEvidence(pcode) {
   const read = async (list, filter) => {
-    const q = `?expand=fields&$top=5&$filter=${encodeURIComponent(filter)}`;
+    const q = `?expand=fields&$top=99&$filter=${encodeURIComponent(filter)}`;
     const r = await graph("GET", `/sites/${SITE_ID}/lists/${list}/items${q}`);
     return (r.value || []).map((i) => i.fields);
   };
@@ -130,9 +130,11 @@ async function gatherEvidence(pcode) {
       read("ClosureRegister", f).catch(() => []),
     ]);
 
+  const live = approvals.filter((a) => a.Superseded !== true);
+
   return {
     qualificationRequested: approvals.length > 0,
-    approved: approvals.some((a) => a.Decision === "Approved"),
+    approved: live.some((a) => a.Decision === "Approved"),
     proposal: proposals.some((p) => p.PBL3First),
     sentToClient: proposals.some((p) => p.SentToClientAtIso),
     finalCommercials: proposals.some((p) => p.PBL10Final),

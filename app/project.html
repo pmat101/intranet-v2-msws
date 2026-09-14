@@ -775,15 +775,6 @@
        * the Tier 3 note, why a thousand leads went nowhere, so a category and a
        * sentence are both required.
        */
-      function renderDangerZone(d) {
-        const zone = $("danger-zone");
-        if (d.status !== "Active") {
-          zone.innerHTML = "";
-          return;
-        }
-        zone.innerHTML = `<button type="button" id="btn-lost">Mark this project as lost</button>`;
-        document.getElementById("btn-lost").onclick = () => openLostModal(d);
-      }
 
       function openLostModal(d) {
         const back = document.createElement("div");
@@ -971,6 +962,86 @@
           } finally {
             go.disabled = false;
             go.textContent = "Upload";
+          }
+        };
+      }
+
+      /**
+       * The upload posts raw bytes rather than JSON, because a PDF is binary and
+       * base64 inside JSON would inflate it by a third. Metadata therefore goes
+       * in the query string. This is the only call in the app shaped this way.
+       */
+      /**
+       * The terminal actions. Lost while active, reopen while lost, nothing at
+       * all once closed. Quiet in appearance, because both reverse a deliberate
+       * decision and neither is the recommended next step.
+       */
+      function renderDangerZone(d) {
+        const zone = $("danger-zone");
+
+        if (d.status === "Active") {
+          zone.innerHTML = `<button type="button" id="btn-lost">Mark this project as lost</button>`;
+          document.getElementById("btn-lost").onclick = () => openLostModal(d);
+          return;
+        }
+
+        if (d.status === "Lost") {
+          zone.innerHTML = `<button type="button" id="btn-reopen">Bring this project back into the pipeline</button>`;
+          document.getElementById("btn-reopen").onclick = () =>
+            openReopenModal(d);
+          return;
+        }
+
+        zone.innerHTML = "";
+      }
+
+      function openReopenModal(d) {
+        const back = document.createElement("div");
+        back.className = "modal-back";
+        back.innerHTML = `
+        <div class="modal" role="dialog" aria-modal="true">
+          <h2 style="color:var(--pine)">Reopen ${esc(d.pcode)}</h2>
+          <p class="lead">Everything already entered stays: the quote, the
+             commercials and any documents are untouched. The project returns to
+             wherever its records place it, and the loss record is removed.</p>
+
+          <label for="r-reason">Why is it coming back<span class="req">*</span></label>
+          <textarea id="r-reason" rows="3"
+            placeholder="The client has returned, the timeline has moved, the technical position has changed"></textarea>
+
+          <div class="err" id="r-err"></div>
+          <div class="row">
+            <button type="button" class="cancel" id="r-cancel">Leave it lost</button>
+            <button type="button" class="confirm" id="r-confirm"
+              style="background:var(--moss)">Reopen</button>
+          </div>
+        </div>`;
+        document.body.appendChild(back);
+
+        const close = () => back.remove();
+        document.getElementById("r-cancel").onclick = close;
+        back.onclick = (e) => {
+          if (e.target === back) close();
+        };
+
+        document.getElementById("r-confirm").onclick = async () => {
+          const err = document.getElementById("r-err");
+          const reason = document.getElementById("r-reason").value.trim();
+          if (!reason) {
+            err.textContent = "Say why it is being reopened.";
+            return;
+          }
+
+          const btn = document.getElementById("r-confirm");
+          btn.disabled = true;
+          btn.textContent = "Reopening...";
+          try {
+            await api.post("reopen", { pcode: d.pcode, reason });
+            location.reload();
+          } catch (e) {
+            btn.disabled = false;
+            btn.textContent = "Reopen";
+            err.textContent = e.message || "That did not work.";
           }
         };
       }

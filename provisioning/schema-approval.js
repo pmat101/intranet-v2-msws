@@ -46,6 +46,9 @@ const approval = [
       { name: "Conditions", type: "note" },
       { name: "TechnicalNotes", type: "note" },
       { name: "DeclineReason", type: "note" },
+      // A reworked proposal gets a fresh decision, so approvals are
+      // supersedable rather than one-per-project. The older rows stay.
+      { name: "Superseded", type: "boolean", indexed: true },
       { name: "RecordedByEmail", type: "text" },
       { name: "RecordedAtIso", type: "text" },
     ],

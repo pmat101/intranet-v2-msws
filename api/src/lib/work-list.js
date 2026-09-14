@@ -53,7 +53,12 @@ function stepsFor(project, idx) {
     .slice()
     .sort((a, b) => (Number(b.Version) || 0) - (Number(a.Version) || 0));
   const latest = proposals[0] || null;
-  const approval = (idx.approvals.get(project.PCode) || [])[0] || null;
+  // The current decision only. A superseded Declined must not outrank a live
+  // Approved, and Graph gives no ordering guarantee on the returned rows.
+  const approvalRows = (idx.approvals.get(project.PCode) || []).filter(
+    (a) => a.Superseded !== true,
+  );
+  const approval = approvalRows[0] || null;
   const acceptance = (idx.acceptance.get(project.PCode) || [])[0] || null;
   const handover = (idx.handover.get(project.PCode) || [])[0] || null;
   const closure = (idx.closure.get(project.PCode) || [])[0] || null;
