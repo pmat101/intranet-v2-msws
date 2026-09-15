@@ -3,7 +3,7 @@ const { verifyRequest } = require("../lib/auth");
 const { resolveRole } = require("../lib/roles");
 const { graph, SITE_ID } = require("../lib/graph");
 const { refreshStage } = require("../lib/stage-machine");
-
+const { sendProposalSent } = require("../lib/mail-bd");
 const MAY_SEND = ["BD", "Admin", "CSO", "COO"];
 
 function fail(status, code, message) {
@@ -122,6 +122,9 @@ async function handle(request, context) {
   }
 
   context.log(`${pcode} marked as sent to the client by ${caller.email}`);
+
+  const mail = await sendProposalSent(pcode, caller, { sentAtIso });
+  if (!mail.sent) context.log(`Sent mail not delivered: ${mail.reason}`);
 
   return {
     status: 200,

@@ -2,6 +2,7 @@ const { app } = require("@azure/functions");
 const { verifyRequest } = require("../lib/auth");
 const { resolveRole } = require("../lib/roles");
 const { graph, SITE_ID } = require("../lib/graph");
+const { sendProjectLost } = require("../lib/mail-bd");
 
 const MAY_LOSE = ["BD", "Admin", "CSO", "COO"];
 
@@ -178,6 +179,16 @@ async function handle(request, context) {
   context.log(
     `${pcode} marked lost at ${f.Stage} by ${caller.email}: ${p.reasonCategory}`,
   );
+
+  const mail = await sendProjectLost(pcode, caller, {
+    stageAtOutcome: f.Stage || "Lead Identified",
+    reasonCategory: p.reasonCategory,
+    reason: p.reason,
+    competitorName: p.competitorName,
+    quotedValue: quoted,
+    costIncurred: Number(p.costIncurred) || 0,
+  });
+  if (!mail.sent) context.log(`Lost mail not sent: ${mail.reason}`);
 
   return {
     status: 201,

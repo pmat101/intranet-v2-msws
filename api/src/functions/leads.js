@@ -4,7 +4,7 @@ const { resolveRole } = require("../lib/roles");
 const { validateLead } = require("../lib/validate");
 const { mintProject } = require("../lib/mint");
 const { graph, SITE_ID } = require("../lib/graph");
-const { sendLeadCreated } = require("../lib/mail-bd01a");
+const { sendLeadCreated } = require("../lib/mail-bd");
 
 const MAY_CREATE = ["BD", "Admin", "CSO", "COO"];
 

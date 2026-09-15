@@ -4,6 +4,7 @@ const { resolveRole } = require("../lib/roles");
 const { graph, SITE_ID } = require("../lib/graph");
 const { allocate } = require("../lib/sequences");
 const { refreshStage } = require("../lib/stage-machine");
+const { sendProjectReopened } = require("../lib/mail-bd");
 
 const MAY_REOPEN = ["BD", "Admin", "CSO", "COO"];
 
@@ -169,6 +170,13 @@ async function handle(request, context) {
   context.log(
     `${pcode} reopened by ${caller.email} from ${wasLostAt}, now ${staged.derived}`,
   );
+
+  const mail = await sendProjectReopened(pcode, caller, {
+    wasLostAt,
+    stage: staged.derived,
+    reason: p.reason,
+  });
+  if (!mail.sent) context.log(`Reopen mail not sent: ${mail.reason}`);
 
   return {
     status: 200,

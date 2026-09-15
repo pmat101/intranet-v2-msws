@@ -4,6 +4,7 @@ const { resolveRole } = require("../lib/roles");
 const { graph, SITE_ID } = require("../lib/graph");
 const { allocate } = require("../lib/sequences");
 const { refreshStage } = require("../lib/stage-machine");
+const { sendApprovalRecorded } = require("../lib/mail-bd");
 
 // Anyone in BD can record that a decision was given, because they are the ones
 // in the conversation. Who GAVE it is a separate field, and that is the part
@@ -251,6 +252,19 @@ async function handle(request, context) {
       (becameLost ? ", project marked lost" : "") +
       (previous.length ? `, superseding ${previous.length}` : ""),
   );
+
+  const mail = await sendApprovalRecorded(pcode, caller, {
+    decision: p.decision,
+    approvedByName: p.approvedByName,
+    approvedByEmail: p.approvedByEmail,
+    approvalRole: p.approvalRole,
+    obtainedHow: p.obtainedHow,
+    decisionDate: p.decisionDate,
+    conditions: p.conditions,
+    technicalNotes: p.technicalNotes,
+    declineReason: p.declineReason,
+  });
+  if (!mail.sent) context.log(`Approval mail not sent: ${mail.reason}`);
 
   return {
     status: 201,
