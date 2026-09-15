@@ -2,28 +2,64 @@
 //
 // Idempotent at two levels:
 //   - a list that exists is not recreated
-//   - a column that is missing from an existing list is added
+//   - a column missing from an existing list is added
 //
-// It never deletes or alters an existing column, because a column's
-// internal name is fixed at creation and changing types loses data.
-// Removing a column is a deliberate manual act.
+// It never deletes or alters an existing column, because a column's internal
+// name is fixed at creation and changing a type loses data. Removing something
+// is a deliberate manual act.
 //
-// Usage:  node provisioning/provision.js [--dry-run]
+// Usage:
+//   node provisioning/provision.js [--dry-run]
+//   node provisioning/provision.js --site="{host},{guid},{guid}" [--dry-run]
+//
+// The --site override exists so that another site can be provisioned WITHOUT
+// editing api/local.settings.json, which is how a development environment ends
+// up silently pointed at production.
 
 const fs = require("fs");
 const path = require("path");
 
-// Load settings BEFORE requiring graph.js, which reads process.env on load.
+// ORDER MATTERS, and getting it wrong fails silently.
+//
+// 1. Load local.settings.json into process.env.
+// 2. THEN apply any --site override, so it wins over the settings file.
+// 3. ONLY THEN require graph.js, which reads process.env.SITE_ID at load time
+//    and captures it into a constant. Anything set after that require is
+//    ignored, with no error: the old value is simply used.
 const settingsPath = path.join(__dirname, "..", "api", "local.settings.json");
 const settings = JSON.parse(fs.readFileSync(settingsPath, "utf8"));
 for (const [key, value] of Object.entries(settings.Values || {})) {
   process.env[key] = value;
 }
 
+const siteArg = process.argv.find((a) => a.startsWith("--site="));
+if (siteArg) {
+  process.env.SITE_ID = siteArg
+    .slice("--site=".length)
+    .replace(/^["']|["']$/g, "");
+}
+
 const { graph, SITE_ID } = require("../api/src/lib/graph");
 const { lists } = require("./schema");
 
 const dryRun = process.argv.includes("--dry-run");
+
+/**
+ * A doubled schema would attempt duplicate creation, which usually means a
+ * patch was applied twice. Fail loudly rather than half-creating things.
+ */
+function assertNoDuplicates() {
+  const seen = new Set();
+  for (const spec of lists) {
+    if (seen.has(spec.name)) {
+      throw new Error(
+        `schema.js defines "${spec.name}" more than once. This usually means a ` +
+          `patch was applied twice. Fix the schema before provisioning.`,
+      );
+    }
+    seen.add(spec.name);
+  }
+}
 
 function toColumn(col) {
   const d = { name: col.name };
@@ -40,6 +76,7 @@ function toColumn(col) {
       d.number = { decimalPlaces: "none" };
       break;
     case "money":
+      // Integer paise. See BackendSchema.md section 1.
       d.number = { decimalPlaces: "none" };
       break;
     case "dateTime":
@@ -57,22 +94,13 @@ function toColumn(col) {
   return d;
 }
 
-function assertNoDuplicates() {
-  const seen = new Set();
-  for (const spec of lists) {
-    if (seen.has(spec.name)) {
-      throw new Error(
-        `schema.js defines "${spec.name}" more than once. This usually means a ` +
-        `patch was applied twice. Fix the schema before provisioning.`,
-      );
-    }
-    seen.add(spec.name);
-  }
-}
-
 async function main() {
   assertNoDuplicates();
+
   console.log(`Site: ${SITE_ID}`);
+  if (siteArg) {
+    console.log("Site taken from --site, overriding local.settings.json.");
+  }
   if (dryRun) console.log("DRY RUN, nothing will be written.\n");
 
   const existing = await graph(
