@@ -1,0 +1,1015 @@
+<!doctype html>
+<html lang="en-IN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Perfact Intranet, forms</title>
+    <link rel="stylesheet" href="/assets/tokens.css" />
+    <style>
+      body {
+        padding-bottom: 64px;
+      }
+      header.bar {
+        background: linear-gradient(135deg, var(--pine-a), var(--pine-b));
+        color: var(--hero-ink);
+        padding: 26px 0 0;
+      }
+      .wrap {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+      header.bar h1 {
+        margin: 0;
+        font-size: 1.5rem;
+        font-weight: 700;
+      }
+      header.bar .sub {
+        font-size: 0.85rem;
+        color: var(--hero-sub);
+        margin-top: 4px;
+      }
+      header.bar .who {
+        font-size: 0.78rem;
+        color: var(--hero-sub);
+        margin-top: 10px;
+      }
+
+      .searchbar {
+        margin: 22px 0 0;
+        padding-bottom: 22px;
+      }
+      .searchbar input {
+        font: inherit;
+        font-size: 0.95rem;
+        width: 100%;
+        padding: 12px 16px;
+        border-radius: var(--radius-input);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--hero-ink);
+      }
+      .searchbar input::placeholder {
+        color: var(--hero-sub);
+      }
+      .searchbar input:focus {
+        outline: none;
+        border-color: var(--amber);
+        background: rgba(255, 255, 255, 0.16);
+      }
+
+      .jump {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        margin: 20px 0 0;
+      }
+      .jump a {
+        font-size: 0.78rem;
+        font-weight: 600;
+        text-decoration: none;
+        color: var(--ink-soft);
+        border: 1px solid var(--line);
+        padding: 6px 12px;
+        border-radius: 999px;
+      }
+      .jump a:hover {
+        border-color: var(--amber);
+        color: var(--amber);
+      }
+      .jump .n {
+        font-family: var(--font-mono);
+        opacity: 0.6;
+        margin-left: 4px;
+      }
+
+      section.block {
+        margin-top: 30px;
+      }
+      .head {
+        display: flex;
+        align-items: baseline;
+        gap: 12px;
+        margin-bottom: 12px;
+        flex-wrap: wrap;
+      }
+      .head h2 {
+        margin: 0;
+        font-size: 1rem;
+        color: var(--pine);
+      }
+      .head .sub {
+        font-size: 0.78rem;
+        color: var(--ink-soft);
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(268px, 1fr));
+        gap: 12px;
+      }
+      a.card {
+        display: block;
+        text-decoration: none;
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: var(--radius-card);
+        padding: 15px 18px;
+      }
+      a.card:hover {
+        border-color: var(--amber);
+      }
+      a.card .code {
+        font-family: var(--font-mono);
+        font-size: 0.72rem;
+        font-weight: 600;
+        color: var(--amber);
+        letter-spacing: 0.04em;
+      }
+      a.card .name {
+        font-size: 0.92rem;
+        color: var(--ink);
+        margin-top: 5px;
+        font-weight: 600;
+        line-height: 1.3;
+      }
+      a.card .desc {
+        font-size: 0.76rem;
+        color: var(--ink-soft);
+        margin-top: 5px;
+        line-height: 1.4;
+      }
+
+      .empty {
+        background: var(--card);
+        border: 1px dashed var(--line);
+        border-radius: var(--radius-card);
+        padding: 40px 24px;
+        text-align: center;
+        color: var(--ink-soft);
+        font-size: 0.9rem;
+      }
+      button.primary {
+        font: inherit;
+        font-weight: 600;
+        cursor: pointer;
+        border: none;
+        background: var(--amber);
+        color: #fff;
+        padding: 11px 24px;
+        border-radius: var(--radius-input);
+      }
+      .gate {
+        padding: 60px 0;
+        text-align: center;
+        color: var(--ink-soft);
+      }
+      .note {
+        font-size: 0.78rem;
+        color: var(--ink-soft);
+        margin-top: 26px;
+        padding-top: 16px;
+        border-top: 1px solid var(--line);
+      }
+      .hidden {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="bar">
+      <div class="wrap">
+        <h1>Perfact Intranet</h1>
+        <div class="sub">Active forms. 87 forms across 10 groups.</div>
+        <div class="who" id="who">Checking your access...</div>
+        <div class="searchbar">
+          <input
+            type="search"
+            id="q"
+            placeholder="Search by code, name or what it does. Try TF07, leave, vendor, invoice."
+            autocomplete="off"
+            disabled
+          />
+        </div>
+      </div>
+    </header>
+
+    <main class="wrap">
+      <div id="gate" class="gate hidden"></div>
+      <div id="content" class="hidden">
+        <div class="jump" id="jump"></div>
+        <div id="sections"></div>
+        <p class="note" id="foot"></p>
+      </div>
+    </main>
+
+    <script src="/lib/vendor/msal-browser.min.js"></script>
+    <script type="module">
+      import { initAuth, signIn, getAccount } from "/lib/auth.js";
+
+      // The Apps Script web app that still serves every form. Each card links to
+      // ?page=CODE on this address, exactly as the legacy homepage did.
+      //
+      // This page is the new front door: sign-in is Entra, so anyone with a
+      // perfactgroup.in account reaches it. The forms behind it are still served by
+      // Apps Script and keep whatever access rules that deployment carries.
+      const SCRIPT_URL =
+        "https://script.google.com/macros/s/AKfycbypndU6QAEoee4oSMW0qREKfPV-qnPpUXaQ6ryoTHFaSz5-hfTUIYqphGd1WplKbyEP/exec";
+
+      const FORMS = [
+        {
+          id: "performance",
+          title: "Performance Forms",
+          subtitle: "Weekly and monthly team tracking",
+          items: [
+            {
+              page: "WPF01",
+              search:
+                "WPF01 Weekly performance form all teams To record weekly performance of all teams",
+              code: "WPF 01",
+              name: "Weekly Performance - All Teams",
+              desc: "To record weekly performance of all teams",
+            },
+            {
+              page: "WPF02",
+              search: "WPF02 Weekly performance of Lakes team",
+              code: "WPF 02",
+              name: "Weekly Performance - Lakes",
+              desc: "To record weekly performance of Lakes team",
+            },
+            {
+              page: "WPF03",
+              search: "WPF03 Weekly performance of Fountain team",
+              code: "WPF 03",
+              name: "Weekly Performance - Fountain",
+              desc: "To record weekly performance of Fountain team",
+            },
+            {
+              page: "WPF04",
+              search: "WPF04 Weekly performance of Reservoir team",
+              code: "WPF 04",
+              name: "Weekly Performance - Reservoir",
+              desc: "To record weekly performance of Reservoir team",
+            },
+            {
+              page: "WPF05",
+              search: "WPF05 Monthly performance of Arctic team",
+              code: "WPF 05",
+              name: "Monthly Performance - Arctic",
+              desc: "To record monthly performance of Arctic team",
+            },
+            {
+              page: "WPF06",
+              search: "WPF06 Weekly performance of Glacier team",
+              code: "WPF 06",
+              name: "Weekly Performance - Glacier",
+              desc: "To record weekly performance of Glacier team",
+            },
+            {
+              page: "MPF01",
+              search: "MPF01 Monthly performance of River team",
+              code: "MPF 01",
+              name: "Monthly Performance - River",
+              desc: "To record monthly performance of River team",
+            },
+            {
+              page: "MPF02",
+              search: "MPF02 Monthly performance of Empaneled Experts",
+              code: "MPF 02",
+              name: "Monthly Performance - Empaneled Experts",
+              desc: "To record monthly performance of Empaneled Experts",
+            },
+            {
+              page: "MPF03",
+              search: "MPF03 Monthly performance of FAs FAAs FAEs",
+              code: "MPF 03",
+              name: "Monthly Performance - FAs, FAAs & FAEs",
+              desc: "To record monthly performance of FAs, FAAs and FAEs",
+            },
+          ],
+        },
+        {
+          id: "workflow",
+          title: "Workflow Forms",
+          subtitle: "Technical formats and response flows",
+          items: [
+            {
+              page: "TF01",
+              search: "TF01 requisition slip for printing",
+              code: "TF 01",
+              name: "Requisition Slip for Printing",
+              desc: "Technical Format for requisition slip for printing",
+            },
+            {
+              page: "TF02",
+              search: "TF02 EAC MOM to Team EIA",
+              code: "TF 02",
+              name: "EAC MOM to Team EIA",
+              desc: "Technical Format for EAC MOM to Team EIA",
+            },
+            {
+              page: "TF04",
+              search: "TF04 long leave relieving work handover",
+              code: "TF 04",
+              name: "Long Leave / Relieving Handover",
+              desc: "Technical Format for long leave / relieving work handover",
+            },
+            {
+              page: "TF05",
+              search: "TF05 handover PPT EAC meeting",
+              code: "TF 05",
+              name: "Handover PPT - EAC Meeting",
+              desc: "Technical Format for Handover PPT_EAC Meeting",
+            },
+            {
+              page: "TF06",
+              search: "TF06 handover uploading documents",
+              code: "TF 06",
+              name: "Handover Uploading Documents",
+              desc: "Technical Format for Handover Uploading documents",
+            },
+            {
+              page: "TF07",
+              search: "TF07 accounts information",
+              code: "TF 07",
+              name: "Accounts Information",
+              desc: "Technical Format for Accounts Information",
+            },
+            {
+              page: "TF08",
+              search: "TF08 closing project",
+              code: "TF 08",
+              name: "Closing Project",
+              desc: "Technical Format for Closing Project",
+            },
+            {
+              page: "TF09",
+              search: "TF09 documents sharing between two sections teams",
+              code: "TF 09",
+              name: "Documents Sharing Between Teams",
+              desc: "Technical Format for documents sharing between two sections/teams",
+            },
+            {
+              page: "TF10",
+              search: "TF10 handover document to BH EIA coordinator",
+              code: "TF 10",
+              name: "Handover to BH / EIA Coordinator",
+              desc: "Technical Format for Handover document to BH/EIA coordinator",
+            },
+            {
+              page: "TF11",
+              search: "TF11 documents shared with EIA Coordinator for review",
+              code: "TF 11",
+              name: "Documents Shared for Review",
+              desc: "Documents shared with EIA Coordinator for review",
+            },
+            {
+              page: "TF12",
+              search:
+                "TF12 submission between document uploading and Agenda Enlistment to QCC for review",
+              code: "TF 12",
+              name: "Document Uploading to QCC",
+              desc: "To be submitted between document uploading and Agenda Enlistment to QCC for review",
+            },
+            {
+              page: "TF13",
+              search: "TF13 QCC response to team requests",
+              code: "TF 13",
+              name: "QCC Response",
+              desc: "To be submitted by QCC in response to Team requests",
+            },
+            {
+              page: "TF14",
+              search: "TF14 coordination meeting agenda",
+              code: "TF 14",
+              name: "Coordination Meeting - Agenda",
+              desc: "Technical Format for Coordination meeting - Agenda",
+            },
+            {
+              page: "TF15",
+              search: "TF15 coordination meeting mom",
+              code: "TF 15",
+              name: "Coordination Meeting - MoM",
+              desc: "Technical Format for Coordination meeting - MoM",
+            },
+            {
+              page: "TF16",
+              search: "TF16 agenda enlistment",
+              code: "TF 16",
+              name: "Agenda Enlistment",
+              desc: "for Agenda Enlistment",
+            },
+            {
+              page: "TF17",
+              search: "TF17 MoM for appraisal meeting",
+              code: "TF 17",
+              name: "MoM for Appraisal Meeting",
+              desc: "MoM for Appraisal meeting",
+            },
+            {
+              page: "TF18",
+              search: "TF18 updated TRF",
+              code: "TF 18",
+              name: "Updated TRF",
+              desc: "for Updated TRF",
+            },
+            {
+              page: "TF19",
+              search: "TF19 initial pages",
+              code: "TF 19",
+              name: "Initial Pages",
+              desc: "for Initial Pages",
+            },
+            {
+              page: "TF20",
+              search: "TF20 job allocation",
+              code: "TF 20",
+              name: "Job Allocation",
+              desc: "for Job Allocation",
+            },
+            {
+              page: "TF21",
+              search: "TF21 accounts team information",
+              code: "TF 21",
+              name: "Accounts / Team Information",
+              desc: "Technical Format for Accounts / Team Information",
+            },
+            {
+              page: "TF22",
+              search:
+                "TF22 information to account section wrt submission completion of project",
+              code: "TF 22",
+              name: "Info to Accounts Section",
+              desc: "Information to Account section wrt submission / completion of project",
+            },
+            {
+              page: "TF23",
+              search:
+                "TF23 covers govt fee and petty cash requests to be paid by client or PG",
+              code: "TF 23",
+              name: "Govt Fee & Petty Cash Request",
+              desc: "Covers Govt fee and petty cash requests to be paid by client or PG",
+            },
+            {
+              page: "TF24",
+              search: "TF24 EDS raised",
+              code: "TF 24",
+              name: "EDS Raised",
+              desc: "for EDS raised",
+            },
+            {
+              page: "TF25",
+              search: "TF25 ADS raised",
+              code: "TF 25",
+              name: "ADS Raised",
+              desc: "for ADS raised",
+            },
+            {
+              page: "TF26",
+              search: "TF26 plagiarism check",
+              code: "TF 26",
+              name: "Plagiarism Check",
+              desc: "for Plagiarism check",
+            },
+            {
+              page: "TF27",
+              search: "TF27 qcc marking quality assurance",
+              code: "TF 27",
+              name: "QCC Marking",
+              desc: "QCC Marking for Quality assurance of EIA as per description page 65 of V3 of NABET scheme",
+            },
+            {
+              page: "TF31",
+              search: "TF31 accounts team information",
+              code: "TF 31",
+              name: "Accounts / Team Information",
+              desc: "Technical Format for Accounts / Team Information",
+            },
+          ],
+        },
+        {
+          id: "questionnaire",
+          title: "Questionnaire Forms",
+          subtitle: "Field capture and study sheets",
+          items: [
+            {
+              page: "FQ01",
+              search: "FQ01 FAE reports questionnaire AQ",
+              code: "FQ 01",
+              name: "AQ Questionnaire",
+              desc: "FAE reports Questionnaire - AQ",
+            },
+            {
+              page: "FQ02",
+              search: "FQ02 AQ Dispersion Model Questionnaire",
+              code: "FQ 02",
+              name: "AQ Dispersion Model",
+              desc: "AQ Dispersion Model Questionnaire",
+            },
+            {
+              page: "FQ03",
+              search: "FQ03 FAE reports questionnaire RH",
+              code: "FQ 03",
+              name: "RH Questionnaire",
+              desc: "FAE reports Questionnaire - RH",
+            },
+            {
+              page: "FQ04",
+              search: "FQ04 FAE reports questionnaire QRA",
+              code: "FQ 04",
+              name: "QRA Questionnaire",
+              desc: "FAE reports Questionnaire - QRA",
+            },
+            {
+              page: "FQ05",
+              search: "FQ05 FAE reports questionnaire EB",
+              code: "FQ 05",
+              name: "EB Questionnaire",
+              desc: "FAE reports Questionnaire - EB",
+            },
+            {
+              page: "FQ06",
+              search: "FQ06 FAE reports questionnaire Geo HG",
+              code: "FQ 06",
+              name: "Geo & HG Questionnaire",
+              desc: "FAE reports Questionnaire - Geo & HG",
+            },
+            {
+              page: "FQ07",
+              search: "FQ07 FAE reports questionnaire LU",
+              code: "FQ 07",
+              name: "LU Questionnaire",
+              desc: "FAE reports Questionnaire - LU",
+            },
+            {
+              page: "FQ08",
+              search: "FQ08 FAE reports questionnaire SE",
+              code: "FQ 08",
+              name: "SE Questionnaire",
+              desc: "FAE reports Questionnaire - SE",
+            },
+            {
+              page: "FQ09",
+              search: "FQ09 environmental sensitivity KML topo maps",
+              code: "FQ 09",
+              name: "Environmental Sensitivity",
+              desc: "For Environmental Sensitivity, KML and Topo maps",
+            },
+            {
+              page: "FQ10",
+              search: "FQ10 LU and other maps",
+              code: "FQ 10",
+              name: "LU & Other Maps",
+              desc: "For LU and other maps",
+            },
+            {
+              page: "FQ11",
+              search: "FQ11 FAE reports questionnaire traffic",
+              code: "FQ 11",
+              name: "Traffic Questionnaire",
+              desc: "FAE reports Questionnaire - Traffic",
+            },
+            {
+              page: "FQ12",
+              search: "FQ12 FAE reports questionnaire SC",
+              code: "FQ 12",
+              name: "SC Questionnaire",
+              desc: "FAE reports Questionnaire - SC",
+            },
+            {
+              page: "FQ13",
+              search: "FQ13 LCA CFP information sheet",
+              code: "FQ 13",
+              name: "LCA/CFP Info Sheet",
+              desc: "LCA/CFP information sheet",
+            },
+            {
+              page: "FQ14",
+              search: "FQ14 WFP information sheet",
+              code: "FQ 14",
+              name: "WFP Info Sheet",
+              desc: "WFP information sheet",
+            },
+            {
+              page: "FQ15",
+              search: "FQ15 CBA information sheet",
+              code: "FQ 15",
+              name: "CBA Info Sheet",
+              desc: "CBA information sheet",
+            },
+          ],
+        },
+        {
+          id: "response",
+          title: "Response Forms",
+          subtitle: "Reply and closure workflows",
+          items: [
+            {
+              page: "FR01",
+              search: "FR01 AQ Report",
+              code: "FR 01",
+              name: "AQ Report",
+              desc: "for AQ Report",
+            },
+            {
+              page: "FR02",
+              search: "FR02 RH Report",
+              code: "FR 02",
+              name: "RH Report",
+              desc: "for RH Report",
+            },
+            {
+              page: "FR03",
+              search: "FR03 QRA Report",
+              code: "FR 03",
+              name: "QRA Report",
+              desc: "for QRA Report",
+            },
+            {
+              page: "FR04",
+              search: "FR04 EB Report",
+              code: "FR 04",
+              name: "EB Report",
+              desc: "for EB Report",
+            },
+            {
+              page: "FR05",
+              search: "FR05 Geo HG Report",
+              code: "FR 05",
+              name: "Geo & HG Report",
+              desc: "for Geo & HG Report",
+            },
+            {
+              page: "FR06",
+              search: "FR06 LU Report",
+              code: "FR 06",
+              name: "LU Report",
+              desc: "for LU Report",
+            },
+            {
+              page: "FR07",
+              search: "FR07 SE Report",
+              code: "FR 07",
+              name: "SE Report",
+              desc: "for SE Report",
+            },
+            {
+              page: "FR08",
+              search: "FR08 Traffic Report",
+              code: "FR 08",
+              name: "Traffic Report",
+              desc: "for Traffic Report",
+            },
+            {
+              page: "FR09",
+              search: "FR09 SC Report",
+              code: "FR 09",
+              name: "SC Report",
+              desc: "for SC Report",
+            },
+            {
+              page: "FR10",
+              search: "FR10 TRF Response",
+              code: "FR 10",
+              name: "TRF Response",
+              desc: "for TRF Response",
+            },
+          ],
+        },
+        {
+          id: "surveys",
+          title: "Survey Forms",
+          subtitle: "Field surveys and checklists",
+          items: [
+            {
+              page: "SF01",
+              search: "SF01 socio economic village survey",
+              code: "SF 01",
+              name: "Socio Economic Village Survey",
+              desc: "Socio Economic Village Survey",
+            },
+            {
+              page: "SF02",
+              search: "SF02 EB project checklist",
+              code: "SF 02",
+              name: "EB Project Checklist",
+              desc: "EB Project Checklist",
+            },
+          ],
+        },
+        {
+          id: "admin",
+          title: "Admin Forms",
+          subtitle: "Operations and procurement",
+          items: [
+            {
+              page: "ADM01",
+              search: "ADM01 client visit checklist",
+              code: "ADM 01",
+              name: "Client Visit Checklist",
+              desc: "Checklist for client visits",
+            },
+            {
+              page: "ADM02",
+              search: "ADM02 common purchase form",
+              code: "ADM 02",
+              name: "Common Purchase Form",
+              desc: "Common purchase requisition workflow",
+            },
+            {
+              page: "ADM03",
+              search: "ADM03 vehicle requirement",
+              code: "ADM 03",
+              name: "Vehicle Requirement",
+              desc: "Vehicle requirement requests",
+            },
+            {
+              page: "ADM04",
+              search: "ADM04 vehicle maintenance",
+              code: "ADM 04",
+              name: "Vehicle Maintenance",
+              desc: "Vehicle maintenance tracking",
+            },
+            {
+              page: "ADM05",
+              search: "ADM05 travel booking requisition",
+              code: "ADM 05",
+              name: "Travel Booking Requisition",
+              desc: "Travel booking requests",
+            },
+            {
+              page: "ADM06",
+              search: "ADM06 hotspot requirement",
+              code: "ADM 06",
+              name: "Hotspot Requirement",
+              desc: "Hotspot requirement requests",
+            },
+            {
+              page: "ADM07",
+              search: "ADM07 vendor approval form",
+              code: "ADM 07",
+              name: "Vendor Approval Form",
+              desc: "Vendor approval workflow",
+            },
+            {
+              page: "ADM08",
+              search: "ADM08 vendor review form",
+              code: "ADM 08",
+              name: "Vendor Review Form",
+              desc: "Vendor review workflow",
+            },
+            {
+              page: "ADM09",
+              search: "ADM09 Follow up responsibility form",
+              code: "ADM 09",
+              name: "Follow up responsibility form",
+              desc: "Follow up responsibility workflow",
+            },
+          ],
+        },
+        {
+          id: "bd",
+          title: "Business Development Forms",
+          subtitle: "BD pipeline",
+          items: [
+            {
+              page: "BD00",
+              search: "bd00 client cancellation form",
+              code: "BD 00",
+              name: "Client Cancellation Form",
+              desc: "Client cancellation handling",
+            },
+            {
+              page: "BD01A",
+              search: "BD01A offer pre screen form",
+              code: "BD 01(A)",
+              name: "Offer Pre-Screen",
+              desc: "Offer pre-screen form before issue",
+            },
+            {
+              page: "BD01B",
+              search:
+                "BD01B project proposal value finalization top management",
+              code: "BD 01(B)",
+              name: "Proposal Value Finalization",
+              desc: "Project proposal value finalization by top management",
+            },
+            {
+              page: "BD02",
+              search: "BD02 project won",
+              code: "BD 02",
+              name: "Project Won",
+              desc: "Project won workflow",
+            },
+            {
+              page: "BD03",
+              search: "BD03 team intimation of details",
+              code: "BD 03",
+              name: "Team Intimation of Details",
+              desc: "Project team intimation about details of project",
+            },
+            {
+              page: "BD04",
+              search: "BD04 accounts section data maintenance",
+              code: "BD 04",
+              name: "Accounts Section Data Maintenance",
+              desc: "Accounts section data maintenance",
+            },
+            {
+              page: "BD05",
+              search: "BD05 project closure form",
+              code: "BD 05",
+              name: "Project Closure Form",
+              desc: "Project closure workflow",
+            },
+          ],
+        },
+        {
+          id: "accounts",
+          title: "Accounts Forms",
+          subtitle: "Commercial and vendor workflows",
+          items: [
+            {
+              page: "ACC01",
+              search: "ACC01 vendor registration form",
+              code: "ACC 01",
+              name: "Vendor Registration Form",
+              desc: "Vendor registration",
+            },
+            {
+              page: "ACC02",
+              search: "ACC02 vendor bill form",
+              code: "ACC 02",
+              name: "Vendor Bill Form",
+              desc: "Vendor bill submission",
+            },
+            {
+              page: "ACC03",
+              search: "ACC03 purchase request form",
+              code: "ACC 03",
+              name: "Purchase Request Form",
+              desc: "Purchase request workflow",
+            },
+          ],
+        },
+        {
+          id: "hr",
+          title: "HR Forms",
+          subtitle: "People and hiring workflows",
+          items: [
+            {
+              page: "HR01",
+              search: "HR01 interview evaluation form",
+              code: "HR 01",
+              name: "Interview Evaluation Form",
+              desc: "Interview evaluation",
+            },
+            {
+              page: "HR02",
+              search: "HR02 PG exit interview form",
+              code: "HR 02",
+              name: "PG Exit Interview Form",
+              desc: "Employee exit interview",
+            },
+            {
+              page: "HR03",
+              search: "HR03 employee requisition form",
+              code: "HR 03",
+              name: "Employee Requisition Form",
+              desc: "Employee requisition workflow",
+            },
+          ],
+        },
+        {
+          id: "council",
+          title: "Council Forms",
+          subtitle: "Governance and review forms",
+          items: [
+            {
+              page: "CF001",
+              search: "CF001 council mom",
+              code: "CF 001",
+              name: "Council MOM",
+              desc: "Council meeting minutes",
+            },
+            {
+              page: "CF002",
+              search: "CF002 half yearly council performance reporting",
+              code: "CF 002",
+              name: "Half Yearly Council Performance Reporting",
+              desc: "Council performance reporting",
+            },
+          ],
+        },
+      ];
+
+      const $ = (id) => document.getElementById(id);
+      const esc = (s) =>
+        String(s === undefined || s === null ? "" : s)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+
+      function cardHtml(item) {
+        return `
+    <a class="card" href="${SCRIPT_URL}?page=${encodeURIComponent(item.page)}"
+       target="_blank" rel="noopener"
+       data-search="${esc((item.code + " " + item.name + " " + item.desc + " " + item.search).toLowerCase())}">
+      <div class="code">${esc(item.code)}</div>
+      <div class="name">${esc(item.name)}</div>
+      <div class="desc">${esc(item.desc)}</div>
+    </a>`;
+      }
+
+      function render() {
+        $("jump").innerHTML = FORMS.map(
+          (s) =>
+            `<a href="#${s.id}">${esc(s.title.replace(/ Forms$/, ""))}<span class="n">${s.items.length}</span></a>`,
+        ).join("");
+
+        $("sections").innerHTML = FORMS.map(
+          (s) => `
+    <section class="block" id="${s.id}">
+      <div class="head">
+        <h2>${esc(s.title)}</h2>
+        <span class="sub">${esc(s.subtitle)}</span>
+      </div>
+      <div class="grid">${s.items.map(cardHtml).join("")}</div>
+    </section>`,
+        ).join("");
+
+        const total = FORMS.reduce((t, s) => t + s.items.length, 0);
+        $("foot").textContent =
+          `${total} forms. These open in the existing forms system in a new tab. ` +
+          `If a form does not open, it is an access setting on that system rather ` +
+          `than on this page.`;
+      }
+
+      // Search hides cards as you type, and hides a whole section once none of its
+      // cards match, so the page does not leave empty headings behind.
+      function filter(term) {
+        const q = term.trim().toLowerCase();
+        for (const section of document.querySelectorAll("section.block")) {
+          let shown = 0;
+          for (const card of section.querySelectorAll("a.card")) {
+            const hit = !q || card.dataset.search.includes(q);
+            card.classList.toggle("hidden", !hit);
+            if (hit) shown++;
+          }
+          section.classList.toggle("hidden", shown === 0);
+        }
+        const anyShown = document.querySelectorAll(
+          "a.card:not(.hidden)",
+        ).length;
+        let empty = document.getElementById("no-match");
+        if (!anyShown && !empty) {
+          empty = document.createElement("div");
+          empty.id = "no-match";
+          empty.className = "empty";
+          empty.textContent =
+            "Nothing matches that. Try a form code, or a word from its name.";
+          $("sections").appendChild(empty);
+        } else if (anyShown && empty) {
+          empty.remove();
+        }
+      }
+
+      async function start() {
+        await initAuth();
+
+        if (!getAccount()) {
+          $("who").textContent = "Not signed in";
+          const g = $("gate");
+          g.classList.remove("hidden");
+          g.innerHTML =
+            "<p>Sign in with your Perfact account to see the forms.</p>";
+          const b = document.createElement("button");
+          b.className = "primary";
+          b.textContent = "Sign in";
+          b.onclick = () => signIn();
+          g.appendChild(b);
+          return;
+        }
+
+        // Any perfactgroup.in account may see this page. There is no role check:
+        // it is a directory of links, and the forms behind it apply their own rules.
+        const acct = getAccount();
+        $("who").textContent = `${acct.name || acct.username}`;
+        $("content").classList.remove("hidden");
+        $("q").disabled = false;
+
+        render();
+        $("q").addEventListener("input", (e) => filter(e.target.value));
+
+        if (SCRIPT_URL.startsWith("PASTE_")) {
+          $("foot").textContent =
+            "The forms system address has not been set yet, so these links will not " +
+            "work. Set SCRIPT_URL at the top of this page.";
+        }
+      }
+
+      start();
+    </script>
+  </body>
+</html>
