@@ -6,6 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>BD03</title>
     <?!= HtmlService.createHtmlOutputFromFile('shared-styles').getContent(); ?>
+    <style>
+      .general-conditions-options {
+        display: flex;
+        align-items: center;
+        gap: 48px;
+      }
+      .general-conditions-options .form-col-choice {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+    </style>
   </head>
   <body>
     <div class="form-wrapper">
@@ -320,7 +332,7 @@
 
         <div class="form-group">
           <label class="form-label">General Conditions applicability</label>
-          <div class="form-row">
+          <div class="form-row general-conditions-options">
             <div class="form-col-choice">
               <input
                 type="radio"
@@ -535,16 +547,7 @@
               data.team || [],
               "Select",
             );
-            fillSelect(
-              document.getElementById("csuite_officer_name"),
-              data.csuite || [],
-              "Select",
-            );
-            fillSelect(
-              document.getElementById("eia_coordinator_name"),
-              data.eiaCoordinator || [],
-              "Select",
-            );
+
             fillSelect(
               document.getElementById("project_location_country"),
               data.country || [],
@@ -556,35 +559,97 @@
               data.workType || [],
               "Select",
             );
-            fillSelect(
-              document.getElementById("category"),
-              data.category || [],
-              "Select",
-            );
-            fillSelect(
-              document.getElementById("service_type_code_nabet_sector"),
-              data.sector || [],
-              "Select",
-            );
-            fillSelect(
-              document.getElementById("baseline_season"),
-              data.baselineSeason || [],
-              "Select",
-            );
+
             fillSelect(
               document.getElementById("eac_name"),
               data.eac || [],
               "Select",
             );
+
             fillSelect(
               document.getElementById("pg_company"),
               data.pgCompany || [],
               "Select",
             );
+
+            fillSelect(
+              document.getElementById("csuite_officer_name"),
+              [
+                "Praveen Bhargava",
+                "Rachna Bhargava",
+                "Dr. Nipun Bhargava",
+                "Kushal Bhargava"
+              ],
+              "Select",
+            );
+
+            fillSelect(
+              document.getElementById("eia_coordinator_name"),
+              [
+                "Alok Agrawal",
+                "Dr. Anil Kumar",
+                "Dr. Nipun Bhargava",
+                "Deepika Arora",
+                "Disha Patel",
+                "Kantharaj Kempanna",
+                "Muthukuman Ganpathi Narayanan",
+                "Neha Aggarwal",
+                "Partho Sarthi Mukherjee",
+                "Praveen Bhargava",
+                "Rachna Bhargava",
+                "Rajneesh Kumar Maurya",
+                "Ramdas Atmaram Wani",
+                "Richa Aggarwal",
+                "Saloni Sharma",
+                "Santosh Pant",
+                "Dr. Suresh Chandra Jain",
+                "N/A"
+              ],
+              "Select",
+            );
+
+            fillSelect(
+              document.getElementById("category"),
+              [
+                "A",
+                "B1",
+                "B2",
+                "N/A"
+              ],
+              "Select",
+            );
+
+            fillSelect(
+              document.getElementById("service_type_code_nabet_sector"),
+              [
+                "1A","1B","1D",
+                "2A","2B",
+                "3A","3B",
+                "4A","4B","4C","4D","4F",
+                "5A","5B","5C","5D","5E","5F","5G","5H","5J",
+                "6A","6B",
+                "7A","7B","7C","7D","7DA","7E","7F","7G","7H","7I",
+                "8A","8B",
+                "71","72","73","74","75","76","77","78","79","80","81","82",
+                "N/A","others"
+              ],
+              "Select",
+            );
+
+            fillSelect(
+              document.getElementById("baseline_season"),
+              [
+                "Summer (Mar to May)",
+                "Post-monsoon (Oct to Dec)",
+                "Winter (Dec to Feb)",
+                "N/A",
+                "others"
+              ],
+              "Select",
+            );
           })
           .getDropdownData();
       }
-
       function fillSelect(select, items, placeholder) {
         if (!select) return;
         select.innerHTML = "";
