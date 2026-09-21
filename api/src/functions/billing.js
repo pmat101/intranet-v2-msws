@@ -190,7 +190,11 @@ async function handle(request, context) {
     },
   });
 
-  const staged = await refreshStage(project);
+  // findOne returns a Graph item with fields nested under `fields`.
+  // refreshStage expects the project fields flattened so it can compare the
+  // stored stage correctly. Keeping the stored stage here prevents a billing
+  // submission from resetting the stage clock from its real stage.
+  const staged = await refreshStage({ id: project.id, ...project.fields });
   if (staged.changed) {
     context.log(`${pcode} moved ${staged.stored} to ${staged.derived}`);
   }
