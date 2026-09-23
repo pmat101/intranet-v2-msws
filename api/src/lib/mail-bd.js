@@ -406,10 +406,12 @@ async function sendHandoverFiled(pcode, caller, d) {
     ...(d.otherPersonEmails || []),
   ].filter(Boolean);
 
+  // No amounts. The delivery team receives this mail and should not see the
+  // contract value; milestone amounts would reveal it by simple addition.
+  // Accounts has the figures in the billing-start mail, management in the
+  // commercials mail. Decision by management, 23 September 2026.
   const milestoneRows = (d.milestones || [])
-    .map((m) =>
-      row(`${m.name}, ${m.percent} per cent`, `${lakh(m.amount)} lakh`),
-    )
+    .map((m) => row(m.name, `${m.percent} per cent of the contract`))
     .join("");
 
   const personRows = (d.otherPersons || [])
@@ -442,7 +444,6 @@ async function sendHandoverFiled(pcode, caller, d) {
           row("Baseline Season", d.baselineSeason) +
           row("EAC", d.eacName) +
           row("Project Start", d.projectStartDate) +
-          row("Work Order Value", `${lakh(d.workOrderValue)} lakh`) +
           row("Gantt Chart", d.ganttChartLink),
       ) +
         section("Any other person whom details to be shared", personRows) +
