@@ -169,7 +169,12 @@ async function mintProject(payload, caller) {
     ClientRef: payload.clientRef || "",
     PCode: pcode,
     ProposalID: proposalID,
-    ProjectName: payload.projectName || payload.activityProposed || "",
+    // A text column, indexed, so SharePoint caps it at 255 characters. It is a
+    // display label; the full activity is kept in ActivityProposed, a note
+    // column with no such limit. Long pasted descriptions broke lead creation.
+    ProjectName: String(
+      payload.projectName || payload.activityProposed || "",
+    ).slice(0, 250),
     GroupID: group.groupId,
     CustomerID: customer.customerId,
     PrimaryContactID: contact.contactId,
