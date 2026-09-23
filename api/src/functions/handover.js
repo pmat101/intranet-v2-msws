@@ -336,7 +336,7 @@ async function handle(request, context) {
   );
 
   // The stage is derived from what exists, so refresh it now this record does.
-  const staged = await refreshStage(project);
+  const staged = await refreshStage({ id: project.id, ...project.fields });
   if (staged.changed) {
     context.log(`${pcode} moved ${staged.stored} to ${staged.derived}`);
   }
