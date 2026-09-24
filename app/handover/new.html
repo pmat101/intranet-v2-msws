@@ -3,44 +3,33 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-
     <title>Technical handover, BD03, Perfact Intranet</title>
-
     <link rel="stylesheet" href="/assets/tokens.css" />
 
     <style>
       body {
         padding-bottom: 96px;
       }
-
       header.bar {
-        background: linear-gradient(
-          135deg,
-          var(--pine-a),
-          var(--pine-b)
-        );
+        background: linear-gradient(135deg, var(--pine-a), var(--pine-b));
         color: var(--hero-ink);
         padding: 20px 0;
       }
-
       .wrap {
         max-width: 940px;
         margin: 0 auto;
         padding: 0 24px;
       }
-
       header.bar h1 {
         margin: 0;
         font-size: 1.35rem;
         font-weight: 700;
       }
-
       header.bar p {
         margin: 4px 0 0;
         color: var(--hero-sub);
         font-size: 0.875rem;
       }
-
       fieldset {
         border: 1px solid var(--line);
         border-radius: var(--radius-card);
@@ -48,7 +37,6 @@
         padding: 20px 24px 24px;
         margin: 24px 0 0;
       }
-
       legend {
         font-size: 0.72rem;
         font-weight: 600;
@@ -57,37 +45,28 @@
         color: var(--pine);
         padding: 0 8px;
       }
-
       .grid {
         display: grid;
-        grid-template-columns: repeat(
-          auto-fit,
-          minmax(220px, 1fr)
-        );
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
         gap: 16px 20px;
       }
-
       .field {
         display: flex;
         flex-direction: column;
       }
-
       .field.wide {
-        grid-column: 1 / -1;
+        grid-column: 1/-1;
       }
-
       label {
         font-size: 0.75rem;
         font-weight: 600;
         color: var(--ink-soft);
         margin-bottom: 6px;
       }
-
       label .req {
         color: var(--amber);
         margin-left: 2px;
       }
-
       input,
       select,
       textarea {
@@ -99,40 +78,30 @@
         border-radius: var(--radius-input);
         padding: 9px 11px;
         width: 100%;
+        box-sizing: border-box;
       }
-
       input:focus,
       select:focus,
       textarea:focus {
         outline: none;
         border-color: var(--amber);
-        box-shadow:
-          0 0 0 3px
-          color-mix(
-            in srgb,
-            var(--amber) 30%,
-            transparent
-          );
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--amber) 30%, transparent);
       }
-
       input[aria-invalid="true"],
       select[aria-invalid="true"] {
         border-color: var(--danger);
       }
-
       .msg {
         font-size: 0.75rem;
         color: var(--danger);
         margin-top: 4px;
         min-height: 1em;
       }
-
       table.rows {
         width: 100%;
         border-collapse: collapse;
         margin-top: 6px;
       }
-
       table.rows th {
         text-align: left;
         font-size: 0.7rem;
@@ -142,21 +111,17 @@
         padding: 0 8px 6px 0;
         font-weight: 600;
       }
-
       table.rows td {
         padding: 0 8px 8px 0;
         vertical-align: top;
       }
-
       table.rows input {
         font-size: 0.85rem;
       }
-
       .num {
         text-align: right;
         font-family: var(--font-mono);
       }
-
       button.small {
         font: inherit;
         font-size: 0.78rem;
@@ -167,22 +132,18 @@
         border-radius: var(--radius-input);
         padding: 6px 12px;
       }
-
       button.small:hover {
         border-color: var(--amber);
       }
-
       button.remove {
         border-color: transparent;
         color: var(--ink-soft);
         padding: 6px 8px;
       }
-
       button.remove:hover {
         color: var(--danger);
         border-color: var(--danger);
       }
-
       .total {
         display: flex;
         justify-content: space-between;
@@ -192,55 +153,39 @@
         border-radius: var(--radius-input);
         font-size: 0.85rem;
       }
-
       .total.ok {
         background: var(--moss-soft);
         color: var(--pine);
         border: 1px solid var(--moss);
       }
-
       .total.bad {
-        background: color-mix(
-          in srgb,
-          var(--danger) 10%,
-          transparent
-        );
+        background: color-mix(in srgb, var(--danger) 10%, transparent);
         color: var(--danger);
         border: 1px solid var(--danger);
       }
-
       .total strong {
         font-family: var(--font-mono);
       }
-
       .summary {
         border: 1px solid var(--danger);
         border-radius: var(--radius-input);
         padding: 14px 18px;
         margin-top: 24px;
-        background: color-mix(
-          in srgb,
-          var(--danger) 8%,
-          transparent
-        );
+        background: color-mix(in srgb, var(--danger) 8%, transparent);
       }
-
       .summary h2 {
         font-size: 0.9rem;
         margin: 0 0 8px;
         color: var(--danger);
       }
-
       .summary ul {
         margin: 0;
         padding-left: 20px;
         font-size: 0.85rem;
       }
-
       .summary a {
         color: var(--danger);
       }
-
       .actions {
         position: sticky;
         bottom: 0;
@@ -252,7 +197,6 @@
         gap: 12px;
         align-items: center;
       }
-
       button.primary {
         font: inherit;
         font-weight: 600;
@@ -263,21 +207,17 @@
         padding: 11px 24px;
         border-radius: var(--radius-input);
       }
-
       button.primary:hover:not(:disabled) {
         background: var(--amber-deep);
       }
-
       button.primary:disabled {
         opacity: 0.45;
         cursor: not-allowed;
       }
-
       .status {
         font-size: 0.85rem;
         color: var(--ink-soft);
       }
-
       .done {
         border: 1px solid var(--moss);
         background: var(--moss-soft);
@@ -285,20 +225,17 @@
         padding: 28px;
         margin-top: 24px;
       }
-
       .done h2 {
         margin: 0 0 12px;
         color: var(--pine);
         font-size: 1.15rem;
       }
-
       .done table {
         width: 100%;
         border-collapse: collapse;
         font-size: 0.85rem;
         margin: 12px 0 20px;
       }
-
       .done th {
         text-align: left;
         color: var(--ink-soft);
@@ -306,14 +243,28 @@
         text-transform: uppercase;
         padding-bottom: 6px;
       }
-
       .done td {
         padding: 4px 0;
         font-family: var(--font-mono);
       }
-
       .hidden {
         display: none;
+      }
+      .radio-group {
+        display: flex;
+        gap: 40px;
+        align-items: center;
+        padding: 9px 0;
+      }
+      .radio-option {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 0;
+        font-weight: 500;
+      }
+      .radio-option input {
+        width: auto;
       }
     </style>
   </head>
@@ -322,32 +273,20 @@
     <header class="bar">
       <div class="wrap">
         <h1>Technical handover</h1>
-
         <p>
-          BD03. Stage 5. Assigns the delivery pool and sets
-          the billing schedule.
+          BD03. Stage 5. Assigns the delivery pool and sets the billing
+          schedule.
         </p>
       </div>
     </header>
 
     <main class="wrap">
-      <div
-        id="gate"
-        class="status"
-        style="padding: 32px 0"
-      >
+      <div id="gate" class="status" style="padding: 32px 0">
         Checking your access...
       </div>
 
-      <form
-        id="form"
-        class="hidden"
-        novalidate
-      >
-        <div
-          id="summary"
-          class="summary hidden"
-        >
+      <form id="form" class="hidden" novalidate>
+        <div id="summary" class="summary hidden">
           <h2>Please correct the following</h2>
           <ul id="summary-list"></ul>
         </div>
@@ -357,28 +296,20 @@
 
           <div class="grid">
             <div class="field">
-              <label for="pcode">
-                P-Code<span class="req">*</span>
-              </label>
-
+              <label for="pcode">P-Code<span class="req">*</span></label>
               <input
                 type="text"
                 id="pcode"
                 placeholder="PE274118"
                 autocomplete="off"
               />
-
-              <div
-                class="msg"
-                id="msg-pcode"
-              ></div>
+              <div class="msg" id="msg-pcode"></div>
             </div>
 
             <div class="field">
-              <label for="deliveryPool">
-                Delivery pool<span class="req">*</span>
-              </label>
-
+              <label for="deliveryPool"
+                >Delivery pool<span class="req">*</span></label
+              >
               <select id="deliveryPool">
                 <option value="">Select</option>
                 <option>Fountain</option>
@@ -389,22 +320,12 @@
                 <option>Spring</option>
                 <option>Tributary</option>
               </select>
-
-              <div
-                class="msg"
-                id="msg-deliveryPool"
-              ></div>
+              <div class="msg" id="msg-deliveryPool"></div>
             </div>
 
             <div class="field">
-              <label for="projectStartDate">
-                Project start date
-              </label>
-
-              <input
-                type="date"
-                id="projectStartDate"
-              />
+              <label for="projectStartDate">Project start date</label>
+              <input type="date" id="projectStartDate" />
             </div>
           </div>
         </fieldset>
@@ -414,79 +335,39 @@
 
           <div class="grid">
             <div class="field">
-              <label for="teamHeadName">
-                Team head
-              </label>
-
-              <input
-                type="text"
-                id="teamHeadName"
-              />
+              <label for="teamHeadName">Team head</label>
+              <input type="text" id="teamHeadName" />
             </div>
 
             <div class="field">
-              <label for="teamHeadEmail">
-                Team head email<span class="req">*</span>
-              </label>
-
-              <input
-                type="email"
-                id="teamHeadEmail"
-              />
-
-              <div
-                class="msg"
-                id="msg-teamHeadEmail"
-              ></div>
+              <label for="teamHeadEmail"
+                >Team head email<span class="req">*</span></label
+              >
+              <input type="email" id="teamHeadEmail" />
+              <div class="msg" id="msg-teamHeadEmail"></div>
             </div>
 
             <div class="field">
-              <label for="cSuiteOfficerName">
-                C-suite officer
-              </label>
-
-              <input
-                type="text"
-                id="cSuiteOfficerName"
-              />
+              <label for="cSuiteOfficerName">C-suite officer</label>
+              <select id="cSuiteOfficerName"></select>
             </div>
 
             <div class="field">
-              <label for="cSuiteOfficerEmail">
-                C-suite officer email<span class="req">*</span>
-              </label>
-
-              <input
-                type="email"
-                id="cSuiteOfficerEmail"
-              />
-
-              <div
-                class="msg"
-                id="msg-cSuiteOfficerEmail"
-              ></div>
+              <label for="cSuiteOfficerEmail"
+                >C-suite officer email<span class="req">*</span></label
+              >
+              <input type="email" id="cSuiteOfficerEmail" />
+              <div class="msg" id="msg-cSuiteOfficerEmail"></div>
             </div>
 
             <div class="field">
-              <label for="eiaCoordinatorName">
-                EIA coordinator
-              </label>
-
-              <input
-                type="text"
-                id="eiaCoordinatorName"
-              />
+              <label for="eiaCoordinatorName">EIA coordinator</label>
+              <select id="eiaCoordinatorName"></select>
             </div>
 
             <div class="field">
-              <label for="eiaCoordinatorEmail">
-                EIA coordinator email
-              </label>
-
-              <input
-                type="email"
-                id="eiaCoordinatorEmail"
-              />
+              <label for="eiaCoordinatorEmail">EIA coordinator email</label>
+              <input type="email" id="eiaCoordinatorEmail" />
             </div>
           </div>
 
@@ -502,15 +383,10 @@
                   <th></th>
                 </tr>
               </thead>
-
               <tbody id="persons"></tbody>
             </table>
 
-            <button
-              type="button"
-              class="small"
-              id="add-person"
-            >
+            <button type="button" class="small" id="add-person">
               Add a person
             </button>
           </div>
@@ -525,32 +401,22 @@
                 Scope of work<span class="req">*</span>
               </label>
 
-              <textarea
-                id="scopeOfWork"
-                rows="3"
-              ></textarea>
-
-              <div
-                class="msg"
-                id="msg-scopeOfWork"
-              ></div>
+              <textarea id="scopeOfWork" rows="3"></textarea>
+              <div class="msg" id="msg-scopeOfWork"></div>
             </div>
 
             <div class="field">
-              <label for="category">
-                Category<span class="req">*</span>
-              </label>
+              <label for="category"> Category<span class="req">*</span> </label>
 
+              <select id="category"></select>
               <input
                 type="text"
-                id="category"
-                placeholder="A or B1 or B2"
+                id="categoryOtherSpecify"
+                placeholder="Please specify"
+                style="display: none; margin-top: 8px"
               />
 
-              <div
-                class="msg"
-                id="msg-category"
-              ></div>
+              <div class="msg" id="msg-category"></div>
             </div>
 
             <div class="field">
@@ -558,16 +424,60 @@
                 NABET sector<span class="req">*</span>
               </label>
 
-              <input
-                type="text"
-                id="nabetSector"
-                placeholder="1A"
-              />
+              <select id="nabetSector">
+                <option value="">Select</option>
+                <option>1A</option>
+                <option>1B</option>
+                <option>1D</option>
+                <option>2A</option>
+                <option>2B</option>
+                <option>3A</option>
+                <option>3B</option>
+                <option>4A</option>
+                <option>4B</option>
+                <option>4C</option>
+                <option>4D</option>
+                <option>4F</option>
+                <option>5A</option>
+                <option>5B</option>
+                <option>5C</option>
+                <option>5D</option>
+                <option>5E</option>
+                <option>5F</option>
+                <option>5G</option>
+                <option>5H</option>
+                <option>5J</option>
+                <option>6A</option>
+                <option>6B</option>
+                <option>7A</option>
+                <option>7B</option>
+                <option>7C</option>
+                <option>7D</option>
+                <option>7DA</option>
+                <option>7E</option>
+                <option>7F</option>
+                <option>7G</option>
+                <option>7H</option>
+                <option>7I</option>
+                <option>8A</option>
+                <option>8B</option>
+                <option>71</option>
+                <option>72</option>
+                <option>73</option>
+                <option>74</option>
+                <option>75</option>
+                <option>76</option>
+                <option>77</option>
+                <option>78</option>
+                <option>79</option>
+                <option>80</option>
+                <option>81</option>
+                <option>82</option>
+                <option>N/A</option>
+                <option>others</option>
+              </select>
 
-              <div
-                class="msg"
-                id="msg-nabetSector"
-              ></div>
+              <div class="msg" id="msg-nabetSector"></div>
             </div>
 
             <div class="field">
@@ -575,86 +485,72 @@
                 Baseline season<span class="req">*</span>
               </label>
 
+              <select id="baselineSeason"></select>
               <input
                 type="text"
-                id="baselineSeason"
-                placeholder="Post-monsoon"
+                id="baselineSeasonOtherSpecify"
+                placeholder="Please specify"
+                style="display: none; margin-top: 8px"
               />
 
-              <div
-                class="msg"
-                id="msg-baselineSeason"
-              ></div>
+              <div class="msg" id="msg-baselineSeason"></div>
             </div>
 
             <div class="field">
-              <label for="eacName">
-                EAC name<span class="req">*</span>
-              </label>
+              <label for="eacName"> EAC name<span class="req">*</span> </label>
 
+              <select id="eacName"></select>
               <input
                 type="text"
-                id="eacName"
-                placeholder="EAC Industry-1"
+                id="eacNameOtherSpecify"
+                placeholder="Please specify"
+                style="display: none; margin-top: 8px"
               />
 
-              <div
-                class="msg"
-                id="msg-eacName"
-              ></div>
+              <div class="msg" id="msg-eacName"></div>
             </div>
 
-            <div class="field">
-              <label for="tagSet">
-                Scope tags
-              </label>
-
-              <input
-                type="text"
-                id="tagSet"
-                placeholder="Comma separated"
-              />
-            </div>
+            <!-- Scope Tag removed -->
 
             <div class="field wide">
               <label for="previousECAndConsents">
-                Previous EC and consents
+                Previous EC / SAFC and consents
               </label>
 
-              <textarea
-                id="previousECAndConsents"
-                rows="2"
-              ></textarea>
+              <textarea id="previousECAndConsents" rows="2"></textarea>
             </div>
 
             <div class="field wide">
-              <label for="generalConditionsApplicability">
-                General conditions applicability
-              </label>
+              <label>General conditions applicability</label>
 
-              <textarea
-                id="generalConditionsApplicability"
-                rows="2"
-              ></textarea>
+              <div class="radio-group">
+                <label class="radio-option">
+                  <input
+                    type="radio"
+                    name="generalConditionsApplicability"
+                    value="YES"
+                  />
+                  YES
+                </label>
+
+                <label class="radio-option">
+                  <input
+                    type="radio"
+                    name="generalConditionsApplicability"
+                    value="NO"
+                  />
+                  NO
+                </label>
+              </div>
             </div>
 
             <div class="field">
-              <label for="ganttChartLink">
-                Gantt chart link
-              </label>
-
-              <input
-                type="url"
-                id="ganttChartLink"
-                placeholder="https://"
-              />
+              <label for="ganttChartLink">Gantt chart link</label>
+              <input type="url" id="ganttChartLink" placeholder="https://" />
             </div>
 
             <div class="field">
-              <label for="timelineBaselineUrl">
-                Timeline baseline
-              </label>
-
+              <label for="timelineBaselineUrl">Timeline baseline</label>
               <input
                 type="url"
                 id="timelineBaselineUrl"
@@ -663,10 +559,7 @@
             </div>
 
             <div class="field">
-              <label for="relevantDocumentsUrl">
-                Relevant documents
-              </label>
-
+              <label for="relevantDocumentsUrl">Relevant documents</label>
               <input
                 type="url"
                 id="relevantDocumentsUrl"
@@ -678,8 +571,8 @@
 
         <fieldset>
           <legend>
-            Billing milestones. These become the schedule
-            Accounts bills against.
+            Billing milestones. These become the schedule Accounts bills
+            against.
           </legend>
 
           <table class="rows">
@@ -696,31 +589,16 @@
             <tbody id="milestones"></tbody>
           </table>
 
-          <button
-            type="button"
-            class="small"
-            id="add-milestone"
-          >
+          <button type="button" class="small" id="add-milestone">
             Add a milestone
           </button>
 
-          <div
-            class="total bad"
-            id="total"
-          >
-            <span>
-              Percentages must total 100
-            </span>
-
-            <strong id="total-value">
-              0
-            </strong>
+          <div class="total bad" id="total">
+            <span>Percentages must total 100</span>
+            <strong id="total-value">0</strong>
           </div>
 
-          <div
-            class="msg"
-            id="msg-milestones"
-          ></div>
+          <div class="msg" id="msg-milestones"></div>
         </fieldset>
 
         <fieldset>
@@ -728,13 +606,14 @@
 
           <div class="grid">
             <div class="field">
-              <label for="travellingBorneBy">
-                Travelling borne by
-              </label>
+              <label for="travellingBorneBy"> Travelling borne by </label>
 
+              <select id="travellingBorneBy"></select>
               <input
                 type="text"
-                id="travellingBorneBy"
+                id="travellingBorneByOtherSpecify"
+                placeholder="Please specify"
+                style="display: none; margin-top: 8px"
               />
             </div>
 
@@ -743,59 +622,33 @@
                 Overhead expenses borne by
               </label>
 
-              <input
-                type="text"
-                id="overheadExpensesBorneBy"
-              />
+              <select id="overheadExpensesBorneBy"></select>
             </div>
 
             <div class="field wide">
-              <label for="termsAndConditions">
-                Terms and conditions
-              </label>
+              <label for="termsAndConditions"> Terms and conditions </label>
 
-              <textarea
-                id="termsAndConditions"
-                rows="2"
-              ></textarea>
+              <textarea id="termsAndConditions" rows="2"></textarea>
             </div>
 
             <div class="field wide">
-              <label for="remarks">
-                Remarks
-              </label>
-
-              <textarea
-                id="remarks"
-                rows="2"
-              ></textarea>
+              <label for="remarks">Remarks</label>
+              <textarea id="remarks" rows="2"></textarea>
             </div>
           </div>
         </fieldset>
 
         <div class="actions">
-          <button
-            type="submit"
-            class="primary"
-            id="submit-btn"
-          >
+          <button type="submit" class="primary" id="submit-btn">
             File handover
           </button>
 
-          <span
-            class="status"
-            id="status"
-          ></span>
+          <span class="status" id="status"></span>
         </div>
       </form>
 
-      <div
-        id="done"
-        class="done hidden"
-      >
-        <h2 id="done-title">
-          Handover filed
-        </h2>
+      <div id="done" class="done hidden">
+        <h2 id="done-title">Handover filed</h2>
 
         <table>
           <tbody>
@@ -833,11 +686,7 @@
           <tbody id="d-milestones"></tbody>
         </table>
 
-        <button
-          type="button"
-          class="primary"
-          onclick="location.reload()"
-        >
+        <button type="button" class="primary" onclick="location.reload()">
           File another
         </button>
       </div>
@@ -846,160 +695,122 @@
     <script src="/lib/vendor/msal-browser.min.js"></script>
 
     <script type="module">
-      import {
-        initAuth,
-        signIn,
-        getAccount,
-      } from "/lib/auth.js";
+      import { initAuth, signIn, getAccount } from "/lib/auth.js";
 
       import { api } from "/lib/api.js";
-
       import { formatRupees } from "/lib/money.js";
+      import { handoverLists } from "/lib/handover-lists.js";
 
-      const $ = (id) =>
-        document.getElementById(id);
+      const $ = (id) => document.getElementById(id);
 
       function addPersonRow() {
-        const tr =
-          document.createElement("tr");
+        const tr = document.createElement("tr");
 
         tr.innerHTML = `
-          <td>
-            <input type="text" class="p-name">
-          </td>
+      <td>
+        <input type="text" class="p-name">
+      </td>
 
-          <td>
-            <input type="email" class="p-email">
-          </td>
+      <td>
+        <input type="email" class="p-email">
+      </td>
 
-          <td>
-            <input type="text" class="p-purpose">
-          </td>
+      <td>
+        <input type="text" class="p-purpose">
+      </td>
 
-          <td>
-            <button
-              type="button"
-              class="small remove"
-            >
-              Remove
-            </button>
-          </td>
-        `;
+      <td>
+        <button
+          type="button"
+          class="small remove"
+        >
+          Remove
+        </button>
+      </td>
+    `;
 
-        tr.querySelector(
-          ".remove",
-        ).onclick = () => tr.remove();
+        tr.querySelector(".remove").onclick = () => tr.remove();
 
         $("persons").appendChild(tr);
       }
 
-      function addMilestoneRow(
-        name,
-        percent,
-      ) {
-        const tr =
-          document.createElement("tr");
+      function addMilestoneRow(name, percent) {
+        const tr = document.createElement("tr");
 
         tr.innerHTML = `
-          <td>
-            <input
-              type="text"
-              class="m-name"
-              value="${name || ""}"
-            >
-          </td>
+      <td>
+        <input
+          type="text"
+          class="m-name"
+          value="${name || ""}"
+        >
+      </td>
 
-          <td>
-            <input
-              type="text"
-              class="m-details"
-            >
-          </td>
+      <td>
+        <input
+          type="text"
+          class="m-details"
+        >
+      </td>
 
-          <td>
-            <input
-              type="text"
-              class="m-timeline"
-            >
-          </td>
+      <td>
+        <input
+          type="text"
+          class="m-timeline"
+        >
+      </td>
 
-          <td>
-            <input
-              type="number"
-              class="m-percent num"
-              min="0"
-              max="100"
-              step="0.01"
-              value="${
-                percent === undefined
-                  ? ""
-                  : percent
-              }"
-            >
-          </td>
+      <td>
+        <input
+          type="number"
+          class="m-percent num"
+          min="0"
+          max="100"
+          step="0.01"
+          value="${percent === undefined ? "" : percent}"
+        >
+      </td>
 
-          <td>
-            <button
-              type="button"
-              class="small remove"
-            >
-              Remove
-            </button>
-          </td>
-        `;
+      <td>
+        <button
+          type="button"
+          class="small remove"
+        >
+          Remove
+        </button>
+      </td>
+    `;
 
-        tr.querySelector(
-          ".remove",
-        ).onclick = () => {
+        tr.querySelector(".remove").onclick = () => {
           tr.remove();
           updateTotal();
         };
 
-        tr.querySelector(
-          ".m-percent",
-        ).addEventListener(
-          "input",
-          updateTotal,
-        );
+        tr.querySelector(".m-percent").addEventListener("input", updateTotal);
 
         $("milestones").appendChild(tr);
 
         updateTotal();
       }
 
-      /**
-       * The running total is shown as you type, because discovering
-       * at submission that the schedule adds to 90 means re-reading
-       * every row to find the gap.
-       */
       function updateTotal() {
         let total = 0;
 
-        for (
-          const el of document.querySelectorAll(
-            ".m-percent",
-          )
-        ) {
+        for (const el of document.querySelectorAll(".m-percent")) {
           total += Number(el.value) || 0;
         }
 
-        const rounded =
-          Math.round(total * 100) / 100;
+        const rounded = Math.round(total * 100) / 100;
 
-        $("total-value").textContent =
-          rounded + " per cent";
+        $("total-value").textContent = rounded + " per cent";
 
-        const ok =
-          Math.abs(rounded - 100) < 0.01;
+        const ok = Math.abs(rounded - 100) < 0.01;
 
-        $("total").className =
-          "total " +
-          (ok ? "ok" : "bad");
+        $("total").className = "total " + (ok ? "ok" : "bad");
 
-        $("total").firstElementChild.textContent =
-          ok
-            ? "The schedule accounts for the whole contract"
-            : "Percentages must total 100";
+        $("total").firstElementChild.textContent = ok
+          ? "The schedule accounts for the whole contract"
+          : "Percentages must total 100";
 
         return rounded;
       }
@@ -1007,21 +818,10 @@
       function readMilestones() {
         const out = [];
 
-        for (
-          const tr of $("milestones")
-            .querySelectorAll("tr")
-        ) {
-          const name =
-            tr.querySelector(
-              ".m-name",
-            ).value.trim();
+        for (const tr of $("milestones").querySelectorAll("tr")) {
+          const name = tr.querySelector(".m-name").value.trim();
 
-          const percent =
-            Number(
-              tr.querySelector(
-                ".m-percent",
-              ).value,
-            );
+          const percent = Number(tr.querySelector(".m-percent").value);
 
           if (!name && !percent) {
             continue;
@@ -1029,15 +829,10 @@
 
           out.push({
             name,
-            details:
-              tr.querySelector(
-                ".m-details",
-              ).value.trim(),
 
-            timeline:
-              tr.querySelector(
-                ".m-timeline",
-              ).value.trim(),
+            details: tr.querySelector(".m-details").value.trim(),
+
+            timeline: tr.querySelector(".m-timeline").value.trim(),
 
             percent,
           });
@@ -1049,19 +844,10 @@
       function readPersons() {
         const out = [];
 
-        for (
-          const tr of $("persons")
-            .querySelectorAll("tr")
-        ) {
-          const name =
-            tr.querySelector(
-              ".p-name",
-            ).value.trim();
+        for (const tr of $("persons").querySelectorAll("tr")) {
+          const name = tr.querySelector(".p-name").value.trim();
 
-          const email =
-            tr.querySelector(
-              ".p-email",
-            ).value.trim();
+          const email = tr.querySelector(".p-email").value.trim();
 
           if (!name && !email) {
             continue;
@@ -1070,10 +856,8 @@
           out.push({
             name,
             email,
-            purpose:
-              tr.querySelector(
-                ".p-purpose",
-              ).value.trim(),
+
+            purpose: tr.querySelector(".p-purpose").value.trim(),
           });
         }
 
@@ -1081,61 +865,37 @@
       }
 
       function clearErrors() {
-        $("summary").classList.add(
-          "hidden",
-        );
+        $("summary").classList.add("hidden");
 
-        $("summary-list").innerHTML =
-          "";
+        $("summary-list").innerHTML = "";
 
-        for (
-          const el of document.querySelectorAll(
-            "[aria-invalid]",
-          )
-        ) {
-          el.removeAttribute(
-            "aria-invalid",
-          );
+        for (const el of document.querySelectorAll("[aria-invalid]")) {
+          el.removeAttribute("aria-invalid");
         }
 
-        for (
-          const el of document.querySelectorAll(
-            ".msg",
-          )
-        ) {
+        for (const el of document.querySelectorAll(".msg")) {
           el.textContent = "";
         }
       }
 
       function showErrors(errors) {
-        $("summary-list").innerHTML =
-          errors
-            .map(
-              (e) =>
-                `<li><a href="#${e.field}">${e.message}</a></li>`,
-            )
-            .join("");
+        $("summary-list").innerHTML = errors
+          .map((e) => `<li><a href="#${e.field}">${e.message}</a></li>`)
+          .join("");
 
-        $("summary").classList.remove(
-          "hidden",
-        );
+        $("summary").classList.remove("hidden");
 
         for (const e of errors) {
           const input = $(e.field);
 
           if (input) {
-            input.setAttribute(
-              "aria-invalid",
-              "true",
-            );
+            input.setAttribute("aria-invalid", "true");
           }
 
-          const msg =
-            $("msg-" + e.field);
+          const msg = $("msg-" + e.field);
 
           if (msg) {
-            msg.textContent =
-              e.message;
+            msg.textContent = e.message;
           }
         }
 
@@ -1148,37 +908,26 @@
       const REQUIRED = [
         ["pcode", "A P-Code"],
         ["deliveryPool", "A delivery pool"],
-        [
-          "teamHeadEmail",
-          "The team head email",
-        ],
-        [
-          "cSuiteOfficerEmail",
-          "The C-suite officer email",
-        ],
-        [
-          "scopeOfWork",
-          "The scope of work",
-        ],
+
+        ["teamHeadEmail", "The team head email"],
+
+        ["cSuiteOfficerEmail", "The C-suite officer email"],
+
+        ["scopeOfWork", "The scope of work"],
+
         ["category", "Category"],
-        [
-          "nabetSector",
-          "The NABET sector",
-        ],
-        [
-          "baselineSeason",
-          "The baseline season",
-        ],
+
+        ["nabetSector", "The NABET sector"],
+
+        ["baselineSeason", "The baseline season"],
+
         ["eacName", "The EAC name"],
       ];
 
       function readPayload() {
         const p = {
-          milestones:
-            readMilestones(),
-
-          otherPersons:
-            readPersons(),
+          milestones: readMilestones(),
+          otherPersons: readPersons(),
         };
 
         for (const id of [
@@ -1196,9 +945,7 @@
           "nabetSector",
           "baselineSeason",
           "eacName",
-          "tagSet",
           "previousECAndConsents",
-          "generalConditionsApplicability",
           "ganttChartLink",
           "timelineBaselineUrl",
           "relevantDocumentsUrl",
@@ -1206,9 +953,21 @@
           "overheadExpensesBorneBy",
           "termsAndConditions",
           "remarks",
+          "categoryOtherSpecify",
+          "baselineSeasonOtherSpecify",
+          "eacNameOtherSpecify",
+          "travellingBorneByOtherSpecify",
         ]) {
           p[id] = $(id).value.trim();
         }
+
+        const generalConditions = document.querySelector(
+          'input[name="generalConditionsApplicability"]:checked',
+        );
+
+        p.generalConditionsApplicability = generalConditions
+          ? generalConditions.value
+          : "";
 
         return p;
       }
@@ -1216,78 +975,67 @@
       function validate(p) {
         const errors = [];
 
-        for (
-          const [id, label] of REQUIRED
-        ) {
+        for (const [id, label] of REQUIRED) {
           if (!p[id]) {
             errors.push({
               field: id,
-              message:
-                `${label} is required`,
+              message: `${label} is required`,
             });
           }
         }
 
-        if (
-          p.milestones.length === 0
-        ) {
+        if (p.milestones.length === 0) {
           errors.push({
             field: "milestones",
-            message:
-              "At least one billing milestone is required",
+            message: "At least one billing milestone is required",
           });
         }
 
-        p.milestones.forEach(
-          (m, i) => {
-            if (!m.name) {
-              errors.push({
-                field: "milestones",
-                message:
-                  `Milestone ${
-                    i + 1
-                  } needs a name`,
-              });
-            }
+        p.milestones.forEach((m, i) => {
+          if (!m.name) {
+            errors.push({
+              field: "milestones",
+              message: `Milestone ${i + 1} needs a name`,
+            });
+          }
 
-            if (
-              !(
-                m.percent > 0 &&
-                m.percent <= 100
-              )
-            ) {
-              errors.push({
-                field: "milestones",
-                message:
-                  `Milestone ${
-                    i + 1
-                  } needs a percentage between 1 and 100`,
-              });
-            }
-          },
+          if (!(m.percent > 0 && m.percent <= 100)) {
+            errors.push({
+              field: "milestones",
+              message: `Milestone ${i + 1} needs a percentage between 1 and 100`,
+            });
+          }
+        });
+
+        const total = p.milestones.reduce(
+          (t, m) => t + (Number(m.percent) || 0),
+          0,
         );
 
-        const total =
-          p.milestones.reduce(
-            (t, m) =>
-              t +
-              (Number(m.percent) || 0),
-            0,
-          );
-
-        if (
-          p.milestones.length > 0 &&
-          Math.abs(total - 100) > 0.01
-        ) {
+        if (p.milestones.length > 0 && Math.abs(total - 100) > 0.01) {
           errors.push({
             field: "milestones",
-            message:
-              `Milestone percentages total ${
-                Math.round(
-                  total * 100,
-                ) / 100
-              }, and must total 100`,
+            message: `Milestone percentages total ${
+              Math.round(total * 100) / 100
+            }, and must total 100`,
           });
+        }
+
+        // "others" with nothing specified records the word "others" and nothing
+        // else, which is no better than leaving the field blank.
+        for (const [id, label] of [
+          ["category", "category"],
+          ["baselineSeason", "baseline season"],
+          ["eacName", "EAC"],
+          ["travellingBorneBy", "who bears travelling"],
+        ]) {
+          const v = String(p[id] || "").toLowerCase();
+          if ((v === "others" || v === "other") && !p[id + "OtherSpecify"]) {
+            errors.push({
+              field: id + "OtherSpecify",
+              message: `Please specify the ${label}`,
+            });
+          }
         }
 
         return errors;
@@ -1306,67 +1054,45 @@
           return;
         }
 
-        const btn =
-          $("submit-btn");
+        const btn = $("submit-btn");
 
         btn.disabled = true;
 
-        $("status").textContent =
-          "Filing...";
+        $("status").textContent = "Filing...";
 
         try {
-          const r =
-            await api.post(
-              "handover",
-              p,
-            );
+          const r = await api.post("handover", p);
 
-          $("form").classList.add(
-            "hidden",
-          );
+          $("form").classList.add("hidden");
 
           if (r.duplicate) {
-            $("done-title").textContent =
-              "A handover was already filed";
+            $("done-title").textContent = "A handover was already filed";
 
-            $("d-handover").textContent =
-              r.handoverId;
+            $("d-handover").textContent = r.handoverId;
 
-            $("d-pcode").textContent =
-              r.pcode;
+            $("d-pcode").textContent = r.pcode;
           } else {
-            $("d-handover").textContent =
-              r.handoverId;
+            $("d-handover").textContent = r.handoverId;
 
-            $("d-pcode").textContent =
-              r.pcode;
+            $("d-pcode").textContent = r.pcode;
 
-            $("d-pool").textContent =
-              r.deliveryPool;
+            $("d-pool").textContent = r.deliveryPool;
 
-            $("d-value").textContent =
-              formatRupees(
-                r.workOrderValue,
-              );
+            $("d-value").textContent = formatRupees(r.workOrderValue);
 
-            $("d-milestones").innerHTML =
-              (r.milestones || [])
-                .map(
-                  (m) =>
-                    `<tr>
-                      <td>${m.name}</td>
-                      <td>${m.percent}%</td>
-                      <td>${formatRupees(
-                        m.amount,
-                      )}</td>
-                    </tr>`,
-                )
-                .join("");
+            $("d-milestones").innerHTML = (r.milestones || [])
+              .map(
+                (m) =>
+                  `<tr>
+                  <td>${m.name}</td>
+                  <td>${m.percent}%</td>
+                  <td>${formatRupees(m.amount)}</td>
+                </tr>`,
+              )
+              .join("");
           }
 
-          $("done").classList.remove(
-            "hidden",
-          );
+          $("done").classList.remove("hidden");
 
           window.scrollTo({
             top: 0,
@@ -1375,28 +1101,104 @@
         } catch (err) {
           btn.disabled = false;
 
-          $("status").textContent =
-            "";
+          $("status").textContent = "";
 
-          if (
-            Array.isArray(
-              err.errors,
-            ) &&
-            err.errors.length
-          ) {
-            showErrors(
-              err.errors,
-            );
+          if (Array.isArray(err.errors) && err.errors.length) {
+            showErrors(err.errors);
           } else {
             showErrors([
               {
                 field: "pcode",
-                message:
-                  err.message ||
-                  "The handover could not be filed",
+                message: err.message || "The handover could not be filed",
               },
             ]);
           }
+        }
+      }
+
+      // ---- Controlled lists, generated from the legacy config.js ------------
+      const escOpt = (v) =>
+        String(v)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+
+      function fillOptions(id, items) {
+        const el = $(id);
+        if (!el) return;
+        el.innerHTML = ['<option value="">Select</option>']
+          .concat(
+            items.map((it) => {
+              const v = typeof it === "string" ? it : it.name;
+              return `<option value="${escOpt(v)}">${escOpt(v)}</option>`;
+            }),
+          )
+          .join("");
+      }
+
+      /**
+       * Choosing a person fills their email and locks it, so the name on the form
+       * and the address the handover mail goes to cannot disagree. Where the
+       * legacy map had no address for someone, the field stays open and must be
+       * typed, rather than silently sending the mail nowhere.
+       */
+      function bindPerson(nameId, emailId, people) {
+        const byName = new Map(people.map((p) => [p.name, p.email]));
+        const nameEl = $(nameId),
+          emailEl = $(emailId);
+        if (!nameEl || !emailEl) return;
+        nameEl.addEventListener("change", () => {
+          const email = byName.get(nameEl.value) || "";
+          if (email) {
+            emailEl.value = email;
+            emailEl.readOnly = true;
+          } else {
+            emailEl.value = "";
+            emailEl.readOnly = false;
+            if (nameEl.value) emailEl.focus();
+          }
+        });
+      }
+
+      function bindOther(selectId) {
+        const sel = $(selectId),
+          spec = $(selectId + "OtherSpecify");
+        if (!sel || !spec) return;
+        const update = () => {
+          const v = String(sel.value || "").toLowerCase();
+          const on = v === "others" || v === "other";
+          spec.style.display = on ? "block" : "none";
+          if (!on) spec.value = "";
+        };
+        sel.addEventListener("change", update);
+        update();
+      }
+
+      function setupHandoverLists() {
+        const L = handoverLists;
+        fillOptions("cSuiteOfficerName", L.csuite);
+        fillOptions("eiaCoordinatorName", L.eiaCoordinator);
+        fillOptions("category", L.category.concat(["others"]));
+        fillOptions("baselineSeason", L.baselineSeason);
+        fillOptions("eacName", L.eac.concat(["others"]));
+        fillOptions("travellingBorneBy", L.borneBy);
+        fillOptions("overheadExpensesBorneBy", L.overheadBorneBy);
+
+        bindPerson("cSuiteOfficerName", "cSuiteOfficerEmail", L.csuite);
+        bindPerson(
+          "eiaCoordinatorName",
+          "eiaCoordinatorEmail",
+          L.eiaCoordinator,
+        );
+
+        for (const id of [
+          "category",
+          "baselineSeason",
+          "eacName",
+          "travellingBorneBy",
+        ]) {
+          bindOther(id);
         }
       }
 
@@ -1404,18 +1206,14 @@
         await initAuth();
 
         if (!getAccount()) {
-          $("gate").innerHTML =
-            "You need to sign in. ";
+          $("gate").innerHTML = "You need to sign in. ";
 
-          const b =
-            document.createElement(
-              "button",
-            );
+          const b = document.createElement("button");
 
           b.className = "primary";
           b.textContent = "Sign in";
-          b.onclick = () =>
-            signIn();
+
+          b.onclick = () => signIn();
 
           $("gate").appendChild(b);
 
@@ -1423,56 +1221,40 @@
         }
 
         try {
-          const me =
-            await api.get(
-              "whoami",
-            );
+          const me = await api.get("whoami");
 
-          $("gate").classList.add(
-            "hidden",
-          );
+          $("gate").classList.add("hidden");
 
-          $("form").classList.remove(
-            "hidden",
-          );
+          $("form").classList.remove("hidden");
 
-          $("status").textContent =
-            `Signed in as ${me.name}, ${me.role}`;
+          $("status").textContent = `Signed in as ${me.name}, ${me.role}`;
         } catch (err) {
           $("gate").textContent =
-            err.message ||
-            "Your account has no access to this form.";
+            err.message || "Your account has no access to this form.";
 
           return;
         }
 
-        // A sensible starting schedule,
-        // which people can change or remove.
-        addMilestoneRow(
-          "On award",
-          30,
-        );
+        addMilestoneRow("On award", 30);
 
-        addMilestoneRow(
-          "On draft submission",
-          40,
-        );
+        addMilestoneRow("On draft submission", 40);
 
-        addMilestoneRow(
-          "On final submission",
-          30,
-        );
+        addMilestoneRow("On final submission", 30);
 
         addPersonRow();
 
-        $("add-person").onclick =
-          addPersonRow;
+        setupHandoverLists();
 
-        $("add-milestone").onclick =
-          () => addMilestoneRow();
+        $("add-person").onclick = addPersonRow;
 
-        $("form").onsubmit =
-          onSubmit;
+        $("add-milestone").onclick = () => addMilestoneRow();
+
+        $("travellingBorneBy").addEventListener("change", function () {
+          // Other can be handled by the backend
+          // while keeping the same field structure.
+        });
+
+        $("form").onsubmit = onSubmit;
       }
 
       start();

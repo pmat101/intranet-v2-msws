@@ -349,11 +349,16 @@ async function handle(request, context) {
     eiaCoordinatorEmail: p.eiaCoordinatorEmail,
     scopeOfWork: p.scopeOfWork,
     category: p.category,
+    categoryOtherSpecify: p.categoryOtherSpecify,
     nabetSector: p.nabetSector,
     baselineSeason: p.baselineSeason,
+    baselineSeasonOtherSpecify: p.baselineSeasonOtherSpecify,
     eacName: p.eacName,
+    eacNameOtherSpecify: p.eacNameOtherSpecify,
     projectStartDate: p.projectStartDate,
-    workOrderValue,
+    ganttChartLink: p.ganttChartLink,
+    otherPersons: persons,
+    otherPersonEmails: persons.map((x) => x.email).filter(Boolean),
     milestones: seeded,
   });
   if (!mail.sent) context.log(`Handover mail not sent: ${mail.reason}`);
