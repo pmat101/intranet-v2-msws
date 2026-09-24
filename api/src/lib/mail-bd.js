@@ -190,8 +190,8 @@ async function sendApprovalRecorded(pcode, caller, d) {
 
   return send({
     formCode: "BD01B",
-    to: [TOP_MANAGEMENT, caller.email],
-    cc: d.approvedByEmail ? [d.approvedByEmail] : [],
+    to: [GLACIER],
+    cc: [],
     submittedBy: caller.email,
     subject,
     html: wrap(
@@ -227,8 +227,8 @@ async function sendApprovalRecorded(pcode, caller, d) {
 async function sendProposalRecorded(pcode, caller, d) {
   return send({
     formCode: "BD01B",
-    to: [TOP_MANAGEMENT, caller.email],
-    cc: [GLACIER],
+    to: [GLACIER],
+    cc: [],
     submittedBy: caller.email,
     subject:
       `Quote set for ${pcode}: asking ${lakh(d.pbl3First)} lakh, ` +
@@ -508,8 +508,8 @@ async function sendProjectClosed(pcode, caller, d) {
 async function sendProjectLost(pcode, caller, d) {
   return send({
     formCode: "BD00",
-    to: [TOP_MANAGEMENT, caller.email],
-    cc: [GLACIER, INFO],
+    to: [GLACIER],
+    cc: [],
     submittedBy: caller.email,
     subject: `Lost at ${d.stageAtOutcome}: ${pcode}, ${d.reasonCategory}`,
     html: wrap(
@@ -540,8 +540,8 @@ async function sendProjectLost(pcode, caller, d) {
 async function sendProjectReopened(pcode, caller, d) {
   return send({
     formCode: "BD00",
-    to: [TOP_MANAGEMENT, caller.email],
-    cc: [GLACIER, INFO],
+    to: [GLACIER],
+    cc: [],
     submittedBy: caller.email,
     subject: `Reopened: ${pcode} is back in the pipeline at ${d.stage}`,
     html: wrap(
