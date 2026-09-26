@@ -190,8 +190,8 @@ async function sendApprovalRecorded(pcode, caller, d) {
 
   return send({
     formCode: "BD01B",
-    to: [GLACIER],
-    cc: [],
+    to: [TOP_MANAGEMENT, caller.email],
+    cc: d.approvedByEmail ? [d.approvedByEmail] : [],
     submittedBy: caller.email,
     subject,
     html: wrap(
@@ -227,8 +227,8 @@ async function sendApprovalRecorded(pcode, caller, d) {
 async function sendProposalRecorded(pcode, caller, d) {
   return send({
     formCode: "BD01B",
-    to: [GLACIER],
-    cc: [],
+    to: [TOP_MANAGEMENT, caller.email],
+    cc: [GLACIER],
     submittedBy: caller.email,
     subject:
       `Quote set for ${pcode}: asking ${lakh(d.pbl3First)} lakh, ` +
@@ -391,6 +391,15 @@ async function sendBillingStarted(pcode, caller, d) {
 /* no idea the work exists.                                            */
 /* ------------------------------------------------------------------ */
 
+/**
+ * Where a field offers "others", the form now asks what it means. Show that
+ * rather than the word "others", which tells the reader nothing.
+ */
+function specified(value, other) {
+  const v = String(value || "");
+  return /^others?$/i.test(v) && other ? `${other} (other)` : v;
+}
+
 async function sendHandoverFiled(pcode, caller, d) {
   const pool = poolMailbox(d.deliveryPool);
 
@@ -410,13 +419,25 @@ async function sendHandoverFiled(pcode, caller, d) {
   // contract value; milestone amounts would reveal it by simple addition.
   // Accounts has the figures in the billing-start mail, management in the
   // commercials mail. Decision by management, 23 September 2026.
+  // The plan is given as percentages and timelines, which is what a delivery
+  // team schedules against.
   const milestoneRows = (d.milestones || [])
-    .map((m) => row(m.name, `${m.percent} per cent of the contract`))
+    .map((m) =>
+      row(
+        m.name,
+        `${m.percent} per cent of the contract` +
+          (m.timeline ? `, ${m.timeline}` : ""),
+      ),
+    )
     .join("");
 
   const personRows = (d.otherPersons || [])
-    .map((p) => row(p.name || p.email, p.purpose || ""))
+    .map((p) =>
+      row(p.name || p.email, [p.purpose, p.email].filter(Boolean).join(", ")),
+    )
     .join("");
+
+  const contactEmails = (d.contactEmails || []).filter(Boolean).join(", ");
 
   return send({
     formCode: "BD03",
@@ -431,24 +452,40 @@ async function sendHandoverFiled(pcode, caller, d) {
        <strong>${esc(d.deliveryPool)}</strong> team by
        ${esc(caller.name || caller.email)}.</p>`,
       section(
-        "Main Details",
+        "Project",
         row("P-Code", pcode) +
           row("Project Name", d.projectName) +
-          row("Delivery Team", d.deliveryPool) +
-          row("Team Head", d.teamHeadEmail) +
-          row("C-Suite Officer", d.cSuiteOfficerEmail) +
-          row("EIA Coordinator", d.eiaCoordinatorEmail) +
-          row("Scope of Work", d.scopeOfWork) +
-          row("Category", d.category) +
-          row("NABET Sector", d.nabetSector) +
-          row("Baseline Season", d.baselineSeason) +
-          row("EAC", d.eacName) +
+          row("Project Location", d.projectLocation) +
           row("Project Start", d.projectStartDate) +
-          row("Gantt Chart", d.ganttChartLink),
+          row("Scope of Work", d.scopeOfWork),
       ) +
+        section(
+          "Client",
+          row("Company Name", d.companyName) +
+            row("Contact Person", d.contactName) +
+            row("Contact Email", contactEmails),
+        ) +
+        section(
+          "Delivery",
+          row("Delivery Team", d.deliveryPool) +
+            row("Team Head", d.teamHeadEmail) +
+            row("C-Suite Officer", d.cSuiteOfficerEmail) +
+            row("EIA Coordinator", d.eiaCoordinatorEmail) +
+            row("Gantt Chart", d.ganttChartLink),
+        ) +
+        section(
+          "Technical",
+          row("Category", specified(d.category, d.categoryOtherSpecify)) +
+            row("NABET Sector", d.nabetSector) +
+            row(
+              "Baseline Season",
+              specified(d.baselineSeason, d.baselineSeasonOtherSpecify),
+            ) +
+            row("EAC", specified(d.eacName, d.eacNameOtherSpecify)),
+        ) +
         section("Any other person whom details to be shared", personRows) +
-        section("Billing Schedule", milestoneRows),
-      "Perfact Intranet, BD Pipeline. Accounts will bill against the schedule " +
+        section("Project Milestones and Billing Plan", milestoneRows),
+      "Perfact Intranet, BD Pipeline. Accounts will bill against the plan " +
         "above as milestones are achieved.",
     ),
   });
@@ -508,8 +545,8 @@ async function sendProjectClosed(pcode, caller, d) {
 async function sendProjectLost(pcode, caller, d) {
   return send({
     formCode: "BD00",
-    to: [GLACIER],
-    cc: [],
+    to: [TOP_MANAGEMENT, caller.email],
+    cc: [GLACIER, INFO],
     submittedBy: caller.email,
     subject: `Lost at ${d.stageAtOutcome}: ${pcode}, ${d.reasonCategory}`,
     html: wrap(
@@ -540,8 +577,8 @@ async function sendProjectLost(pcode, caller, d) {
 async function sendProjectReopened(pcode, caller, d) {
   return send({
     formCode: "BD00",
-    to: [GLACIER],
-    cc: [],
+    to: [TOP_MANAGEMENT, caller.email],
+    cc: [GLACIER, INFO],
     submittedBy: caller.email,
     subject: `Reopened: ${pcode} is back in the pipeline at ${d.stage}`,
     html: wrap(

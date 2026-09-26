@@ -306,6 +306,19 @@
               <div class="msg" id="msg-pcode"></div>
             </div>
 
+            <div class="field wide">
+              <label for="projectName"
+                >Project name<span class="req">*</span></label
+              >
+              <input
+                type="text"
+                id="projectName"
+                maxlength="250"
+                placeholder="A short name the team will recognise, for instance Clinker expansion, Ballarpur"
+              />
+              <div class="msg" id="msg-projectName"></div>
+            </div>
+
             <div class="field">
               <label for="deliveryPool"
                 >Delivery pool<span class="req">*</span></label
@@ -666,11 +679,6 @@
               <th>Delivery pool</th>
               <td id="d-pool"></td>
             </tr>
-
-            <tr>
-              <th>Work order value</th>
-              <td id="d-value"></td>
-            </tr>
           </tbody>
         </table>
 
@@ -679,7 +687,7 @@
             <tr>
               <th>Milestone</th>
               <th>Percent</th>
-              <th>Amount</th>
+              <th>Timeline</th>
             </tr>
           </thead>
 
@@ -907,6 +915,7 @@
 
       const REQUIRED = [
         ["pcode", "A P-Code"],
+        ["projectName", "A project name"],
         ["deliveryPool", "A delivery pool"],
 
         ["teamHeadEmail", "The team head email"],
@@ -932,6 +941,7 @@
 
         for (const id of [
           "pcode",
+          "projectName",
           "deliveryPool",
           "projectStartDate",
           "teamHeadName",
@@ -1078,15 +1088,13 @@
 
             $("d-pool").textContent = r.deliveryPool;
 
-            $("d-value").textContent = formatRupees(r.workOrderValue);
-
             $("d-milestones").innerHTML = (r.milestones || [])
               .map(
                 (m) =>
                   `<tr>
                   <td>${m.name}</td>
                   <td>${m.percent}%</td>
-                  <td>${formatRupees(m.amount)}</td>
+                  <td>${m.timeline || ""}</td>
                 </tr>`,
               )
               .join("");

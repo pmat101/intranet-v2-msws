@@ -36,6 +36,12 @@ async function findOne(list, filter) {
 
 function validate(p) {
   const errors = [];
+  if (isBlank(p.projectName)) {
+    errors.push({
+      field: "projectName",
+      message: "A project name is required",
+    });
+  }
   if (isBlank(p.pcode))
     errors.push({ field: "pcode", message: "A P-Code is required" });
 
@@ -328,12 +334,51 @@ async function handle(request, context) {
       },
     });
 
-    seeded.push({ termId, name: m.name, percent: Number(m.percent), amount });
+    seeded.push({
+      termId,
+      name: m.name,
+      percent: Number(m.percent),
+      timeline: m.timeline || "",
+      amount,
+    });
   }
 
   context.log(
     `Handover ${handoverId} filed for ${pcode} by ${caller.email}, pool ${p.deliveryPool}`,
   );
+
+  // The lead form never asked for a project name, so ProjectName held the
+  // activity description. A won project is named here, as the legacy BD03 did.
+  await graph(
+    "PATCH",
+    `/sites/${SITE_ID}/lists/ProjectRegister/items/${project.id}/fields`,
+    { ProjectName: String(p.projectName).trim().slice(0, 250) },
+  );
+
+  const pf = project.fields;
+  const customer = pf.CustomerID
+    ? await findOne(
+        "CustomerRegister",
+        `fields/CustomerID eq '${pf.CustomerID}'`,
+      )
+    : null;
+  const contact = pf.PrimaryContactID
+    ? await findOne(
+        "ContactRegister",
+        `fields/ContactID eq '${pf.PrimaryContactID}'`,
+      )
+    : null;
+  const projectLocation = [
+    pf.AddressLine1,
+    pf.Village,
+    pf.Taluka,
+    pf.District,
+    pf.StateName,
+    pf.PostalCode,
+    pf.Country,
+  ]
+    .filter(Boolean)
+    .join(", ");
 
   // The stage is derived from what exists, so refresh it now this record does.
   const staged = await refreshStage({ id: project.id, ...project.fields });
@@ -342,8 +387,13 @@ async function handle(request, context) {
   }
 
   const mail = await sendHandoverFiled(pcode, caller, {
+    projectName: String(p.projectName).trim(),
+    projectLocation,
+    companyName: customer ? customer.fields.LegalName : "",
+    contactName: contact ? contact.fields.ContactName : "",
+    contactEmails:
+      contact && contact.fields.Email ? [contact.fields.Email] : [],
     deliveryPool: p.deliveryPool,
-    projectName: project.fields.ProjectName || "",
     teamHeadEmail: p.teamHeadEmail,
     cSuiteOfficerEmail: p.cSuiteOfficerEmail,
     eiaCoordinatorEmail: p.eiaCoordinatorEmail,
@@ -363,6 +413,11 @@ async function handle(request, context) {
   });
   if (!mail.sent) context.log(`Handover mail not sent: ${mail.reason}`);
 
+  // No amounts in the response. It goes to whoever filed the handover, and a
+  // TeamHead may file one, so returning the work order value or milestone
+  // amounts would show the delivery team the contract value on screen. Same
+  // reason the handover mail carries none. Decision by management, 23 and 24
+  // September 2026.
   return {
     status: 201,
     jsonBody: {
@@ -371,8 +426,12 @@ async function handle(request, context) {
         pcode,
         handoverId,
         deliveryPool: p.deliveryPool,
-        workOrderValue,
-        milestones: seeded,
+        milestones: seeded.map(({ termId, name, percent, timeline }) => ({
+          termId,
+          name,
+          percent,
+          timeline,
+        })),
         otherPersons: persons.length,
       },
     },
