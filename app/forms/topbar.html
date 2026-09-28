@@ -1,0 +1,134 @@
+<!-- Shared topbar extracted from draft-home.html -->
+<style>
+  :root { --nav-h: 48px; --gutter: clamp(20px, 5vw, 44px); }
+  .bar { position:sticky; top:0; z-index:40; height:var(--nav-h); background:color-mix(in srgb,var(--bg) 72%,transparent); -webkit-backdrop-filter:saturate(180%) blur(20px); backdrop-filter:saturate(180%) blur(20px); border-bottom:1px solid color-mix(in srgb,var(--line) 70%,transparent); }
+  .bar .wrap { height:100%; display:flex; align-items:center; gap:28px; max-width:1240px; margin:0 auto; padding-inline:var(--gutter); }
+  .brand { display:flex; align-items:center; gap:9px; font-size:15px; font-weight:600; letter-spacing:-.01em; color:var(--ink); flex:none; text-decoration:none; }
+  .brand img { height:30px; width:auto; display:block; }
+  .brand span { color:var(--ink-soft); font-weight:500; padding-left:10px; border-left:1px solid var(--line); }
+  .nav { display:flex; gap:22px; flex:1; justify-content:center; font-size:13px; color:var(--ink-soft); }
+  .nav a { white-space:nowrap; padding:4px 0; transition:color 120ms; text-decoration:none; color:inherit; }
+  .nav a:hover { color:var(--ink); }
+  .who { flex:none; width:30px; height:30px; border-radius:50%; background:var(--moss-soft); color:var(--pine); font-size:12px; font-weight:600; letter-spacing:.01em; display:grid; place-items:center; overflow:hidden; }
+  .who img { width:100%; height:100%; object-fit:cover; display:block; }
+  .menu { display:none; flex:none; background:none; border:0; padding:6px; color:var(--ink); cursor:pointer; border-radius:8px; }
+  .menu svg { width:20px; height:20px; display:block; }
+  .sheet { display:none; position:fixed; inset:var(--nav-h) 0 auto 0; z-index:39; background:var(--bg); border-bottom:1px solid var(--line); padding:8px var(--gutter) 22px; }
+  .sheet a { display:block; font-size:22px; font-weight:600; letter-spacing:-.02em; padding:11px 0; color:var(--ink); border-bottom:1px solid var(--line); text-decoration:none; }
+  .sheet a:last-child { border-bottom:0; }
+  .sheet.open { display:block; }
+  .hidden { display:none !important; }
+  @media (max-width:980px) { .nav { display:none; } .menu { display:block; margin-left:auto; } }
+</style>
+
+<header class="bar">
+  <div class="wrap">
+    <a class="brand" href="/" aria-label="Perfact Intranet, home">
+      <img src="/assets/perfact-logo.png" alt="Perfact" width="59" height="30" />
+      <span>Intranet</span>
+    </a>
+    <nav class="nav" id="nav" aria-label="Main"></nav>
+    <button class="menu" id="menu" type="button" aria-label="Open menu" aria-expanded="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 8h16M4 16h16" /></svg>
+    </button>
+    <div class="who hidden" id="who" aria-hidden="true"></div>
+  </div>
+</header>
+<div class="sheet" id="sheet"></div>
+
+<script src="/lib/vendor/msal-browser.min.js"></script>
+<script type="module">
+  import { initAuth, getAccount, getGraphToken } from "/lib/auth.js";
+
+  const NAV = [
+    { label: "Technical guidelines", href: "#" },
+    { label: "EIA resource", href: "#" },
+    { label: "Accreditation hub", href: "#" },
+    { label: "Weekly roster", href: "#" },
+    { label: "Forms", href: "/forms/" },
+    { label: "Office resources", href: "#" },
+    { label: "MIS", href: "#" },
+    { label: "SPCB contacts", href: "#" },
+    { label: "Archive", href: "#" },
+  ];
+
+  const $ = (id) => document.getElementById(id);
+  const links = NAV.map((l) => '<a href="' + l.href + '">' + l.label + "</a>").join("");
+  $("nav").innerHTML = links;
+  $("sheet").innerHTML = links;
+
+  $("menu").onclick = () => {
+    const open = !$("sheet").classList.contains("open");
+    $("sheet").classList.toggle("open", open);
+    $("menu").setAttribute("aria-expanded", String(open));
+    $("menu").setAttribute("aria-label", open ? "Close menu" : "Open menu");
+  };
+
+  const PHOTO_URLS = [
+    "https://graph.microsoft.com/v1.0/me/photos/64x64/$value",
+    "https://graph.microsoft.com/v1.0/me/photo/$value",
+  ];
+
+  function cleanName(display) {
+    const words = String(display || "").split("/")[0].trim().split(/\\s+/)
+      .filter((w) => w && !/^(dr|mr|mrs|ms|er|prof)\\.?$/i.test(w));
+    while (words.length > 1 && /^[A-Z0-9.&-]{2,}$/.test(words[words.length - 1])) words.pop();
+    return words;
+  }
+
+  function initials(display) {
+    const w = cleanName(display);
+    return w.length ? (w[0][0] + (w.length > 1 ? w[w.length - 1][0] : "")).toUpperCase() : "";
+  }
+
+  const asDataUrl = (blob) => new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onload = () => resolve(r.result);
+    r.onerror = () => reject(r.error);
+    r.readAsDataURL(blob);
+  });
+
+  async function loadPhoto(acct) {
+    const key = "perfact.photo." + (acct.homeAccountId || acct.username || "me");
+    let cached = null;
+    try { cached = sessionStorage.getItem(key); } catch {}
+    if (cached === "none") return null;
+    if (cached) return cached;
+
+    const token = await getGraphToken();
+    if (!token) return null;
+
+    for (const url of PHOTO_URLS) {
+      let res;
+      try { res = await fetch(url, { headers: { Authorization: "Bearer " + token } }); }
+      catch { return null; }
+      if (res.ok) {
+        const dataUrl = await asDataUrl(await res.blob());
+        try { sessionStorage.setItem(key, dataUrl); } catch {}
+        return dataUrl;
+      }
+      if (res.status !== 404) return null;
+    }
+    try { sessionStorage.setItem(key, "none"); } catch {}
+    return null;
+  }
+
+  async function startTopbar() {
+    await initAuth();
+    const acct = getAccount();
+    if (!acct) return;
+
+    $("who").textContent = initials(acct.name || acct.username || "");
+    $("who").classList.remove("hidden");
+
+    const photo = await loadPhoto(acct).catch(() => null);
+    if (!photo) return;
+
+    const img = new Image();
+    img.alt = "";
+    img.src = photo;
+    img.onload = () => { $("who").textContent = ""; $("who").appendChild(img); };
+  }
+
+  startTopbar();
+</script>
