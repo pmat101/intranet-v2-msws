@@ -1,0 +1,1488 @@
+<!doctype html>
+<html lang="en-IN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Perfact Intranet</title>
+    <link rel="stylesheet" href="/assets/tokens.css" />
+    <link rel="icon" href="/assets/perfact-logo.png" sizes="48x48" />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="/assets/perfact-logo.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="/assets/perfact-logo.png"
+    />
+    <link rel="apple-touch-icon" href="/assets/perfact-logo.png" />
+    <style>
+      /* Page-local scale. Colour comes from tokens.css, so dark mode follows it. */
+      :root {
+        --max: 1080px;
+        --gutter: clamp(20px, 5vw, 44px);
+        --nav-h: 48px;
+      }
+
+      body {
+        overflow-x: hidden;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      :focus-visible {
+        outline: 2px solid var(--amber);
+        outline-offset: 3px;
+        border-radius: 6px;
+      }
+
+      .skip {
+        position: absolute;
+        left: 12px;
+        top: -40px;
+        z-index: 100;
+        background: var(--card);
+        color: var(--ink);
+        padding: 8px 14px;
+        border-radius: 8px;
+        font-size: 14px;
+      }
+      .skip:focus {
+        top: 12px;
+      }
+
+      .wrap {
+        max-width: var(--max);
+        margin: 0 auto;
+        padding-inline: var(--gutter);
+      }
+      /* Only horizontal padding here. A shorthand would override the vertical
+   padding sections set, since a class outranks an element selector. */
+
+      /* ---- Global bar ------------------------------------------------------- */
+
+      .bar {
+        position: sticky;
+        top: 0;
+        z-index: 40;
+        height: var(--nav-h);
+        background: color-mix(in srgb, var(--bg) 72%, transparent);
+        -webkit-backdrop-filter: saturate(180%) blur(20px);
+        backdrop-filter: saturate(180%) blur(20px);
+        border-bottom: 1px solid
+          color-mix(in srgb, var(--line) 70%, transparent);
+      }
+      .bar .wrap {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        gap: 28px;
+        max-width: 1240px;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        font-size: 15px;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        color: var(--ink);
+        flex: none;
+      }
+      .brand img {
+        height: 30px;
+        width: auto;
+        display: block;
+      }
+      .brand span {
+        color: var(--ink-soft);
+        font-weight: 500;
+        padding-left: 10px;
+        border-left: 1px solid var(--line);
+      }
+
+      .nav {
+        display: flex;
+        gap: 22px;
+        flex: 1;
+        justify-content: center;
+        font-size: 13px;
+        color: var(--ink-soft);
+      }
+      .nav a {
+        white-space: nowrap;
+        padding: 4px 0;
+        transition: color 120ms;
+      }
+      .nav a:hover {
+        color: var(--ink);
+      }
+
+      .who {
+        flex: none;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: var(--moss-soft);
+        color: var(--pine);
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.01em;
+        display: grid;
+        place-items: center;
+        overflow: hidden;
+      }
+      .who img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      .menu {
+        display: none;
+        flex: none;
+        background: none;
+        border: 0;
+        padding: 6px;
+        color: var(--ink);
+        cursor: pointer;
+        border-radius: 8px;
+      }
+      .menu svg {
+        width: 20px;
+        height: 20px;
+        display: block;
+      }
+
+      .sheet {
+        display: none;
+        position: fixed;
+        inset: var(--nav-h) 0 auto 0;
+        z-index: 39;
+        background: var(--bg);
+        border-bottom: 1px solid var(--line);
+        padding: 8px var(--gutter) 22px;
+      }
+      .sheet a {
+        display: block;
+        font-size: 22px;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        padding: 11px 0;
+        color: var(--ink);
+        border-bottom: 1px solid var(--line);
+      }
+      .sheet a:last-child {
+        border-bottom: 0;
+      }
+      .sheet.open {
+        display: block;
+      }
+
+      /* ---- Hero -------------------------------------------------------------- */
+
+      .hero {
+        position: relative;
+        isolation: isolate;
+        min-height: min(62vh, 600px);
+        display: flex;
+        align-items: center;
+        padding: 72px 0 40px;
+      }
+      .hero > .wrap {
+        width: 100%;
+      }
+
+      .terrain {
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        pointer-events: none;
+        color: var(--pine);
+        -webkit-mask-image: radial-gradient(
+          120% 95% at 72% 36%,
+          #000 34%,
+          transparent 80%
+        );
+        mask-image: radial-gradient(
+          120% 95% at 72% 36%,
+          #000 34%,
+          transparent 80%
+        );
+      }
+      .terrain svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+      .terrain path,
+      .terrain circle {
+        fill: none;
+        vector-effect: non-scaling-stroke;
+      }
+
+      /* Land: contour rings, every fifth one an index contour, as on a survey sheet. */
+      .terrain .ring {
+        stroke: var(--pine);
+        stroke-width: 1;
+        opacity: 0.16;
+      }
+      .terrain .ring.index {
+        stroke-width: 1.6;
+        opacity: 0.3;
+      }
+
+      /* Survey grid: crosses at the intersections only, never full lines. */
+      .terrain .grid {
+        stroke: var(--pine);
+        stroke-width: 1;
+        opacity: 0.17;
+      }
+
+      /* Water, in the logo's blue. A soft channel beneath a finer core line. */
+      .terrain .channel {
+        stroke: var(--river);
+        stroke-linecap: round;
+        opacity: 0.14;
+      }
+      .terrain .stream {
+        stroke: var(--river);
+        stroke-linecap: round;
+        opacity: 0.75;
+      }
+
+      /* Sampling stations. Symbols only: no labels and no readings. */
+      .terrain .station {
+        stroke-width: 1.2;
+      }
+      .terrain .station.water {
+        stroke: var(--river);
+      }
+      .terrain .station.land {
+        stroke: var(--pine);
+      }
+      .terrain .station .dot {
+        stroke: none;
+      }
+      .terrain .station.water .dot {
+        fill: var(--river);
+      }
+      .terrain .station.land .dot {
+        fill: var(--pine);
+      }
+
+      /* One page-load sequence: the land draws in, then the water runs downstream,
+   then the stations appear. Nothing moves afterwards. */
+      @media (prefers-reduced-motion: no-preference) {
+        .terrain .ring,
+        .terrain .channel,
+        .terrain .stream {
+          stroke-dasharray: 1;
+          stroke-dashoffset: 1;
+          animation: draw 1800ms cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+        }
+        .terrain .channel,
+        .terrain .stream {
+          animation-duration: 1200ms;
+          animation-timing-function: cubic-bezier(0.4, 0.1, 0.2, 1);
+        }
+        .terrain .grid,
+        .terrain .station {
+          animation: appear 700ms ease-out both;
+        }
+      }
+      @keyframes draw {
+        to {
+          stroke-dashoffset: 0;
+        }
+      }
+      @keyframes appear {
+        from {
+          opacity: 0;
+        }
+      }
+
+      .hero h1 {
+        margin: 0;
+        max-width: 13ch;
+        font-size: clamp(46px, 8.2vw, 104px);
+        line-height: 0.98;
+        letter-spacing: -0.045em;
+        font-weight: 700;
+        color: var(--ink);
+      }
+      .hero .lede {
+        margin: 22px 0 0;
+        max-width: 34ch;
+        font-size: clamp(18px, 2.1vw, 23px);
+        line-height: 1.35;
+        letter-spacing: -0.012em;
+        color: var(--ink-soft);
+      }
+
+      /* ---- Search, the working heart of the page ---------------------------- */
+
+      .find {
+        position: relative;
+        margin-top: 40px;
+        max-width: 560px;
+      }
+      .find label {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+      }
+      .find .field {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 0 16px;
+        height: 54px;
+        box-shadow:
+          0 1px 2px color-mix(in srgb, var(--ink) 6%, transparent),
+          0 8px 28px -12px color-mix(in srgb, var(--pine) 22%, transparent);
+        transition:
+          border-color 140ms,
+          box-shadow 140ms;
+      }
+      .find .field:focus-within {
+        border-color: var(--amber);
+        box-shadow: 0 0 0 4px color-mix(in srgb, var(--amber) 16%, transparent);
+      }
+      .find svg {
+        width: 18px;
+        height: 18px;
+        color: var(--ink-soft);
+        flex: none;
+      }
+      .find input {
+        flex: 1;
+        border: 0;
+        outline: 0;
+        background: transparent;
+        font: inherit;
+        font-size: 17px;
+        color: var(--ink);
+        min-width: 0;
+      }
+      .find input::placeholder {
+        color: var(--ink-soft);
+        opacity: 0.8;
+      }
+      .find kbd {
+        font: inherit;
+        font-size: 12px;
+        color: var(--ink-soft);
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        padding: 1px 7px;
+      }
+
+      .results {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: calc(100% + 8px);
+        z-index: 30;
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        box-shadow: 0 24px 60px -24px
+          color-mix(in srgb, var(--ink) 38%, transparent);
+        padding: 6px;
+        max-height: 360px;
+        overflow-y: auto;
+        list-style: none;
+        margin: 0;
+      }
+      .results[hidden] {
+        display: none;
+      }
+      .results li a {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 14px;
+        padding: 10px 12px;
+        border-radius: 9px;
+        font-size: 15px;
+        color: var(--ink);
+      }
+      .results li a small {
+        font-size: 12px;
+        color: var(--ink-soft);
+        white-space: nowrap;
+      }
+      .results li[aria-selected="true"] a,
+      .results li a:hover {
+        background: var(--moss-soft);
+      }
+      .results li.more a {
+        color: var(--pine);
+        font-weight: 500;
+      }
+
+      /* ---- Sections ---------------------------------------------------------- */
+
+      main section {
+        padding-block: 64px;
+      }
+      main section + section {
+        border-top: 1px solid var(--line);
+      }
+
+      .shead {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 20px;
+        margin-bottom: 26px;
+      }
+      .shead h2 {
+        margin: 0;
+        font-size: clamp(26px, 3.2vw, 34px);
+        font-weight: 700;
+        letter-spacing: -0.03em;
+        color: var(--ink);
+      }
+      .shead p {
+        margin: 0;
+        font-size: 15px;
+        color: var(--ink-soft);
+      }
+
+      /* Three primary destinations. Deliberately not a card grid: the rest of the
+   page is text, so these carry the hierarchy by being the only tiles. */
+      .tiles {
+        display: grid;
+        grid-template-columns: 1.35fr 1fr 1fr;
+        gap: 14px;
+      }
+      .tile {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        min-height: 200px;
+        padding: 22px 24px 22px;
+        border-radius: 20px;
+        background: var(--card);
+        border: 1px solid var(--line);
+        transition:
+          transform 160ms cubic-bezier(0.2, 0.7, 0.2, 1),
+          border-color 160ms;
+      }
+      .tile:hover {
+        transform: translateY(-2px);
+        border-color: color-mix(in srgb, var(--pine) 30%, var(--line));
+      }
+      .tile svg {
+        width: 26px;
+        height: 26px;
+        color: var(--pine);
+        flex: none;
+      }
+      .tile h3 {
+        margin: auto 0 0;
+        padding-top: 28px;
+        font-size: 22px;
+        font-weight: 700;
+        letter-spacing: -0.025em;
+        color: var(--ink);
+      }
+      .tile p {
+        margin: 6px 0 0;
+        font-size: 14.5px;
+        line-height: 1.45;
+        color: var(--ink-soft);
+        max-width: 32ch;
+      }
+      /* --pine-b rather than --pine: dark mode turns --pine into a light green for
+   text, which left light text on a pale tile. --pine-b is dark in both. */
+      .tile.lead {
+        background: var(--pine-b);
+        border-color: var(--pine-b);
+      }
+      .tile.lead h3,
+      .tile.lead svg {
+        color: var(--hero-ink);
+      }
+      .tile.lead p {
+        color: var(--hero-sub);
+      }
+
+      /* Everything else as grouped lists, the way a site map reads. */
+      .groups {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 32px 28px;
+      }
+      .group h3 {
+        margin: 0 0 12px;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--ink);
+        letter-spacing: -0.005em;
+      }
+      .group ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+      .group li + li {
+        margin-top: 2px;
+      }
+      .group a {
+        display: inline-block;
+        font-size: 15px;
+        line-height: 1.5;
+        color: var(--ink-soft);
+        padding: 3px 0;
+        transition: color 120ms;
+      }
+      .group a:hover {
+        color: var(--pine);
+      }
+
+      /* ---- Teams ------------------------------------------------------------- */
+
+      .segment {
+        display: inline-flex;
+        padding: 3px;
+        gap: 2px;
+        border-radius: 11px;
+        background: color-mix(in srgb, var(--line) 70%, transparent);
+        margin-bottom: 30px;
+        flex-wrap: wrap;
+      }
+      .segment button {
+        font: inherit;
+        font-size: 13.5px;
+        font-weight: 500;
+        cursor: pointer;
+        border: 0;
+        background: transparent;
+        color: var(--ink-soft);
+        padding: 6px 15px;
+        border-radius: 8px;
+        transition:
+          background 160ms,
+          color 160ms,
+          box-shadow 160ms;
+      }
+      .segment button[aria-selected="true"] {
+        background: var(--card);
+        color: var(--ink);
+        box-shadow: 0 1px 3px color-mix(in srgb, var(--ink) 14%, transparent);
+      }
+
+      .leads {
+        display: flex;
+        gap: 40px;
+        flex-wrap: wrap;
+        margin-bottom: 34px;
+      }
+      .person {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+      .mono {
+        flex: none;
+        border-radius: 50%;
+        background: var(--moss-soft);
+        color: var(--pine);
+        display: grid;
+        place-items: center;
+        font-weight: 600;
+      }
+      .leads .mono {
+        width: 56px;
+        height: 56px;
+        font-size: 18px;
+      }
+      .person b {
+        display: block;
+        font-size: 16px;
+        font-weight: 600;
+        letter-spacing: -0.015em;
+        color: var(--ink);
+      }
+      .person i {
+        display: block;
+        font-style: normal;
+        font-size: 13.5px;
+        color: var(--ink-soft);
+      }
+
+      .members {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+        gap: 18px 24px;
+      }
+      .members .mono {
+        width: 38px;
+        height: 38px;
+        font-size: 13px;
+      }
+      .members .person b {
+        font-size: 14.5px;
+        font-weight: 500;
+      }
+
+      .teamnote {
+        font-size: 14px;
+        color: var(--ink-soft);
+        margin: 18px 0 0;
+      }
+
+      /* ---- Footer ------------------------------------------------------------ */
+
+      footer {
+        border-top: 1px solid var(--line);
+        padding: 30px 0 40px;
+        font-size: 13px;
+        color: var(--ink-soft);
+      }
+      footer .wrap {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        flex-wrap: wrap;
+      }
+      footer nav {
+        display: flex;
+        gap: 22px;
+      }
+      footer a:hover {
+        color: var(--ink);
+      }
+
+      /* ---- Signed out -------------------------------------------------------- */
+
+      .gate {
+        margin-top: 36px;
+      }
+      .gate button {
+        font: inherit;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        border: 0;
+        border-radius: 999px;
+        padding: 13px 26px;
+        background: var(--amber);
+        color: #fff;
+      }
+      .gate button:hover {
+        background: var(--amber-deep);
+      }
+      .gate p {
+        margin: 14px 0 0;
+        font-size: 14px;
+        color: var(--ink-soft);
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      /* ---- Small screens ----------------------------------------------------- */
+
+      @media (max-width: 980px) {
+        .nav {
+          display: none;
+        }
+        .menu {
+          display: block;
+          margin-left: auto;
+        }
+        .groups {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+      @media (max-width: 720px) {
+        .tiles {
+          grid-template-columns: 1fr;
+        }
+        .tile {
+          min-height: 150px;
+        }
+        .hero {
+          min-height: auto;
+          padding: 48px 0 24px;
+        }
+        .find kbd {
+          display: none;
+        }
+      }
+      @media (max-width: 460px) {
+        .groups {
+          grid-template-columns: 1fr;
+        }
+        .leads {
+          gap: 22px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+
+    <header class="bar">
+      <div class="wrap">
+        <a class="brand" href="/" aria-label="Perfact Intranet, home">
+          <img
+            src="/assets/perfact-logo.png"
+            alt="Perfact"
+            width="59"
+            height="30"
+          />
+          <span>Intranet</span>
+        </a>
+        <nav class="nav" id="nav" aria-label="Main"></nav>
+        <button
+          class="menu"
+          id="menu"
+          type="button"
+          aria-label="Open menu"
+          aria-expanded="false"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+          >
+            <path d="M4 8h16M4 16h16" />
+          </svg>
+        </button>
+        <div class="who hidden" id="who" aria-hidden="true"></div>
+      </div>
+    </header>
+    <div class="sheet" id="sheet"></div>
+
+    <div class="hero">
+      <div class="terrain" aria-hidden="true">
+        <svg
+          id="terrain"
+          viewBox="0 0 1440 700"
+          preserveAspectRatio="xMidYMid slice"
+        ></svg>
+      </div>
+      <div class="wrap">
+        <h1 id="greeting">Perfact Intranet</h1>
+        <p class="lede">
+          The forms, guidelines and people you work with, in one place.
+        </p>
+
+        <div class="find hidden" id="find" role="search">
+          <label for="q">Search the intranet</label>
+          <div class="field">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.9"
+              stroke-linecap="round"
+              aria-hidden="true"
+            >
+              <circle cx="11" cy="11" r="6.5" />
+              <path d="m16 16 4.5 4.5" />
+            </svg>
+            <input
+              id="q"
+              type="search"
+              autocomplete="off"
+              spellcheck="false"
+              placeholder="Search forms and resources"
+              role="combobox"
+              aria-expanded="false"
+              aria-controls="results"
+              aria-autocomplete="list"
+            />
+            <kbd aria-hidden="true">/</kbd>
+          </div>
+          <ul class="results" id="results" role="listbox" hidden></ul>
+        </div>
+
+        <div class="gate hidden" id="gate">
+          <button type="button" id="signin">
+            Sign in with your Perfact account
+          </button>
+          <p>Use your perfactgroup.in address.</p>
+        </div>
+      </div>
+    </div>
+
+    <main id="main" class="hidden">
+      <section class="wrap" aria-labelledby="h-start">
+        <div class="shead"><h2 id="h-start">Start here</h2></div>
+        <div class="tiles" id="tiles"></div>
+      </section>
+
+      <section class="wrap" aria-labelledby="h-resources">
+        <div class="shead"><h2 id="h-resources">Resources</h2></div>
+        <div class="groups" id="groups"></div>
+      </section>
+
+      <section class="wrap" aria-labelledby="h-teams" id="teams-section">
+        <div class="shead"><h2 id="h-teams">Teams</h2></div>
+        <div
+          class="segment"
+          id="segment"
+          role="tablist"
+          aria-label="Choose a team"
+        ></div>
+        <div id="team" role="tabpanel"></div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="wrap">
+        <span>Perfact Group intranet</span>
+        <nav id="foot" aria-label="Footer"></nav>
+      </div>
+    </footer>
+
+    <script src="/lib/vendor/msal-browser.min.js"></script>
+    <script type="module">
+      import {
+        initAuth,
+        signIn,
+        getAccount,
+        getGraphToken,
+      } from "/lib/auth.js";
+
+      // ============================================================================
+      // CONTENT. Everything on the page is driven from here, so adding a link or a
+      // team is an edit to this block and nothing else.
+      //
+      // Links marked href: "#" were Google Sites addresses on the old intranet that
+      // have not been supplied yet. Replace each "#" with the real address; nothing
+      // else needs to change. The BD pipeline sits at /bd/ once the dashboard moves
+      // out of the site root to make room for this page.
+      // ============================================================================
+
+      const NAV = [
+        { label: "Technical guidelines", href: "#" },
+        { label: "EIA resource", href: "#" },
+        { label: "Accreditation hub", href: "#" },
+        { label: "Weekly roster", href: "#" },
+        { label: "Forms", href: "/forms/" },
+        { label: "Office resources", href: "#" },
+        { label: "MIS", href: "#" },
+        { label: "SPCB contacts", href: "#" },
+        { label: "Archive", href: "#" },
+      ];
+
+      const PRIMARY = [
+        {
+          label: "Forms",
+          href: "/forms/",
+          lead: true,
+          desc: "Every active form across performance, workflow, admin, BD, HR and more.",
+          icon: "forms",
+        },
+        {
+          label: "BD pipeline",
+          href: "/bd/",
+          desc: "Leads, proposals and handovers, and what is waiting on you.",
+          icon: "pipeline",
+        },
+        {
+          label: "Projects master dashboard",
+          href: "#",
+          desc: "Every live project and where it stands.",
+          icon: "grid",
+        },
+      ];
+
+      const GROUPS = [
+        {
+          title: "Quality",
+          links: [
+            { label: "QMSP, October 2025", href: "#" },
+            { label: "Annexures to QMSP", href: "#" },
+            { label: "Quality policy", href: "#" },
+            { label: "Quality control procedure", href: "#" },
+            { label: "Certificates", href: "#" },
+          ],
+        },
+        {
+          title: "People",
+          links: [
+            { label: "HR policies", href: "#" },
+            { label: "greytHR portal", href: "#" },
+            { label: "Etiquette", href: "#" },
+            { label: "Councils", href: "#" },
+          ],
+        },
+        {
+          title: "Office",
+          links: [
+            { label: "Office workflows", href: "#" },
+            { label: "Room booking", href: "#" },
+            { label: "Library", href: "#" },
+          ],
+        },
+        {
+          title: "Projects",
+          links: [
+            { label: "Active P-Codes", href: "#" },
+            { label: "All updates", href: "#" },
+            { label: "SOPs", href: "#" },
+          ],
+        },
+      ];
+
+      // Teams as shown on the old intranet. Only Fountain was legible in the
+      // supplied screenshot; add the others in the same shape. Roles are sentence
+      // case on purpose. Photos can replace the initials later with a photo field.
+      const TEAMS = [
+        {
+          name: "Fountain",
+          head: { name: "Rachna Dogra", role: "Business head" },
+          leader: { name: "Amit Yadav", role: "Team leader" },
+          members: [
+            "Dharmander Yadav",
+            "Sonu Singh",
+            "Tarun Yadav",
+            "Meenakshi Yadav",
+            "Shalini Pal",
+          ],
+        },
+      ];
+
+      const FOOT = [
+        { label: "All updates", href: "#" },
+        { label: "SOPs", href: "#" },
+        { label: "Forms", href: "/forms/" },
+      ];
+
+      // ============================================================================
+
+      const $ = (id) => document.getElementById(id);
+      const esc = (s) =>
+        String(s ?? "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+
+      const ICONS = {
+        forms:
+          '<path d="M7 3.5h7.5L19 8v12.5H7z"/><path d="M14 3.5V8h5"/><path d="M10 12.5h6M10 16h4"/>',
+        pipeline:
+          '<path d="M4 7h11"/><path d="M4 12h8"/><path d="M4 17h5"/><circle cx="18.5" cy="7" r="1.6"/><circle cx="15.5" cy="12" r="1.6"/><circle cx="12.5" cy="17" r="1.6"/>',
+        grid: '<rect x="4" y="4" width="6.5" height="6.5" rx="1.4"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.4"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.4"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.4"/>',
+      };
+      const icon = (name) =>
+        `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[name] || ""}</svg>`;
+
+      /**
+       * Perfact display names carry a designation and a team path:
+       *   "Pranav Mathur TL/ UPSTREAM/ DEL/ HO/ PERFACT"
+       *   "Pooja ASSOCIATE/ GLACIER/ DEL/ HO/ PERFACT"
+       * Keep only the person's name: drop everything from the first slash, drop
+       * honorifics, and drop trailing words in capitals, which are designations
+       * such as TL or ASSOCIATE rather than names. Taking the last word without
+       * this turned Pranav Mathur into "PT".
+       */
+      function cleanName(display) {
+        const words = String(display || "")
+          .split("/")[0]
+          .trim()
+          .split(/\s+/)
+          .filter((w) => w && !/^(dr|mr|mrs|ms|er|prof)\.?$/i.test(w));
+        while (
+          words.length > 1 &&
+          /^[A-Z0-9.&-]{2,}$/.test(words[words.length - 1])
+        )
+          words.pop();
+        return words;
+      }
+
+      function firstName(display) {
+        return cleanName(display)[0] || "";
+      }
+
+      function initials(display) {
+        const w = cleanName(display);
+        if (!w.length) return "";
+        return (
+          w[0][0] + (w.length > 1 ? w[w.length - 1][0] : "")
+        ).toUpperCase();
+      }
+
+      function greetingFor(date) {
+        const h = date.getHours();
+        return h < 12
+          ? "Good morning"
+          : h < 17
+            ? "Good afternoon"
+            : "Good evening";
+      }
+
+      // ---- The terrain -----------------------------------------------------------
+      // Closed contour rings around two summits, each ring a circle perturbed by a
+      // few low-frequency waves. The perturbation drifts gently from ring to ring so
+      // neighbouring contours stay roughly parallel, the way real ones do, and the
+      // amplitude stays well under the spacing so no two rings ever cross.
+
+      function seeded(seed) {
+        let s = seed >>> 0;
+        return () => (s = (s * 1664525 + 1013904223) >>> 0) / 4294967296;
+      }
+
+      function ringPath(cx, cy, r, waves, t) {
+        const n = 84,
+          pts = [];
+        for (let i = 0; i < n; i++) {
+          const a = (i / n) * Math.PI * 2;
+          let d = 0;
+          for (const w of waves)
+            d += w.amp * Math.sin(w.k * a + w.phase + t * w.drift);
+          pts.push([
+            cx + Math.cos(a) * (r + d),
+            cy + Math.sin(a) * (r + d) * 0.82,
+          ]);
+        }
+        // Closed Catmull-Rom through the points, as cubic Beziers.
+        let dstr = `M${pts[0][0].toFixed(1)},${pts[0][1].toFixed(1)}`;
+        for (let i = 0; i < n; i++) {
+          const p0 = pts[(i - 1 + n) % n],
+            p1 = pts[i],
+            p2 = pts[(i + 1) % n],
+            p3 = pts[(i + 2) % n];
+          const c1 = [p1[0] + (p2[0] - p0[0]) / 6, p1[1] + (p2[1] - p0[1]) / 6];
+          const c2 = [p2[0] - (p3[0] - p1[0]) / 6, p2[1] - (p3[1] - p1[1]) / 6];
+          dstr += `C${c1[0].toFixed(1)},${c1[1].toFixed(1)} ${c2[0].toFixed(1)},${c2[1].toFixed(1)} ${p2[0].toFixed(1)},${p2[1].toFixed(1)}`;
+        }
+        return dstr + "Z";
+      }
+
+      // Smooth open path through points, Catmull-Rom as cubic Beziers.
+      function openPath(pts) {
+        let d = `M${pts[0][0].toFixed(1)},${pts[0][1].toFixed(1)}`;
+        for (let i = 0; i < pts.length - 1; i++) {
+          const p0 = pts[Math.max(i - 1, 0)],
+            p1 = pts[i],
+            p2 = pts[i + 1];
+          const p3 = pts[Math.min(i + 2, pts.length - 1)];
+          const c1 = [p1[0] + (p2[0] - p0[0]) / 6, p1[1] + (p2[1] - p0[1]) / 6];
+          const c2 = [p2[0] - (p3[0] - p1[0]) / 6, p2[1] - (p3[1] - p1[1]) / 6];
+          d += `C${c1[0].toFixed(1)},${c1[1].toFixed(1)} ${c2[0].toFixed(1)},${c2[1].toFixed(1)} ${p2[0].toFixed(1)},${p2[1].toFixed(1)}`;
+        }
+        return d;
+      }
+
+      function drawTerrain() {
+        const svg = $("terrain");
+        const rand = seeded(20260924);
+        const summits = [
+          { cx: 1060, cy: 250, rings: 22, r0: 14, step: 27 },
+          { cx: 210, cy: 690, rings: 15, r0: 20, step: 31 },
+        ];
+        const STAGGER = 22;
+        let rings = "",
+          order = 0;
+
+        for (const s of summits) {
+          const waves = [2, 3, 5].map((k) => ({
+            k,
+            amp: s.step * (0.07 + rand() * 0.07),
+            phase: rand() * Math.PI * 2,
+            drift: (rand() - 0.5) * 0.18,
+          }));
+          for (let i = 0; i < s.rings; i++) {
+            const d = ringPath(s.cx, s.cy, s.r0 + i * s.step, waves, i);
+            const cls = i % 5 === 4 ? "ring index" : "ring";
+            rings += `<path class="${cls}" d="${d}" pathLength="1" style="animation-delay:${order++ * STAGGER}ms"/>`;
+          }
+        }
+        const landDone = order * STAGGER + 300;
+
+        // Survey grid crosses, as printed at the intersections of a topographic
+        // sheet. They sit beneath everything and appear as the land settles.
+        let grid = "";
+        for (let x = 60; x <= 1440; x += 120) {
+          for (let y = 50; y <= 700; y += 120) {
+            grid += `M${x - 4},${y}h8M${x},${y - 4}v8`;
+          }
+        }
+
+        // The river rises on the slope of the right-hand hill and runs downhill,
+        // outward across the contour rings as real streams do, then leaves the
+        // sheet at the bottom. Its course is a line downhill with a steady meander
+        // whose bends widen downstream, so it never kinks or runs straight. Kept in
+        // the right half, clear of the headline.
+        function meander(from, to, n, wavelengths, ampStart, ampEnd, phase) {
+          const dx = to[0] - from[0],
+            dy = to[1] - from[1];
+          const len = Math.hypot(dx, dy),
+            nx = -dy / len,
+            ny = dx / len;
+          const pts = [];
+          for (let i = 0; i <= n; i++) {
+            const t = i / n;
+            const amp = ampStart + (ampEnd - ampStart) * t;
+            const off = amp * Math.sin(t * Math.PI * 2 * wavelengths + phase);
+            pts.push([
+              from[0] + dx * t + nx * off,
+              from[1] + dy * t + ny * off,
+            ]);
+          }
+          return pts;
+        }
+        const at = (pts, t) => pts[Math.round(t * (pts.length - 1))];
+
+        const river = meander([1098, 316], [1322, 706], 36, 3.1, 5, 28, 0.6);
+        const join = at(river, 0.56);
+        const tributary = meander([1490, 446], join, 18, 1.6, 4, 14, 2.2);
+
+        const riverD = openPath(river),
+          tribD = openPath(tributary);
+        const w0 = landDone,
+          w1 = landDone + 400;
+        const water =
+          `<path class="channel" d="${riverD}" pathLength="1" style="stroke-width:10;animation-delay:${w0}ms"/>` +
+          `<path class="stream" d="${riverD}" pathLength="1" style="stroke-width:2.2;animation-delay:${w0}ms"/>` +
+          `<path class="channel" d="${tribD}" pathLength="1" style="stroke-width:6;animation-delay:${w1}ms"/>` +
+          `<path class="stream" d="${tribD}" pathLength="1" style="stroke-width:1.4;animation-delay:${w1}ms"/>`;
+
+        // Sampling stations: symbols only, placed on the river's own course so they
+        // sit exactly on the water. Two upstream and downstream, one on the valley
+        // floor between the hills.
+        const up = at(river, 0.22),
+          down = at(river, 0.72);
+        const stations = [
+          { x: up[0], y: up[1], kind: "water" },
+          { x: down[0], y: down[1], kind: "water" },
+          { x: 872, y: 438, kind: "land" },
+        ];
+        const s0 = w1 + 500;
+        const marks = stations
+          .map(
+            (st, i) => `
+    <g class="station ${st.kind}" style="animation-delay:${s0 + i * 120}ms">
+      <circle cx="${st.x.toFixed(1)}" cy="${st.y.toFixed(1)}" r="7"/>
+      <circle class="dot" cx="${st.x.toFixed(1)}" cy="${st.y.toFixed(1)}" r="2.2"/>
+    </g>`,
+          )
+          .join("");
+
+        svg.innerHTML =
+          `<path class="grid" d="${grid}" style="animation-delay:${landDone - 400}ms"/>` +
+          rings +
+          water +
+          marks;
+      }
+
+      function renderChrome() {
+        const links = NAV.map(
+          (l) => `<a href="${esc(l.href)}">${esc(l.label)}</a>`,
+        ).join("");
+        $("nav").innerHTML = links;
+        $("sheet").innerHTML = links;
+        $("foot").innerHTML = FOOT.map(
+          (l) => `<a href="${esc(l.href)}">${esc(l.label)}</a>`,
+        ).join("");
+
+        const menu = $("menu"),
+          sheet = $("sheet");
+        menu.onclick = () => {
+          const open = !sheet.classList.contains("open");
+          sheet.classList.toggle("open", open);
+          menu.setAttribute("aria-expanded", String(open));
+          menu.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+        };
+      }
+
+      function renderContent() {
+        $("tiles").innerHTML = PRIMARY.map(
+          (t) => `
+    <a class="tile${t.lead ? " lead" : ""}" href="${esc(t.href)}">
+      ${icon(t.icon)}
+      <h3>${esc(t.label)}</h3>
+      <p>${esc(t.desc)}</p>
+    </a>`,
+        ).join("");
+
+        $("groups").innerHTML = GROUPS.map(
+          (g) => `
+    <div class="group">
+      <h3>${esc(g.title)}</h3>
+      <ul>${g.links.map((l) => `<li><a href="${esc(l.href)}">${esc(l.label)}</a></li>`).join("")}</ul>
+    </div>`,
+        ).join("");
+
+        renderTeams();
+      }
+
+      function person(p, size) {
+        return `<div class="person">
+    <span class="mono" aria-hidden="true">${esc(initials(p.name))}</span>
+    <span><b>${esc(p.name)}</b>${p.role ? `<i>${esc(p.role)}</i>` : ""}</span>
+  </div>`;
+      }
+
+      function showTeam(i) {
+        const t = TEAMS[i];
+        for (const b of $("segment").querySelectorAll("button")) {
+          b.setAttribute("aria-selected", String(Number(b.dataset.i) === i));
+        }
+        $("team").innerHTML = `
+    <div class="leads">${[t.head, t.leader]
+      .filter(Boolean)
+      .map((p) => person(p))
+      .join("")}</div>
+    <div class="members">${t.members.map((m) => person({ name: m })).join("")}</div>`;
+      }
+
+      function renderTeams() {
+        if (!TEAMS.length) {
+          $("teams-section").classList.add("hidden");
+          return;
+        }
+        // A control with a single option is noise, so it appears only once there
+        // is more than one team to choose between.
+        const seg = $("segment");
+        if (TEAMS.length > 1) {
+          seg.innerHTML = TEAMS.map(
+            (t, i) =>
+              `<button type="button" role="tab" data-i="${i}">${esc(t.name)}</button>`,
+          ).join("");
+          for (const b of seg.querySelectorAll("button"))
+            b.onclick = () => showTeam(Number(b.dataset.i));
+        } else {
+          seg.classList.add("hidden");
+          $("h-teams").textContent = `${TEAMS[0].name} team`;
+        }
+        showTeam(0);
+      }
+
+      // ---- Search ----------------------------------------------------------------
+      // Spotlight-style: matches every destination on the page, opens the first on
+      // Enter, and always offers to carry the query into the full forms directory.
+
+      function destinations() {
+        const out = [];
+        for (const t of PRIMARY)
+          out.push({ label: t.label, href: t.href, where: "Start here" });
+        for (const g of GROUPS)
+          for (const l of g.links)
+            out.push({ label: l.label, href: l.href, where: g.title });
+        for (const l of NAV)
+          out.push({ label: l.label, href: l.href, where: "Menu" });
+        const seen = new Set();
+        return out.filter((d) =>
+          seen.has(d.label) ? false : seen.add(d.label),
+        );
+      }
+
+      function wireSearch() {
+        const q = $("q"),
+          list = $("results"),
+          all = destinations();
+        let active = -1,
+          items = [];
+
+        const close = () => {
+          list.hidden = true;
+          q.setAttribute("aria-expanded", "false");
+          active = -1;
+        };
+
+        const paint = () => {
+          [...list.children].forEach((li, i) =>
+            li.setAttribute("aria-selected", String(i === active)),
+          );
+        };
+
+        q.addEventListener("input", () => {
+          const term = q.value.trim().toLowerCase();
+          if (!term) return close();
+          items = all
+            .filter((d) => d.label.toLowerCase().includes(term))
+            .slice(0, 7);
+          const formsHref = `/forms/?q=${encodeURIComponent(q.value.trim())}`;
+          list.innerHTML =
+            items
+              .map(
+                (d) =>
+                  `<li role="option"><a href="${esc(d.href)}">${esc(d.label)}<small>${esc(d.where)}</small></a></li>`,
+              )
+              .join("") +
+            `<li role="option" class="more"><a href="${esc(formsHref)}">Search all forms for "${esc(q.value.trim())}"</a></li>`;
+          items.push({ href: formsHref });
+          active = 0;
+          paint();
+          list.hidden = false;
+          q.setAttribute("aria-expanded", "true");
+        });
+
+        q.addEventListener("keydown", (e) => {
+          if (list.hidden) return;
+          if (e.key === "ArrowDown") {
+            e.preventDefault();
+            active = Math.min(active + 1, items.length - 1);
+            paint();
+          } else if (e.key === "ArrowUp") {
+            e.preventDefault();
+            active = Math.max(active - 1, 0);
+            paint();
+          } else if (e.key === "Enter" && items[active]) {
+            e.preventDefault();
+            location.href = items[active].href;
+          } else if (e.key === "Escape") {
+            close();
+          }
+        });
+
+        document.addEventListener("click", (e) => {
+          if (!$("find").contains(e.target)) close();
+        });
+
+        // "/" focuses search from anywhere, as on most tools people already use.
+        document.addEventListener("keydown", (e) => {
+          if (
+            e.key === "/" &&
+            document.activeElement !== q &&
+            !/input|textarea/i.test(document.activeElement.tagName)
+          ) {
+            e.preventDefault();
+            q.focus();
+          }
+        });
+      }
+
+      // ---- Profile photo ---------------------------------------------------------
+      // Fetched from Microsoft Graph with the User.Read permission the app already
+      // holds. Silent only, and cached for the browser session, so it costs one
+      // Graph call per session and never sends anyone back through sign-in. Anyone
+      // without a photo keeps their initials.
+
+      const PHOTO_URLS = [
+        "https://graph.microsoft.com/v1.0/me/photos/64x64/$value",
+        // Some tenants only hold the original size.
+        "https://graph.microsoft.com/v1.0/me/photo/$value",
+      ];
+
+      function asDataUrl(blob) {
+        return new Promise((resolve, reject) => {
+          const r = new FileReader();
+          r.onload = () => resolve(r.result);
+          r.onerror = () => reject(r.error);
+          r.readAsDataURL(blob);
+        });
+      }
+
+      async function loadPhoto(acct) {
+        const key =
+          "perfact.photo." + (acct.homeAccountId || acct.username || "me");
+        let cached = null;
+        try {
+          cached = sessionStorage.getItem(key);
+        } catch {
+          /* storage may be off */
+        }
+        if (cached === "none") return null;
+        if (cached) return cached;
+
+        const token = await getGraphToken();
+        if (!token) return null;
+
+        for (const url of PHOTO_URLS) {
+          let res;
+          try {
+            res = await fetch(url, {
+              headers: { Authorization: "Bearer " + token },
+            });
+          } catch {
+            return null;
+          }
+          if (res.ok) {
+            const dataUrl = await asDataUrl(await res.blob());
+            try {
+              sessionStorage.setItem(key, dataUrl);
+            } catch {
+              /* too large or off */
+            }
+            return dataUrl;
+          }
+          // 404 means no photo at this size; anything else, stop trying.
+          if (res.status !== 404) return null;
+        }
+        // Remember the absence, so a person with no photo is not asked every page.
+        try {
+          sessionStorage.setItem(key, "none");
+        } catch {}
+        return null;
+      }
+
+      function showPhoto(dataUrl, display) {
+        const who = $("who");
+        const img = new Image();
+        img.alt = "";
+        img.onload = () => {
+          who.textContent = "";
+          who.appendChild(img);
+        };
+        img.src = dataUrl;
+        who.title = String(display || "")
+          .split("/")[0]
+          .trim();
+      }
+
+      // ---- Start -----------------------------------------------------------------
+
+      async function start() {
+        drawTerrain();
+        renderChrome();
+
+        await initAuth();
+        const acct = getAccount();
+
+        if (!acct) {
+          $("gate").classList.remove("hidden");
+          $("signin").onclick = () => signIn();
+          return;
+        }
+
+        const display = acct.name || acct.username || "";
+        const name = firstName(display);
+        $("greeting").textContent = name
+          ? `${greetingFor(new Date())}, ${name}.`
+          : "Perfact Intranet";
+        const who = $("who");
+        who.textContent = initials(display);
+        who.classList.remove("hidden");
+        loadPhoto(acct)
+          .then((url) => {
+            if (url) showPhoto(url, display);
+          })
+          .catch(() => {});
+
+        $("find").classList.remove("hidden");
+        $("main").classList.remove("hidden");
+        renderContent();
+        wireSearch();
+      }
+
+      start();
+    </script>
+  </body>
+</html>

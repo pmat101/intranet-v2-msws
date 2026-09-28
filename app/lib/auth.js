@@ -46,3 +46,23 @@ export async function getToken() {
     await msalInstance.acquireTokenRedirect(apiRequest);
   }
 }
+
+// A token for Microsoft Graph, used only to fetch the signed-in person's own
+// profile photo. It relies on the delegated User.Read permission, which the
+// app registration already holds.
+//
+// Silent only, unlike getToken. A profile picture is never worth sending
+// someone back through a sign-in page, so any failure returns null and the
+// page simply shows initials.
+export async function getGraphToken() {
+  if (!account) return null;
+  try {
+    const response = await msalInstance.acquireTokenSilent({
+      scopes: ["User.Read"],
+      account,
+    });
+    return response.accessToken;
+  } catch {
+    return null;
+  }
+}
