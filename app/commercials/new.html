@@ -329,6 +329,45 @@
       .hidden {
         display: none;
       }
+
+      /* The read-only client panel, shared with the commercials form. */
+      .client-panel dl {
+        display: grid;
+        grid-template-columns: max-content 1fr;
+        gap: 7px 20px;
+        margin: 0;
+        font-size: 0.9rem;
+      }
+      .client-panel dt {
+        color: var(--ink-soft);
+      }
+      .client-panel dd {
+        margin: 0;
+        color: var(--ink);
+        overflow-wrap: anywhere;
+      }
+      .client-panel .hint {
+        font-size: 0.84rem;
+        color: var(--ink-soft);
+        margin: 0;
+      }
+      .prefill-note {
+        font-size: 0.84rem;
+        color: var(--moss);
+        background: var(--moss-soft);
+        border-radius: var(--radius-input);
+        padding: 8px 12px;
+        margin: 0 0 14px;
+      }
+      @media (max-width: 560px) {
+        .client-panel dl {
+          grid-template-columns: 1fr;
+          gap: 1px 0;
+        }
+        .client-panel dd {
+          margin-bottom: 9px;
+        }
+      }
     </style>
   </head>
 
@@ -356,13 +395,18 @@
         </div>
 
         <fieldset>
+          <legend>Client and project, from the registers</legend>
+          <div class="client-panel" id="client-panel">
+            <p class="hint">Loading the client details...</p>
+          </div>
+        </fieldset>
+
+        <fieldset>
           <legend>Project</legend>
 
           <div class="grid">
             <div class="field">
-              <label for="pcode">
-                P-Code<span class="req">*</span>
-              </label>
+              <label for="pcode"> P-Code<span class="req">*</span> </label>
 
               <input
                 type="text"
@@ -387,10 +431,7 @@
                 step="1"
               />
 
-              <div
-                class="msg"
-                id="msg-projectDurationMonths"
-              ></div>
+              <div class="msg" id="msg-projectDurationMonths"></div>
             </div>
           </div>
         </fieldset>
@@ -398,10 +439,7 @@
         <fieldset>
           <legend>Cost stack, all figures in lakh</legend>
 
-          <div
-            class="grid"
-            id="cost-grid"
-          ></div>
+          <div class="grid" id="cost-grid"></div>
         </fieldset>
 
         <fieldset>
@@ -409,9 +447,7 @@
 
           <div class="grid">
             <div class="field">
-              <label for="pbl2Minimum">
-                PBL2, minimum acceptable quote
-              </label>
+              <label for="pbl2Minimum"> PBL2, minimum acceptable quote </label>
 
               <input
                 type="text"
@@ -424,9 +460,7 @@
             </div>
 
             <div class="field">
-              <label for="pbl3First">
-                PBL3, first quote sent
-              </label>
+              <label for="pbl3First"> PBL3, first quote sent </label>
 
               <input
                 type="text"
@@ -452,65 +486,38 @@
 
               <div class="unit">lakh</div>
 
-              <div
-                class="msg"
-                id="msg-pbl10FinalQuote"
-              ></div>
+              <div class="msg" id="msg-pbl10FinalQuote"></div>
             </div>
           </div>
         </fieldset>
 
         <div class="verdict">
-          <h2>
-            Computed by the server on submission. Shown here as you type.
-          </h2>
+          <h2>Computed by the server on submission. Shown here as you type.</h2>
 
           <div class="vgrid">
             <div class="vcell">
               <span class="vlabel">Base cost, PBL</span>
-              <span
-                class="vvalue"
-                id="v-base"
-              >&mdash;</span>
+              <span class="vvalue" id="v-base">&mdash;</span>
             </div>
 
             <div class="vcell">
               <span class="vlabel">Margin</span>
 
-              <span
-                class="vvalue"
-                id="v-margin"
-              >&mdash;</span>
+              <span class="vvalue" id="v-margin">&mdash;</span>
 
-              <span
-                class="chip idle"
-                id="chip-margin"
-              >
-                no figures yet
-              </span>
+              <span class="chip idle" id="chip-margin"> no figures yet </span>
             </div>
 
             <div class="vcell">
               <span class="vlabel">Revenue a month</span>
 
-              <span
-                class="vvalue"
-                id="v-velocity"
-              >&mdash;</span>
+              <span class="vvalue" id="v-velocity">&mdash;</span>
 
-              <span
-                class="chip idle"
-                id="chip-velocity"
-              >
-                no figures yet
-              </span>
+              <span class="chip idle" id="chip-velocity"> no figures yet </span>
             </div>
           </div>
 
-          <div
-            class="escalation hidden"
-            id="escalation"
-          >
+          <div class="escalation hidden" id="escalation">
             <h3>This proposal is below the floor</h3>
 
             <p id="escalation-detail"></p>
@@ -519,15 +526,9 @@
               Why should this be pursued?<span class="req">*</span>
             </label>
 
-            <textarea
-              id="escalationReason"
-              rows="3"
-            ></textarea>
+            <textarea id="escalationReason" rows="3"></textarea>
 
-            <div
-              class="msg"
-              id="msg-escalationReason"
-            ></div>
+            <div class="msg" id="msg-escalationReason"></div>
           </div>
         </div>
 
@@ -551,20 +552,13 @@
             <div class="field">
               <label for="prLab">PR, laboratory</label>
 
-              <input
-                type="text"
-                class="money"
-                id="prLab"
-                inputmode="decimal"
-              />
+              <input type="text" class="money" id="prLab" inputmode="decimal" />
 
               <div class="unit">lakh</div>
             </div>
 
             <div class="field">
-              <label for="psCompliance">
-                PS, compliance
-              </label>
+              <label for="psCompliance"> PS, compliance </label>
 
               <input
                 type="text"
@@ -590,9 +584,7 @@
             </div>
 
             <div class="field">
-              <label for="subContractor">
-                Sub-contractor
-              </label>
+              <label for="subContractor"> Sub-contractor </label>
 
               <input
                 type="text"
@@ -607,16 +599,9 @@
             <div class="field">
               <label>Net Perfact revenue</label>
 
-              <div
-                class="computed"
-                id="v-npr"
-              >
-                &mdash;
-              </div>
+              <div class="computed" id="v-npr">&mdash;</div>
 
-              <div class="computed-note">
-                computed
-              </div>
+              <div class="computed-note">computed</div>
             </div>
           </div>
         </fieldset>
@@ -626,27 +611,15 @@
 
           <div class="grid">
             <div class="field">
-              <label for="costComputerLink">
-                Link to cost computer
-              </label>
+              <label for="costComputerLink"> Link to cost computer </label>
 
-              <input
-                type="url"
-                id="costComputerLink"
-                placeholder="https://"
-              />
+              <input type="url" id="costComputerLink" placeholder="https://" />
             </div>
 
             <div class="field">
-              <label for="finalProposalLink">
-                Link to final proposal
-              </label>
+              <label for="finalProposalLink"> Link to final proposal </label>
 
-              <input
-                type="url"
-                id="finalProposalLink"
-                placeholder="https://"
-              />
+              <input type="url" id="finalProposalLink" placeholder="https://" />
             </div>
 
             <div class="field">
@@ -663,34 +636,21 @@
             <div class="field wide">
               <label for="remarks">Remarks</label>
 
-              <textarea
-                id="remarks"
-                rows="2"
-              ></textarea>
+              <textarea id="remarks" rows="2"></textarea>
             </div>
           </div>
         </fieldset>
 
         <div class="actions">
-          <button
-            type="submit"
-            class="primary"
-            id="submit-btn"
-          >
+          <button type="submit" class="primary" id="submit-btn">
             Record commercials
           </button>
 
-          <span
-            class="status"
-            id="status"
-          ></span>
+          <span class="status" id="status"></span>
         </div>
       </form>
 
-      <div
-        id="done"
-        class="done hidden"
-      >
+      <div id="done" class="done hidden">
         <h2>Commercials recorded</h2>
 
         <dl>
@@ -716,11 +676,7 @@
           <dd id="d-esc"></dd>
         </dl>
 
-        <button
-          type="button"
-          class="primary"
-          onclick="location.reload()"
-        >
+        <button type="button" class="primary" onclick="location.reload()">
           Record another
         </button>
       </div>
@@ -729,19 +685,13 @@
     <script src="/lib/vendor/msal-browser.min.js"></script>
 
     <script type="module">
-      import {
-        initAuth,
-        signIn,
-        getAccount,
-      } from "/lib/auth.js";
+      import { initAuth, signIn, getAccount } from "/lib/auth.js";
 
       import { api } from "/lib/api.js";
 
-      import {
-        lakhToPaise,
-        paiseToLakh,
-        formatRupees,
-      } from "/lib/money.js";
+      import { loadClient, renderClient } from "/lib/client-panel.js";
+
+      import { lakhToPaise, paiseToLakh, formatRupees } from "/lib/money.js";
 
       const $ = (id) => document.getElementById(id);
 
@@ -827,21 +777,14 @@
           base += p;
         }
 
-        const quote = lakhToPaise(
-          $("pbl10FinalQuote").value,
-        );
+        const quote = lakhToPaise($("pbl10FinalQuote").value);
 
-        const months = Number(
-          $("projectDurationMonths").value,
-        );
+        const months = Number($("projectDurationMonths").value);
 
-        $("v-base").textContent = complete
-          ? formatRupees(base)
-          : "\u2014";
+        $("v-base").textContent = complete ? formatRupees(base) : "\u2014";
 
         // Net Perfact revenue.
-        const gross =
-          lakhToPaise($("grossFee").value) || 0;
+        const gross = lakhToPaise($("grossFee").value) || 0;
 
         let deductions = 0;
 
@@ -851,8 +794,7 @@
           "liaison",
           "subContractor",
         ]) {
-          deductions +=
-            lakhToPaise($(field).value) || 0;
+          deductions += lakhToPaise($(field).value) || 0;
         }
 
         $("v-npr").textContent = gross
@@ -869,51 +811,30 @@
           $("v-margin").textContent = "\u2014";
           $("v-velocity").textContent = "\u2014";
 
-          setChip(
-            $("chip-margin"),
-            "idle",
-            "incomplete",
-          );
+          setChip($("chip-margin"), "idle", "incomplete");
 
-          setChip(
-            $("chip-velocity"),
-            "idle",
-            "incomplete",
-          );
+          setChip($("chip-velocity"), "idle", "incomplete");
 
           $("escalation").classList.add("hidden");
 
           return;
         }
 
-        const marginPct =
-          Math.round(
-            ((quote - base) / quote) * 10000,
-          ) / 100;
+        const marginPct = Math.round(((quote - base) / quote) * 10000) / 100;
 
-        const velocity = Math.round(
-          quote / months,
-        );
+        const velocity = Math.round(quote / months);
 
-        $("v-margin").textContent =
-          marginPct.toFixed(2) + "%";
+        $("v-margin").textContent = marginPct.toFixed(2) + "%";
 
-        $("v-velocity").textContent =
-          formatRupees(velocity);
+        $("v-velocity").textContent = formatRupees(velocity);
 
-        const marginBelow =
-          marginPct < bounds.marginFloorPct;
+        const marginBelow = marginPct < bounds.marginFloorPct;
 
-        const marginAbove =
-          marginPct > bounds.marginCeilingPct;
+        const marginAbove = marginPct > bounds.marginCeilingPct;
 
         setChip(
           $("chip-margin"),
-          marginBelow
-            ? "below"
-            : marginAbove
-              ? "above"
-              : "within",
+          marginBelow ? "below" : marginAbove ? "above" : "within",
           marginBelow
             ? `below the ${bounds.marginFloorPct}% floor`
             : marginAbove
@@ -921,16 +842,13 @@
               : "within the band",
         );
 
-        const velBelow =
-          velocity < bounds.velocityFloorPerMonth;
+        const velBelow = velocity < bounds.velocityFloorPerMonth;
 
         setChip(
           $("chip-velocity"),
           velBelow ? "below" : "within",
           velBelow
-            ? `below ${paiseToLakh(
-                bounds.velocityFloorPerMonth,
-              )} lakh a month`
+            ? `below ${paiseToLakh(bounds.velocityFloorPerMonth)} lakh a month`
             : "clears the floor",
         );
 
@@ -950,25 +868,18 @@
         $("summary").classList.add("hidden");
         $("summary-list").innerHTML = "";
 
-        for (const el of document.querySelectorAll(
-          "[aria-invalid]",
-        )) {
+        for (const el of document.querySelectorAll("[aria-invalid]")) {
           el.removeAttribute("aria-invalid");
         }
 
-        for (const el of document.querySelectorAll(
-          ".msg",
-        )) {
+        for (const el of document.querySelectorAll(".msg")) {
           el.textContent = "";
         }
       }
 
       function showErrors(errors) {
         $("summary-list").innerHTML = errors
-          .map(
-            (e) =>
-              `<li><a href="#${e.field}">${e.message}</a></li>`,
-          )
+          .map((e) => `<li><a href="#${e.field}">${e.message}</a></li>`)
           .join("");
 
         $("summary").classList.remove("hidden");
@@ -977,10 +888,7 @@
           const input = $(e.field);
 
           if (input) {
-            input.setAttribute(
-              "aria-invalid",
-              "true",
-            );
+            input.setAttribute("aria-invalid", "true");
           }
 
           const msg = $("msg-" + e.field);
@@ -1000,46 +908,29 @@
         const out = {
           pcode: $("pcode").value.trim(),
 
-          projectDurationMonths:
-            Number(
-              $("projectDurationMonths").value,
-            ),
+          projectDurationMonths: Number($("projectDurationMonths").value),
 
-          costComputerLink:
-            $("costComputerLink").value.trim(),
+          costComputerLink: $("costComputerLink").value.trim(),
 
-          finalProposalLink:
-            $("finalProposalLink").value.trim(),
+          finalProposalLink: $("finalProposalLink").value.trim(),
 
           prMode: $("prMode").value,
 
-          remarks:
-            $("remarks").value.trim(),
+          remarks: $("remarks").value.trim(),
 
-          escalationReason:
-            $("escalationReason").value.trim(),
+          escalationReason: $("escalationReason").value.trim(),
         };
 
         for (const [id] of COST_FIELDS) {
-          out[id] = lakhToPaise(
-            $(id).value,
-          );
+          out[id] = lakhToPaise($(id).value);
         }
 
-        out.pbl10FinalQuote =
-          lakhToPaise(
-            $("pbl10FinalQuote").value,
-          );
+        out.pbl10FinalQuote = lakhToPaise($("pbl10FinalQuote").value);
 
         for (const id of OPTIONAL_MONEY) {
-          const p = lakhToPaise(
-            $(id).value,
-          );
+          const p = lakhToPaise($(id).value);
 
-          if (
-            p !== null &&
-            !Number.isNaN(p)
-          ) {
+          if (p !== null && !Number.isNaN(p)) {
             out[id] = p;
           }
         }
@@ -1058,15 +949,12 @@
         }
 
         if (
-          !Number.isFinite(
-            payload.projectDurationMonths,
-          ) ||
+          !Number.isFinite(payload.projectDurationMonths) ||
           payload.projectDurationMonths <= 0
         ) {
           errors.push({
             field: "projectDurationMonths",
-            message:
-              "Project duration is required and must be more than zero",
+            message: "Project duration is required and must be more than zero",
           });
         }
 
@@ -1076,8 +964,7 @@
           if (value === null) {
             errors.push({
               field: id,
-              message:
-                `${label} is required. Enter 0 if it does not apply.`,
+              message: `${label} is required. Enter 0 if it does not apply.`,
             });
           } else if (Number.isNaN(value)) {
             errors.push({
@@ -1087,21 +974,15 @@
           }
         }
 
-        if (
-          !payload.pbl10FinalQuote ||
-          payload.pbl10FinalQuote <= 0
-        ) {
+        if (!payload.pbl10FinalQuote || payload.pbl10FinalQuote <= 0) {
           errors.push({
             field: "pbl10FinalQuote",
-            message:
-              "The agreed quote is required",
+            message: "The agreed quote is required",
           });
         }
 
         if (
-          !$("escalation").classList.contains(
-            "hidden",
-          ) &&
+          !$("escalation").classList.contains("hidden") &&
           !payload.escalationReason
         ) {
           errors.push({
@@ -1133,47 +1014,28 @@
         $("status").textContent = "Recording...";
 
         try {
-          const r = await api.post(
-            "commercials",
-            payload,
-          );
+          const r = await api.post("commercials", payload);
 
           $("form").classList.add("hidden");
 
-          $("d-rec").textContent =
-            r.proposalRecId;
+          $("d-rec").textContent = r.proposalRecId;
 
-          $("d-pcode").textContent =
-            r.pcode;
+          $("d-pcode").textContent = r.pcode;
 
-          $("d-base").textContent =
-            formatRupees(r.baseCost);
+          $("d-base").textContent = formatRupees(r.baseCost);
 
-          $("d-quote").textContent =
-            formatRupees(r.quote);
+          $("d-quote").textContent = formatRupees(r.quote);
 
-          $("d-margin").textContent =
-            r.marginPct +
-            "% (" +
-            r.gateMargin +
-            ")";
+          $("d-margin").textContent = r.marginPct + "% (" + r.gateMargin + ")";
 
           $("d-velocity").textContent =
-            formatRupees(
-              r.velocityPerMonth,
-            ) +
-            " (" +
-            r.gateVelocity +
-            ")";
+            formatRupees(r.velocityPerMonth) + " (" + r.gateVelocity + ")";
 
-          $("d-esc").textContent =
-            r.needsEscalation
-              ? "Yes, the CSO will see this"
-              : "No";
+          $("d-esc").textContent = r.needsEscalation
+            ? "Yes, the CSO will see this"
+            : "No";
 
-          $("done").classList.remove(
-            "hidden",
-          );
+          $("done").classList.remove("hidden");
 
           window.scrollTo({
             top: 0,
@@ -1183,18 +1045,13 @@
           btn.disabled = false;
           $("status").textContent = "";
 
-          if (
-            Array.isArray(err.errors) &&
-            err.errors.length
-          ) {
+          if (Array.isArray(err.errors) && err.errors.length) {
             showErrors(err.errors);
           } else {
             showErrors([
               {
                 field: "pcode",
-                message:
-                  err.message ||
-                  "The commercials could not be recorded",
+                message: err.message || "The commercials could not be recorded",
               },
             ]);
           }
@@ -1205,13 +1062,9 @@
         await initAuth();
 
         if (!getAccount()) {
-          $("gate").innerHTML =
-            "You need to sign in. ";
+          $("gate").innerHTML = "You need to sign in. ";
 
-          const b =
-            document.createElement(
-              "button",
-            );
+          const b = document.createElement("button");
 
           b.className = "primary";
           b.textContent = "Sign in";
@@ -1223,43 +1076,36 @@
         }
 
         try {
-          const me =
-            await api.get("whoami");
+          const me = await api.get("whoami");
 
-          $("gate").classList.add(
-            "hidden",
-          );
+          $("gate").classList.add("hidden");
 
-          $("form").classList.remove(
-            "hidden",
-          );
+          $("form").classList.remove("hidden");
 
-          $("status").textContent =
-            `Signed in as ${me.name}, ${me.role}`;
+          $("status").textContent = `Signed in as ${me.name}, ${me.role}`;
         } catch (err) {
           $("gate").textContent =
-            err.message ||
-            "Your account has no access to this form.";
+            err.message || "Your account has no access to this form.";
 
           return;
         }
 
         buildCostFields();
 
-        for (
-          const el of document.querySelectorAll(
-            "input, select",
-          )
-        ) {
-          el.addEventListener(
-            "input",
-            preview,
-          );
+        for (const el of document.querySelectorAll("input, select")) {
+          el.addEventListener("input", preview);
         }
 
         $("form").onsubmit = onSubmit;
 
         preview();
+
+        const showClient = async () => {
+          const pcode = $("pcode").value.trim();
+          renderClient($("client-panel"), await loadClient(pcode), pcode);
+        };
+        await showClient();
+        $("pcode").addEventListener("change", showClient);
       }
 
       start();

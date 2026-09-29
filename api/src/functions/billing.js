@@ -3,7 +3,10 @@ const { verifyRequest } = require("../lib/auth");
 const { resolveRole } = require("../lib/roles");
 const { graph, SITE_ID } = require("../lib/graph");
 const { allocate } = require("../lib/sequences");
+const { refreshStage } = require("../lib/stage-machine");
 const { sendBillingStarted } = require("../lib/mail-bd");
+const { checkTaxIds } = require("../lib/tax-ids");
+const { clientContext } = require("../lib/client-context");
 
 const MAY_SUBMIT = ["BD", "Accounts", "Admin", "CSO", "COO"];
 
@@ -70,6 +73,9 @@ function validate(p) {
       });
     }
   }
+
+  // Formats, and the GSTIN containing the PAN. Mirrors the billing form.
+  errors.push(...checkTaxIds(p).errors);
   return errors;
 }
 
@@ -143,6 +149,9 @@ async function handle(request, context) {
 
   const nowIso = new Date().toISOString();
   const workOrderValue = Number(p.workOrderValue);
+  // Stored in one consistent form, upper case with no spaces, so the same
+  // number typed two ways is not recorded as two numbers.
+  const tax = checkTaxIds(p);
 
   await graph("POST", `/sites/${SITE_ID}/lists/AcceptanceRegister/items`, {
     fields: {
@@ -158,11 +167,11 @@ async function handle(request, context) {
       WorkOrderLink: p.workOrderLink || "",
       SalesOrderLink: p.salesOrderLink || "",
       GSTAvailable: p.gstAvailable === true,
-      GSTNumber: p.gstNumber || "",
+      GSTNumber: p.gstAvailable === true ? tax.gst : "",
       PANAvailable: p.panAvailable === true,
-      PANNumber: p.panNumber || "",
+      PANNumber: p.panAvailable === true ? tax.pan : "",
       TANAvailable: p.tanAvailable === true,
-      TANNumber: p.tanNumber || "",
+      TANNumber: p.tanAvailable === true ? tax.tan : "",
       GSTTreatment: p.gstTreatment || "",
       PaymentTerms: p.paymentTerms || "",
       Remarks: p.remarks || "",
@@ -203,14 +212,38 @@ async function handle(request, context) {
     `Billing started for ${pcode} by ${caller.email}, value ${workOrderValue} paise`,
   );
 
+  // What is already known about the client, so the mail Accounts reviews is
+  // complete without BD retyping it. A failed lookup must not undo a billing
+  // start that has already been recorded, so the mail goes without it.
+  let client = null;
+  try {
+    client = await clientContext(pcode);
+  } catch (err) {
+    context.log(
+      `Client details not loaded for the billing mail: ${err.message}`,
+    );
+  }
+
   const mail = await sendBillingStarted(pcode, caller, {
+    client,
     mode: p.mode,
+    acceptanceDate: p.acceptanceDate,
     woNumber: p.woNumber,
     soNumber: p.soNumber,
     referenceNo: p.referenceNo,
     workOrderValue,
     workOrderValidity: p.workOrderValidity,
+    workOrderLink: p.workOrderLink,
+    salesOrderLink: p.salesOrderLink,
+    gstAvailable: p.gstAvailable === true,
+    gstNumber: tax.gst,
+    panAvailable: p.panAvailable === true,
+    panNumber: tax.pan,
+    tanAvailable: p.tanAvailable === true,
+    tanNumber: tax.tan,
+    gstTreatment: p.gstTreatment,
     paymentTerms: p.paymentTerms,
+    remarks: p.remarks,
     ledgerEntryId: entryId,
   });
   if (!mail.sent) context.log(`Billing mail not sent: ${mail.reason}`);

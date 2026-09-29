@@ -7,6 +7,7 @@ const { graph, SITE_ID } = require("../lib/graph");
 const { allocate } = require("../lib/sequences");
 const { refreshStage } = require("../lib/stage-machine");
 const { sendCommercialsRecorded } = require("../lib/mail-bd");
+const { clientContext } = require("../lib/client-context");
 
 const MAY_SUBMIT = ["BD", "Admin", "CSO", "COO", "Accounts"];
 
@@ -231,7 +232,24 @@ async function handle(request, context) {
   // Sent after the record is safely stored, and its failure is reported
   // rather than thrown. Commercials that saved have saved; losing the
   // notification must not tell the person their submission failed.
+  // The client block Accounts needs to review the proposal. A failed lookup
+  // sends the mail without it rather than failing commercials already saved.
+  let client = null;
+  try {
+    client = await clientContext(pcode);
+  } catch (err) {
+    context.log(
+      `Client details not loaded for the commercials mail: ${err.message}`,
+    );
+  }
+
   const mail = await sendCommercialsRecorded(pcode, caller, {
+    client,
+    prMode: payload.prMode || "",
+    costComputerLink: payload.costComputerLink || "",
+    finalProposalLink: payload.finalProposalLink || "",
+    remarks: payload.remarks || "",
+    durationMonths: c.durationMonths,
     baseCost: c.baseCost,
     quote: c.quote,
     marginPct: c.marginPct,

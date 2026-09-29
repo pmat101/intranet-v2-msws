@@ -235,6 +235,45 @@
       .hidden {
         display: none;
       }
+
+      /* The read-only client panel, shared with the commercials form. */
+      .client-panel dl {
+        display: grid;
+        grid-template-columns: max-content 1fr;
+        gap: 7px 20px;
+        margin: 0;
+        font-size: 0.9rem;
+      }
+      .client-panel dt {
+        color: var(--ink-soft);
+      }
+      .client-panel dd {
+        margin: 0;
+        color: var(--ink);
+        overflow-wrap: anywhere;
+      }
+      .client-panel .hint {
+        font-size: 0.84rem;
+        color: var(--ink-soft);
+        margin: 0;
+      }
+      .prefill-note {
+        font-size: 0.84rem;
+        color: var(--moss);
+        background: var(--moss-soft);
+        border-radius: var(--radius-input);
+        padding: 8px 12px;
+        margin: 0 0 14px;
+      }
+      @media (max-width: 560px) {
+        .client-panel dl {
+          grid-template-columns: 1fr;
+          gap: 1px 0;
+        }
+        .client-panel dd {
+          margin-bottom: 9px;
+        }
+      }
     </style>
   </head>
 
@@ -261,13 +300,18 @@
         </div>
 
         <fieldset>
+          <legend>Client and project, from the registers</legend>
+          <div class="client-panel" id="client-panel">
+            <p class="hint">Loading the client details...</p>
+          </div>
+        </fieldset>
+
+        <fieldset>
           <legend>Acceptance</legend>
 
           <div class="grid">
             <div class="field">
-              <label for="pcode">
-                P-Code<span class="req">*</span>
-              </label>
+              <label for="pcode"> P-Code<span class="req">*</span> </label>
 
               <input
                 type="text"
@@ -305,9 +349,7 @@
             </div>
 
             <div class="field">
-              <label for="woNumber">
-                Work order number
-              </label>
+              <label for="woNumber"> Work order number </label>
 
               <input type="text" id="woNumber" />
 
@@ -315,17 +357,13 @@
             </div>
 
             <div class="field">
-              <label for="soNumber">
-                Sales order number
-              </label>
+              <label for="soNumber"> Sales order number </label>
 
               <input type="text" id="soNumber" />
             </div>
 
             <div class="field">
-              <label for="referenceNo">
-                Other reference
-              </label>
+              <label for="referenceNo"> Other reference </label>
 
               <input
                 type="text"
@@ -352,9 +390,7 @@
             </div>
 
             <div class="field">
-              <label for="workOrderValidity">
-                Work order validity
-              </label>
+              <label for="workOrderValidity"> Work order validity </label>
 
               <input
                 type="text"
@@ -364,41 +400,27 @@
             </div>
 
             <div class="field">
-              <label for="workOrderLink">
-                Link to work order
-              </label>
+              <label for="workOrderLink"> Link to work order </label>
 
-              <input
-                type="url"
-                id="workOrderLink"
-                placeholder="https://"
-              />
+              <input type="url" id="workOrderLink" placeholder="https://" />
             </div>
 
             <div class="field">
-              <label for="salesOrderLink">
-                Link to sales order
-              </label>
+              <label for="salesOrderLink"> Link to sales order </label>
 
-              <input
-                type="url"
-                id="salesOrderLink"
-                placeholder="https://"
-              />
+              <input type="url" id="salesOrderLink" placeholder="https://" />
             </div>
           </div>
         </fieldset>
 
         <fieldset>
           <legend>Tax identity</legend>
+          <p class="prefill-note hidden" id="prefill-note"></p>
 
           <div class="grid">
             <div class="field">
               <label class="inline">
-                <input
-                  type="checkbox"
-                  id="gstAvailable"
-                />
+                <input type="checkbox" id="gstAvailable" />
                 GST available
               </label>
 
@@ -414,10 +436,7 @@
 
             <div class="field">
               <label class="inline">
-                <input
-                  type="checkbox"
-                  id="panAvailable"
-                />
+                <input type="checkbox" id="panAvailable" />
                 PAN available
               </label>
 
@@ -433,10 +452,7 @@
 
             <div class="field">
               <label class="inline">
-                <input
-                  type="checkbox"
-                  id="tanAvailable"
-                />
+                <input type="checkbox" id="tanAvailable" />
                 TAN available
               </label>
 
@@ -452,7 +468,7 @@
 
             <div class="field">
               <label for="gstTreatment">
-                GST treatment
+                Perfact GST registration (PG GST)
               </label>
 
               <select id="gstTreatment">
@@ -471,9 +487,7 @@
             </div>
 
             <div class="field wide">
-              <label for="paymentTerms">
-                Payment terms
-              </label>
+              <label for="paymentTerms"> Payment terms </label>
 
               <textarea
                 id="paymentTerms"
@@ -483,38 +497,24 @@
             </div>
 
             <div class="field wide">
-              <label for="remarks">
-                Remarks
-              </label>
+              <label for="remarks"> Remarks </label>
 
-              <textarea
-                id="remarks"
-                rows="2"
-              ></textarea>
+              <textarea id="remarks" rows="2"></textarea>
             </div>
           </div>
         </fieldset>
 
         <div class="actions">
-          <button
-            type="submit"
-            class="primary"
-            id="submit-btn"
-          >
+          <button type="submit" class="primary" id="submit-btn">
             Start billing
           </button>
 
-          <span
-            class="status"
-            id="status"
-          ></span>
+          <span class="status" id="status"></span>
         </div>
       </form>
 
       <div id="done" class="done hidden">
-        <h2 id="done-title">
-          Billing started
-        </h2>
+        <h2 id="done-title">Billing started</h2>
 
         <dl>
           <dt>P-Code</dt>
@@ -532,11 +532,7 @@
           as a percentage of this value.
         </p>
 
-        <button
-          type="button"
-          class="primary"
-          onclick="location.reload()"
-        >
+        <button type="button" class="primary" onclick="location.reload()">
           Start another
         </button>
       </div>
@@ -545,22 +541,32 @@
     <script src="/lib/vendor/msal-browser.min.js"></script>
 
     <script type="module">
-      import {
-        initAuth,
-        signIn,
-        getAccount,
-      } from "/lib/auth.js";
+      import { initAuth, signIn, getAccount } from "/lib/auth.js";
 
-      import {
-        api,
-      } from "/lib/api.js";
+      import { api } from "/lib/api.js";
 
-      import {
-        lakhToPaise,
-        formatRupees,
-      } from "/lib/money.js";
+      import { lakhToPaise, formatRupees } from "/lib/money.js";
+
+      import { loadClient, renderClient } from "/lib/client-panel.js";
 
       const $ = (id) => document.getElementById(id);
+
+      // Mirrors api/src/lib/tax-ids.js. Change both together.
+      const PAN_RE = /^[A-Z]{5}[0-9]{4}[A-Z]$/;
+      const TAN_RE = /^[A-Z]{4}[0-9]{5}[A-Z]$/;
+      const GSTIN_RE = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z][1-9A-Z]Z[0-9A-Z]$/;
+      const norm = (v) =>
+        String(v || "")
+          .toUpperCase()
+          .replace(/\s+/g, "");
+
+      for (const id of ["gstNumber", "panNumber", "tanNumber"]) {
+        $(id).addEventListener("input", () => {
+          const at = $(id).selectionStart;
+          $(id).value = $(id).value.toUpperCase();
+          $(id).setSelectionRange(at, at);
+        });
+      }
 
       // A tax number field only accepts input once its flag is ticked,
       // so the two cannot disagree.
@@ -593,10 +599,7 @@
 
       function showErrors(errors) {
         $("summary-list").innerHTML = errors
-          .map(
-            (e) =>
-              `<li><a href="#${e.field}">${e.message}</a></li>`,
-          )
+          .map((e) => `<li><a href="#${e.field}">${e.message}</a></li>`)
           .join("");
 
         $("summary").classList.remove("hidden");
@@ -629,9 +632,7 @@
           woNumber: $("woNumber").value.trim(),
           soNumber: $("soNumber").value.trim(),
           referenceNo: $("referenceNo").value.trim(),
-          workOrderValue: lakhToPaise(
-            $("workOrderValue").value,
-          ),
+          workOrderValue: lakhToPaise($("workOrderValue").value),
           workOrderValidity: $("workOrderValidity").value.trim(),
           workOrderLink: $("workOrderLink").value.trim(),
           salesOrderLink: $("salesOrderLink").value.trim(),
@@ -676,21 +677,14 @@
             field: "workOrderValue",
             message: "The work order value is required",
           });
-        } else if (
-          Number.isNaN(p.workOrderValue) ||
-          p.workOrderValue <= 0
-        ) {
+        } else if (Number.isNaN(p.workOrderValue) || p.workOrderValue <= 0) {
           errors.push({
             field: "workOrderValue",
             message: "The work order value must be more than zero",
           });
         }
 
-        if (
-          !p.woNumber &&
-          !p.soNumber &&
-          !p.referenceNo
-        ) {
+        if (!p.woNumber && !p.soNumber && !p.referenceNo) {
           errors.push({
             field: "woNumber",
             message:
@@ -706,10 +700,46 @@
           if (p[flag] && !p[num]) {
             errors.push({
               field: num,
-              message:
-                `${label} is required when you tick that one is available`,
+              message: `${label} is required when you tick that one is available`,
             });
           }
+        }
+
+        const gst = norm(p.gstNumber),
+          pan = norm(p.panNumber),
+          tan = norm(p.tanNumber);
+        if (p.gstAvailable && gst && !GSTIN_RE.test(gst)) {
+          errors.push({
+            field: "gstNumber",
+            message:
+              "This is not a valid GSTIN. It should be 15 characters, for instance 07AAAAA1234A1Z5",
+          });
+        }
+        if (p.panAvailable && pan && !PAN_RE.test(pan)) {
+          errors.push({
+            field: "panNumber",
+            message:
+              "This is not a valid PAN. It should be 10 characters, for instance AAAAA1234A",
+          });
+        }
+        if (p.tanAvailable && tan && !TAN_RE.test(tan)) {
+          errors.push({
+            field: "tanNumber",
+            message:
+              "This is not a valid TAN. It should be 10 characters, for instance DELA12345B",
+          });
+        }
+        if (
+          p.gstAvailable &&
+          p.panAvailable &&
+          GSTIN_RE.test(gst) &&
+          PAN_RE.test(pan) &&
+          gst.slice(2, 12) !== pan
+        ) {
+          errors.push({
+            field: "gstNumber",
+            message: `This GSTIN belongs to PAN ${gst.slice(2, 12)}, not ${pan}. One of the two is mistyped`,
+          });
         }
 
         return errors;
@@ -734,25 +764,19 @@
         $("status").textContent = "Recording...";
 
         try {
-          const r = await api.post(
-            "billing/start",
-            p,
-          );
+          const r = await api.post("billing/start", p);
 
           $("form").classList.add("hidden");
 
           if (r.duplicate) {
-            $("done-title").textContent =
-              "Billing was already started";
+            $("done-title").textContent = "Billing was already started";
 
             $("d-value").textContent = "unchanged";
             $("d-ledger").textContent = "unchanged";
           } else {
-            $("d-value").textContent =
-              formatRupees(r.workOrderValue);
+            $("d-value").textContent = formatRupees(r.workOrderValue);
 
-            $("d-ledger").textContent =
-              r.ledgerEntryId;
+            $("d-ledger").textContent = r.ledgerEntryId;
           }
 
           $("d-pcode").textContent = r.pcode;
@@ -767,18 +791,13 @@
           btn.disabled = false;
           $("status").textContent = "";
 
-          if (
-            Array.isArray(err.errors) &&
-            err.errors.length
-          ) {
+          if (Array.isArray(err.errors) && err.errors.length) {
             showErrors(err.errors);
           } else {
             showErrors([
               {
                 field: "pcode",
-                message:
-                  err.message ||
-                  "Billing could not be started",
+                message: err.message || "Billing could not be started",
               },
             ]);
           }
@@ -789,8 +808,7 @@
         await initAuth();
 
         if (!getAccount()) {
-          $("gate").innerHTML =
-            "You need to sign in. ";
+          $("gate").innerHTML = "You need to sign in. ";
 
           const b = document.createElement("button");
 
@@ -809,17 +827,52 @@
           $("gate").classList.add("hidden");
           $("form").classList.remove("hidden");
 
-          $("status").textContent =
-            `Signed in as ${me.name}, ${me.role}`;
+          $("status").textContent = `Signed in as ${me.name}, ${me.role}`;
         } catch (err) {
           $("gate").textContent =
-            err.message ||
-            "Your account has no access to this form.";
+            err.message || "Your account has no access to this form.";
 
           return;
         }
 
         $("form").onsubmit = onSubmit;
+
+        await showClient();
+        $("pcode").addEventListener("change", showClient);
+      }
+
+      /**
+       * Shows the client panel, and offers the tax numbers from this client's
+       * previous project. Offered only into an untouched form, and labelled,
+       * because a client can register afresh or bill from another state.
+       */
+      async function showClient() {
+        const pcode = $("pcode").value.trim();
+        const ctx = await loadClient(pcode);
+        renderClient($("client-panel"), ctx, pcode);
+
+        const prev = ctx && ctx.previousTax;
+        const untouched =
+          ["gstAvailable", "panAvailable", "tanAvailable"].every(
+            (f) => !$(f).checked,
+          ) &&
+          ["gstNumber", "panNumber", "tanNumber"].every(
+            (f) => !$(f).value.trim(),
+          );
+        if (!prev || !untouched) return;
+
+        for (const [flag, num, avail, value] of [
+          ["gstAvailable", "gstNumber", prev.gstAvailable, prev.gstNumber],
+          ["panAvailable", "panNumber", prev.panAvailable, prev.panNumber],
+          ["tanAvailable", "tanNumber", prev.tanAvailable, prev.tanNumber],
+        ]) {
+          $(flag).checked = Boolean(avail);
+          $(num).disabled = !avail;
+          $(num).value = avail ? value || "" : "";
+        }
+        const note = $("prefill-note");
+        note.textContent = `Carried over from ${prev.fromPcode}, this client's previous project. Check they still apply before submitting.`;
+        note.classList.remove("hidden");
       }
 
       start();

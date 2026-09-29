@@ -294,6 +294,42 @@ async function sendProposalSent(pcode, caller, d) {
 }
 
 /* ------------------------------------------------------------------ */
+/* The client and project blocks shared by both BD02 mails.            */
+/* Taken from the registers, never retyped, so Accounts sees the same  */
+/* names the lead was created with.                                    */
+/* ------------------------------------------------------------------ */
+
+const known = (v) =>
+  v === undefined || v === null || String(v).trim() === "" ? "Not recorded" : v;
+
+function projectSection(pcode, c) {
+  const x = c || {};
+  return section(
+    "Project",
+    row("P-Code", pcode) +
+      row("Proposal ID", known(x.proposalId)) +
+      row("Project", known(x.projectName)) +
+      row("Location", known(x.location)) +
+      row("Perfact entity", known(x.pgEntity)),
+  );
+}
+
+function clientSection(c) {
+  if (!c) return "";
+  return section(
+    "Client",
+    row("Company Name", known(c.companyName)) +
+      row("Contact Person", known(c.contactName)) +
+      row("Contact Email", known(c.contactEmail)) +
+      row("Contact Phone", known(c.contactPhone)),
+  );
+}
+
+/** A tax number, or an explicit statement that the client has none. */
+const taxValue = (available, number) =>
+  available ? known(number) : "Not available";
+
+/* ------------------------------------------------------------------ */
 /* Stage 6, BD02a. Final commercials.                                  */
 /* Legacy BD02: TO glacier@ plus submitter, CC arctic@ and info@.      */
 /* Accounts added per the policy of 25 August 2026.                    */
@@ -320,6 +356,8 @@ async function sendCommercialsRecorded(pcode, caller, d) {
     : `<p>Final commercials recorded for <strong>${esc(pcode)}</strong> by
          ${esc(caller.name || caller.email)}.</p>`;
 
+  const client = d.client || null;
+
   return send({
     formCode: "BD02",
     to: [GLACIER, ACCOUNTS, caller.email],
@@ -328,23 +366,34 @@ async function sendCommercialsRecorded(pcode, caller, d) {
     subject,
     html: wrap(
       intro,
-      section(
-        "Costing",
-        row("P-Code", pcode) +
+      projectSection(pcode, client) +
+        clientSection(client) +
+        section(
+          "Costing",
           row("Base cost", `${lakh(d.baseCost)} lakh`) +
-          row("Agreed quote, PBL10", `${lakh(d.quote)} lakh`) +
-          row("Margin", `${d.marginPct} per cent, ${d.gateMargin}`) +
-          row("Duration", `${d.durationMonths || ""} months`) +
-          row(
-            "Revenue a month",
-            `${lakh(d.velocityPerMonth)} lakh, ${d.gateVelocity}`,
-          ),
-      ) +
+            row("Agreed quote, PBL10", `${lakh(d.quote)} lakh`) +
+            row("Margin", `${d.marginPct} per cent, ${d.gateMargin}`) +
+            row("Duration", `${d.durationMonths || ""} months`) +
+            row(
+              "Revenue a month",
+              `${lakh(d.velocityPerMonth)} lakh, ${d.gateVelocity}`,
+            ) +
+            row("PR Mode", known(d.prMode)),
+        ) +
         (escalated
           ? section("Escalation", row("Reason", d.escalationReason || ""))
-          : ""),
-      "Perfact Intranet, BD Pipeline. Stage 7, Won and Onboarded. " +
-        "Billing starts on the work order.",
+          : "") +
+        section(
+          "Documents",
+          row("Final proposal", known(d.finalProposalLink)) +
+            row("Cost computer", known(d.costComputerLink)) +
+            (client && client.proposalSentOn
+              ? row("Proposal sent on", client.proposalSentOn)
+              : "") +
+            (d.remarks ? row("Remarks", d.remarks) : ""),
+        ),
+      "Perfact Intranet, BD Pipeline. Stage 6, Negotiation. " +
+        "Billing starts once the client accepts.",
     ),
   });
 }
@@ -354,6 +403,7 @@ async function sendCommercialsRecorded(pcode, caller, d) {
 /* ------------------------------------------------------------------ */
 
 async function sendBillingStarted(pcode, caller, d) {
+  const client = d.client || null;
   return send({
     formCode: "BD02",
     to: [ACCOUNTS, caller.email],
@@ -363,19 +413,32 @@ async function sendBillingStarted(pcode, caller, d) {
     html: wrap(
       `<p>The client has accepted <strong>${esc(pcode)}</strong> and the expense
        ledger is open. Recorded by ${esc(caller.name || caller.email)}.</p>`,
-      section(
-        "Acceptance",
-        row("P-Code", pcode) +
+      projectSection(pcode, client) +
+        clientSection(client) +
+        section(
+          "Tax and Registration",
+          row("Client GSTIN", taxValue(d.gstAvailable, d.gstNumber)) +
+            row("Client PAN", taxValue(d.panAvailable, d.panNumber)) +
+            row("Client TAN", taxValue(d.tanAvailable, d.tanNumber)) +
+            row("Perfact GST registration", known(d.gstTreatment)) +
+            row("PR Mode", known(client && client.prMode)),
+        ) +
+        section(
+          "Acceptance",
           row("Accepted By", d.mode) +
-          row(
-            "Work Order Number",
-            d.woNumber || d.soNumber || d.referenceNo || "",
-          ) +
-          row("Work Order Value", `${lakh(d.workOrderValue)} lakh`) +
-          row("Validity", d.workOrderValidity) +
-          row("Payment Terms", d.paymentTerms) +
-          row("Ledger Entry", d.ledgerEntryId),
-      ),
+            row("Acceptance Date", known(d.acceptanceDate)) +
+            row(
+              "Work Order Number",
+              d.woNumber || d.soNumber || d.referenceNo || "",
+            ) +
+            row("Work Order Value", `${lakh(d.workOrderValue)} lakh`) +
+            row("Validity", known(d.workOrderValidity)) +
+            row("Payment Terms", known(d.paymentTerms)) +
+            (d.workOrderLink ? row("Work order", d.workOrderLink) : "") +
+            (d.salesOrderLink ? row("Sales order", d.salesOrderLink) : "") +
+            (d.remarks ? row("Remarks", d.remarks) : "") +
+            row("Ledger Entry", d.ledgerEntryId),
+        ),
       "Perfact Intranet, BD Pipeline. The billing schedule follows on handover.",
     ),
   });
