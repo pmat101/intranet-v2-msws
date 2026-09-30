@@ -1,0 +1,530 @@
+<!doctype html>
+<html lang="en-IN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>TG01 | Chat Space Guidelines</title>
+
+  <link rel="stylesheet" href="../assets/tokens.css">
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+    }
+
+    .page {
+      width: min(1080px, calc(100% - 44px));
+      margin: auto;
+      padding: 42px 0 80px;
+    }
+
+    /* Header */
+
+    .head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 45px;
+
+      padding: 35px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .head-copy {
+      max-width: 690px;
+    }
+
+    .tag {
+      display: inline-block;
+      margin-bottom: 14px;
+
+      color: var(--moss);
+      font: 700 11px var(--font-mono);
+      letter-spacing: .1em;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(38px, 5vw, 58px);
+      line-height: 1;
+      letter-spacing: -.05em;
+    }
+
+    .intro {
+      max-width: 650px;
+      margin: 17px 0 0;
+
+      color: var(--ink-soft);
+      font-size: 15px;
+      line-height: 1.65;
+    }
+
+    /* Small SVG */
+
+    .art {
+      width: 250px;
+      height: 170px;
+      flex: none;
+    }
+
+    .art svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .grid {
+      stroke: var(--line);
+      stroke-width: 1;
+    }
+
+    .ring {
+      fill: none;
+      stroke: var(--moss);
+      opacity: .35;
+    }
+
+    .route {
+      fill: none;
+      stroke: var(--river);
+      stroke-width: 2;
+      stroke-dasharray: 5 7;
+    }
+
+    .node {
+      fill: var(--moss);
+    }
+
+    /* Content */
+
+    .section {
+      padding-top: 38px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+
+      margin-bottom: 16px;
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font-size: 25px;
+      letter-spacing: -.03em;
+    }
+
+    .count {
+      color: var(--ink-soft);
+      font: 11px var(--font-mono);
+    }
+
+    /* Questions */
+
+    .questions {
+      border-top: 1px solid var(--line);
+    }
+
+    .question {
+      display: grid;
+      grid-template-columns: 45px 1fr;
+      gap: 18px;
+
+      padding: 22px 5px;
+
+      border-bottom: 1px solid var(--line);
+    }
+
+    .num {
+      color: var(--moss);
+      font: 700 12px var(--font-mono);
+      padding-top: 2px;
+    }
+
+    .question h3 {
+      margin: 0 0 7px;
+      font-size: 16px;
+      letter-spacing: -.015em;
+    }
+
+    .question p {
+      margin: 0;
+      max-width: 800px;
+
+      color: var(--ink-soft);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .question:hover h3 {
+      color: var(--moss);
+    }
+
+    /* Bottom */
+
+    .bottom {
+      display: flex;
+      gap: 10px;
+      margin-top: 28px;
+    }
+
+    .bottom a {
+      padding: 9px 14px;
+
+      border: 1px solid var(--line);
+      border-radius: 8px;
+
+      background: var(--card);
+      color: var(--ink);
+
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .bottom a:hover {
+      color: var(--moss);
+      border-color: var(--moss);
+    }
+
+    @media (max-width: 700px) {
+      .page {
+        width: min(100% - 28px, 1080px);
+        padding-top: 25px;
+      }
+
+      .head {
+        display: block;
+      }
+
+      .art {
+        width: 100%;
+        height: 130px;
+        margin-top: 25px;
+      }
+
+      .question {
+        grid-template-columns: 38px 1fr;
+        gap: 12px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- SHARED TOPBAR -->
+  <div id="topbar"></div>
+
+
+  <main class="page">
+
+    <!-- PAGE HEADER -->
+
+    <header class="head">
+
+      <div class="head-copy">
+
+        <span class="tag">
+          TECHNICAL GUIDELINES / TG01
+        </span>
+
+        <h1>Chat Space Guidelines</h1>
+
+        <p class="intro">
+          Guidelines for project communication,
+          coordination and information sharing
+          through Chat Space.
+        </p>
+
+      </div>
+
+
+      <!-- Technical SVG -->
+
+      <div class="art">
+
+        <svg viewBox="0 0 250 170">
+
+          <path
+            class="grid"
+            d="
+              M10 35H240
+              M10 85H240
+              M10 135H240
+              M55 10V160
+              M125 10V160
+              M195 10V160
+            "
+          />
+
+          <circle
+            class="ring"
+            cx="125"
+            cy="85"
+            r="55"
+          />
+
+          <circle
+            class="ring"
+            cx="125"
+            cy="85"
+            r="35"
+          />
+
+          <circle
+            class="ring"
+            cx="125"
+            cy="85"
+            r="16"
+          />
+
+          <path
+            class="route"
+            d="
+              M18 130
+              C65 120 70 62 120 85
+              C170 108 182 48 232 28
+            "
+          />
+
+          <circle class="node" cx="18" cy="130" r="4"/>
+          <circle class="node" cx="125" cy="85" r="5"/>
+          <circle class="node" cx="232" cy="28" r="4"/>
+
+        </svg>
+
+      </div>
+
+    </header>
+
+
+    <!-- QUESTIONS -->
+
+    <section class="section">
+
+      <div class="section-head">
+        <h2>Guidelines</h2>
+        <span class="count">12 POINTS</span>
+      </div>
+
+
+      <div class="questions">
+
+        <article class="question">
+          <span class="num">01</span>
+          <div>
+            <h3>What is Chat Space used for?</h3>
+            <p>
+              Chat Space is used for project-related communication,
+              coordination and sharing of information among team members.
+            </p>
+          </div>
+        </article>
+
+
+        <article class="question">
+          <span class="num">02</span>
+          <div>
+            <h3>Who creates the group?</h3>
+            <p>
+              The concerned project team creates the Chat Space
+              for the project and adds the required members.
+            </p>
+          </div>
+        </article>
+
+
+        <article class="question">
+          <span class="num">03</span>
+          <div>
+            <h3>What should be the naming format?</h3>
+            <p>
+              Use the project-related name so that the Chat Space
+              can be easily identified by everyone.
+            </p>
+          </div>
+        </article>
+
+
+        <article class="question">
+          <span class="num">04</span>
+          <div>
+            <h3>What should be included in the project description?</h3>
+            <p>
+              The project description should provide the relevant
+              project information required by the team.
+            </p>
+          </div>
+        </article>
+
+
+        <article class="question">
+          <span class="num">05</span>
+          <div>
+            <h3>Who can edit the description?</h3>
+            <p>
+              The designated members responsible for managing the
+              Chat Space can update its description when required.
+            </p>
+          </div>
+        </article>
+
+
+        <article class="question">
+          <span class="num">06</span>
+          <div>
+            <h3>Who should be added as members?</h3>
+            <p>
+              Only the concerned project team members and other
+              required stakeholders should be added.
+            </p>
+          </div>
+        </article>
+
+
+        <article class="question">
+          <span class="num">07</span>
+          <div>
+            <h3>How should the team interact?</h3>
+            <p>
+              Project discussions, updates and important communication
+              should be kept within the relevant Chat Space.
+            </p>
+          </div>
+        </article>
+
+
+        <article class="question">
+          <span class="num">08</span>
+          <div>
+            <h3>Can documents be shared?</h3>
+            <p>
+              Yes. Relevant project documents can be shared in the
+              Chat Space for easy access by the concerned team.
+            </p>
+          </div>
+        </article>
+
+
+        <article class="question">
+          <span class="num">09</span>
+          <div>
+            <h3>How are tasks handled?</h3>
+            <p>
+              Tasks and project activities can be communicated and
+              coordinated through the Chat Space.
+            </p>
+          </div>
+        </article>
+
+
+        <article class="question">
+          <span class="num">10</span>
+          <div>
+            <h3>What about notification settings?</h3>
+            <p>
+              Members can manage notification settings according
+              to their project communication requirements.
+            </p>
+          </div>
+        </article>
+
+
+        <article class="question">
+          <span class="num">11</span>
+          <div>
+            <h3>How can messages be searched?</h3>
+            <p>
+              Use the search option available in Chat Space to
+              find previous messages and shared information.
+            </p>
+          </div>
+        </article>
+
+
+        <article class="question">
+          <span class="num">12</span>
+          <div>
+            <h3>What if someone leaves the Space?</h3>
+            <p>
+              The concerned member can rejoin the relevant Space
+              when access is required.
+            </p>
+          </div>
+        </article>
+
+      </div>
+
+
+      <div class="bottom">
+        <a href="#">Chat Space Training</a>
+        <a href="#">Cheat Sheet</a>
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <!-- LOAD TOPBAR -->
+
+  <script>
+    async function loadTopbar() {
+
+      const box = document.getElementById("topbar");
+
+      const res = await fetch("topbar.html");
+      const html = await res.text();
+
+      const doc = new DOMParser()
+        .parseFromString(html, "text/html");
+
+
+      doc.querySelectorAll("style").forEach(style => {
+        document.head.appendChild(
+          style.cloneNode(true)
+        );
+      });
+
+
+      doc.body.childNodes.forEach(node => {
+
+        if (node.nodeName !== "SCRIPT") {
+          box.appendChild(
+            document.importNode(node, true)
+          );
+        }
+
+      });
+
+
+      doc.querySelectorAll("script").forEach(old => {
+
+        const script = document.createElement("script");
+
+        [...old.attributes].forEach(attr => {
+          script.setAttribute(
+            attr.name,
+            attr.value
+          );
+        });
+
+        script.textContent = old.textContent;
+
+        document.body.appendChild(script);
+
+      });
+
+    }
+
+    loadTopbar();
+  </script>
+
+</body>
+</html>

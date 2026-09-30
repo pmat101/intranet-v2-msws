@@ -1,0 +1,1164 @@
+<!doctype html>
+<html lang="en-IN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <title>TG03 | Single File Format</title>
+
+  <link rel="stylesheet" href="../assets/tokens.css">
+
+  <style>
+    .page{
+      width:min(1180px,calc(100% - 40px));
+      margin:auto;
+      padding:38px 0 70px;
+    }
+
+    /* HEADER */
+
+    .tg-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:40px;
+      padding:25px 0 34px;
+      border-bottom:1px solid var(--line);
+    }
+
+    .tg-copy{
+      max-width:760px;
+    }
+
+    .tg-tag{
+      color:var(--moss);
+      font:700 11px var(--font-mono);
+      letter-spacing:.1em;
+    }
+
+    .tg-head h1{
+      margin:10px 0 12px;
+      font-size:clamp(34px,4.5vw,54px);
+      line-height:1;
+      letter-spacing:-.045em;
+    }
+
+    .tg-intro{
+      margin:0;
+      max-width:680px;
+      color:var(--ink-soft);
+      font-size:15px;
+      line-height:1.6;
+    }
+
+    /* SVG */
+
+    .tg-art{
+      width:230px;
+      height:155px;
+      flex:none;
+    }
+
+    .tg-art svg{
+      width:100%;
+      height:100%;
+    }
+
+    .grid{
+      stroke:var(--line);
+      stroke-width:1;
+    }
+
+    .file{
+      fill:var(--card);
+      stroke:var(--moss);
+      stroke-width:1.5;
+    }
+
+    .route{
+      fill:none;
+      stroke:var(--river);
+      stroke-width:2;
+      stroke-dasharray:5 6;
+    }
+
+    .dot{
+      fill:var(--moss);
+    }
+
+    /* TABS */
+
+    .tg03-tabs{
+      display:flex;
+      gap:8px;
+      margin:26px 0 18px;
+      overflow-x:auto;
+      padding-bottom:2px;
+    }
+
+    .tg03-tab{
+      padding:9px 15px;
+      border:1px solid var(--line);
+      border-radius:8px;
+      background:var(--card);
+      color:var(--ink-soft);
+      font:600 12px var(--font-body);
+      white-space:nowrap;
+      cursor:pointer;
+    }
+
+    .tg03-tab:hover,
+    .tg03-tab.active{
+      color:var(--moss);
+      border-color:var(--moss);
+      background:var(--moss-soft);
+    }
+
+    /* SHEETS */
+
+    .tg03-sheet{
+      display:none;
+    }
+
+    .tg03-sheet.active{
+      display:block;
+    }
+
+    .sheet-title{
+      margin:8px 0 14px;
+      font-size:21px;
+      font-weight:700;
+      letter-spacing:-.02em;
+    }
+
+    /* TABLE */
+
+    .tg03-table-wrap{
+      overflow:auto;
+      border:1px solid var(--line);
+      border-radius:12px;
+      background:var(--card);
+    }
+
+    .tg03-table{
+      width:100%;
+      min-width:1050px;
+      border-collapse:collapse;
+      font-size:13px;
+    }
+
+    .tg03-table th,
+    .tg03-table td{
+      padding:12px;
+      border-right:1px solid var(--line);
+      border-bottom:1px solid var(--line);
+      vertical-align:top;
+      text-align:left;
+      line-height:1.5;
+    }
+
+    .tg03-table th{
+      background:var(--moss-soft);
+      color:var(--ink);
+      font-size:11px;
+      font-weight:700;
+    }
+
+    .tg03-table td{
+      color:var(--ink-soft);
+    }
+
+    .tg03-table td:first-child{
+      color:var(--moss);
+      font:700 12px var(--font-mono);
+      white-space:nowrap;
+    }
+
+    .tg03-table td a{
+      color:var(--moss);
+      font-weight:600;
+    }
+
+    .tg03-table tr:last-child td{
+      border-bottom:0;
+    }
+
+    .tg03-table th:last-child,
+    .tg03-table td:last-child{
+      border-right:0;
+    }
+
+    /* NOTE */
+
+    .tg03-note{
+      margin-top:20px;
+      padding:15px 18px;
+      border-left:3px solid var(--moss);
+      background:var(--moss-soft);
+      color:var(--ink-soft);
+      font-size:13px;
+    }
+
+    .tg03-note strong{
+      color:var(--ink);
+    }
+
+    .tg03-note p{
+      margin:4px 0 0;
+    }
+
+    @media(max-width:700px){
+      .page{
+        width:calc(100% - 26px);
+        padding-top:24px;
+      }
+
+      .tg-head{
+        display:block;
+      }
+
+      .tg-art{
+        width:100%;
+        height:120px;
+        margin-top:20px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- SHARED TOPBAR -->
+  <div id="topbar"></div>
+
+
+  <main class="page">
+
+    <!-- PAGE HEADER -->
+
+    <header class="tg-head">
+
+      <div class="tg-copy">
+
+        <span class="tg-tag">
+          TECHNICAL GUIDELINES / TG03
+        </span>
+
+        <h1>Single File Format</h1>
+
+        <p class="tg-intro">
+          Technical guidelines for EIA/EAC application
+          single file preparation.
+        </p>
+
+      </div>
+
+
+      <!-- SUBPAGE SVG -->
+
+      <div class="tg-art">
+
+        <svg viewBox="0 0 230 155" aria-hidden="true">
+
+          <path
+            class="grid"
+            d="
+              M10 30H220
+              M10 78H220
+              M10 126H220
+              M55 10V145
+              M115 10V145
+              M175 10V145
+            "
+          />
+
+          <rect
+            class="file"
+            x="28"
+            y="43"
+            width="45"
+            height="68"
+            rx="5"
+          />
+
+          <rect
+            class="file"
+            x="92"
+            y="35"
+            width="45"
+            height="76"
+            rx="5"
+          />
+
+          <rect
+            class="file"
+            x="156"
+            y="43"
+            width="45"
+            height="68"
+            rx="5"
+          />
+
+          <path
+            class="route"
+            d="M73 77H92M137 77H156"
+          />
+
+          <circle
+            class="dot"
+            cx="28"
+            cy="43"
+            r="4"
+          />
+
+          <circle
+            class="dot"
+            cx="201"
+            cy="111"
+            r="4"
+          />
+
+        </svg>
+
+      </div>
+
+    </header>
+
+
+    <!-- CATEGORY TABS -->
+
+    <div class="tg03-tabs">
+
+      <button
+        class="tg03-tab active"
+        onclick="showSheet('building',this)"
+      >
+        Building Construction
+      </button>
+
+      <button
+        class="tg03-tab"
+        onclick="showSheet('mining',this)"
+      >
+        Mining Projects
+      </button>
+
+      <button
+        class="tg03-tab"
+        onclick="showSheet('industry',this)"
+      >
+        Industry
+      </button>
+
+    </div>
+
+
+    <!-- =================================================
+         BUILDING CONSTRUCTION
+    ================================================== -->
+
+    <section
+      id="building"
+      class="tg03-sheet active"
+    >
+
+      <div class="sheet-title">
+        Building Construction
+      </div>
+
+      <div class="tg03-table-wrap">
+
+        <table class="tg03-table">
+
+          <thead>
+            <tr>
+              <th>S.No.</th>
+              <th>Initials Pages for Single File</th>
+              <th>
+                B2 Cases<br>
+                Amendment, Transfer, Extension etc.
+              </th>
+              <th>Cat A/B1 Cases</th>
+              <th>Template Link</th>
+              <th>Remarks</th>
+            </tr>
+          </thead>
+
+          <tbody>
+
+            <tr>
+              <td>1</td>
+              <td>Cover Page</td>
+              <td rowspan="10">
+                Mandatory Initial pages for Single file
+              </td>
+              <td rowspan="10"></td>
+              <td></td>
+              <td>Plain Paper</td>
+            </tr>
+
+            <tr>
+              <td>2</td>
+              <td>Cover Letter</td>
+              <td></td>
+              <td>Client letter head</td>
+            </tr>
+
+            <tr>
+              <td>3</td>
+              <td>
+                Table of Content - overall content to be added
+                (from S.No. 4 to S.No. 16 i.e. Section No. F Annexure)
+              </td>
+              <td></td>
+              <td>Perfact Letter head</td>
+            </tr>
+
+            <tr>
+              <td></td>
+              <td>State-wise checklist</td>
+              <td></td>
+              <td></td>
+            </tr>
+
+            <tr>
+              <td>4</td>
+              <td>
+                Board Resolution / Authorisation of the
+                Authorised Signatory
+              </td>
+              <td></td>
+              <td>Client letter head</td>
+            </tr>
+
+            <tr>
+              <td>5</td>
+              <td>
+                Authorization of the consultant -
+                to authorized Perfact
+              </td>
+              <td></td>
+              <td>Client letter head</td>
+            </tr>
+
+            <tr>
+              <td>6</td>
+              <td>
+                Undertaking by head of EIA consultant
+              </td>
+              <td></td>
+              <td>Perfact Letter head</td>
+            </tr>
+
+            <tr>
+              <td>7</td>
+              <td>
+                Declaration & List of FAE name & Signature
+              </td>
+              <td></td>
+              <td>Perfact Letter head</td>
+            </tr>
+
+            <tr>
+              <td>8</td>
+              <td>
+                Undertaking by EIA coordinator
+              </td>
+              <td></td>
+              <td>Perfact Letter head</td>
+            </tr>
+
+            <tr>
+              <td>9</td>
+              <td>
+                Plagiarism / QMS certificate
+              </td>
+              <td></td>
+              <td>Perfact Letter head</td>
+            </tr>
+
+            <tr>
+              <td>10</td>
+              <td>
+                Commitment letter from PP
+                (to whomsoever it may concern)
+              </td>
+              <td></td>
+              <td>From client plain paper</td>
+            </tr>
+
+            <tr>
+              <td>11</td>
+              <td>
+                Uploading Report (Form II) Section A
+                <br>
+                <small>
+                  Not required for uploading to be submitted
+                  during circulation
+                </small>
+              </td>
+              <td>
+                Form II not applicable for TOR application
+              </td>
+              <td></td>
+              <td>
+                <a href="#" target="_blank">Template</a>
+              </td>
+              <td>
+                Office Memorandum attached for the template
+              </td>
+            </tr>
+
+            <tr>
+              <td>12</td>
+              <td>
+                Section B<br>
+                Form I<br>
+                Form I undertaking<br>
+                Form IA - For construction projects<br>
+                Form 3 - Application for amendment in ToR<br>
+                Form 4 - Application for Amendment in Environmental Clearance<br>
+                Form 5 - Application for Extension of Validity of ToR<br>
+                Form 6 - Application for Extension of Validity of Environmental Clearance<br>
+                Form 7 - Application for Transfer of Environmental Clearance<br>
+                Form 8 - Application for Transfer of Terms of Reference
+              </td>
+              <td>As per applicability</td>
+              <td></td>
+              <td>
+                <a href="#" target="_blank">Template</a>
+              </td>
+              <td>Plain Paper</td>
+            </tr>
+
+            <tr>
+              <td>13</td>
+              <td>Form IA - Section C</td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+
+            <tr>
+              <td>14</td>
+              <td>Form II - Section D</td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+
+            <tr>
+              <td>15</td>
+              <td>
+                Conceptual Plan / TOR Compliance
+                in EIA cases - Section E
+              </td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+
+            <tr>
+              <td>16</td>
+              <td>
+                Section F - EMP / PFR / EIA
+              </td>
+              <td>
+                For PFR-TOR cases<br>
+                For EMP-B2 cases<br>
+                For EIA - A & B1
+              </td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </section>
+
+
+    <!-- =================================================
+         MINING
+    ================================================== -->
+
+    <section
+      id="mining"
+      class="tg03-sheet"
+    >
+
+      <div class="sheet-title">
+        Mining Projects
+      </div>
+
+      <div class="tg03-table-wrap">
+
+        <table class="tg03-table">
+
+          <thead>
+            <tr>
+              <th>S.No.</th>
+              <th>Initials Pages for Single File</th>
+              <th>
+                B2 Cases<br>
+                Amendment, Transfer, Extension etc.
+              </th>
+              <th>Cat A/B1 Cases</th>
+              <th>Template Link</th>
+              <th>Remarks</th>
+            </tr>
+          </thead>
+
+          <tbody>
+
+            <tr>
+              <td>1</td>
+              <td>Cover Page</td>
+              <td rowspan="10">
+                Mandatory Initial pages for Single file
+              </td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+
+            <tr>
+              <td>2</td>
+              <td>Cover Letter</td>
+              <td></td>
+              <td></td>
+              <td>Client letter head</td>
+            </tr>
+
+            <tr>
+              <td>3</td>
+              <td>
+                Table of Content - overall content to be added
+                (from S.No. 4 to S.No. 16 i.e. Section No. F Annexure)
+              </td>
+              <td></td>
+              <td></td>
+              <td>Perfact Letter head</td>
+            </tr>
+
+            <tr>
+              <td>4</td>
+              <td>
+                Board Resolution / Authorisation
+                of the Authorised Signatory
+              </td>
+              <td></td>
+              <td>
+                <a href="#" target="_blank">Template</a>
+              </td>
+              <td>Client letter head</td>
+            </tr>
+
+            <tr>
+              <td>5</td>
+              <td>
+                Authorization of the consultant -
+                to authorized Perfact
+              </td>
+              <td></td>
+              <td></td>
+              <td>Client letter head</td>
+            </tr>
+
+            <tr>
+              <td>6</td>
+              <td>Undertaking by head of EIA consultant</td>
+              <td></td>
+              <td></td>
+              <td>Perfact Letter head</td>
+            </tr>
+
+            <tr>
+              <td>7</td>
+              <td>
+                Declaration & List of FAE name & Signature
+              </td>
+              <td></td>
+              <td></td>
+              <td>Perfact Letter head</td>
+            </tr>
+
+            <tr>
+              <td>8</td>
+              <td>Undertaking by EIA coordinator</td>
+              <td></td>
+              <td></td>
+              <td>Perfact Letter head</td>
+            </tr>
+
+            <tr>
+              <td>9</td>
+              <td>Plagiarism / QMS certificate</td>
+              <td></td>
+              <td></td>
+              <td>Perfact Letter head</td>
+            </tr>
+
+            <tr>
+              <td>10</td>
+              <td>
+                Commitment letter from PP
+                (to whomsoever it may concern)
+              </td>
+              <td></td>
+              <td></td>
+              <td>From client plain paper</td>
+            </tr>
+
+            <tr>
+              <td>11</td>
+              <td>
+                Section B - Form I<br>
+                Form 3 - Application for amendment in ToR<br>
+                Form 4 - Application for Amendment in Environmental Clearance<br>
+                Form 5 - Application for Extension of Validity of ToR<br>
+                Form 6 - Application for Extension of Validity of Environmental Clearance<br>
+                Form 7 - Application for Transfer of Environmental Clearance<br>
+                Form 8 - Application for Transfer of Terms of Reference
+              </td>
+              <td></td>
+              <td></td>
+              <td>
+                <a href="#" target="_blank">Template</a>
+              </td>
+              <td>
+                Office Memorandum attached for the template
+              </td>
+            </tr>
+
+            <tr>
+              <td>12</td>
+              <td>Form I undertaking</td>
+              <td></td>
+              <td></td>
+              <td>
+                <a href="#" target="_blank">Template</a>
+              </td>
+              <td>Plain Paper</td>
+            </tr>
+
+            <tr>
+              <td>13</td>
+              <td>
+                Section C - not applicable in TOR application /
+                TOR compliance report
+              </td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+
+            <tr>
+              <td>14</td>
+              <td>
+                Form IA - Section C - not applicable in mining
+              </td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+
+            <tr>
+              <td>15</td>
+              <td>
+                Conceptual Plan / TOR Compliance in EIA cases -
+                Section D - not applicable in mining
+              </td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+
+            <tr>
+              <td>16</td>
+              <td>
+                Environment Management Plan / report - Section E
+              </td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+
+            <tr>
+              <td>17</td>
+              <td>Risk Assessment - Section F</td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+
+            <tr>
+              <td>18</td>
+              <td>Annexures - Section G</td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </section>
+
+
+    <!-- =================================================
+         INDUSTRY
+    ================================================== -->
+
+    <section
+      id="industry"
+      class="tg03-sheet"
+    >
+
+      <div class="sheet-title">
+        Industry
+      </div>
+
+      <div class="tg03-table-wrap">
+
+        <table class="tg03-table">
+
+          <thead>
+            <tr>
+              <th>S.No.</th>
+              <th>Initials Pages for Single File</th>
+              <th>
+                B2 Cases<br>
+                Amendment, Transfer, Extension etc.
+              </th>
+              <th>Cat A/B1 Cases</th>
+              <th>TOR Cases</th>
+              <th>Template Link</th>
+              <th>Remarks</th>
+            </tr>
+          </thead>
+
+          <tbody>
+
+            <tr>
+              <td>1</td>
+              <td>Cover Page</td>
+              <td rowspan="10">
+                Mandatory Initial pages for Single file
+              </td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td>Client letter head</td>
+            </tr>
+
+            <tr>
+              <td>2</td>
+              <td>Cover Letter</td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td>Client letter head</td>
+            </tr>
+
+            <tr>
+              <td>3</td>
+              <td>
+                Table of Content - overall content to be added
+                (from S.No. 4 to S.No. 16 i.e. Section No. F Annexure)
+              </td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td>Perfact Letter head</td>
+            </tr>
+
+            <tr>
+              <td>4</td>
+              <td>
+                Authorization letter / Board Resolution
+                of the Authorised Signatory
+              </td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td>Client letter head</td>
+            </tr>
+
+            <tr>
+              <td>5</td>
+              <td>
+                Authorization of the consultant -
+                to authorized Perfact
+              </td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td>Client letter head</td>
+            </tr>
+
+            <tr>
+              <td>6</td>
+              <td>Undertaking by head of EIA consultant</td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td>Perfact Letter head</td>
+            </tr>
+
+            <tr>
+              <td>7</td>
+              <td>
+                Declaration & List of EC, FAE, FAA &
+                team member name & Signature
+              </td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td>Perfact Letter head</td>
+            </tr>
+
+            <tr>
+              <td>8</td>
+              <td>Undertaking by EIA coordinator</td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td>Perfact Letter head</td>
+            </tr>
+
+            <tr>
+              <td>9</td>
+              <td>Plagiarism / QMS certificate</td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td>Perfact Letter head</td>
+            </tr>
+
+            <tr>
+              <td>10</td>
+              <td>
+                Commitment letter from PP
+                (to whomsoever it may concern)
+              </td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td>From client plain paper</td>
+            </tr>
+
+            <tr>
+              <td>11</td>
+              <td>
+                Uploading Report (Form II) Section A<br>
+                Not required for uploading.
+                To be submitted during circulation.
+              </td>
+              <td>
+                Form II not applicable for TOR application
+              </td>
+              <td></td>
+              <td></td>
+              <td>
+                <a href="#" target="_blank">Template</a>
+              </td>
+              <td>
+                Office Memorandum attached for the template
+              </td>
+            </tr>
+
+            <tr>
+              <td>12</td>
+              <td>
+                Section B<br>
+                Form I<br>
+                Form I undertaking<br>
+                Form IA - For construction projects<br>
+                Form 3 - Application for amendment in ToR<br>
+                Form 4 - Application for Amendment in Environmental Clearance<br>
+                Form 5 - Application for Extension of Validity of ToR<br>
+                Form 6 - Application for Extension of Validity of Environmental Clearance<br>
+                Form 7 - Application for Transfer of Environmental Clearance<br>
+                Form 8 - Application for Transfer of Terms of Reference
+              </td>
+              <td>As per applicability</td>
+              <td></td>
+              <td></td>
+              <td>
+                <a href="#" target="_blank">Template</a>
+              </td>
+              <td>Plain Paper</td>
+            </tr>
+
+            <tr>
+              <td>13</td>
+              <td>
+                Section C - Conceptual /
+                Executive Summary - Must
+              </td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+
+            <tr>
+              <td>14</td>
+              <td>
+                Section D - EMP / PFR / EIA report<br>
+                TOR compliance - Chapter 1 EIA part
+              </td>
+              <td>
+                For PFR-TOR cases<br>
+                For EMP-B2 Cases<br>
+                For EIA - A & B1
+              </td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+
+            <tr>
+              <td>14 (1)</td>
+              <td>
+                Section D - Non EIA cases -
+                Risk Assessment / EMP
+              </td>
+              <td>
+                Applicable for non EIA cases
+              </td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </section>
+
+
+    <div class="tg03-note">
+      <strong>Guideline: to use this format</strong>
+      <p>Preparing during single file.</p>
+    </div>
+
+  </main>
+
+
+  <!-- SHARED TOPBAR -->
+
+  <script>
+    function showSheet(id,button){
+
+      document
+        .querySelectorAll(".tg03-sheet")
+        .forEach(sheet =>
+          sheet.classList.remove("active")
+        );
+
+      document
+        .querySelectorAll(".tg03-tab")
+        .forEach(tab =>
+          tab.classList.remove("active")
+        );
+
+      document
+        .getElementById(id)
+        .classList.add("active");
+
+      button.classList.add("active");
+    }
+
+
+    async function loadTopbar(){
+
+      const box =
+        document.getElementById("topbar");
+
+      const response =
+        await fetch("topbar.html");
+
+      const html =
+        await response.text();
+
+      const doc =
+        new DOMParser()
+          .parseFromString(html,"text/html");
+
+
+      doc.querySelectorAll("style")
+        .forEach(style => {
+
+          document.head.appendChild(
+            style.cloneNode(true)
+          );
+
+        });
+
+
+      doc.body.childNodes
+        .forEach(node => {
+
+          if(node.nodeName !== "SCRIPT"){
+
+            box.appendChild(
+              document.importNode(node,true)
+            );
+
+          }
+
+        });
+
+
+      doc.querySelectorAll("script")
+        .forEach(old => {
+
+          const script =
+            document.createElement("script");
+
+          [...old.attributes]
+            .forEach(attr =>
+              script.setAttribute(
+                attr.name,
+                attr.value
+              )
+            );
+
+          script.textContent =
+            old.textContent;
+
+          document.body.appendChild(script);
+
+        });
+
+    }
+
+    loadTopbar();
+  </script>
+
+</body>
+</html>

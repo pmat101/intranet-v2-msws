@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="en-IN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Technical Guidelines | Perfact Intranet</title>
+
+  <link rel="stylesheet" href="../assets/tokens.css">
+  <link rel="icon" href="../assets/perfact-logo.png">
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--font-body);
+    }
+
+    .wrap {
+      width: min(1180px, calc(100% - 48px));
+      margin: auto;
+    }
+
+    /* Hero */
+    .hero {
+      position: relative;
+      min-height: 570px;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      width: 58%;
+      padding: 80px 0;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      gap: 9px;
+      align-items: center;
+      margin-bottom: 24px;
+      color: var(--moss);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 28px;
+      height: 1px;
+      background: var(--moss);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(58px, 7vw, 96px);
+      line-height: .92;
+      letter-spacing: -.055em;
+    }
+
+    .hero-text {
+      max-width: 620px;
+      margin: 28px 0 0;
+      color: var(--ink-soft);
+      font-size: 18px;
+      line-height: 1.65;
+    }
+
+    .hero-meta {
+      display: flex;
+      gap: 10px;
+      margin-top: 34px;
+      flex-wrap: wrap;
+    }
+
+    .meta-pill {
+      padding: 8px 13px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--card);
+      color: var(--ink-soft);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    /* Technical graphic */
+    .hero-art {
+      position: absolute;
+      top: 0;
+      right: -30px;
+      width: 54%;
+      height: 100%;
+      opacity: .75;
+      pointer-events: none;
+    }
+
+    .hero-art svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .contour {
+      fill: none;
+      stroke: var(--moss);
+      stroke-width: 1;
+      opacity: .38;
+    }
+
+    .grid-line {
+      stroke: var(--line);
+      stroke-width: 1;
+      opacity: .55;
+    }
+
+    .route {
+      fill: none;
+      stroke: var(--river);
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-dasharray: 5 8;
+      opacity: .8;
+    }
+
+    .node {
+      fill: var(--bg);
+      stroke: var(--moss);
+      stroke-width: 2;
+    }
+
+    .node-core { fill: var(--moss); }
+
+    .label {
+      fill: var(--ink-soft);
+      font: 11px var(--font-mono);
+      letter-spacing: .04em;
+    }
+
+    /* Guidelines */
+    .guidelines {
+      padding: 82px 0 100px;
+    }
+
+    .section-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 30px;
+      margin-bottom: 30px;
+    }
+
+    .section-top h2 {
+      margin: 0;
+      font-size: 34px;
+      letter-spacing: -.035em;
+    }
+
+    .section-top p {
+      margin: 7px 0 0;
+      color: var(--ink-soft);
+      font-size: 14px;
+    }
+
+    .section-count {
+      color: var(--ink-soft);
+      font: 12px var(--font-mono);
+    }
+
+    .guideline-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .guideline {
+      position: relative;
+      display: grid;
+      grid-template-columns: 90px 1fr 34px;
+      align-items: center;
+      gap: 22px;
+      min-height: 118px;
+      padding: 24px 26px;
+      color: var(--ink);
+      text-decoration: none;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-card);
+      overflow: hidden;
+      transition: .18s ease;
+    }
+
+    .guideline::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 3px;
+      background: var(--moss);
+      transform: scaleY(0);
+      transition: transform .18s ease;
+    }
+
+    .guideline:hover {
+      transform: translateY(-2px);
+      border-color: color-mix(
+        in srgb, var(--moss) 45%, var(--line)
+      );
+      box-shadow: 0 14px 35px rgba(0,0,0,.07);
+    }
+
+    .guideline:hover::before {
+      transform: scaleY(1);
+    }
+
+    .code {
+      color: var(--moss);
+      font: 700 13px var(--font-mono);
+    }
+
+    .guideline h3 {
+      margin: 0;
+      font-size: 21px;
+      letter-spacing: -.025em;
+    }
+
+    .guideline p {
+      margin: 7px 0 0;
+      color: var(--ink-soft);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .arrow {
+      color: var(--ink-soft);
+      font-size: 22px;
+      transition: .18s;
+    }
+
+    .guideline:hover .arrow {
+      color: var(--moss);
+      transform: translateX(4px);
+    }
+
+    /* Note + footer */
+    .note {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-top: 30px;
+      padding: 22px 24px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-card);
+      background: var(--moss-soft);
+      color: var(--ink-soft);
+      font-size: 13px;
+    }
+
+    .note-mark {
+      width: 30px;
+      height: 30px;
+      flex: none;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--card);
+      color: var(--moss);
+      font-weight: 800;
+    }
+
+    .note strong { color: var(--ink); }
+
+    footer {
+      padding: 30px 0 45px;
+      border-top: 1px solid var(--line);
+      color: var(--ink-soft);
+      font-size: 12px;
+    }
+
+    /* Mobile */
+    @media (max-width: 800px) {
+      .wrap {
+        width: min(100% - 30px, 1180px);
+      }
+
+      .hero {
+        min-height: 520px;
+      }
+
+      .hero-content {
+        width: 100%;
+        padding: 70px 0;
+      }
+
+      .hero-art {
+        width: 100%;
+        right: -35%;
+        opacity: .25;
+      }
+
+      h1 {
+        font-size: clamp(52px, 15vw, 78px);
+      }
+
+      .hero-text {
+        font-size: 16px;
+      }
+
+      .section-top {
+        align-items: start;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .guideline {
+        grid-template-columns: 65px 1fr 25px;
+        gap: 14px;
+        padding: 21px 18px;
+      }
+
+      .guideline h3 { font-size: 18px; }
+      .guideline p { font-size: 13px; }
+      .note { align-items: flex-start; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Shared topbar -->
+  <div id="topbar"></div>
+
+  <!-- Hero -->
+  <section class="hero">
+
+    <div class="hero-art">
+      <svg viewBox="0 0 760 570"
+        preserveAspectRatio="xMidYMid slice">
+
+        <path class="grid-line"
+          d="M40 90H720 M40 180H720 M40 270H720
+             M40 360H720 M40 450H720
+             M110 30V530 M220 30V530 M330 30V530
+             M440 30V530 M550 30V530 M660 30V530"/>
+
+        <ellipse class="contour" cx="500" cy="280" rx="245" ry="190"/>
+        <ellipse class="contour" cx="500" cy="280" rx="215" ry="166"/>
+        <ellipse class="contour" cx="500" cy="280" rx="185" ry="142"/>
+        <ellipse class="contour" cx="500" cy="280" rx="155" ry="118"/>
+        <ellipse class="contour" cx="500" cy="280" rx="125" ry="94"/>
+        <ellipse class="contour" cx="500" cy="280" rx="95" ry="70"/>
+
+        <ellipse class="contour" cx="210" cy="425" rx="125" ry="88"/>
+        <ellipse class="contour" cx="210" cy="425" rx="98" ry="68"/>
+        <ellipse class="contour" cx="210" cy="425" rx="70" ry="48"/>
+
+        <path class="route"
+          d="M90 450
+             C180 390 235 405 290 350
+             C350 290 390 330 445 275
+             C500 220 550 235 610 175
+             C650 135 680 145 715 105"/>
+
+        <circle class="node" cx="90" cy="450" r="8"/>
+        <circle class="node-core" cx="90" cy="450" r="3"/>
+
+        <circle class="node" cx="290" cy="350" r="9"/>
+        <circle class="node-core" cx="290" cy="350" r="3"/>
+
+        <circle class="node" cx="445" cy="275" r="11"/>
+        <circle class="node-core" cx="445" cy="275" r="4"/>
+
+        <circle class="node" cx="610" cy="175" r="9"/>
+        <circle class="node-core" cx="610" cy="175" r="3"/>
+
+        <circle class="node" cx="715" cy="105" r="8"/>
+        <circle class="node-core" cx="715" cy="105" r="3"/>
+
+        <text class="label" x="455" y="263">TG / 03</text>
+        <text class="label" x="620" y="163">DOC</text>
+        <text class="label" x="100" y="470">01</text>
+      </svg>
+    </div>
+
+    <div class="wrap">
+      <div class="hero-content">
+
+        <div class="eyebrow">Perfact Standard</div>
+
+        <h1>
+          Technical<br>
+          Guidelines
+        </h1>
+
+        <p class="hero-text">
+          A common reference for documentation, project
+          communication and file management across Perfact.
+        </p>
+
+        <div class="hero-meta">
+          <span class="meta-pill">03 Guidelines</span>
+          <span class="meta-pill">Project Standards</span>
+          <span class="meta-pill">Internal Reference</span>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Guidelines -->
+  <section class="guidelines">
+    <div class="wrap">
+
+      <div class="section-top">
+        <div>
+          <h2>Guidelines</h2>
+          <p>Select a guideline to open the complete reference.</p>
+        </div>
+
+        <span class="section-count">TG01 — TG03</span>
+      </div>
+
+      <div class="guideline-list">
+
+        <a class="guideline" href="/forms/tg01.html">
+          <div class="code">TG01</div>
+          <div>
+            <h3>Chat Space Guidelines</h3>
+            <p>
+              Standard practices for organising and using
+              project chat spaces.
+            </p>
+          </div>
+          <span class="arrow">→</span>
+        </a>
+
+        <a class="guideline" href="/forms/tg02.html">
+          <div class="code">TG02</div>
+          <div>
+            <h3>Document Organisation &amp; Unique Identifier</h3>
+            <p>
+              Document structure, P-Codes, unique identifiers
+              and version numbering.
+            </p>
+          </div>
+          <span class="arrow">→</span>
+        </a>
+
+        <a class="guideline" href="/forms/tg03.html">
+          <div class="code">TG03</div>
+          <div>
+            <h3>Single File Format</h3>
+            <p>
+              Standard file-format requirements for project
+              documentation.
+            </p>
+          </div>
+          <span class="arrow">→</span>
+        </a>
+
+      </div>
+
+      <div class="note">
+        <div class="note-mark">i</div>
+        <div>
+          <strong>Technical Guidelines</strong><br>
+          Use these references as the common standard for
+          project documentation and working practices.
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap">Perfact Group intranet</div>
+  </footer>
+
+  <!-- Load shared topbar -->
+  <script>
+    async function loadTopbar() {
+      const box = document.getElementById("topbar");
+      const res = await fetch("/forms/topbar.html");
+      const html = await res.text();
+      const doc = new DOMParser().parseFromString(html, "text/html");
+
+      doc.querySelectorAll("style").forEach(style => {
+        document.head.appendChild(style.cloneNode(true));
+      });
+
+      doc.body.childNodes.forEach(node => {
+        if (node.nodeName !== "SCRIPT") {
+          box.appendChild(document.importNode(node, true));
+        }
+      });
+
+      doc.querySelectorAll("script").forEach(old => {
+        const script = document.createElement("script");
+
+        [...old.attributes].forEach(attr => {
+          script.setAttribute(attr.name, attr.value);
+        });
+
+        script.textContent = old.textContent;
+        document.body.appendChild(script);
+      });
+    }
+
+    loadTopbar();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,473 @@
+<!doctype html>
+<html lang="en-IN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>TG02 | Document Organisation</title>
+
+  <link rel="stylesheet" href="../assets/tokens.css">
+
+  <style>
+    .page {
+      width: min(1080px, calc(100% - 44px));
+      margin: auto;
+      padding: 42px 0 80px;
+    }
+
+    .head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 45px;
+      padding: 35px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .head-copy {
+      max-width: 750px;
+    }
+
+    .tag {
+      display: inline-block;
+      margin-bottom: 14px;
+      color: var(--moss);
+      font: 700 11px var(--font-mono);
+      letter-spacing: .1em;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(34px, 4.5vw, 54px);
+      line-height: 1.02;
+      letter-spacing: -.045em;
+    }
+
+    .intro {
+      max-width: 680px;
+      margin: 17px 0 0;
+      color: var(--ink-soft);
+      font-size: 15px;
+      line-height: 1.65;
+    }
+
+    /* Small technical graphic */
+
+    .art {
+      width: 230px;
+      height: 165px;
+      flex: none;
+    }
+
+    .art svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .grid {
+      stroke: var(--line);
+      stroke-width: 1;
+    }
+
+    .box {
+      fill: var(--card);
+      stroke: var(--moss);
+      stroke-width: 1.5;
+    }
+
+    .arrow {
+      fill: none;
+      stroke: var(--river);
+      stroke-width: 2;
+      stroke-dasharray: 5 6;
+    }
+
+    .dot {
+      fill: var(--moss);
+    }
+
+    /* Content */
+
+    .content {
+      padding-top: 38px;
+    }
+
+    .rule {
+      padding: 18px 20px;
+      margin-bottom: 28px;
+      border-left: 3px solid var(--moss);
+      background: var(--moss-soft);
+      color: var(--ink);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .section {
+      display: grid;
+      grid-template-columns: 45px 1fr;
+      gap: 18px;
+      padding: 25px 5px;
+      border-top: 1px solid var(--line);
+    }
+
+    .number {
+      color: var(--moss);
+      font: 700 12px var(--font-mono);
+    }
+
+    h2 {
+      margin: 0 0 9px;
+      font-size: 19px;
+      letter-spacing: -.02em;
+    }
+
+    p {
+      margin: 0;
+      color: var(--ink-soft);
+      font-size: 14px;
+      line-height: 1.65;
+    }
+
+    ul {
+      margin: 10px 0 0;
+      padding-left: 20px;
+    }
+
+    li {
+      margin: 7px 0;
+      color: var(--ink-soft);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    li strong {
+      color: var(--ink);
+    }
+
+    /* Example */
+
+    .example {
+      margin-top: 28px;
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-card);
+      background: var(--card);
+    }
+
+    .example-label {
+      display: block;
+      margin-bottom: 10px;
+      color: var(--moss);
+      font: 700 11px var(--font-mono);
+      letter-spacing: .08em;
+    }
+
+    .code {
+      display: inline-block;
+      margin-bottom: 12px;
+      padding: 9px 13px;
+      border-radius: 7px;
+      background: var(--moss-soft);
+      color: var(--ink);
+      font: 700 14px var(--font-mono);
+    }
+
+    .example p {
+      max-width: 700px;
+    }
+
+    @media (max-width: 700px) {
+      .page {
+        width: min(100% - 28px, 1080px);
+        padding-top: 25px;
+      }
+
+      .head {
+        display: block;
+      }
+
+      .art {
+        width: 100%;
+        height: 130px;
+        margin-top: 25px;
+      }
+
+      .section {
+        grid-template-columns: 38px 1fr;
+        gap: 12px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- SHARED TOPBAR -->
+  <div id="topbar"></div>
+
+
+  <main class="page">
+
+    <header class="head">
+
+      <div class="head-copy">
+
+        <span class="tag">
+          TECHNICAL GUIDELINES / TG02
+        </span>
+
+        <h1>
+          Document Organisation
+          and Unique Identifier
+        </h1>
+
+        <p class="intro">
+          Guidelines for consistent document management,
+          version tracking and efficient collaboration.
+        </p>
+
+      </div>
+
+
+      <!-- Technical SVG -->
+
+      <div class="art">
+        <svg viewBox="0 0 230 165">
+
+          <path
+            class="grid"
+            d="
+              M10 35H220
+              M10 82H220
+              M10 130H220
+              M55 10V150
+              M115 10V150
+              M175 10V150
+            "
+          />
+
+          <rect
+            class="box"
+            x="25"
+            y="55"
+            width="55"
+            height="38"
+            rx="5"
+          />
+
+          <rect
+            class="box"
+            x="88"
+            y="55"
+            width="55"
+            height="38"
+            rx="5"
+          />
+
+          <rect
+            class="box"
+            x="151"
+            y="55"
+            width="55"
+            height="38"
+            rx="5"
+          />
+
+          <path
+            class="arrow"
+            d="M80 74H88M143 74H151"
+          />
+
+          <circle class="dot" cx="25" cy="55" r="4"/>
+          <circle class="dot" cx="206" cy="93" r="4"/>
+
+        </svg>
+      </div>
+
+    </header>
+
+
+    <section class="content">
+
+      <div class="rule">
+        <strong>
+          UID number of all documents has three parts:
+        </strong>
+        PCODE - document name - version number,
+        separated by a hyphen.
+      </div>
+
+
+      <!-- 01 -->
+
+      <section class="section">
+
+        <span class="number">01</span>
+
+        <div>
+          <h2>PCODE</h2>
+
+          <p>
+            From WO List maintained by Ms Aarti.
+          </p>
+        </div>
+
+      </section>
+
+
+      <!-- 02 -->
+
+      <section class="section">
+
+        <span class="number">02</span>
+
+        <div>
+
+          <h2>Document Name</h2>
+
+          <ul>
+            <li><strong>A</strong> — Form1/2/3/4 etc. for FORMS</li>
+            <li><strong>B</strong> — PFR for Feasibility Reports</li>
+            <li><strong>C</strong> — Application for Application Form (single file)</li>
+            <li><strong>D</strong> — TOR/TOR compliance for TOR Letter and its compliance</li>
+            <li><strong>E</strong> — EIA for EIA Report</li>
+            <li><strong>F</strong> — Encl for any other annexures</li>
+            <li><strong>G</strong> — Single file of EIA Document</li>
+            <li><strong>H</strong> — Presentation Document</li>
+            <li><strong>J</strong> — Any FAE Report</li>
+            <li><strong>K</strong> — Other for any document type not covered</li>
+          </ul>
+
+        </div>
+
+      </section>
+
+
+      <!-- 03 -->
+
+      <section class="section">
+
+        <span class="number">03</span>
+
+        <div>
+
+          <h2>Version No. (s)</h2>
+
+          <p>Based on stage:</p>
+
+          <ul>
+            <li>Initial draft suffix is <strong>00</strong></li>
+
+            <li>
+              PP reviewed and QA reviewed are
+              <strong>01</strong> and <strong>02</strong> respectively
+            </li>
+
+            <li>
+              Uploaded copy suffix is <strong>03</strong>
+            </li>
+
+            <li>
+              Submitted copy suffix is <strong>04*</strong>
+            </li>
+
+            <li>
+              <strong>*04</strong> version is same at PH and Online
+              stage for EIA
+            </li>
+
+            <li>
+              Circulated copy will be <strong>05</strong>
+            </li>
+
+            <li>
+              Any changes subsequent to the Presentation or suggested
+              by EAC is <strong>06</strong> and if needed <strong>07</strong> too
+            </li>
+          </ul>
+
+        </div>
+
+      </section>
+
+
+      <!-- Example -->
+
+      <div class="example">
+
+        <span class="example-label">
+          EXAMPLE
+        </span>
+
+        <div class="code">
+          PES/2020/01-G-02
+        </div>
+
+        <p>
+          Means: PCODE PES/2020/01 project, Single File EIA
+          document of QA reviewed copy.
+        </p>
+
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <!-- LOAD SHARED TOPBAR -->
+
+  <script>
+    async function loadTopbar() {
+
+      const box = document.getElementById("topbar");
+
+      const res = await fetch("topbar.html");
+      const html = await res.text();
+
+      const doc = new DOMParser()
+        .parseFromString(html, "text/html");
+
+
+      doc.querySelectorAll("style").forEach(style => {
+        document.head.appendChild(
+          style.cloneNode(true)
+        );
+      });
+
+
+      doc.body.childNodes.forEach(node => {
+
+        if (node.nodeName !== "SCRIPT") {
+          box.appendChild(
+            document.importNode(node, true)
+          );
+        }
+
+      });
+
+
+      doc.querySelectorAll("script").forEach(old => {
+
+        const script = document.createElement("script");
+
+        [...old.attributes].forEach(attr => {
+          script.setAttribute(
+            attr.name,
+            attr.value
+          );
+        });
+
+        script.textContent = old.textContent;
+
+        document.body.appendChild(script);
+
+      });
+
+    }
+
+    loadTopbar();
+  </script>
+
+</body>
+</html>

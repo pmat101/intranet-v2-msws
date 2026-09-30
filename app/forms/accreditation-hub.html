@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="en-IN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Accreditation Hub | Perfact Intranet</title>
+<link rel="stylesheet" href="../assets/tokens.css">
+
+<style>
+.page{width:min(1100px,calc(100% - 40px));margin:auto;padding:38px 0 75px}
+.head{display:flex;align-items:center;justify-content:space-between;gap:40px;padding:25px 0;border-bottom:1px solid var(--line)}
+.tag{color:var(--moss);font:700 11px var(--font-mono);letter-spacing:.1em}
+h1{margin:9px 0 12px;font-size:clamp(38px,5vw,58px);line-height:1;letter-spacing:-.05em}
+.intro{max-width:700px;margin:0;color:var(--ink-soft);font-size:15px;line-height:1.6}
+
+.art{width:245px;height:175px;flex:none}
+.art svg{width:100%;height:100%}
+.grid{stroke:var(--line);stroke-width:1}
+.ring{fill:none;stroke:var(--moss);opacity:.35}
+.path{fill:none;stroke:var(--river);stroke-width:2;stroke-dasharray:5 6}
+.node{fill:var(--moss)}
+
+.latest{
+  display:block;margin:25px 0;padding:12px 18px;
+  border:1px solid var(--moss);border-radius:9px;
+  background:var(--moss-soft);color:var(--ink);
+  text-align:center;text-decoration:none;font-size:13px;font-weight:600
+}
+
+.copy{max-width:900px;color:var(--ink-soft);font-size:14px;line-height:1.7}
+.copy p{margin:0 0 12px}.copy strong{color:var(--ink)}
+
+.grid-layout{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:0 60px;margin-top:35px
+}
+
+.drop{border-bottom:1px solid var(--line)}
+
+.drop button{
+  width:100%;padding:21px 4px;display:flex;
+  justify-content:space-between;align-items:center;
+  border:0;background:none;color:var(--ink);
+  font:600 18px var(--font-body);text-align:left;cursor:pointer
+}
+
+.arrow{
+  width:9px;height:9px;
+  border-right:1.5px solid var(--ink-soft);
+  border-bottom:1.5px solid var(--ink-soft);
+  transform:rotate(45deg);transition:.2s
+}
+
+.drop.open .arrow{transform:rotate(225deg)}
+
+.content{
+  display:none;padding:0 4px 18px;
+  color:var(--ink-soft);font-size:13px
+}
+
+.drop.open .content{display:block}
+
+.content button{
+  display:block;width:100%;padding:9px 0;
+  border:0;border-bottom:1px solid var(--line);
+  background:none;color:var(--moss);
+  text-align:left;font:inherit;cursor:pointer
+}
+
+.content button:hover{color:var(--river)}
+
+.register{margin-top:45px}
+
+.register h2{
+  margin:0 0 18px;color:var(--moss);
+  font-size:25px;letter-spacing:-.03em
+}
+
+.register button{
+  display:block;width:100%;padding:13px 0;
+  border:0;border-bottom:1px solid var(--line);
+  background:none;color:var(--moss);
+  text-align:left;font:14px var(--font-body);
+  cursor:pointer
+}
+
+.register button:hover{color:var(--river)}
+
+.useful{margin-top:48px}
+.useful h2{margin:0 0 18px;font-size:24px}
+
+.links{
+  display:grid;grid-template-columns:1fr 1fr;gap:10px
+}
+
+.link{
+  display:flex;justify-content:space-between;
+  padding:15px 17px;border:1px solid var(--line);
+  border-radius:9px;background:var(--card);
+  color:var(--ink);text-decoration:none;font-size:13px
+}
+
+.link:hover{border-color:var(--moss);color:var(--moss)}
+.link span{color:var(--moss)}
+
+@media(max-width:700px){
+  .page{width:calc(100% - 28px);padding-top:28px}
+  .head{display:block}
+  .art{width:100%;height:130px;margin-top:20px}
+  .grid-layout,.links{grid-template-columns:1fr}
+}
+</style>
+</head>
+
+<body>
+
+<div id="topbar"></div>
+
+<main class="page">
+
+<header class="head">
+
+  <div>
+    <span class="tag">ACCREDITATION HUB</span>
+
+    <h1>PG Accreditation Hub</h1>
+
+    <p class="intro">
+      A central space for accreditation resources,
+      quality systems, training material and
+      supporting documentation.
+    </p>
+  </div>
+
+  <div class="art">
+    <svg viewBox="0 0 245 175">
+
+      <path class="grid"
+        d="M10 35H235 M10 87H235 M10 140H235
+           M55 10V160 M122 10V160 M190 10V160"/>
+
+      <circle class="ring" cx="122" cy="87" r="58"/>
+      <circle class="ring" cx="122" cy="87" r="34"/>
+
+      <path class="path"
+        d="M20 125 C65 125 72 55 122 87
+           C165 112 180 48 225 35"/>
+
+      <circle class="node" cx="20" cy="125" r="4"/>
+      <circle class="node" cx="122" cy="87" r="5"/>
+      <circle class="node" cx="225" cy="35" r="4"/>
+
+    </svg>
+  </div>
+
+</header>
+
+
+<a href="#" class="latest">
+  Latest: NABET RA5 Assessment Schedule – October 2025 |
+  Version: 1.0 | Updated: 21 Oct 2025
+</a>
+
+
+<section class="copy">
+
+  <p>
+    Explore essential resources, training materials,
+    and guidelines to support your growth and efficiency.
+    From internal training modules and external expertise
+    to critical documentation and best practices, find
+    everything you need to excel in your role.
+  </p>
+
+  <p><strong>Key Highlights:</strong></p>
+
+  <p>
+    <strong>NABET Resources:</strong>
+    Access the Blue Book, forms, and formats
+    to streamline your processes.
+  </p>
+
+  <p>
+    <strong>QMSP:</strong>
+    Discover comprehensive procedures for our
+    Quality Management System.
+  </p>
+
+  <p>
+    <strong>Training Library:</strong>
+    Dive into internal and external training sessions
+    covering land use, environmental impact, air quality,
+    management and more.
+  </p>
+
+</section>
+
+
+<section class="grid-layout">
+
+  <!-- QUALITY MANAGEMENT -->
+
+  <div class="drop">
+    <button type="button">
+      Quality Management System
+      <i class="arrow"></i>
+    </button>
+
+    <div class="content">
+
+      <button>QMSP</button>
+      <button>Annexure to QMSP</button>
+      <button>Organisational Evaluation</button>
+      <button>Secondary Data Sources</button>
+      <button>Skill Matrix</button>
+      <button>Work Outsourced</button>
+      <button>Quality Control Procedure</button>
+      <button>Quality Policy</button>
+      <button>Annexure VIA1 - RA5</button>
+      <button>Manpower & FAE workflow</button>
+      <button>AO AKR</button>
+      <button>Assessment Chronology of PERFACT</button>
+      <button>QCI Chronology</button>
+      <button>QMS Matrix</button>
+      <button>EXPERTS' SOP</button>
+      <button>Field Matrix</button>
+
+    </div>
+  </div>
+
+
+  <!-- TRAINING -->
+
+  <div class="drop">
+    <button type="button">
+      Training & Development
+      <i class="arrow"></i>
+    </button>
+
+    <div class="content">
+
+      <button>Induction Training</button>
+      <button>Internal Trainings</button>
+      <button>Internal Training Calendar</button>
+      <button>External Trainings</button>
+      <button>Miscellaneous Trainings</button>
+      <button>Training dashboard record 2020-2025</button>
+      <button>Training dashboard for new joiners</button>
+      <button>General Training Dashboard</button>
+      <button>Training Materials Index</button>
+      <button>Library</button>
+
+    </div>
+  </div>
+
+
+  <!-- NABET -->
+
+  <div class="drop">
+    <button type="button">
+      NABET Documentation
+      <i class="arrow"></i>
+    </button>
+
+    <div class="content">
+
+      <button>Scheme for Accreditation: v3</button>
+      <button>Assessment Process</button>
+      <button>Formats under NABET scheme</button>
+      <button>Clarifications to Version 3 of the Scheme (2016)</button>
+      <button>Clarifications to Version 3 of the Scheme (2017)</button>
+      <button>Clarifications to Version 3 of the Scheme (2018)</button>
+      <button>Clarifications to the Scheme V3 September 2018</button>
+      <button>Clarifications to the Scheme V3 - 2021</button>
+      <button>Clarifications to the Scheme V3 - 2025</button>
+
+    </div>
+  </div>
+
+
+  <!-- PREVIOUS ASSESSMENTS -->
+
+  <div class="drop">
+    <button type="button">
+      Previous Assessments Documentation
+      <i class="arrow"></i>
+    </button>
+
+    <div class="content">
+
+      <button>Previous Assessment NCs/ OBS- SA5</button>
+      <button>Compliance to Accreditation conditions</button>
+      <button>DA II NC for RA5</button>
+      <button>NC Reply - CAPA</button>
+
+    </div>
+  </div>
+
+
+  <!-- WORKFLOW -->
+
+  <div class="register">
+
+    <h2>Workflow TF Register</h2>
+
+    <button>TF02- EAC MOM to Team EIA</button>
+    <button>TF05- Handover PPT_EAC Meeting</button>
+    <button>TF06- Handover Uploading documents</button>
+    <button>TF08- Closing Project</button>
+    <button>TF for Initial Pages</button>
+
+  </div>
+
+
+  <!-- OTHER -->
+
+  <div class="register">
+
+    <h2>Other Register</h2>
+
+    <button>BD03- Team Intimation of Details</button>
+    <button>TF for Agenda Enlistment</button>
+    <button>MoM for Appraisal meeting</button>
+    <button>TF for EDS raised</button>
+    <button>TF for ADS raised</button>
+
+  </div>
+
+</section>
+
+
+<section class="useful">
+
+  <h2>Useful Links</h2>
+
+  <div class="links">
+
+    <button class="link">
+      EIA Notifications
+      <span>↗</span>
+    </button>
+
+    <button class="link">
+      Year Wise Circulars, Office Memorandums
+      <span>↗</span>
+    </button>
+
+  </div>
+
+</section>
+
+
+
+
+</main>
+
+
+<script>
+
+/* TOPBAR */
+
+async function loadTopbar(){
+
+  const box=document.getElementById("topbar");
+  const res=await fetch("topbar.html");
+
+  const doc=new DOMParser()
+    .parseFromString(await res.text(),"text/html");
+
+  doc.querySelectorAll("style").forEach(s=>{
+    document.head.appendChild(s.cloneNode(true));
+  });
+
+  doc.body.childNodes.forEach(n=>{
+    if(n.nodeName!=="SCRIPT")
+      box.appendChild(document.importNode(n,true));
+  });
+
+  doc.querySelectorAll("script").forEach(old=>{
+
+    const s=document.createElement("script");
+
+    [...old.attributes].forEach(a=>{
+      s.setAttribute(a.name,a.value);
+    });
+
+    s.textContent=old.textContent;
+    document.body.appendChild(s);
+
+  });
+}
+
+loadTopbar();
+
+
+/* DROPDOWNS */
+
+document.querySelectorAll(".drop button:first-child")
+.forEach(button=>{
+
+  button.addEventListener("click",()=>{
+    button.parentElement.classList.toggle("open");
+  });
+
+});
+
+</script>
+
+</body>
+</html>

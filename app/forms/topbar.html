@@ -1,0 +1,398 @@
+<!doctype html>
+<html lang="en-IN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <style>
+    :root{--nav-h:52px;--gutter:clamp(18px,5vw,44px)}
+
+    .bar{
+      position:sticky;
+      top:0;
+      z-index:100;
+      height:var(--nav-h);
+      background:color-mix(in srgb,var(--bg) 72%,transparent);
+      backdrop-filter:saturate(180%) blur(20px);
+      border-bottom:1px solid color-mix(in srgb,var(--line) 70%,transparent)
+    }
+
+    .bar .wrap{
+      height:100%;
+      max-width:1240px;
+      margin:auto;
+      padding:0 var(--gutter);
+      display:flex;
+      align-items:center;
+      gap:28px
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:9px;
+      flex:none;
+      color:var(--ink);
+      font-size:15px;
+      font-weight:600;
+      text-decoration:none
+    }
+
+    .brand img{height:30px;width:auto}
+
+    .brand span{
+      padding-left:10px;
+      color:var(--ink-soft);
+      font-weight:500;
+      border-left:1px solid var(--line)
+    }
+
+    .nav{
+      flex:1;
+      display:flex;
+      justify-content:center;
+      gap:22px;
+      color:var(--ink-soft);
+      font-size:13px
+    }
+
+    .nav a{
+      color:inherit;
+      text-decoration:none;
+      white-space:nowrap
+    }
+
+    .nav a:hover{color:var(--ink)}
+
+    .profile{position:relative}
+
+    .who{
+      width:32px;
+      height:32px;
+      display:grid;
+      place-items:center;
+      padding:0;
+      overflow:hidden;
+      border-radius:50%;
+      border:1px solid var(--line);
+      background:var(--moss-soft);
+      color:var(--pine);
+      font-size:12px;
+      font-weight:600;
+      cursor:pointer
+    }
+
+    .who img{
+      width:100%;
+      height:100%;
+      object-fit:cover
+    }
+
+    .userbox{
+      position:absolute;
+      right:0;
+      top:42px;
+      width:220px;
+      padding:14px;
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:12px;
+      box-shadow:0 15px 40px color-mix(in srgb,var(--ink) 18%,transparent);
+      display:none
+    }
+
+    .userbox.open{display:block}
+
+    .userbox strong,
+    .userbox span,
+    .userbox small{display:block}
+
+    .userbox strong{font-size:14px;color:var(--ink)}
+    .userbox span{margin-top:3px;font-size:13px;color:var(--ink-soft)}
+    .userbox small{margin-top:9px;font-size:11px;color:var(--ink-soft)}
+
+    .menu{
+      display:none;
+      margin-left:auto;
+      padding:6px;
+      border:0;
+      background:none;
+      color:var(--ink);
+      cursor:pointer
+    }
+
+    .menu svg{width:21px;height:21px}
+
+    .sheet{
+      display:none;
+      position:fixed;
+      inset:var(--nav-h) 0 auto;
+      z-index:99;
+      background:var(--bg);
+      border-bottom:1px solid var(--line);
+      padding:8px var(--gutter) 22px
+    }
+
+    .sheet.open{display:block}
+
+    .sheet a{
+      display:block;
+      padding:11px 0;
+      color:var(--ink);
+      text-decoration:none;
+      font-size:19px;
+      font-weight:600;
+      border-bottom:1px solid var(--line)
+    }
+
+    .sheet a:last-child{border:0}
+    .hidden{display:none!important}
+
+    @media(max-width:980px){
+      .nav{display:none}
+      .menu{display:block}
+    }
+  </style>
+</head>
+
+<body>
+
+<header class="bar">
+  <div class="wrap">
+
+    <a class="brand"
+       href="/forms/draft-home.html"
+       aria-label="Perfact Intranet home">
+
+      <img
+        src="/assets/perfact-logo.png"
+        alt="Perfact"
+        width="59"
+        height="30">
+
+      <span>Intranet</span>
+    </a>
+
+    <nav class="nav" id="nav"></nav>
+
+    <button
+      class="menu"
+      id="menu"
+      type="button"
+      aria-label="Open menu"
+      aria-expanded="false">
+
+      <svg viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linecap="round">
+
+        <path d="M4 8h16M4 16h16"/>
+      </svg>
+    </button>
+
+    <div class="profile">
+
+      <button
+        class="who hidden"
+        id="who"
+        type="button"
+        aria-label="User profile">
+      </button>
+
+      <div class="userbox" id="userbox">
+        <strong id="username">Signed in</strong>
+        <span id="userrole">Perfact</span>
+        <small id="useremail"></small>
+      </div>
+
+    </div>
+
+  </div>
+</header>
+
+<div class="sheet" id="sheet"></div>
+
+
+<script src="/lib/vendor/msal-browser.min.js"></script>
+
+<script type="module">
+
+import {
+  initAuth,
+  getAccount,
+  getGraphToken
+} from "/lib/auth.js";
+
+
+const NAV=[
+  ["Technical guidelines","/forms/technical-guidelines.html"],
+  ["EIA resource","/forms/eia-resource.html"],
+  ["Accreditation hub","/forms/accreditation-hub.html"],
+  ["Weekly roster","/forms/weekly-roster.html"],
+  ["Forms","/forms/"],
+  ["Office resources","#"],
+  ["MIS","#"],
+  ["SPCB contacts","#"],
+  ["Archive","#"]
+];
+
+
+const $=id=>document.getElementById(id);
+
+
+/* Navigation */
+
+NAV.forEach(([name,href])=>{
+
+  const link=document.createElement("a");
+
+  link.href=href;
+  link.textContent=name;
+
+  $("nav").appendChild(link);
+  $("sheet").appendChild(link.cloneNode(true));
+
+});
+
+
+$("menu").onclick=()=>{
+
+  const open=$("sheet").classList.toggle("open");
+
+  $("menu").setAttribute(
+    "aria-expanded",
+    open
+  );
+
+};
+
+
+/* Profile */
+
+function initials(name=""){
+
+  const p=name.trim().split(/\s+/);
+
+  return p.slice(0,2)
+    .map(x=>x[0])
+    .join("")
+    .toUpperCase()||"?";
+}
+
+
+async function getUser(){
+
+  const token=await getGraphToken();
+
+  if(!token)return null;
+
+  try{
+
+    const res=await fetch(
+      "https://graph.microsoft.com/v1.0/me?$select=displayName,jobTitle,userPrincipalName",
+      {
+        headers:{
+          Authorization:`Bearer ${token}`
+        }
+      }
+    );
+
+    return res.ok ? res.json() : null;
+
+  }catch{
+
+    return null;
+
+  }
+}
+
+
+async function photo(){
+
+  const token=await getGraphToken();
+
+  if(!token)return;
+
+  for(const url of [
+    "https://graph.microsoft.com/v1.0/me.photos/64x64/$value",
+    "https://graph.microsoft.com/v1.0/me/photo/$value"
+  ]){
+
+    try{
+
+      const res=await fetch(url,{
+        headers:{
+          Authorization:`Bearer ${token}`
+        }
+      });
+
+      if(!res.ok)continue;
+
+      const img=document.createElement("img");
+      img.src=URL.createObjectURL(await res.blob());
+
+      $("who").replaceChildren(img);
+      break;
+
+    }catch{}
+
+  }
+}
+
+
+/* Auth */
+
+async function start(){
+
+  await initAuth();
+
+  const account=getAccount();
+
+  if(!account)return;
+
+
+  const fallback=
+    account.name||account.username||"User";
+
+  $("who").classList.remove("hidden");
+  $("who").textContent=initials(fallback);
+
+
+  const user=await getUser();
+
+  $("username").textContent=
+    user?.displayName||fallback;
+
+  $("userrole").textContent=
+    user?.jobTitle||"Perfact";
+
+  $("useremail").textContent=
+    user?.userPrincipalName||
+    account.username||"";
+
+
+  $("who").onclick=()=>{
+    $("userbox").classList.toggle("open");
+  };
+
+
+  document.addEventListener("click",e=>{
+
+    if(!e.target.closest(".profile"))
+      $("userbox").classList.remove("open");
+
+  });
+
+
+  photo();
+
+}
+
+start();
+
+</script>
+
+</body>
+</html>
