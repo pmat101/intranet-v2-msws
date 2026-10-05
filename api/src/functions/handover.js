@@ -339,6 +339,7 @@ async function handle(request, context) {
       name: m.name,
       percent: Number(m.percent),
       timeline: m.timeline || "",
+      details: m.details || "",
       amount,
     });
   }

@@ -485,13 +485,12 @@ async function sendHandoverFiled(pcode, caller, d) {
   // The plan is given as percentages and timelines, which is what a delivery
   // team schedules against.
   const milestoneRows = (d.milestones || [])
-    .map((m) =>
-      row(
-        m.name,
-        `${m.percent} per cent of the contract` +
-          (m.timeline ? `, ${m.timeline}` : ""),
-      ),
-    )
+    .map((m) => {
+      const when = [`${m.percent} per cent of the contract`, m.timeline]
+        .filter(Boolean)
+        .join(", ");
+      return row(m.name, m.details ? `${when}. ${m.details}` : when);
+    })
     .join("");
 
   const personRows = (d.otherPersons || [])
