@@ -190,7 +190,7 @@ async function sendApprovalRecorded(pcode, caller, d) {
 
   return send({
     formCode: "BD01B",
-    to: [TOP_MANAGEMENT, caller.email],
+    to: [GLACIER, caller.email],
     cc: d.approvedByEmail ? [d.approvedByEmail] : [],
     submittedBy: caller.email,
     subject,
@@ -474,6 +474,7 @@ async function sendHandoverFiled(pcode, caller, d) {
     TOP_MANAGEMENT,
     ACCOUNTS,
     INFO,
+    "pranav.mathur@perfactgroup.in",
     OPERATIONS_COUNCIL,
     ...(d.otherPersonEmails || []),
   ].filter(Boolean);
