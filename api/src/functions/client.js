@@ -3,9 +3,13 @@ const { verifyRequest } = require("../lib/auth");
 const { resolveRole } = require("../lib/roles");
 const { clientContext } = require("../lib/client-context");
 
-// Client contact details are personal data, so only the roles that file or
-// review BD02 may read them.
-const MAY_VIEW = ["BD", "Accounts", "Admin", "CSO", "COO"];
+// Client contact details are personal data, so only the roles that file BD02
+// or BD03 may read them. Team heads file handovers and need the contact.
+const MAY_VIEW = ["BD", "Accounts", "Admin", "CSO", "COO", "TeamHead"];
+
+// The tax numbers and the commercial mode stay on the commercial side. The
+// delivery team sees who the client is, never the commercial picture.
+const COMMERCIAL_ROLES = ["BD", "Accounts", "Admin", "CSO", "COO"];
 
 function fail(status, code, message) {
   return { status, jsonBody: { ok: false, error: { code, message } } };
@@ -40,9 +44,14 @@ app.http("projectClient", {
       if (!pcode)
         return fail(400, "validation_failed", "A pcode parameter is required");
 
-      const ctx = await clientContext(pcode, { withPrefill: true });
+      const commercial = COMMERCIAL_ROLES.includes(entry.role);
+      const ctx = await clientContext(pcode, { withPrefill: commercial });
       if (!ctx)
         return fail(404, "no_such_project", `No project found for ${pcode}`);
+      if (!commercial) {
+        delete ctx.previousTax;
+        delete ctx.prMode;
+      }
       return { status: 200, jsonBody: { ok: true, data: ctx } };
     } catch (err) {
       context.log("UNHANDLED in projectClient:", err.stack || String(err));

@@ -55,11 +55,24 @@ function esc(v) {
 }
 
 /** Matches the legacy row helper, so the tables look identical. */
+/**
+ * Escapes a value, then turns any web address in it into a clickable link.
+ * Escaping first means nothing a person typed can become markup; only the
+ * addresses are made live, and a full stop or bracket after one stays outside it.
+ */
+function linkify(value) {
+  return esc(value).replace(
+    /https?:\/\/[^\s<]*[^\s<.,;:!?)\]]/g,
+    (url) =>
+      `<a href="${url}" style="color:#0b6e4f;word-break:break-all;">${url}</a>`,
+  );
+}
+
 function row(label, value) {
   return `
     <tr>
       <td style="border:1px solid #ccc;padding:6px;background:#f5f5f5;font-weight:600;width:38%;">${esc(label)}</td>
-      <td style="border:1px solid #ccc;padding:6px;">${esc(value)}</td>
+      <td style="border:1px solid #ccc;padding:6px;">${linkify(value)}</td>
     </tr>`;
 }
 
@@ -400,6 +413,39 @@ async function sendCommercialsRecorded(pcode, caller, d) {
 
 /* ------------------------------------------------------------------ */
 /* Stage 7a, BD02b. Billing start. Accounts own the money from here.   */
+const DOC_LABELS = {
+  WorkOrder: "Work order",
+  PurchaseOrder: "Purchase order",
+  ClientConfirmation: "Client confirmation",
+};
+
+/**
+ * Every document Accounts may need to bill against: the links typed on the
+ * form, and the files BD uploaded to the project. BD often uploads the work
+ * order rather than pasting a link, and the mail used to show only the link.
+ */
+function documentsSection(d) {
+  const rows = [];
+  if (d.workOrderLink) rows.push(row("Work order link", d.workOrderLink));
+  if (d.salesOrderLink) rows.push(row("Sales order link", d.salesOrderLink));
+  for (const doc of d.documents || []) {
+    const label =
+      DOC_LABELS[doc.documentType] || doc.documentType || "Document";
+    rows.push(
+      row(
+        doc.label ? `${label}, ${doc.label}` : label,
+        doc.fileUrl || doc.fileName || "",
+      ),
+    );
+  }
+  return rows.length
+    ? section("Documents", rows.join(""))
+    : section(
+        "Documents",
+        row("Work order", "None attached yet. Upload it on the project page."),
+      );
+}
+
 /* ------------------------------------------------------------------ */
 
 async function sendBillingStarted(pcode, caller, d) {
@@ -434,11 +480,10 @@ async function sendBillingStarted(pcode, caller, d) {
             row("Work Order Value", `${lakh(d.workOrderValue)} lakh`) +
             row("Validity", known(d.workOrderValidity)) +
             row("Payment Terms", known(d.paymentTerms)) +
-            (d.workOrderLink ? row("Work order", d.workOrderLink) : "") +
-            (d.salesOrderLink ? row("Sales order", d.salesOrderLink) : "") +
             (d.remarks ? row("Remarks", d.remarks) : "") +
             row("Ledger Entry", d.ledgerEntryId),
-        ),
+        ) +
+        documentsSection(d),
       "Perfact Intranet, BD Pipeline. The billing schedule follows on handover.",
     ),
   });
@@ -526,7 +571,8 @@ async function sendHandoverFiled(pcode, caller, d) {
           "Client",
           row("Company Name", d.companyName) +
             row("Contact Person", d.contactName) +
-            row("Contact Email", contactEmails),
+            row("Contact Email", contactEmails) +
+            row("Contact Phone", d.contactPhone || ""),
         ) +
         section(
           "Delivery",

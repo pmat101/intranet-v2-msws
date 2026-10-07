@@ -35,8 +35,29 @@ const ROWS = [
   ["Perfact entity", "pgEntity"],
 ];
 
+const STYLE = `
+  .client-panel dl { display: grid; grid-template-columns: max-content 1fr;
+    gap: 7px 20px; margin: 0; font-size: 0.9rem; }
+  .client-panel dt { color: var(--ink-soft); }
+  .client-panel dd { margin: 0; color: var(--ink); overflow-wrap: anywhere; }
+  .client-panel .hint { font-size: 0.84rem; color: var(--ink-soft); margin: 0; }
+  @media (max-width: 560px) {
+    .client-panel dl { grid-template-columns: 1fr; gap: 1px 0; }
+    .client-panel dd { margin-bottom: 9px; }
+  }`;
+
+/** Adds the panel's styles once, so a form needs only the import and the markup. */
+function ensureStyles() {
+  if (document.getElementById("client-panel-styles")) return;
+  const tag = document.createElement("style");
+  tag.id = "client-panel-styles";
+  tag.textContent = STYLE;
+  document.head.appendChild(tag);
+}
+
 export function renderClient(el, ctx, pcode) {
   if (!el) return;
+  ensureStyles();
   if (!String(pcode || "").trim()) {
     el.innerHTML =
       '<p class="hint">Enter the P-Code and the client details will appear here.</p>';

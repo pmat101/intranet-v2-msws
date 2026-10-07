@@ -394,6 +394,7 @@ async function handle(request, context) {
     contactName: contact ? contact.fields.ContactName : "",
     contactEmails:
       contact && contact.fields.Email ? [contact.fields.Email] : [],
+    contactPhone: contact ? contact.fields.Phone || "" : "",
     deliveryPool: p.deliveryPool,
     teamHeadEmail: p.teamHeadEmail,
     cSuiteOfficerEmail: p.cSuiteOfficerEmail,

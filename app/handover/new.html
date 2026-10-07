@@ -292,6 +292,11 @@
         </div>
 
         <fieldset>
+          <legend>Client, from the registers</legend>
+          <div class="client-panel" id="client-panel"></div>
+        </fieldset>
+
+        <fieldset>
           <legend>Project and delivery</legend>
 
           <div class="grid">
@@ -708,6 +713,7 @@
       import { api } from "/lib/api.js";
       import { formatRupees } from "/lib/money.js";
       import { handoverLists } from "/lib/handover-lists.js";
+      import { loadClient, renderClient } from "/lib/client-panel.js";
 
       const $ = (id) => document.getElementById(id);
 
@@ -1252,6 +1258,13 @@
         addPersonRow();
 
         setupHandoverLists();
+
+        const showClient = async () => {
+          const pcode = $("pcode").value.trim();
+          renderClient($("client-panel"), await loadClient(pcode), pcode);
+        };
+        showClient();
+        $("pcode").addEventListener("change", showClient);
 
         $("add-person").onclick = addPersonRow;
 
